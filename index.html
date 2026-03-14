@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fox Wisdom Oracle</title>
+
+<style>
+body{
+font-family: Georgia;
+text-align:center;
+background:#f5e6c8;
+padding:30px;
+}
+
+button{
+font-size:22px;
+padding:15px 30px;
+margin-top:25px;
+cursor:pointer;
+}
+
+img{
+margin-top:30px;
+max-width:90%;
+max-height:80vh;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.25);
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>Fox Wisdom Oracle</h1>
+
+<p>
+Pause for a moment.<br>
+Ask your question.<br>
+Tap below and allow the fox to reveal your message.
+</p>
+
+<button onclick="drawCard()">Draw a Card</button>
+
+<br>
+
+<img id="card" src="">
+
+<script>
+
+var cards = [
+
+"watcher.jpg",
+"silent-steps.jpg",
+"forest-instinct.jpg",
+"moonlit-trail.jpg",
+"hidden-path.jpg",
+"woodland-trickster.jpg",
+"quiet-observation.jpg",
+"winter-watch.jpg",
+"foxfire.jpg"
+
+];
+
+function drawCard(){
+var random = Math.floor(Math.random()*cards.length);
+document.getElementById("card").src = cards[random];
+}
+
+</script>
+
+</body>
+</html>
