@@ -1,111 +1,117 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+  <title>Fox Wisdom Oracle</title>
+  <style>
+    body{
+      font-family: Georgia;
+      text-align:center;
+      background:#f5e6c8;
+      padding:40px;
+    }
 
-<title>Fox Wisdom Oracle</title>
+    h1{
+      margin-bottom:10px;
+    }
 
-<style>
+    p{
+      font-size:18px;
+    }
 
-body{
-font-family: Georgia;
-text-align:center;
-background:#f5e6c8;
-padding:40px;
-}
+    button{
+      font-size:22px;
+      padding:15px 30px;
+      margin-top:20px;
+      cursor:pointer;
+    }
 
-h1{
-margin-bottom:10px;
-}
+    img{
+      margin-top:30px;
+      max-width:90%;
+      max-height:80vh;
+      border-radius:10px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    }
 
-p{
-font-size:18px;
-}
-
-button{
-font-size:22px;
-padding:15px 30px;
-margin-top:20px;
-cursor:pointer;
-}
-
-img{
-margin-top:30px;
-max-width:90%;
-max-height:80vh;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
-}
-
-</style>
-
+    #status{
+      margin-top:20px;
+      font-size:16px;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>Fox Wisdom Oracle</h1>
+  <h1>Fox Wisdom Oracle</h1>
 
-<p>
-Pause for a moment.<br>
-Ask your question.<br>
-Tap below and allow the fox to reveal your message.
-</p>
+  <p>
+    Pause for a moment.<br>
+    Ask your question.<br>
+    Tap below and allow the fox to reveal your message.
+  </p>
 
-<button onclick="drawCard()">Draw a Card</button>
+  <button onclick="drawCard()">Draw a Card</button>
 
-<br>
+  <div id="status">No card drawn yet.</div>
 
-<img id="card" src="">
+  <br>
 
-<script>
+  <img id="card" src="" alt="Your fox card will appear here">
 
-var cards = [
+  <script>
+    var cards = [
+      "autumn wisdom.jpg",
+      "crossing paths.jpg",
+      "dancing shadows.jpg",
+      "ember eyes.jpg",
+      "fern shadows.jpg",
+      "forest instinct.jpg",
+      "forest secrets.jpg",
+      "fox fire.jpg",
+      "gentle cunning.jpg",
+      "hidden path.jpg",
+      "hidden shelter.jpg",
+      "moonlight trail.jpg",
+      "moonlit watch.jpg",
+      "morning tracks.jpg",
+      "quiet observation.jpg",
+      "quiet territory.jpg",
+      "rustling leaves.jpg",
+      "silent steps1.jpg",
+      "the clever escape.jpg",
+      "the clever plan.jpg",
+      "the forest edge.jpg",
+      "the guiding paw.jpg",
+      "the hidden den.jpg",
+      "the old trail.jpg",
+      "the patient hunter.jpg",
+      "the returning path.jpg",
+      "the silent clearing.jpg",
+      "the turning season.jpg",
+      "the twilight path.jpg",
+      "the wandering fox.jpg",
+      "watcher.jpg",
+      "the listening hollow.jpg"
+    ];
 
-"autumn wisdom.jpg",
-"crossing paths.jpg",
-"dancing shadows.jpg",
-"ember eyes.jpg",
-"fern shadows.jpg",
-"forest instinct.jpg",
-"forest secrets.jpg",
-"fox fire.jpg",
-"gentle cunning.jpg",
-"hidden path.jpg",
-"hidden shelter.jpg",
-"moonlight trail.jpg",
-"moonlit watch.jpg",
-"morning tracks.jpg",
-"quiet observation.jpg",
-"quiet territory.jpg",
-"rustling leaves.jpg",
-"silent steps1.jpg",
-"the clever escape.jpg",
-"the clever plan.jpg",
-"the forest edge.jpg",
-"the guiding paw.jpg",
-"the hidden den.jpg",
-"the old trail.jpg",
-"the patient hunter.jpg",
-"the returning path.jpg",
-"the silent clearing.jpg",
-"the turning season.jpg",
-"the twilight path.jpg",
-"the wandering fox.jpg",
-"watcher.jpg",
-"the listening hollow.jpg"
+    function drawCard(){
+      var random = Math.floor(Math.random() * cards.length);
+      var chosenCard = cards[random];
+      var img = document.getElementById("card");
 
-];
+      document.getElementById("status").textContent = "Trying to open: " + chosenCard;
 
-function drawCard(){
+      img.onerror = function() {
+        document.getElementById("status").textContent = "Could not load: " + chosenCard;
+      };
 
-var random = Math.floor(Math.random() * cards.length);
+      img.onload = function() {
+        document.getElementById("status").textContent = "Loaded: " + chosenCard;
+      };
 
-document.getElementById("card").src = cards[random];
-
-}
-
-</script>
+      img.src = "./" + chosenCard;
+    }
+  </script>
 
 </body>
-
 </html>
