@@ -2,85 +2,176 @@
 <html>
 <head>
 <title>Fox Wisdom Oracle</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
 body{
 font-family: Georgia, serif;
 text-align:center;
-background-image:url("forest-bg.jpg");
+background-image:
+linear-gradient(rgba(16,22,16,0.55), rgba(16,22,16,0.7)),
+url("forest-bg.jpg");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
-padding:30px;
+padding:16px;
 margin:0;
 color:#f5e9c8;
+min-height:100vh;
+overflow-x:hidden;
+position:relative;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 15% 20%, rgba(255,220,140,0.07), transparent 20%),
+radial-gradient(circle at 80% 25%, rgba(170,255,220,0.06), transparent 18%),
+radial-gradient(circle at 30% 80%, rgba(255,210,120,0.05), transparent 18%);
+pointer-events:none;
+z-index:0;
+}
+
+.foxfire{
+position:fixed;
+width:12px;
+height:12px;
+border-radius:50%;
+background:radial-gradient(circle, rgba(255,235,170,1) 0%, rgba(255,210,120,0.7) 45%, rgba(255,210,120,0) 75%);
+box-shadow:
+0 0 12px rgba(255,220,140,0.9),
+0 0 24px rgba(255,220,140,0.45);
+animation:floatGlow linear infinite;
+pointer-events:none;
+z-index:0;
+opacity:0.85;
+}
+
+@keyframes floatGlow{
+0%{
+transform:translateY(0px) translateX(0px) scale(0.85);
+opacity:0;
+}
+15%{
+opacity:0.9;
+}
+50%{
+transform:translateY(-90px) translateX(16px) scale(1.08);
+opacity:1;
+}
+100%{
+transform:translateY(-180px) translateX(-10px) scale(0.8);
+opacity:0;
+}
+}
+
+.page{
+position:relative;
+z-index:1;
+max-width:1100px;
+margin:0 auto;
+}
+
+.panel{
+background:rgba(28,22,15,0.48);
+border:1px solid rgba(255,220,150,0.16);
+border-radius:22px;
+padding:20px 14px;
+box-shadow:0 12px 30px rgba(0,0,0,0.28);
+backdrop-filter: blur(3px);
+margin-bottom:12px;
 }
 
 h1{
 color:#f0d890;
-text-shadow:0 2px 8px rgba(0,0,0,0.35);
+margin-top:0;
+margin-bottom:10px;
+text-shadow:0 2px 10px rgba(0,0,0,0.35);
+font-size:clamp(28px, 5vw, 46px);
 }
 
 p{
 font-size:18px;
-line-height:1.5;
+line-height:1.6;
 text-shadow:0 1px 5px rgba(0,0,0,0.35);
+margin-left:auto;
+margin-right:auto;
+margin-top:10px;
+margin-bottom:10px;
+max-width:700px;
 }
 
 .hidden{
 display:none;
 }
 
+.home-image{
+width:380px;
+max-width:94%;
+border-radius:16px;
+box-shadow:0 8px 24px rgba(0,0,0,0.35);
+margin-top:14px;
+border:1px solid rgba(255,220,150,0.16);
+}
+
 .button{
-font-size:20px;
-padding:14px 24px;
-margin:10px;
+font-size:19px;
+padding:14px 20px;
+margin:8px;
 cursor:pointer;
 border:none;
-border-radius:10px;
-background:#f2e1b0;
-font-family: Georgia, serif;
-box-shadow:0 4px 12px rgba(0,0,0,0.25);
-transition:transform 0.2s ease;
+border-radius:12px;
+background:linear-gradient(to bottom, #f5e5b9, #d9ba7a);
+color:#3b2a14;
+font-family:Georgia, serif;
+box-shadow:0 5px 14px rgba(0,0,0,0.25);
+transition:transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .button:hover{
-transform:scale(1.05);
+transform:translateY(-2px) scale(1.03);
+box-shadow:0 8px 18px rgba(0,0,0,0.3);
 }
 
-.home-image{
-width:360px;
-max-width:90%;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.35);
-margin-top:20px;
+.button-row{
+margin-top:16px;
 }
 
 .card{
-width:280px;
-max-width:90%;
-border-radius:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.4);
+width:340px;
+max-width:94%;
+border-radius:14px;
+box-shadow:
+0 8px 22px rgba(0,0,0,0.38),
+0 0 18px rgba(255,220,120,0.06);
 cursor:pointer;
-transition:transform 0.3s ease;
+transition:transform 0.3s ease, box-shadow 0.3s ease;
 background:rgba(255,255,255,0.02);
 }
 
 .card:hover{
 transform:scale(1.03);
+box-shadow:
+0 10px 24px rgba(0,0,0,0.42),
+0 0 24px rgba(255,220,120,0.12);
 }
 
 .small-card{
-width:200px;
+width:250px;
+max-width:86vw;
 }
 
 .card-row{
 display:flex;
 justify-content:center;
-gap:25px;
+align-items:flex-start;
+gap:18px;
 flex-wrap:wrap;
-margin-top:25px;
+margin-top:20px;
+margin-bottom:10px;
 }
 
 .label{
@@ -96,7 +187,7 @@ animation:shuffle 0.7s ease 3;
 }
 
 .glow{
-animation:goldglow 1.5s ease;
+animation:goldglow 1.6s ease;
 }
 
 @keyframes shuffle{
@@ -110,37 +201,79 @@ animation:goldglow 1.5s ease;
 
 @keyframes goldglow{
 0%{
-box-shadow:0 6px 18px rgba(0,0,0,0.4);
+box-shadow:0 8px 22px rgba(0,0,0,0.38);
 }
 40%{
 box-shadow:
-0 0 18px rgba(255,215,120,0.7),
-0 0 35px rgba(255,215,120,0.45),
-0 6px 18px rgba(0,0,0,0.4);
+0 0 18px rgba(255,215,120,0.85),
+0 0 38px rgba(255,215,120,0.45),
+0 8px 22px rgba(0,0,0,0.38);
 }
 100%{
-box-shadow:0 6px 18px rgba(0,0,0,0.4);
+box-shadow:0 8px 22px rgba(0,0,0,0.38);
 }
-}
-
-.screen-box{
-background:rgba(25,20,15,0.18);
-border-radius:18px;
-padding:25px;
-max-width:1100px;
-margin:0 auto;
-box-shadow:0 10px 28px rgba(0,0,0,0.18);
-}
-
-.top-space{
-margin-top:20px;
 }
 
 #daily-date{
 font-size:16px;
-margin-top:10px;
+margin-top:8px;
 color:#ead9ac;
 text-shadow:0 1px 5px rgba(0,0,0,0.35);
+}
+
+@media (max-width: 700px){
+
+body{
+padding:10px;
+background-attachment:scroll;
+}
+
+.panel{
+padding:16px 10px;
+border-radius:16px;
+}
+
+.home-image{
+width:92%;
+max-width:420px;
+}
+
+.button{
+width:94%;
+max-width:340px;
+font-size:18px;
+padding:13px 14px;
+margin:6px auto;
+display:block;
+}
+
+.card{
+width:92vw;
+max-width:420px;
+}
+
+.small-card{
+width:92vw;
+max-width:420px;
+}
+
+.card-row{
+gap:14px;
+margin-top:16px;
+}
+
+p{
+font-size:17px;
+}
+
+.label{
+margin-bottom:6px;
+}
+
+.foxfire{
+display:none;
+}
+
 }
 
 </style>
@@ -149,7 +282,16 @@ text-shadow:0 1px 5px rgba(0,0,0,0.35);
 
 <body>
 
-<div id="home-screen" class="screen-box">
+<div class="foxfire" style="left:7%; bottom:5%; animation-duration:8s; animation-delay:0s;"></div>
+<div class="foxfire" style="left:18%; bottom:10%; animation-duration:10s; animation-delay:1.5s;"></div>
+<div class="foxfire" style="left:33%; bottom:7%; animation-duration:9s; animation-delay:0.5s;"></div>
+<div class="foxfire" style="left:49%; bottom:8%; animation-duration:11s; animation-delay:2s;"></div>
+<div class="foxfire" style="left:66%; bottom:6%; animation-duration:9.5s; animation-delay:1s;"></div>
+<div class="foxfire" style="left:81%; bottom:9%; animation-duration:8.5s; animation-delay:2.5s;"></div>
+
+<div class="page">
+
+<div id="home-screen" class="panel">
 
 <h1>Fox Wisdom Oracle</h1>
 
@@ -158,31 +300,35 @@ text-shadow:0 1px 5px rgba(0,0,0,0.35);
 <p>
 Pause for a moment.<br>
 Ask your question.<br>
-Choose your reading.
+Choose the reading that calls to you.
 </p>
 
+<div class="button-row">
 <button class="button" onclick="showSingle()">Single Card</button>
 <button class="button" onclick="showThree()">Three Card Spread</button>
 <button class="button" onclick="showDaily()">Daily Fox Message</button>
+</div>
 
 </div>
 
-<div id="single-screen" class="hidden screen-box">
+<div id="single-screen" class="hidden panel">
 
 <h1>Single Card Reading</h1>
 
 <p>Tap the card to reveal your fox message.</p>
 
+<div class="card-row">
 <img id="single-card" class="card" src="card back.jpg" onclick="drawSingle()">
+</div>
 
-<br><br>
-
+<div class="button-row">
 <button class="button" onclick="resetSingle()">Shuffle Again</button>
 <button class="button" onclick="goHome()">Back</button>
+</div>
 
 </div>
 
-<div id="three-screen" class="hidden screen-box">
+<div id="three-screen" class="hidden panel">
 
 <h1>Three Card Spread</h1>
 
@@ -207,14 +353,14 @@ Choose your reading.
 
 </div>
 
-<br>
-
+<div class="button-row">
 <button class="button" onclick="resetThree()">Shuffle Again</button>
 <button class="button" onclick="goHome()">Back</button>
+</div>
 
 </div>
 
-<div id="daily-screen" class="hidden screen-box">
+<div id="daily-screen" class="hidden panel">
 
 <h1>Daily Fox Message</h1>
 
@@ -222,14 +368,16 @@ Choose your reading.
 
 <div id="daily-date"></div>
 
-<br>
-
+<div class="card-row">
 <img id="daily-card" class="card">
+</div>
 
-<br><br>
-
+<div class="button-row">
 <button class="button" onclick="showDaily()">Refresh</button>
 <button class="button" onclick="goHome()">Back</button>
+</div>
+
+</div>
 
 </div>
 
@@ -286,6 +434,7 @@ document.getElementById("daily-screen").classList.add("hidden");
 function goHome(){
 hideAll();
 document.getElementById("home-screen").classList.remove("hidden");
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function addShuffle(card){
@@ -304,6 +453,7 @@ function showSingle(){
 hideAll();
 document.getElementById("single-screen").classList.remove("hidden");
 resetSingle();
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function drawSingle(){
@@ -323,12 +473,14 @@ function resetSingle(){
 let card=document.getElementById("single-card");
 card.src="card back.jpg";
 card.onclick=function(){ drawSingle(); };
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function showThree(){
 hideAll();
 document.getElementById("three-screen").classList.remove("hidden");
 resetThree();
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function drawThree(cardId){
@@ -353,6 +505,8 @@ document.getElementById("future").src="card back.jpg";
 document.getElementById("past").onclick=function(){ drawThree('past'); };
 document.getElementById("present").onclick=function(){ drawThree('present'); };
 document.getElementById("future").onclick=function(){ drawThree('future'); };
+
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function showDaily(){
@@ -384,6 +538,7 @@ let daily=document.getElementById("daily-card");
 daily.src=cards[index];
 addGlow(daily);
 
+window.scrollTo({top:0, behavior:"smooth"});
 }
 
 </script>
