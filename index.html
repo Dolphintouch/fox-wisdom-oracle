@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-
 body{
 font-family: Georgia, serif;
 text-align:center;
 background-image:
-linear-gradient(rgba(16,22,16,0.55), rgba(16,22,16,0.7)),
+linear-gradient(rgba(16,22,16,0.55), rgba(16,22,16,0.72)),
 url("forest-bg.jpg");
 background-size:cover;
 background-position:center;
@@ -140,9 +139,65 @@ box-shadow:0 8px 18px rgba(0,0,0,0.3);
 margin-top:16px;
 }
 
-.card{
+.card-area{
+position:relative;
+display:flex;
+justify-content:center;
+align-items:center;
+margin-top:20px;
+margin-bottom:10px;
+min-height:360px;
+}
+
+.mist{
+position:absolute;
+width:420px;
+height:420px;
+max-width:90vw;
+border-radius:50%;
+background:
+radial-gradient(circle,
+rgba(255,245,210,0.20) 0%,
+rgba(180,255,235,0.10) 25%,
+rgba(255,215,120,0.10) 40%,
+rgba(255,255,255,0.00) 70%);
+filter:blur(24px);
+opacity:0;
+pointer-events:none;
+z-index:0;
+}
+
+.mist.show{
+animation:mistPulse 1.8s ease;
+}
+
+@keyframes mistPulse{
+0%{opacity:0; transform:scale(0.75);}
+30%{opacity:1;}
+100%{opacity:0; transform:scale(1.18);}
+}
+
+.card-stack{
+position:relative;
 width:340px;
-max-width:94%;
+max-width:94vw;
+height:520px;
+display:flex;
+justify-content:center;
+align-items:center;
+perspective:1200px;
+}
+
+.card-stack.small{
+width:240px;
+height:360px;
+max-width:86vw;
+}
+
+.card{
+position:absolute;
+width:340px;
+max-width:94vw;
 border-radius:14px;
 box-shadow:
 0 8px 22px rgba(0,0,0,0.38),
@@ -150,18 +205,20 @@ box-shadow:
 cursor:pointer;
 transition:transform 0.3s ease, box-shadow 0.3s ease;
 background:rgba(255,255,255,0.02);
-}
-
-.card:hover{
-transform:scale(1.03);
-box-shadow:
-0 10px 24px rgba(0,0,0,0.42),
-0 0 24px rgba(255,220,120,0.12);
+backface-visibility:hidden;
+transform-style:preserve-3d;
+z-index:2;
 }
 
 .small-card{
-width:250px;
+width:240px;
 max-width:86vw;
+}
+
+.card:hover{
+box-shadow:
+0 10px 24px rgba(0,0,0,0.42),
+0 0 24px rgba(255,220,120,0.12);
 }
 
 .card-row{
@@ -170,7 +227,7 @@ justify-content:center;
 align-items:flex-start;
 gap:18px;
 flex-wrap:wrap;
-margin-top:20px;
+margin-top:16px;
 margin-bottom:10px;
 }
 
@@ -182,21 +239,43 @@ color:#f0d890;
 text-shadow:0 2px 6px rgba(0,0,0,0.35);
 }
 
-.shuffle{
-animation:shuffle 0.7s ease 3;
+.stack-card{
+position:absolute;
+top:0;
+left:0;
+right:0;
+margin:auto;
+}
+
+.stack-1{ transform:translateX(-10px) rotate(-4deg); }
+.stack-2{ transform:translateX(0px) rotate(0deg); }
+.stack-3{ transform:translateX(10px) rotate(4deg); }
+
+.deck-shuffle{
+animation:deckShuffle 0.9s ease;
+}
+
+@keyframes deckShuffle{
+0%{transform:translateX(0) rotate(0deg) scale(1);}
+20%{transform:translateX(-24px) rotate(-8deg) scale(1.02);}
+40%{transform:translateX(22px) rotate(7deg) scale(1.03);}
+60%{transform:translateX(-15px) rotate(-5deg) scale(1.02);}
+80%{transform:translateX(12px) rotate(4deg) scale(1.01);}
+100%{transform:translateX(0) rotate(0deg) scale(1);}
+}
+
+.flip{
+animation:flipCard 0.8s ease;
+}
+
+@keyframes flipCard{
+0%{transform:rotateY(0deg) scale(1);}
+50%{transform:rotateY(90deg) scale(1.03);}
+100%{transform:rotateY(0deg) scale(1);}
 }
 
 .glow{
 animation:goldglow 1.6s ease;
-}
-
-@keyframes shuffle{
-0%{transform:translateX(0) rotate(0deg) scale(1);}
-20%{transform:translateX(-15px) rotate(-5deg) scale(1.02);}
-40%{transform:translateX(15px) rotate(5deg) scale(1.03);}
-60%{transform:translateX(-10px) rotate(-3deg) scale(1.02);}
-80%{transform:translateX(8px) rotate(3deg) scale(1.01);}
-100%{transform:translateX(0) rotate(0deg) scale(1);}
 }
 
 @keyframes goldglow{
@@ -212,6 +291,10 @@ box-shadow:
 100%{
 box-shadow:0 8px 22px rgba(0,0,0,0.38);
 }
+}
+
+.share-row{
+margin-top:12px;
 }
 
 #daily-date{
@@ -247,6 +330,16 @@ margin:6px auto;
 display:block;
 }
 
+.card-stack{
+width:92vw;
+height:480px;
+}
+
+.card-stack.small{
+width:92vw;
+height:420px;
+}
+
 .card{
 width:92vw;
 max-width:420px;
@@ -271,11 +364,11 @@ margin-bottom:6px;
 }
 
 .foxfire{
-display:none;
+width:8px;
+height:8px;
+opacity:0.6;
 }
-
 }
-
 </style>
 
 </head>
@@ -292,7 +385,6 @@ display:none;
 <div class="page">
 
 <div id="home-screen" class="panel">
-
 <h1>Fox Wisdom Oracle</h1>
 
 <img src="fox-home.jpg" class="home-image" alt="Fox Wisdom Oracle">
@@ -307,84 +399,119 @@ Choose the reading that calls to you.
 <button class="button" onclick="showSingle()">Single Card</button>
 <button class="button" onclick="showThree()">Three Card Spread</button>
 <button class="button" onclick="showDaily()">Daily Fox Message</button>
+<button class="button" onclick="toggleSound()">Forest Sound On / Off</button>
 </div>
-
 </div>
 
 <div id="single-screen" class="hidden panel">
-
 <h1>Single Card Reading</h1>
+<p>Tap the deck to shuffle and reveal your fox message.</p>
 
-<p>Tap the card to reveal your fox message.</p>
+<div class="card-area">
+<div id="single-mist" class="mist"></div>
+<div id="single-stack" class="card-stack">
+<img id="single-c1" class="card stack-card stack-1" src="card back.jpg" alt="">
+<img id="single-c2" class="card stack-card stack-2" src="card back.jpg" alt="">
+<img id="single-c3" class="card stack-card stack-3" src="card back.jpg" alt="" onclick="drawSingle()">
+</div>
+</div>
 
-<div class="card-row">
-<img id="single-card" class="card" src="card back.jpg" onclick="drawSingle()">
+<div class="share-row">
+<button class="button" onclick="shareCard('single')">Share This Card</button>
 </div>
 
 <div class="button-row">
 <button class="button" onclick="resetSingle()">Shuffle Again</button>
 <button class="button" onclick="goHome()">Back</button>
 </div>
-
 </div>
 
 <div id="three-screen" class="hidden panel">
-
 <h1>Three Card Spread</h1>
-
-<p>Tap each card to reveal your message.</p>
+<p>Tap each deck to shuffle and reveal your message.</p>
 
 <div class="card-row">
 
 <div>
 <div class="label">Past</div>
-<img id="past" class="card small-card" src="card back.jpg" onclick="drawThree('past')">
+<div class="card-area" style="min-height:430px;">
+<div id="past-mist" class="mist"></div>
+<div id="past-stack" class="card-stack small">
+<img id="past-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
+<img id="past-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
+<img id="past-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('past')">
+</div>
+</div>
 </div>
 
 <div>
 <div class="label">Present</div>
-<img id="present" class="card small-card" src="card back.jpg" onclick="drawThree('present')">
+<div class="card-area" style="min-height:430px;">
+<div id="present-mist" class="mist"></div>
+<div id="present-stack" class="card-stack small">
+<img id="present-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
+<img id="present-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
+<img id="present-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('present')">
+</div>
+</div>
 </div>
 
 <div>
 <div class="label">Future</div>
-<img id="future" class="card small-card" src="card back.jpg" onclick="drawThree('future')">
+<div class="card-area" style="min-height:430px;">
+<div id="future-mist" class="mist"></div>
+<div id="future-stack" class="card-stack small">
+<img id="future-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
+<img id="future-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
+<img id="future-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('future')">
+</div>
+</div>
 </div>
 
+</div>
+
+<div class="share-row">
+<button class="button" onclick="shareCard('past')">Share Past</button>
+<button class="button" onclick="shareCard('present')">Share Present</button>
+<button class="button" onclick="shareCard('future')">Share Future</button>
 </div>
 
 <div class="button-row">
 <button class="button" onclick="resetThree()">Shuffle Again</button>
 <button class="button" onclick="goHome()">Back</button>
 </div>
-
 </div>
 
 <div id="daily-screen" class="hidden panel">
-
 <h1>Daily Fox Message</h1>
-
 <p>Your fox message for today.</p>
-
 <div id="daily-date"></div>
 
-<div class="card-row">
-<img id="daily-card" class="card">
+<div class="card-area">
+<div id="daily-mist" class="mist"></div>
+<div class="card-stack">
+<img id="daily-card" class="card" src="" alt="">
+</div>
+</div>
+
+<div class="share-row">
+<button class="button" onclick="shareCard('daily')">Share Daily Card</button>
 </div>
 
 <div class="button-row">
 <button class="button" onclick="showDaily()">Refresh</button>
 <button class="button" onclick="goHome()">Back</button>
 </div>
-
 </div>
 
 </div>
+
+<audio id="forest-audio" loop>
+  <source src="forest.mp3.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-
 var cards = [
-
 "autumn wisdom.jpg",
 "crossing paths.jpg",
 "dancing shadows.jpg",
@@ -417,8 +544,13 @@ var cards = [
 "the wandering fox.jpg",
 "watcher.jpg",
 "the listening hollow.jpg"
-
 ];
+
+var currentSingleCard = "";
+var currentPastCard = "";
+var currentPresentCard = "";
+var currentFutureCard = "";
+var currentDailyCard = "";
 
 function randomCard(){
 return cards[Math.floor(Math.random()*cards.length)];
@@ -437,42 +569,66 @@ document.getElementById("home-screen").classList.remove("hidden");
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function addShuffle(card){
-card.classList.remove("shuffle");
-void card.offsetWidth;
-card.classList.add("shuffle");
+function addClassAgain(el, className){
+el.classList.remove(className);
+void el.offsetWidth;
+el.classList.add(className);
 }
 
-function addGlow(card){
-card.classList.remove("glow");
-void card.offsetWidth;
-card.classList.add("glow");
+function showMist(id){
+var mist = document.getElementById(id);
+addClassAgain(mist, "show");
+}
+
+function startForestSound(){
+var audio = document.getElementById("forest-audio");
+audio.volume = 0.15;
+audio.play().catch(function(){});
+}
+
+function toggleSound(){
+var audio = document.getElementById("forest-audio");
+if(audio.paused){
+audio.volume = 0.15;
+audio.play().catch(function(){});
+} else {
+audio.pause();
+}
 }
 
 function showSingle(){
 hideAll();
 document.getElementById("single-screen").classList.remove("hidden");
 resetSingle();
+startForestSound();
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function drawSingle(){
+var stack = document.getElementById("single-stack");
+var topCard = document.getElementById("single-c3");
 
-let card=document.getElementById("single-card");
-
-addShuffle(card);
+addClassAgain(stack, "deck-shuffle");
 
 setTimeout(function(){
-card.src=randomCard();
-addGlow(card);
-},800);
+addClassAgain(topCard, "flip");
+}, 500);
 
+setTimeout(function(){
+currentSingleCard = randomCard();
+topCard.src = currentSingleCard;
+addClassAgain(topCard, "glow");
+showMist("single-mist");
+topCard.onclick = null;
+}, 850);
 }
 
 function resetSingle(){
-let card=document.getElementById("single-card");
-card.src="card back.jpg";
-card.onclick=function(){ drawSingle(); };
+document.getElementById("single-c1").src = "card back.jpg";
+document.getElementById("single-c2").src = "card back.jpg";
+document.getElementById("single-c3").src = "card back.jpg";
+document.getElementById("single-c3").onclick = function(){ drawSingle(); };
+currentSingleCard = "";
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -480,42 +636,66 @@ function showThree(){
 hideAll();
 document.getElementById("three-screen").classList.remove("hidden");
 resetThree();
+startForestSound();
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function drawThree(cardId){
+function drawThree(which){
+var stack = document.getElementById(which + "-stack");
+var topCard = document.getElementById(which + "-c3");
 
-let card=document.getElementById(cardId);
-
-addShuffle(card);
+addClassAgain(stack, "deck-shuffle");
 
 setTimeout(function(){
-card.src=randomCard();
-addGlow(card);
-card.onclick=null;
-},800);
+addClassAgain(topCard, "flip");
+}, 500);
 
+setTimeout(function(){
+var chosen = randomCard();
+topCard.src = chosen;
+addClassAgain(topCard, "glow");
+showMist(which + "-mist");
+topCard.onclick = null;
+
+if(which === "past"){ currentPastCard = chosen; }
+if(which === "present"){ currentPresentCard = chosen; }
+if(which === "future"){ currentFutureCard = chosen; }
+
+}, 850);
 }
 
 function resetThree(){
-document.getElementById("past").src="card back.jpg";
-document.getElementById("present").src="card back.jpg";
-document.getElementById("future").src="card back.jpg";
+["past","present","future"].forEach(function(which){
+document.getElementById(which + "-c1").src = "card back.jpg";
+document.getElementById(which + "-c2").src = "card back.jpg";
+document.getElementById(which + "-c3").src = "card back.jpg";
+document.getElementById(which + "-c3").onclick = function(){ drawThree(which); };
+});
 
-document.getElementById("past").onclick=function(){ drawThree('past'); };
-document.getElementById("present").onclick=function(){ drawThree('present'); };
-document.getElementById("future").onclick=function(){ drawThree('future'); };
-
+currentPastCard = "";
+currentPresentCard = "";
+currentFutureCard = "";
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function showDaily(){
+function getDailyCard(){
+var now = new Date();
+var key = now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
+var hash = 0;
 
+for(var i=0;i<key.length;i++){
+hash = key.charCodeAt(i) + ((hash << 5) - hash);
+}
+
+var index = Math.abs(hash) % cards.length;
+return cards[index];
+}
+
+function showDaily(){
 hideAll();
 document.getElementById("daily-screen").classList.remove("hidden");
 
-var today=new Date();
-
+var today = new Date();
 document.getElementById("daily-date").textContent =
 today.toLocaleDateString(undefined, {
 weekday:"long",
@@ -524,23 +704,47 @@ month:"long",
 day:"numeric"
 });
 
-var key=today.getFullYear()+""+today.getMonth()+""+today.getDate();
-
-var hash=0;
-
-for(var i=0;i<key.length;i++){
-hash=key.charCodeAt(i)+((hash<<5)-hash);
-}
-
-var index=Math.abs(hash)%cards.length;
-
-let daily=document.getElementById("daily-card");
-daily.src=cards[index];
-addGlow(daily);
-
+currentDailyCard = getDailyCard();
+var daily = document.getElementById("daily-card");
+daily.src = currentDailyCard;
+addClassAgain(daily, "glow");
+showMist("daily-mist");
+startForestSound();
 window.scrollTo({top:0, behavior:"smooth"});
 }
 
+function getShareCard(type){
+if(type === "single"){ return currentSingleCard; }
+if(type === "past"){ return currentPastCard; }
+if(type === "present"){ return currentPresentCard; }
+if(type === "future"){ return currentFutureCard; }
+if(type === "daily"){ return currentDailyCard; }
+return "";
+}
+
+function shareCard(type){
+var chosen = getShareCard(type);
+if(!chosen){
+alert("Draw a card first.");
+return;
+}
+
+var cleanName = chosen.replace(".jpg","").replace(/1$/,"");
+var shareText = "My Fox Wisdom Oracle card: " + cleanName;
+var shareUrl = window.location.href;
+
+if(navigator.share){
+navigator.share({
+title:"Fox Wisdom Oracle",
+text:shareText,
+url:shareUrl
+}).catch(function(){});
+return;
+}
+
+var pinterestUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(shareUrl) + "&description=" + encodeURIComponent(shareText);
+window.open(pinterestUrl, "_blank");
+}
 </script>
 
 </body>
