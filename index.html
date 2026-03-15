@@ -1,110 +1,359 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>Fox Wisdom Oracle</title>
+  <title>Fox Wisdom Oracle</title>
+  <style>
+    body{
+      font-family: Georgia, serif;
+      text-align:center;
+      background:#f5e6c8;
+      padding:30px;
+      margin:0;
+    }
 
-<style>
+    h1{
+      margin-bottom:10px;
+    }
 
-body{
-font-family: Georgia;
-text-align:center;
-background:#f5e6c8;
-padding:40px;
-}
+    p{
+      font-size:18px;
+      line-height:1.5;
+    }
 
-h1{
-margin-bottom:10px;
-}
+    .hidden{
+      display:none;
+    }
 
-p{
-font-size:18px;
-}
+    .home-image{
+      width:360px;
+      max-width:90%;
+      margin-top:20px;
+      border-radius:14px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    }
 
-button{
-font-size:22px;
-padding:15px 30px;
-margin-top:20px;
-cursor:pointer;
-}
+    .button{
+      font-size:20px;
+      padding:14px 24px;
+      margin:10px;
+      cursor:pointer;
+      border:none;
+      border-radius:10px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.2);
+      background:#fff7ea;
+      font-family: Georgia, serif;
+    }
 
-img{
-margin-top:30px;
-max-width:90%;
-max-height:80vh;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
-}
+    .button:hover{
+      transform:scale(1.03);
+    }
 
-</style>
+    .card-row{
+      display:flex;
+      justify-content:center;
+      gap:25px;
+      flex-wrap:wrap;
+      margin-top:25px;
+      margin-bottom:30px;
+    }
 
+    .card-slot{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+
+    .label{
+      font-size:20px;
+      font-weight:bold;
+    }
+
+    .card{
+      width:280px;
+      max-width:85vw;
+      border-radius:12px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.25);
+      cursor:pointer;
+      transition:transform 0.25s ease, opacity 0.25s ease;
+      transform-style:preserve-3d;
+    }
+
+    .card:hover{
+      transform:scale(1.03);
+    }
+
+    .small-card{
+      width:220px;
+      max-width:28vw;
+    }
+
+    .shuffle{
+      animation:shufflePulse 0.5s ease 3;
+    }
+
+    .flip{
+      animation:flipCard 0.7s ease;
+    }
+
+    @keyframes shufflePulse{
+      0%{ transform:translateX(0px) rotate(0deg); }
+      25%{ transform:translateX(-8px) rotate(-3deg); }
+      50%{ transform:translateX(8px) rotate(3deg); }
+      75%{ transform:translateX(-5px) rotate(-2deg); }
+      100%{ transform:translateX(0px) rotate(0deg); }
+    }
+
+    @keyframes flipCard{
+      0%{ transform:rotateY(0deg); }
+      50%{ transform:rotateY(90deg); }
+      100%{ transform:rotateY(0deg); }
+    }
+
+    .top-space{
+      margin-top:20px;
+    }
+
+    #daily-date{
+      font-size:16px;
+      margin-top:10px;
+      color:#444;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>Fox Wisdom Oracle</h1>
+  <div id="home-screen">
+    <h1>Fox Wisdom Oracle</h1>
 
-<p>
-Pause for a moment.<br>
-Ask your question.<br>
-Tap below and allow the fox to reveal your message.
-</p>
+    <img src="fox-home.jpg" class="home-image" alt="Fox Wisdom Oracle">
 
-<button onclick="drawCard()">Draw a Card</button>
+    <p>
+      Pause for a moment.<br>
+      Ask your question.<br>
+      Choose the reading that calls to you.
+    </p>
 
-<br><br>
+    <div class="top-space">
+      <button class="button" onclick="showSingleReading()">Single Card Pull</button>
+      <button class="button" onclick="showThreeReading()">Three Card Spread</button>
+      <button class="button" onclick="showDailyReading()">Daily Fox Message</button>
+    </div>
+  </div>
 
-<img id="card" src="">
+  <div id="single-screen" class="hidden">
+    <h1>Single Card Pull</h1>
+    <p>Tap the card to reveal your fox message.</p>
 
-<script>
+    <div class="card-row">
+      <img id="single-back" class="card" src="card back.jpg" alt="Card Back" onclick="drawSingleCard()">
+    </div>
 
-var cards = [
+    <div class="top-space">
+      <button class="button" onclick="resetSingle()">Shuffle & Draw Again</button>
+      <button class="button" onclick="goHome()">Back to Readings</button>
+    </div>
+  </div>
 
-"autumn wisdom.jpg",
-"crossing paths.jpg",
-"dancing shadows.jpg",
-"ember eyes.jpg",
-"fern shadows.jpg",
-"forest instinct.jpg",
-"forest secrets.jpg",
-"fox fire.jpg",
-"gentle cunning.jpg",
-"hidden path.jpg",
-"hidden shelter.jpg",
-"moonlight trail.jpg",
-"moonlit watch.jpg",
-"morning tracks.jpg",
-"quiet observation.jpg",
-"quiet territory.jpg",
-"rustling leaves.jpg",
-"silent steps1.jpg",
-"the clever escape.jpg",
-"the clever plan.jpg",
-"the forest edge.jpg",
-"the guiding paw.jpg",
-"the hidden den.jpg",
-"the old trail.jpg",
-"the patient hunter.jpg",
-"the returning path.jpg",
-"the silent clearing.jpg",
-"the turning season.jpg",
-"the twilight path.jpg",
-"the wandering fox.jpg",
-"watcher.jpg",
-"the listening hollow.jpg"
+  <div id="three-screen" class="hidden">
+    <h1>Three Card Spread</h1>
+    <p>Tap each card to reveal your Past, Present, and Future guidance.</p>
 
-];
+    <div class="card-row">
+      <div class="card-slot">
+        <div class="label">Past</div>
+        <img id="past-card" class="card small-card" src="card back.jpg" alt="Past Card" onclick="drawThreeCard('past-card')">
+      </div>
 
-function drawCard(){
+      <div class="card-slot">
+        <div class="label">Present</div>
+        <img id="present-card" class="card small-card" src="card back.jpg" alt="Present Card" onclick="drawThreeCard('present-card')">
+      </div>
 
-var random = Math.floor(Math.random() * cards.length);
+      <div class="card-slot">
+        <div class="label">Future</div>
+        <img id="future-card" class="card small-card" src="card back.jpg" alt="Future Card" onclick="drawThreeCard('future-card')">
+      </div>
+    </div>
 
-document.getElementById("card").src = cards[random];
+    <div class="top-space">
+      <button class="button" onclick="resetThree()">Shuffle & Draw Again</button>
+      <button class="button" onclick="goHome()">Back to Readings</button>
+    </div>
+  </div>
 
-}
+  <div id="daily-screen" class="hidden">
+    <h1>Daily Fox Message</h1>
+    <p>Your fox message for today.</p>
+    <div id="daily-date"></div>
 
-</script>
+    <div class="card-row">
+      <img id="daily-card" class="card" src="" alt="Daily Fox Card">
+    </div>
+
+    <div class="top-space">
+      <button class="button" onclick="showDailyReading()">Refresh Daily Message</button>
+      <button class="button" onclick="goHome()">Back to Readings</button>
+    </div>
+  </div>
+
+  <script>
+    var cardBack = "card back.jpg";
+
+    var cards = [
+      "autumn wisdom.jpg",
+      "crossing paths.jpg",
+      "dancing shadows.jpg",
+      "ember eyes.jpg",
+      "fern shadows.jpg",
+      "forest instinct.jpg",
+      "forest secrets.jpg",
+      "fox fire.jpg",
+      "gentle cunning.jpg",
+      "hidden path.jpg",
+      "hidden shelter.jpg",
+      "moonlight trail.jpg",
+      "moonlit watch.jpg",
+      "morning tracks.jpg",
+      "quiet observation.jpg",
+      "quiet territory.jpg",
+      "rustling leaves.jpg",
+      "silent steps1.jpg",
+      "the clever escape.jpg",
+      "the clever plan.jpg",
+      "the forest edge.jpg",
+      "the guiding paw.jpg",
+      "the hidden den.jpg",
+      "the old trail.jpg",
+      "the patient hunter.jpg",
+      "the returning path.jpg",
+      "the silent clearing.jpg",
+      "the turning season.jpg",
+      "the twilight path.jpg",
+      "the wandering fox.jpg",
+      "watcher.jpg",
+      "the listening hollow.jpg"
+    ];
+
+    function getRandomCard() {
+      var random = Math.floor(Math.random() * cards.length);
+      return cards[random];
+    }
+
+    function hideAllScreens() {
+      document.getElementById("home-screen").classList.add("hidden");
+      document.getElementById("single-screen").classList.add("hidden");
+      document.getElementById("three-screen").classList.add("hidden");
+      document.getElementById("daily-screen").classList.add("hidden");
+    }
+
+    function goHome() {
+      hideAllScreens();
+      document.getElementById("home-screen").classList.remove("hidden");
+    }
+
+    function addShuffle(el) {
+      el.classList.remove("shuffle");
+      void el.offsetWidth;
+      el.classList.add("shuffle");
+    }
+
+    function addFlip(el) {
+      el.classList.remove("flip");
+      void el.offsetWidth;
+      el.classList.add("flip");
+    }
+
+    function showSingleReading() {
+      hideAllScreens();
+      document.getElementById("single-screen").classList.remove("hidden");
+      resetSingle();
+    }
+
+    function drawSingleCard() {
+      var card = document.getElementById("single-back");
+      addFlip(card);
+
+      setTimeout(function(){
+        card.src = getRandomCard();
+        card.onclick = null;
+      }, 300);
+    }
+
+    function resetSingle() {
+      var card = document.getElementById("single-back");
+      card.src = cardBack;
+      card.onclick = function(){ drawSingleCard(); };
+      addShuffle(card);
+    }
+
+    function showThreeReading() {
+      hideAllScreens();
+      document.getElementById("three-screen").classList.remove("hidden");
+      resetThree();
+    }
+
+    function drawThreeCard(cardId) {
+      var chosenCard = getRandomCard();
+      var card = document.getElementById(cardId);
+
+      addFlip(card);
+
+      setTimeout(function(){
+        card.src = chosenCard;
+        card.onclick = null;
+      }, 300);
+    }
+
+    function resetThree() {
+      var past = document.getElementById("past-card");
+      var present = document.getElementById("present-card");
+      var future = document.getElementById("future-card");
+
+      past.src = cardBack;
+      present.src = cardBack;
+      future.src = cardBack;
+
+      past.onclick = function(){ drawThreeCard('past-card'); };
+      present.onclick = function(){ drawThreeCard('present-card'); };
+      future.onclick = function(){ drawThreeCard('future-card'); };
+
+      addShuffle(past);
+      addShuffle(present);
+      addShuffle(future);
+    }
+
+    function getDailyCard() {
+      var today = new Date();
+      var key = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+
+      var hash = 0;
+      for (var i = 0; i < key.length; i++) {
+        hash = key.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      var index = Math.abs(hash) % cards.length;
+      return cards[index];
+    }
+
+    function showDailyReading() {
+      hideAllScreens();
+      document.getElementById("daily-screen").classList.remove("hidden");
+
+      var today = new Date();
+      var prettyDate = today.toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+      document.getElementById("daily-date").textContent = prettyDate;
+
+      var dailyCard = document.getElementById("daily-card");
+      dailyCard.src = getDailyCard();
+    }
+  </script>
 
 </body>
-
 </html>
