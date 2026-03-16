@@ -72,12 +72,8 @@
         transform:translateY(0) translateX(0) scale(0.8);
         opacity:0;
       }
-      20%{
-        opacity:0.75;
-      }
-      70%{
-        opacity:0.85;
-      }
+      20%{ opacity:0.75; }
+      70%{ opacity:0.85; }
       100%{
         transform:translateY(-220px) translateX(24px) scale(1.25);
         opacity:0;
@@ -246,7 +242,7 @@
       justify-content:center;
       gap:10px;
       margin:20px auto 28px;
-      max-width:900px;
+      max-width:950px;
     }
 
     button{
@@ -259,7 +255,7 @@
       font-size:1rem;
       cursor:pointer;
       box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
-      transition:transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
     }
 
     button:hover{
@@ -346,9 +342,7 @@
         opacity:0;
         transform:translateY(0) rotate(0deg) scale(0.7);
       }
-      20%{
-        opacity:0.9;
-      }
+      20%{ opacity:0.9; }
       50%{
         opacity:0.95;
         transform:translateY(-2px) rotate(26deg) scale(1);
@@ -380,12 +374,8 @@
         opacity:0;
         transform:scale(0.6) rotate(-8deg);
       }
-      18%{
-        opacity:0.9;
-      }
-      70%{
-        opacity:0.75;
-      }
+      18%{ opacity:0.9; }
+      70%{ opacity:0.75; }
       100%{
         opacity:0;
         transform:scale(1.1) rotate(2deg);
@@ -596,6 +586,7 @@
       <button onclick="startReading('daily')">Daily Fox Message</button>
       <button onclick="startReading('hidden')">Three Card Spread</button>
       <button onclick="startReading('cross')">Ancient Forest Woodland Cross</button>
+      <button onclick="window.location.href='guidebook.html'">Fox Guidebook</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
     </div>
 
