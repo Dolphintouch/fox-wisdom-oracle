@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fox Wisdom Guidebook</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:Georgia, serif;
+      text-align:center;
+      background-image:
+        linear-gradient(rgba(16,22,16,0.60), rgba(16,22,16,0.82)),
+        url("forest-bg.jpg");
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
+      color:#f5e9c8;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
+      padding:20px 14px 50px;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,220,140,0.06), transparent 20%),
+        radial-gradient(circle at 80% 25%, rgba(255,230,170,0.05), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(255,240,190,0.04), transparent 24%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .page-wrap{
+      position:relative;
+      z-index:2;
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    h1{
+      margin:8px 0 10px;
+      font-size:clamp(2rem, 5vw, 3.6rem);
+      color:#f2dfcb;
+      text-shadow:0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    .intro{
+      max-width:760px;
+      margin:0 auto 20px;
+      line-height:1.7;
+      font-size:1.08rem;
+      color:#f6ead8;
+      text-shadow:0 1px 4px rgba(0,0,0,0.35);
+    }
+
+    .book-area{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:14px;
+      margin:20px auto;
+      flex-wrap:wrap;
+    }
+
+    .book-shell{
+      position:relative;
+      width:min(90vw, 900px);
+      height:min(68vw, 620px);
+      min-height:460px;
+      perspective:1800px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .book-glow{
+      position:absolute;
+      width:85%;
+      height:85%;
+      border-radius:24px;
+      background:radial-gradient(circle, rgba(255,223,160,0.18) 0%, rgba(255,223,160,0.06) 40%, transparent 72%);
+      filter:blur(24px);
+      animation:glowPulse 6s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    @keyframes glowPulse{
+      0%{
+        opacity:0.45;
+        transform:scale(0.96);
+      }
+      50%{
+        opacity:0.85;
+        transform:scale(1.03);
+      }
+      100%{
+        opacity:0.45;
+        transform:scale(0.96);
+      }
+    }
+
+    .book{
+      position:relative;
+      width:min(78vw, 760px);
+      height:min(56vw, 540px);
+      min-height:420px;
+      transform-style:preserve-3d;
+    }
+
+    .page{
+      position:absolute;
+      inset:0;
+      transform-origin:left center;
+      transform-style:preserve-3d;
+      transition:transform 0.9s ease;
+      cursor:pointer;
+    }
+
+    .page.flipped{
+      transform:rotateY(-180deg);
+    }
+
+    .page-face{
+      position:absolute;
+      inset:0;
+      border-radius:16px;
+      overflow:hidden;
+      backface-visibility:hidden;
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(255,255,255,0.08);
+      background:#1e1b16;
+    }
+
+    .page-front{
+      transform:rotateY(0deg);
+    }
+
+    .page-back{
+      transform:rotateY(180deg);
+    }
+
+    .page-face img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      background:rgba(0,0,0,0.15);
+    }
+
+    .controls{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+
+    button{
+      border:none;
+      padding:13px 20px;
+      border-radius:999px;
+      background:linear-gradient(to bottom, #c99278, #b77d64);
+      color:#fff4eb;
+      font-family:Georgia, serif;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
+    }
+
+    .page-count{
+      margin-top:14px;
+      color:#f3e4d0;
+      font-size:1rem;
+      text-shadow:0 1px 3px rgba(0,0,0,0.35);
+    }
+
+    .tip{
+      margin-top:10px;
+      color:#ead8c8;
+      font-size:0.96rem;
+      opacity:0.95;
+    }
+
+    @media (max-width:800px){
+      .book-shell{
+        height:72vw;
+        min-height:380px;
+      }
+
+      .book{
+        height:60vw;
+        min-height:340px;
+      }
+
+      .page-face img{
+        object-fit:contain;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrap">
+    <h1>Fox Wisdom Guidebook</h1>
+
+    <div class="intro">
+      Turn the pages like a woodland grimoire and step softly into the wisdom of the fox.
+    </div>
+
+    <div class="book-area">
+      <div class="book-shell">
+        <div class="book-glow"></div>
+
+        <div class="book" id="book">
+          <!-- Pages are inserted by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="prevPage()">Previous Page</button>
+      <button onclick="nextPage()">Next Page</button>
+      <button onclick="window.location.href='index.html'">Return to Oracle</button>
+    </div>
+
+    <div class="page-count" id="pageCount">Page 1 of 5</div>
+    <div class="tip">Tip: Click a page or use the buttons to turn through the guidebook.</div>
+  </div>
+
+  <script>
+    const pages = [
+      "fox_guidebook_page_1.jpg",
+      "fox_guidebook_page_2.jpg",
+      "fox_guidebook_page_3.jpg",
+      "fox_guidebook_page_4.jpg",
+      "fox_guidebook_page_5.jpg"
+    ];
+
+    let currentPage = 0;
+    const book = document.getElementById("book");
+    const pageCount = document.getElementById("pageCount");
+
+    function buildBook() {
+      book.innerHTML = "";
+
+      for (let i = pages.length - 1; i >= 0; i--) {
+        const page = document.createElement("div");
+        page.className = "page";
+        page.dataset.index = i;
+        page.style.zIndex = pages.length - i;
+
+        page.innerHTML = `
+          <div class="page-face page-front">
+            <img src="${pages[i]}" alt="Guidebook page ${i + 1}">
+          </div>
+          <div class="page-face page-back">
+            <img src="${pages[i]}" alt="Guidebook page ${i + 1}">
+          </div>
+        `;
+
+        page.addEventListener("click", () => {
+          const index = Number(page.dataset.index);
+          if (index === currentPage) {
+            nextPage();
+          } else if (index === currentPage - 1) {
+            prevPage();
+          }
+        });
+
+        book.appendChild(page);
+      }
+
+      updateBook();
+    }
+
+    function updateBook() {
+      const allPages = [...document.querySelectorAll(".page")];
+
+      allPages.forEach((page) => {
+        const index = Number(page.dataset.index);
+        if (index < currentPage) {
+          page.classList.add("flipped");
+        } else {
+          page.classList.remove("flipped");
+        }
+      });
+
+      const visiblePage = Math.min(currentPage + 1, pages.length);
+      pageCount.textContent = `Page ${visiblePage} of ${pages.length}`;
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length) {
+        currentPage++;
+        updateBook();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        updateBook();
+      }
+    }
+
+    buildBook();
+  </script>
+
+</body>
+</html>
