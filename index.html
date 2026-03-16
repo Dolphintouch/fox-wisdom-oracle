@@ -87,7 +87,7 @@
     .page-wrap{
       position:relative;
       z-index:2;
-      max-width:1200px;
+      max-width:1100px;
       margin:0 auto;
       padding-bottom:50px;
     }
@@ -170,132 +170,141 @@
       }
     }
 
-    .oracle-panel-wrap{
+    .blessing{
+      max-width:760px;
+      margin:0 auto 18px;
+      color:#f6ead8;
+      font-size:clamp(1rem, 2vw, 1.25rem);
+      line-height:1.8;
+      text-shadow:0 1px 4px rgba(0,0,0,0.38);
+    }
+
+    .welcome-card-wrap{
       position:relative;
       display:flex;
       justify-content:center;
       align-items:center;
-      margin:8px auto 24px;
-      min-height:650px;
+      margin:6px auto 20px;
+      min-height:470px;
     }
 
-    .panel-mist{
+    .welcome-mist{
       position:absolute;
-      width:520px;
-      height:520px;
+      width:440px;
+      height:440px;
       border-radius:50%;
       background:
         radial-gradient(circle, rgba(255,240,205,0.18) 0%, rgba(255,232,185,0.10) 28%, rgba(255,225,165,0.04) 48%, transparent 72%);
-      filter:blur(48px);
+      filter:blur(46px);
       animation:mistGlow 7s ease-in-out infinite alternate;
-      opacity:0.56;
+      opacity:0.62;
       z-index:1;
       transition:opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
 
-    .panel-mist.active{
-      opacity:0.92;
+    .welcome-mist.active{
+      opacity:0.95;
       transform:scale(1.08);
-      filter:blur(56px);
+      filter:blur(54px);
     }
 
-    .oracle-panel{
+    .welcome-card{
       position:relative;
       z-index:2;
-      width:min(390px, 90vw);
-      max-width:390px;
-      border-radius:24px;
-      overflow:hidden;
+      width:min(310px, 78vw);
+      max-width:310px;
+      border-radius:20px;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,0.10),
-        0 16px 38px rgba(0,0,0,0.34),
-        0 0 28px rgba(255,220,150,0.10);
-      transition:transform 0.45s ease, box-shadow 0.45s ease, filter 0.45s ease;
-    }
-
-    .oracle-panel.active{
-      transform:scale(1.02);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.16),
-        0 22px 46px rgba(0,0,0,0.36),
-        0 0 48px rgba(255,225,165,0.24);
-      filter:brightness(1.04);
-    }
-
-    .panel-card-image{
-      display:block;
-      width:100%;
-      height:auto;
-    }
-
-    .panel-overlay{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-    }
-
-    .panel-buttons{
-      position:absolute;
-      left:0;
-      right:0;
-      top:35%;
-      display:flex;
-      justify-content:center;
-      gap:12px;
-      padding:0 16px;
-      flex-wrap:wrap;
-      z-index:3;
-    }
-
-    .panel-buttons button,
-    .extra-buttons button{
-      pointer-events:auto;
-      border:none;
-      padding:11px 16px;
-      border-radius:12px;
-      background:linear-gradient(to bottom, rgba(224,188,131,0.95), rgba(188,142,82,0.96));
-      color:#4a2d11;
-      font-family:Georgia, serif;
-      font-size:0.98rem;
-      line-height:1.15;
+        0 0 0 1px rgba(255,255,255,0.14),
+        0 14px 28px rgba(0,0,0,0.30),
+        0 0 30px rgba(255,223,160,0.14);
       cursor:pointer;
-      box-shadow:
-        0 4px 10px rgba(0,0,0,0.18),
-        inset 0 0 0 1px rgba(255,248,230,0.45);
-      transition:transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-      min-width:118px;
-      font-weight:bold;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        filter 0.35s ease;
+      filter:brightness(0.99);
+      animation:welcomePulse 4.6s ease-in-out infinite;
+      user-select:none;
+      -webkit-user-drag:none;
     }
 
-    .panel-buttons button:hover,
-    .extra-buttons button:hover{
-      transform:translateY(-2px);
+    .welcome-card:hover{
+      transform:translateY(-5px) scale(1.02);
       box-shadow:
-        0 6px 14px rgba(0,0,0,0.22),
-        inset 0 0 0 1px rgba(255,248,230,0.5);
+        0 0 0 1px rgba(255,255,255,0.18),
+        0 18px 36px rgba(0,0,0,0.32),
+        0 0 42px rgba(255,226,168,0.24);
       filter:brightness(1.04);
     }
 
-    .extra-buttons{
-      margin-top:18px;
+    .welcome-card.shuffling{
+      animation:deckShuffle 0.8s ease-in-out 3;
+    }
+
+    @keyframes welcomePulse{
+      0%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.14),
+          0 14px 28px rgba(0,0,0,0.30),
+          0 0 30px rgba(255,223,160,0.12);
+        transform:scale(1);
+      }
+      50%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.16),
+          0 18px 34px rgba(0,0,0,0.32),
+          0 0 42px rgba(255,226,168,0.22);
+        transform:scale(1.015);
+      }
+      100%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.14),
+          0 14px 28px rgba(0,0,0,0.30),
+          0 0 30px rgba(255,223,160,0.12);
+        transform:scale(1);
+      }
+    }
+
+    @keyframes deckShuffle{
+      0%{ transform:translateX(0) rotate(0deg) scale(1); }
+      20%{ transform:translateX(-14px) rotate(-4deg) scale(1.01); }
+      40%{ transform:translateX(14px) rotate(4deg) scale(1.01); }
+      60%{ transform:translateX(-10px) rotate(-3deg) scale(1.01); }
+      80%{ transform:translateX(10px) rotate(3deg) scale(1.01); }
+      100%{ transform:translateX(0) rotate(0deg) scale(1); }
+    }
+
+    .button-row{
       display:flex;
+      flex-wrap:wrap;
       justify-content:center;
       gap:10px;
-      flex-wrap:wrap;
+      margin:8px auto 24px;
+      max-width:900px;
     }
 
-    .sub-blessing{
-      max-width:760px;
-      margin:0 auto 10px;
-      color:#f6ead8;
-      font-size:clamp(1rem, 2vw, 1.2rem);
-      line-height:1.7;
-      text-shadow:0 1px 4px rgba(0,0,0,0.38);
+    button{
+      border:none;
+      padding:13px 20px;
+      border-radius:999px;
+      background:linear-gradient(to bottom, #c99278, #b77d64);
+      color:#fff4eb;
+      font-family:Georgia, serif;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
+      transition:transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
     }
 
     .reading-stage{
       position:relative;
-      margin-top:6px;
+      margin-top:4px;
     }
 
     .card-area{
@@ -525,24 +534,17 @@
         height:320px;
       }
 
-      .oracle-panel-wrap{
-        min-height:560px;
-      }
-
-      .panel-buttons{
-        top:35%;
-        gap:10px;
-      }
-
-      .panel-buttons button,
-      .extra-buttons button{
-        font-size:0.92rem;
-        min-width:108px;
-        padding:10px 12px;
+      .welcome-card-wrap{
+        min-height:400px;
       }
 
       .card-area{
         min-height:360px;
+      }
+
+      button{
+        width:100%;
+        max-width:360px;
       }
 
       .cards-grid{
@@ -582,25 +584,26 @@
       <img src="fox-home.jpg" class="hero-fox" alt="Fox Spirit of the Forest">
     </div>
 
-    <div class="oracle-panel-wrap">
-      <div id="panelMist" class="panel-mist"></div>
-
-      <div id="oraclePanel" class="oracle-panel">
-        <img src="fox-welcome-page.jpg" class="panel-card-image" alt="Fox Wisdom Oracle control card">
-        <div class="panel-overlay">
-          <div class="panel-buttons">
-            <button onclick="startReading('daily')">Single Card</button>
-            <button onclick="startReading('hidden')">Three Card Spread</button>
-          </div>
-        </div>
-      </div>
+    <div class="blessing">
+      Pause beneath the trees.<br>
+      Listen for what stirs in the quiet.<br>
+      When you are ready, choose your path.
     </div>
 
-    <div class="sub-blessing">
-      Pause for a moment. Ask your question. Choose your reading.
+    <div class="welcome-card-wrap">
+      <div id="welcomeMist" class="welcome-mist"></div>
+      <img
+        id="mainDeckCard"
+        class="welcome-card"
+        src="fox-welcome-page.jpg"
+        alt="Tap to draw your daily fox message"
+        onclick="drawDailyCardFromCard()"
+      >
     </div>
 
-    <div class="extra-buttons">
+    <div class="button-row">
+      <button onclick="startReading('daily')">Daily Fox Message</button>
+      <button onclick="startReading('hidden')">Three Card Spread</button>
       <button onclick="startReading('cross')">Ancient Forest Woodland Cross</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
     </div>
@@ -689,17 +692,19 @@
       return dailyCard;
     }
 
-    function activatePanelMagic() {
-      const panel = document.getElementById("oraclePanel");
-      const mist = document.getElementById("panelMist");
+    function activateWelcomeMagic() {
+      const welcomeCard = document.getElementById("mainDeckCard");
+      const welcomeMist = document.getElementById("welcomeMist");
 
-      panel.classList.add("active");
-      mist.classList.add("active");
+      if (welcomeMist) {
+        welcomeMist.classList.add("active");
+        setTimeout(() => welcomeMist.classList.remove("active"), 1200);
+      }
 
-      setTimeout(() => {
-        panel.classList.remove("active");
-        mist.classList.remove("active");
-      }, 1200);
+      if (welcomeCard) {
+        welcomeCard.classList.add("shuffling");
+        setTimeout(() => welcomeCard.classList.remove("shuffling"), 2400);
+      }
     }
 
     function revealMessagePanel() {
@@ -851,7 +856,7 @@
       const second = getRandomCard([first.title]);
       const third = getRandomCard([first.title, second.title]);
 
-      showMultiCardSpread("Hidden Path Spread", [
+      showMultiCardSpread("Three Card Spread", [
         { position: "Past", card: first },
         { position: "Present", card: second },
         { position: "Future", card: third }
@@ -874,11 +879,30 @@
       ]);
     }
 
+    function drawDailyCardFromCard() {
+      if (isDrawing) return;
+      isDrawing = true;
+
+      const dailyCard = getDailyCard();
+      activateWelcomeMagic();
+
+      setTimeout(() => {
+        showSingleCard(dailyCard, "Daily Fox Message");
+        setTimeout(() => {
+          isDrawing = false;
+        }, 1200);
+      }, 2400);
+    }
+
     function startReading(type) {
       if (isDrawing) return;
       isDrawing = true;
 
-      activatePanelMagic();
+      const welcomeMist = document.getElementById("welcomeMist");
+      if (welcomeMist) {
+        welcomeMist.classList.add("active");
+        setTimeout(() => welcomeMist.classList.remove("active"), 1000);
+      }
 
       setTimeout(() => {
         if (type === "daily") {
@@ -892,7 +916,7 @@
         setTimeout(() => {
           isDrawing = false;
         }, 1200);
-      }, 520);
+      }, 350);
     }
 
     function toggleSound() {
