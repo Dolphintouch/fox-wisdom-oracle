@@ -42,7 +42,7 @@
     .page-wrap{
       position:relative;
       z-index:2;
-      max-width:1100px;
+      max-width:1000px;
       margin:0 auto;
     }
 
@@ -62,21 +62,10 @@
       text-shadow:0 1px 4px rgba(0,0,0,0.35);
     }
 
-    .book-area{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:14px;
-      margin:20px auto;
-      flex-wrap:wrap;
-    }
-
     .book-shell{
       position:relative;
-      width:min(90vw, 900px);
-      height:min(68vw, 620px);
-      min-height:460px;
-      perspective:1800px;
+      width:min(94vw, 860px);
+      margin:20px auto 0;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -84,13 +73,14 @@
 
     .book-glow{
       position:absolute;
-      width:85%;
-      height:85%;
+      width:92%;
+      height:92%;
       border-radius:24px;
       background:radial-gradient(circle, rgba(255,223,160,0.18) 0%, rgba(255,223,160,0.06) 40%, transparent 72%);
       filter:blur(24px);
       animation:glowPulse 6s ease-in-out infinite;
       pointer-events:none;
+      z-index:1;
     }
 
     @keyframes glowPulse{
@@ -108,53 +98,68 @@
       }
     }
 
-    .book{
+    .flip-stage{
       position:relative;
-      width:min(78vw, 760px);
-      height:min(56vw, 540px);
-      min-height:420px;
-      transform-style:preserve-3d;
+      z-index:2;
+      width:min(92vw, 820px);
+      aspect-ratio: 0.707 / 1;
+      perspective:1800px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
 
-    .page{
+    .page-card{
       position:absolute;
       inset:0;
-      transform-origin:left center;
-      transform-style:preserve-3d;
-      transition:transform 0.9s ease;
-      cursor:pointer;
-    }
-
-    .page.flipped{
-      transform:rotateY(-180deg);
-    }
-
-    .page-face{
-      position:absolute;
-      inset:0;
-      border-radius:16px;
+      border-radius:18px;
       overflow:hidden;
-      backface-visibility:hidden;
       box-shadow:
         0 10px 30px rgba(0,0,0,0.35),
         0 0 0 1px rgba(255,255,255,0.08);
-      background:#1e1b16;
+      background:transparent;
+      transform-origin:left center;
+      backface-visibility:hidden;
     }
 
-    .page-front{
-      transform:rotateY(0deg);
-    }
-
-    .page-back{
-      transform:rotateY(180deg);
-    }
-
-    .page-face img{
+    .page-card img{
       width:100%;
       height:100%;
-      object-fit:contain;
+      object-fit:cover;
       display:block;
-      background:rgba(0,0,0,0.15);
+      border-radius:18px;
+    }
+
+    .page-card.turning-next{
+      animation:turnNext 0.9s ease forwards;
+      z-index:5;
+    }
+
+    .page-card.turning-prev{
+      animation:turnPrev 0.9s ease forwards;
+      z-index:5;
+    }
+
+    @keyframes turnNext{
+      0%{
+        transform:rotateY(0deg) translateX(0);
+        opacity:1;
+      }
+      100%{
+        transform:rotateY(-75deg) translateX(-20px);
+        opacity:0;
+      }
+    }
+
+    @keyframes turnPrev{
+      0%{
+        transform:rotateY(75deg) translateX(20px);
+        opacity:0;
+      }
+      100%{
+        transform:rotateY(0deg) translateX(0);
+        opacity:1;
+      }
     }
 
     .controls{
@@ -162,7 +167,7 @@
       justify-content:center;
       gap:12px;
       flex-wrap:wrap;
-      margin-top:20px;
+      margin-top:24px;
     }
 
     button{
@@ -199,17 +204,11 @@
 
     @media (max-width:800px){
       .book-shell{
-        height:72vw;
-        min-height:380px;
+        width:min(96vw, 560px);
       }
 
-      .book{
-        height:60vw;
-        min-height:340px;
-      }
-
-      .page-face img{
-        object-fit:contain;
+      .flip-stage{
+        width:min(94vw, 540px);
       }
     }
   </style>
@@ -223,12 +222,12 @@
       Turn the pages like a woodland grimoire and step softly into the wisdom of the fox.
     </div>
 
-    <div class="book-area">
-      <div class="book-shell">
-        <div class="book-glow"></div>
+    <div class="book-shell">
+      <div class="book-glow"></div>
 
-        <div class="book" id="book">
-          <!-- Pages are inserted by JavaScript -->
+      <div class="flip-stage" id="flipStage">
+        <div class="page-card" id="currentPageCard">
+          <img id="currentPageImage" src="fox_guidebook_page_1.jpg" alt="Guidebook page 1">
         </div>
       </div>
     </div>
@@ -240,7 +239,7 @@
     </div>
 
     <div class="page-count" id="pageCount">Page 1 of 5</div>
-    <div class="tip">Tip: Click a page or use the buttons to turn through the guidebook.</div>
+    <div class="tip">Tip: Use the buttons to turn through the guidebook.</div>
   </div>
 
   <script>
@@ -253,73 +252,61 @@
     ];
 
     let currentPage = 0;
-    const book = document.getElementById("book");
+    let isTurning = false;
+
+    const flipStage = document.getElementById("flipStage");
+    const currentPageCard = document.getElementById("currentPageCard");
+    const currentPageImage = document.getElementById("currentPageImage");
     const pageCount = document.getElementById("pageCount");
 
-    function buildBook() {
-      book.innerHTML = "";
-
-      for (let i = pages.length - 1; i >= 0; i--) {
-        const page = document.createElement("div");
-        page.className = "page";
-        page.dataset.index = i;
-        page.style.zIndex = pages.length - i;
-
-        page.innerHTML = `
-          <div class="page-face page-front">
-            <img src="${pages[i]}" alt="Guidebook page ${i + 1}">
-          </div>
-          <div class="page-face page-back">
-            <img src="${pages[i]}" alt="Guidebook page ${i + 1}">
-          </div>
-        `;
-
-        page.addEventListener("click", () => {
-          const index = Number(page.dataset.index);
-          if (index === currentPage) {
-            nextPage();
-          } else if (index === currentPage - 1) {
-            prevPage();
-          }
-        });
-
-        book.appendChild(page);
-      }
-
-      updateBook();
-    }
-
-    function updateBook() {
-      const allPages = [...document.querySelectorAll(".page")];
-
-      allPages.forEach((page) => {
-        const index = Number(page.dataset.index);
-        if (index < currentPage) {
-          page.classList.add("flipped");
-        } else {
-          page.classList.remove("flipped");
-        }
-      });
-
-      const visiblePage = Math.min(currentPage + 1, pages.length);
-      pageCount.textContent = `Page ${visiblePage} of ${pages.length}`;
+    function updatePageDisplay() {
+      currentPageImage.src = pages[currentPage];
+      currentPageImage.alt = `Guidebook page ${currentPage + 1}`;
+      pageCount.textContent = `Page ${currentPage + 1} of ${pages.length}`;
     }
 
     function nextPage() {
-      if (currentPage < pages.length) {
-        currentPage++;
-        updateBook();
-      }
+      if (isTurning || currentPage >= pages.length - 1) return;
+      isTurning = true;
+
+      const oldCard = currentPageCard.cloneNode(true);
+      oldCard.id = "";
+      oldCard.classList.add("turning-next");
+      oldCard.querySelector("img").src = pages[currentPage];
+      flipStage.appendChild(oldCard);
+
+      currentPage++;
+      updatePageDisplay();
+
+      setTimeout(() => {
+        oldCard.remove();
+        isTurning = false;
+      }, 900);
     }
 
     function prevPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        updateBook();
-      }
+      if (isTurning || currentPage <= 0) return;
+      isTurning = true;
+
+      currentPage--;
+
+      const newCard = currentPageCard.cloneNode(true);
+      newCard.id = "";
+      newCard.classList.add("turning-prev");
+      newCard.querySelector("img").src = pages[currentPage];
+      flipStage.appendChild(newCard);
+
+      currentPageImage.src = pages[currentPage];
+      currentPageImage.alt = `Guidebook page ${currentPage + 1}`;
+      pageCount.textContent = `Page ${currentPage + 1} of ${pages.length}`;
+
+      setTimeout(() => {
+        newCard.remove();
+        isTurning = false;
+      }, 900);
     }
 
-    buildBook();
+    updatePageDisplay();
   </script>
 
 </body>
