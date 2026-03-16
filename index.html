@@ -230,6 +230,13 @@
       line-height:1.55;
     }
 
+    .tap-note{
+      margin-top:6px;
+      color:#f8ead9;
+      font-size:1rem;
+      text-shadow:0 1px 4px rgba(0,0,0,0.35);
+    }
+
     .tip{
       font-size:0.98rem;
       color:#f8ead9;
@@ -240,7 +247,7 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      min-height:420px;
+      min-height:440px;
       margin-top:18px;
       margin-bottom:10px;
     }
@@ -287,6 +294,48 @@
       }
     }
 
+    .draw-card{
+      position:relative;
+      z-index:2;
+      width:min(280px, 72vw);
+      max-width:280px;
+      border-radius:18px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.14),
+        0 12px 24px rgba(0,0,0,0.28),
+        0 0 34px rgba(255,223,160,0.10);
+      cursor:pointer;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        filter 0.35s ease;
+      filter:brightness(0.98);
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    .draw-card:hover{
+      transform:translateY(-4px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.18),
+        0 18px 38px rgba(0,0,0,0.30),
+        0 0 42px rgba(255,226,168,0.20);
+      filter:brightness(1.03);
+    }
+
+    .draw-card.shuffling{
+      animation:deckShuffle 0.8s ease-in-out 3;
+    }
+
+    @keyframes deckShuffle{
+      0%{ transform:translateX(0) rotate(0deg) scale(1); }
+      20%{ transform:translateX(-14px) rotate(-4deg) scale(1.01); }
+      40%{ transform:translateX(14px) rotate(4deg) scale(1.01); }
+      60%{ transform:translateX(-10px) rotate(-3deg) scale(1.01); }
+      80%{ transform:translateX(10px) rotate(3deg) scale(1.01); }
+      100%{ transform:translateX(0) rotate(0deg) scale(1); }
+    }
+
     .oracle-card{
       position:relative;
       z-index:2;
@@ -297,14 +346,14 @@
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
         0 0 34px rgba(255,223,160,0.10);
-      opacity:0.92;
-      transform:translateY(12px) scale(0.95);
+      opacity:0.75;
+      transform:translateY(14px) scale(0.94);
       transition:
-        opacity 1s ease,
-        transform 1s ease,
-        box-shadow 1s ease,
-        filter 1s ease;
-      filter:brightness(0.98);
+        opacity 0.9s ease,
+        transform 0.9s ease,
+        box-shadow 0.9s ease,
+        filter 0.9s ease;
+      filter:brightness(0.96);
     }
 
     .oracle-card.reveal{
@@ -455,22 +504,15 @@
     </div>
 
     <div class="panel">
-      <p>Choose a spread above. Breathe slowly, ask the fox spirit for guidance, and trust the card that reveals itself.</p>
+      <p>The fox waits quietly in the forest. When you feel ready, tap the card below to receive your daily message.</p>
     </div>
 
-    <div class="panel">
-      <h2>The Woodland Awaits</h2>
-      <p>Every path begins with stillness. Let the fox move first.</p>
-    </div>
-
-    <div class="panel tip">
-      Tip: On mobile, scroll slowly after drawing your cards so each message has space to breathe.
-    </div>
+    <div class="tap-note">✨ Tap the card to draw your daily fox message ✨</div>
 
     <div id="readingArea">
       <div class="card-area">
         <div class="mist"></div>
-        <img id="mainCard" class="oracle-card" src="card back.jpg" alt="Fox Wisdom Oracle card back">
+        <img id="mainDeckCard" class="draw-card" src="card back.jpg" alt="Tap to draw your daily fox message" onclick="drawDailyCardFromCard()">
       </div>
     </div>
 
@@ -653,35 +695,87 @@
     ];
 
     let soundOn = false;
+    let isDrawing = false;
 
     function getRandomCard(excludeTitles = []) {
       const available = cards.filter(card => !excludeTitles.includes(card.title));
       return available[Math.floor(Math.random() * available.length)];
     }
 
+    function getDailyCard() {
+      const today = new Date().toDateString();
+      const savedDate = localStorage.getItem("foxDailyDate");
+      let dailyCard;
+
+      if (savedDate === today) {
+        const savedTitle = localStorage.getItem("foxDailyCardTitle");
+        dailyCard = cards.find(card => card.title === savedTitle) || getRandomCard();
+      } else {
+        dailyCard = getRandomCard();
+        localStorage.setItem("foxDailyDate", today);
+        localStorage.setItem("foxDailyCardTitle", dailyCard.title);
+      }
+
+      return dailyCard;
+    }
+
     function revealCardImage(imgElement, imageSrc, altText) {
       imgElement.classList.remove("reveal");
-      imgElement.style.opacity = "0";
-      imgElement.style.transform = "translateY(14px) scale(0.94)";
+      imgElement.src = "card back.jpg";
+      imgElement.alt = "Fox Wisdom Oracle card back";
 
       setTimeout(() => {
-        imgElement.src = imageSrc;
-        imgElement.alt = altText;
+        const tempImg = new Image();
 
-        imgElement.onload = () => {
+        tempImg.onload = () => {
+          imgElement.src = imageSrc;
+          imgElement.alt = altText;
+
           requestAnimationFrame(() => {
-            imgElement.classList.add("reveal");
-            imgElement.style.opacity = "";
-            imgElement.style.transform = "";
+            requestAnimationFrame(() => {
+              imgElement.classList.add("reveal");
+            });
           });
         };
 
-        imgElement.onerror = () => {
+        tempImg.onerror = () => {
           imgElement.src = "card back.jpg";
           imgElement.alt = "Image not found";
           imgElement.classList.add("reveal");
         };
-      }, 180);
+
+        tempImg.src = imageSrc;
+      }, 220);
+    }
+
+    function shuffleDeckThenReveal(card) {
+      if (isDrawing) return;
+      isDrawing = true;
+
+      const deckCard = document.getElementById("mainDeckCard");
+      if (!deckCard) {
+        isDrawing = false;
+        showSingleCard(card, "Daily Fox Message");
+        return;
+      }
+
+      deckCard.classList.add("shuffling");
+
+      setTimeout(() => {
+        deckCard.classList.remove("shuffling");
+        showSingleCard(card, "Daily Fox Message");
+        isDrawing = false;
+      }, 2400);
+    }
+
+    function drawDailyCardFromCard() {
+      const dailyCard = getDailyCard();
+      shuffleDeckThenReveal(dailyCard);
+    }
+
+    function drawDailyCard() {
+      const dailyCard = getDailyCard();
+      showSingleCard(dailyCard, "Daily Fox Message");
     }
 
     function showSingleCard(card, headingText) {
@@ -747,23 +841,6 @@
           revealCardImage(img, item.card.image, item.card.title);
         }, 250 + (index * 350));
       });
-    }
-
-    function drawDailyCard() {
-      const today = new Date().toDateString();
-      const savedDate = localStorage.getItem("foxDailyDate");
-      let dailyCard;
-
-      if (savedDate === today) {
-        const savedTitle = localStorage.getItem("foxDailyCardTitle");
-        dailyCard = cards.find(card => card.title === savedTitle) || getRandomCard();
-      } else {
-        dailyCard = getRandomCard();
-        localStorage.setItem("foxDailyDate", today);
-        localStorage.setItem("foxDailyCardTitle", dailyCard.title);
-      }
-
-      showSingleCard(dailyCard, "Daily Fox Message");
     }
 
     function drawHiddenPath() {
