@@ -39,6 +39,51 @@
       z-index:0;
     }
 
+    .fireflies{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    .firefly{
+      position:absolute;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:rgba(255,230,160,0.95);
+      box-shadow:0 0 10px rgba(255,220,130,0.95);
+      opacity:0;
+      animation:floatFirefly linear infinite;
+    }
+
+    .firefly:nth-child(1){ left:10%; top:78%; animation-duration:12s; animation-delay:0s; }
+    .firefly:nth-child(2){ left:18%; top:65%; animation-duration:15s; animation-delay:2s; }
+    .firefly:nth-child(3){ left:26%; top:82%; animation-duration:14s; animation-delay:4s; }
+    .firefly:nth-child(4){ left:40%; top:72%; animation-duration:13s; animation-delay:1s; }
+    .firefly:nth-child(5){ left:58%; top:80%; animation-duration:16s; animation-delay:3s; }
+    .firefly:nth-child(6){ left:70%; top:68%; animation-duration:14s; animation-delay:5s; }
+    .firefly:nth-child(7){ left:82%; top:77%; animation-duration:15s; animation-delay:2.5s; }
+    .firefly:nth-child(8){ left:62%; top:55%; animation-duration:17s; animation-delay:6s; }
+
+    @keyframes floatFirefly{
+      0%{
+        transform:translateY(0) translateX(0) scale(0.7);
+        opacity:0;
+      }
+      20%{
+        opacity:0.7;
+      }
+      70%{
+        opacity:0.85;
+      }
+      100%{
+        transform:translateY(-180px) translateX(28px) scale(1.2);
+        opacity:0;
+      }
+    }
+
     .page-wrap{
       position:relative;
       z-index:2;
@@ -64,7 +109,7 @@
 
     .book-shell{
       position:relative;
-      width:min(94vw, 860px);
+      width:min(84vw, 660px);
       margin:20px auto 0;
       display:flex;
       justify-content:center;
@@ -101,7 +146,7 @@
     .flip-stage{
       position:relative;
       z-index:2;
-      width:min(92vw, 820px);
+      width:min(80vw, 620px);
       aspect-ratio: 0.707 / 1;
       perspective:1800px;
       display:flex;
@@ -204,16 +249,27 @@
 
     @media (max-width:800px){
       .book-shell{
-        width:min(96vw, 560px);
+        width:min(92vw, 520px);
       }
 
       .flip-stage{
-        width:min(94vw, 540px);
+        width:min(88vw, 500px);
       }
     }
   </style>
 </head>
 <body>
+
+  <div class="fireflies">
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+    <div class="firefly"></div>
+  </div>
 
   <div class="page-wrap">
     <h1>Fox Wisdom Guidebook</h1>
