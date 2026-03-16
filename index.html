@@ -101,73 +101,11 @@
     }
 
     h1{
-      margin:10px 0 10px;
+      margin:10px 0 14px;
       font-size:clamp(2.3rem, 6vw, 4.4rem);
       line-height:1.08;
       color:#f2dfcb;
       text-shadow:0 2px 8px rgba(0,0,0,0.35);
-    }
-
-    .hero-wrap{
-      position:relative;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      margin:14px auto 18px;
-      min-height:250px;
-    }
-
-    .hero-mist{
-      position:absolute;
-      width:430px;
-      height:430px;
-      border-radius:50%;
-      background:
-        radial-gradient(circle, rgba(255,240,205,0.18) 0%, rgba(255,232,185,0.10) 28%, rgba(255,225,165,0.04) 48%, transparent 72%);
-      filter:blur(42px);
-      animation:mistGlow 7s ease-in-out infinite alternate;
-      opacity:0.72;
-      z-index:1;
-    }
-
-    .hero-fox{
-      position:relative;
-      z-index:2;
-      max-width:380px;
-      width:85%;
-      display:block;
-      margin:0 auto;
-      border-radius:20px;
-      box-shadow:
-        0 0 22px rgba(255,220,150,0.22),
-        0 0 40px rgba(255,220,150,0.18),
-        0 10px 30px rgba(0,0,0,0.35);
-      opacity:0.96;
-      animation:heroBreath 5.5s ease-in-out infinite;
-    }
-
-    @keyframes heroBreath{
-      0%{
-        transform:scale(1);
-        box-shadow:
-          0 0 18px rgba(255,220,150,0.16),
-          0 0 34px rgba(255,220,150,0.12),
-          0 10px 30px rgba(0,0,0,0.35);
-      }
-      50%{
-        transform:scale(1.02);
-        box-shadow:
-          0 0 28px rgba(255,225,165,0.26),
-          0 0 54px rgba(255,225,165,0.20),
-          0 14px 34px rgba(0,0,0,0.38);
-      }
-      100%{
-        transform:scale(1);
-        box-shadow:
-          0 0 18px rgba(255,220,150,0.16),
-          0 0 34px rgba(255,220,150,0.12),
-          0 10px 30px rgba(0,0,0,0.35);
-      }
     }
 
     .blessing{
@@ -525,15 +463,6 @@
         padding:12px 10px;
       }
 
-      .hero-wrap{
-        min-height:220px;
-      }
-
-      .hero-mist{
-        width:320px;
-        height:320px;
-      }
-
       .welcome-card-wrap{
         min-height:400px;
       }
@@ -578,11 +507,6 @@
   <div class="page-wrap">
     <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
     <h1>Fox Wisdom Oracle</h1>
-
-    <div class="hero-wrap">
-      <div class="hero-mist"></div>
-      <img src="fox-home.jpg" class="hero-fox" alt="Fox Spirit of the Forest">
-    </div>
 
     <div class="blessing">
       Pause beneath the trees.<br>
