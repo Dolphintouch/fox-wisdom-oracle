@@ -84,9 +84,51 @@
       }
     }
 
+    .paw-trail{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:1;
+      overflow:hidden;
+    }
+
+    .paw{
+      position:absolute;
+      font-size:22px;
+      opacity:0;
+      filter:drop-shadow(0 0 5px rgba(255,220,160,0.35));
+      animation:pawFade 4.8s ease-out forwards;
+    }
+
+    .paw:nth-child(1){ left:12%; top:72%; animation-delay:0.1s; }
+    .paw:nth-child(2){ left:20%; top:66%; animation-delay:0.45s; }
+    .paw:nth-child(3){ left:28%; top:60%; animation-delay:0.8s; }
+    .paw:nth-child(4){ left:36%; top:54%; animation-delay:1.15s; }
+    .paw:nth-child(5){ left:45%; top:49%; animation-delay:1.5s; }
+    .paw:nth-child(6){ left:54%; top:44%; animation-delay:1.85s; }
+    .paw:nth-child(7){ left:63%; top:38%; animation-delay:2.2s; }
+    .paw:nth-child(8){ left:72%; top:33%; animation-delay:2.55s; }
+
+    @keyframes pawFade{
+      0%{
+        opacity:0;
+        transform:scale(0.7) rotate(-8deg);
+      }
+      20%{
+        opacity:0.65;
+      }
+      60%{
+        opacity:0.5;
+      }
+      100%{
+        opacity:0;
+        transform:scale(1.05) rotate(0deg);
+      }
+    }
+
     .page-wrap{
       position:relative;
-      z-index:1;
+      z-index:2;
       max-width:1200px;
       margin:0 auto;
       padding-bottom:40px;
@@ -254,6 +296,7 @@
       filter:brightness(0.98);
       user-select:none;
       -webkit-user-drag:none;
+      animation:welcomePulse 4.5s ease-in-out infinite;
     }
 
     .draw-card:hover{
@@ -261,8 +304,32 @@
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.18),
         0 18px 38px rgba(0,0,0,0.30),
-        0 0 42px rgba(255,226,168,0.20);
-      filter:brightness(1.03);
+        0 0 42px rgba(255,226,168,0.28);
+      filter:brightness(1.04);
+    }
+
+    @keyframes welcomePulse{
+      0%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.14),
+          0 12px 24px rgba(0,0,0,0.28),
+          0 0 24px rgba(255,223,160,0.12);
+        transform:scale(1);
+      }
+      50%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.16),
+          0 16px 30px rgba(0,0,0,0.30),
+          0 0 38px rgba(255,226,168,0.24);
+        transform:scale(1.015);
+      }
+      100%{
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.14),
+          0 12px 24px rgba(0,0,0,0.28),
+          0 0 24px rgba(255,223,160,0.12);
+        transform:scale(1);
+      }
     }
 
     .draw-card.shuffling{
@@ -370,18 +437,31 @@
       max-width:900px;
       margin:20px auto 0;
       padding:18px 20px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.16);
-      background:rgba(255,255,255,0.09);
-      backdrop-filter:blur(3px);
-      -webkit-backdrop-filter:blur(3px);
-      box-shadow:0 6px 16px rgba(0,0,0,0.15);
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.10);
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
+      box-shadow:
+        0 6px 16px rgba(0,0,0,0.15),
+        0 0 28px rgba(255,225,170,0.08);
       display:none;
       white-space:pre-line;
+      opacity:0;
+      transform:translateY(12px);
+      transition:opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
     }
 
     .message-box.show{
       display:block;
+    }
+
+    .message-box.fade-in{
+      opacity:1;
+      transform:translateY(0);
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.18),
+        0 0 34px rgba(255,226,168,0.16);
     }
 
     .message-box h3{
@@ -434,6 +514,10 @@
       .message-box p{
         font-size:1rem;
       }
+
+      .paw{
+        font-size:18px;
+      }
     }
   </style>
 </head>
@@ -448,6 +532,17 @@
     <div class="light"></div>
     <div class="light"></div>
     <div class="light"></div>
+  </div>
+
+  <div class="paw-trail">
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
+    <div class="paw">🐾</div>
   </div>
 
   <div class="page-wrap">
@@ -469,7 +564,7 @@
     <div id="readingArea">
       <div class="card-area">
         <div class="mist"></div>
-        <img id="mainDeckCard" class="draw-card" src="card back.jpg" alt="Tap to draw your daily fox message" onclick="drawDailyCardFromCard()">
+        <img id="mainDeckCard" class="draw-card" src="fox-welcome-page.jpg" alt="Tap to draw your daily fox message" onclick="drawDailyCardFromCard()">
       </div>
     </div>
 
@@ -683,7 +778,15 @@
       return dailyCard;
     }
 
-    function revealCardImage(imgElement, imageSrc, altText) {
+    function revealMessagePanel() {
+      const messageBox = document.getElementById("messageBox");
+      messageBox.classList.remove("fade-in");
+      setTimeout(() => {
+        messageBox.classList.add("fade-in");
+      }, 80);
+    }
+
+    function revealCardImage(imgElement, imageSrc, altText, showMessageAfter = false) {
       imgElement.classList.remove("reveal");
       imgElement.src = "card back.jpg";
       imgElement.alt = "Fox Wisdom Oracle card back";
@@ -698,6 +801,11 @@
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               imgElement.classList.add("reveal");
+              if (showMessageAfter) {
+                setTimeout(() => {
+                  revealMessagePanel();
+                }, 450);
+              }
             });
           });
         };
@@ -706,6 +814,11 @@
           imgElement.src = "card back.jpg";
           imgElement.alt = "Image not found";
           imgElement.classList.add("reveal");
+          if (showMessageAfter) {
+            setTimeout(() => {
+              revealMessagePanel();
+            }, 450);
+          }
         };
 
         tempImg.src = imageSrc;
@@ -755,13 +868,14 @@
       const messageTitle = document.getElementById("messageTitle");
       const messageText = document.getElementById("messageText");
 
+      messageBox.classList.remove("fade-in");
       messageTitle.textContent = headingText + ": " + card.title;
       messageText.textContent = card.message;
       messageBox.classList.add("show");
 
       const img = document.getElementById("mainCard");
       setTimeout(() => {
-        revealCardImage(img, card.image, card.title);
+        revealCardImage(img, card.image, card.title, true);
       }, 250);
     }
 
@@ -789,6 +903,7 @@
       const messageTitle = document.getElementById("messageTitle");
       const messageText = document.getElementById("messageText");
 
+      messageBox.classList.remove("fade-in");
       messageTitle.textContent = spreadTitle;
 
       let fullMessage = "";
@@ -802,9 +917,13 @@
       spreadCards.forEach((item, index) => {
         const img = document.getElementById("spreadCard" + index);
         setTimeout(() => {
-          revealCardImage(img, item.card.image, item.card.title);
+          revealCardImage(img, item.card.image, item.card.title, false);
         }, 250 + (index * 350));
       });
+
+      setTimeout(() => {
+        revealMessagePanel();
+      }, 650 + (spreadCards.length * 350));
     }
 
     function drawHiddenPath() {
