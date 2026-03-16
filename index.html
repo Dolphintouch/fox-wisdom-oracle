@@ -1,787 +1,938 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Fox Wisdom Oracle</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fox Wisdom Oracle</title>
+  <style>
+    :root{
+      --bg-dark: rgba(13, 22, 16, 0.78);
+      --gold: #e8d7a2;
+      --gold-soft: #c9b26d;
+      --cream: #f5ebc7;
+      --shadow: rgba(0,0,0,0.38);
+      --mist: rgba(240, 220, 170, 0.12);
+      --panel: rgba(33, 25, 16, 0.55);
+      --line: rgba(232,215,162,0.22);
+    }
 
-<style>
-body{
-font-family: Georgia, serif;
-text-align:center;
-background-image:
-linear-gradient(rgba(16,22,16,0.55), rgba(16,22,16,0.72)),
-url("forest-bg.jpg");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-padding:16px;
-margin:0;
-color:#f5e9c8;
-min-height:100vh;
-overflow-x:hidden;
-position:relative;
-}
+    * { box-sizing: border-box; }
 
-body::before{
-content:"";
-position:fixed;
-inset:0;
-background:
-radial-gradient(circle at 15% 20%, rgba(255,220,140,0.07), transparent 20%),
-radial-gradient(circle at 80% 25%, rgba(170,255,220,0.06), transparent 18%),
-radial-gradient(circle at 30% 80%, rgba(255,210,120,0.05), transparent 18%);
-pointer-events:none;
-z-index:0;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
 
-.foxfire{
-position:fixed;
-width:12px;
-height:12px;
-border-radius:50%;
-background:radial-gradient(circle, rgba(255,235,170,1) 0%, rgba(255,210,120,0.7) 45%, rgba(255,210,120,0) 75%);
-box-shadow:
-0 0 12px rgba(255,220,140,0.9),
-0 0 24px rgba(255,220,140,0.45);
-animation:floatGlow linear infinite;
-pointer-events:none;
-z-index:0;
-opacity:0.85;
-}
+    body{
+      font-family: Georgia, serif;
+      color: var(--cream);
+      text-align: center;
+      background:
+        linear-gradient(rgba(16,22,16,0.55), rgba(16,22,16,0.78)),
+        url("forest-bg.jpg") center/cover fixed no-repeat;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
 
-@keyframes floatGlow{
-0%{
-transform:translateY(0px) translateX(0px) scale(0.85);
-opacity:0;
-}
-15%{
-opacity:0.9;
-}
-50%{
-transform:translateY(-90px) translateX(16px) scale(1.08);
-opacity:1;
-}
-100%{
-transform:translateY(-180px) translateX(-10px) scale(0.8);
-opacity:0;
-}
-}
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,220,140,0.08), transparent 18%),
+        radial-gradient(circle at 80% 15%, rgba(255,220,140,0.05), transparent 20%),
+        radial-gradient(circle at 50% 80%, rgba(255,220,140,0.05), transparent 24%);
+      z-index: 0;
+    }
 
-.page{
-position:relative;
-z-index:1;
-max-width:1100px;
-margin:0 auto;
-}
+    .firefly{
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 224, 138, 0.92);
+      box-shadow: 0 0 10px rgba(255, 221, 120, 0.9), 0 0 18px rgba(255, 221, 120, 0.5);
+      animation: drift linear infinite, pulse ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
 
-.panel{
-background:rgba(28,22,15,0.48);
-border:1px solid rgba(255,220,150,0.16);
-border-radius:22px;
-padding:20px 14px;
-box-shadow:0 12px 30px rgba(0,0,0,0.28);
-backdrop-filter: blur(3px);
-margin-bottom:12px;
-}
+    @keyframes drift {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      50% { opacity: .9; }
+      100% { transform: translateY(-110vh) translateX(40px); opacity: 0; }
+    }
 
-h1{
-color:#f0d890;
-margin-top:0;
-margin-bottom:10px;
-text-shadow:0 2px 10px rgba(0,0,0,0.35);
-font-size:clamp(28px, 5vw, 46px);
-}
+    @keyframes pulse {
+      0%, 100% { opacity: .35; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
 
-.subtitle{
-font-size:16px;
-margin-top:-6px;
-margin-bottom:14px;
-color:#e6d7a5;
-text-shadow:0 1px 5px rgba(0,0,0,0.35);
-}
+    .page{
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 14px 60px;
+    }
 
-p{
-font-size:18px;
-line-height:1.6;
-text-shadow:0 1px 5px rgba(0,0,0,0.35);
-margin-left:auto;
-margin-right:auto;
-margin-top:10px;
-margin-bottom:10px;
-max-width:700px;
-}
+    .brand{
+      font-size: 0.95rem;
+      color: #e9dbb7;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+      opacity: 0.92;
+    }
 
-.footer-credit{
-margin-top:20px;
-font-size:14px;
-color:#dccb97;
-text-shadow:0 1px 4px rgba(0,0,0,0.35);
-opacity:0.95;
-}
+    .hero{
+      padding: 22px 12px 12px;
+    }
 
-.hidden{
-display:none;
-}
+    h1{
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      letter-spacing: 1px;
+      color: var(--gold);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.55);
+    }
 
-.home-image{
-width:380px;
-max-width:94%;
-border-radius:16px;
-box-shadow:0 8px 24px rgba(0,0,0,0.35);
-margin-top:14px;
-border:1px solid rgba(255,220,150,0.16);
-}
+    .subtitle{
+      max-width: 760px;
+      margin: 14px auto 12px;
+      line-height: 1.65;
+      font-size: clamp(1rem, 2.4vw, 1.18rem);
+      color: #f8efd6;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    }
 
-.button{
-font-size:19px;
-padding:14px 20px;
-margin:8px;
-cursor:pointer;
-border:none;
-border-radius:12px;
-background:linear-gradient(to bottom, #f5e5b9, #d9ba7a);
-color:#3b2a14;
-font-family:Georgia, serif;
-box-shadow:0 5px 14px rgba(0,0,0,0.25);
-transition:transform 0.2s ease, box-shadow 0.2s ease;
-}
+    .top-actions,
+    .bottom-actions{
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px auto 14px;
+    }
 
-.button:hover{
-transform:translateY(-2px) scale(1.03);
-box-shadow:0 8px 18px rgba(0,0,0,0.3);
-}
+    button{
+      appearance: none;
+      border: 1px solid rgba(233, 214, 158, 0.36);
+      background: linear-gradient(180deg, rgba(77,56,30,0.88), rgba(45,34,20,0.92));
+      color: #f6ebca;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
 
-.button-row{
-margin-top:16px;
-}
+    button:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+      border-color: rgba(233, 214, 158, 0.58);
+    }
 
-.card-area{
-position:relative;
-display:flex;
-justify-content:center;
-align-items:center;
-margin-top:20px;
-margin-bottom:10px;
-min-height:360px;
-}
+    button:active{ transform: translateY(0); }
 
-.mist{
-position:absolute;
-width:420px;
-height:420px;
-max-width:90vw;
-border-radius:50%;
-background:
-radial-gradient(circle,
-rgba(255,245,210,0.20) 0%,
-rgba(180,255,235,0.10) 25%,
-rgba(255,215,120,0.10) 40%,
-rgba(255,255,255,0.00) 70%);
-filter:blur(24px);
-opacity:0;
-pointer-events:none;
-z-index:0;
-}
+    .info-bar{
+      margin: 18px auto 8px;
+      max-width: 900px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(16, 19, 14, 0.45);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(4px);
+      line-height: 1.7;
+      font-size: 1rem;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.2);
+    }
 
-.mist.show{
-animation:mistPulse 1.8s ease;
-}
+    .spread-title{
+      margin-top: 18px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      color: var(--gold);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
 
-@keyframes mistPulse{
-0%{opacity:0; transform:scale(0.75);}
-30%{opacity:1;}
-100%{opacity:0; transform:scale(1.18);}
-}
+    .spread-subtitle{
+      max-width: 900px;
+      margin: 8px auto 18px;
+      line-height: 1.65;
+      color: #f3ead1;
+      opacity: 0.95;
+    }
 
-.card-stack{
-position:relative;
-width:340px;
-max-width:94vw;
-height:520px;
-display:flex;
-justify-content:center;
-align-items:center;
-perspective:1200px;
-}
+    .reading-note{
+      max-width: 960px;
+      margin: 0 auto 20px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(23,18,11,0.42);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
 
-.card-stack.small{
-width:240px;
-height:360px;
-max-width:86vw;
-}
+    .mist-ring{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(74vw, 820px);
+      height: min(74vw, 820px);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,226,160,0.14) 0%, rgba(255,226,160,0.09) 26%, rgba(255,226,160,0.03) 48%, rgba(255,226,160,0) 70%);
+      filter: blur(16px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .7s ease;
+      z-index: 0;
+    }
 
-.card{
-position:absolute;
-width:340px;
-max-width:94vw;
-border-radius:14px;
-box-shadow:
-0 8px 22px rgba(0,0,0,0.38),
-0 0 18px rgba(255,220,120,0.06);
-cursor:pointer;
-transition:transform 0.3s ease, box-shadow 0.3s ease;
-background:rgba(255,255,255,0.02);
-backface-visibility:hidden;
-transform-style:preserve-3d;
-z-index:2;
-}
+    .mist-ring.show{ opacity: 1; }
 
-.small-card{
-width:240px;
-max-width:86vw;
-}
+    .spread-wrap{
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      min-height: 420px;
+      padding: 10px 0 0;
+    }
 
-.card:hover{
-box-shadow:
-0 10px 24px rgba(0,0,0,0.42),
-0 0 24px rgba(255,220,120,0.12);
-}
+    .spread{
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
 
-.card-row{
-display:flex;
-justify-content:center;
-align-items:flex-start;
-gap:18px;
-flex-wrap:wrap;
-margin-top:16px;
-margin-bottom:10px;
-}
+    .spread.active{ display: block; }
 
-.label{
-font-size:20px;
-font-weight:bold;
-margin-bottom:10px;
-color:#f0d890;
-text-shadow:0 2px 6px rgba(0,0,0,0.35);
-}
+    .deck-stage{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 280px;
+      position: relative;
+    }
 
-.stack-card{
-position:absolute;
-top:0;
-left:0;
-right:0;
-margin:auto;
-}
+    .deck-stack{
+      position: relative;
+      width: 160px;
+      height: 260px;
+      margin: 10px auto 4px;
+    }
 
-.stack-1{ transform:translateX(-10px) rotate(-4deg); }
-.stack-2{ transform:translateX(0px) rotate(0deg); }
-.stack-3{ transform:translateX(10px) rotate(4deg); }
+    .stack-card{
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: center/cover no-repeat url("card-back.jpg");
+      box-shadow: 0 16px 30px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,238,194,0.12);
+      transition: transform .7s ease, opacity .7s ease;
+    }
 
-.deck-shuffle{
-animation:deckShuffle 0.9s ease;
-}
+    .stack-card:nth-child(1){ transform: rotate(-5deg); }
+    .stack-card:nth-child(2){ transform: rotate(4deg); }
+    .stack-card:nth-child(3){ transform: rotate(-2deg); }
+    .stack-card:nth-child(4){ transform: rotate(3deg); }
 
-@keyframes deckShuffle{
-0%{transform:translateX(0) rotate(0deg) scale(1);}
-20%{transform:translateX(-24px) rotate(-8deg) scale(1.02);}
-40%{transform:translateX(22px) rotate(7deg) scale(1.03);}
-60%{transform:translateX(-15px) rotate(-5deg) scale(1.02);}
-80%{transform:translateX(12px) rotate(4deg) scale(1.01);}
-100%{transform:translateX(0) rotate(0deg) scale(1);}
-}
+    .deck-stack.shuffling .stack-card:nth-child(1){ transform: translateX(-28px) rotate(-16deg); }
+    .deck-stack.shuffling .stack-card:nth-child(2){ transform: translateX(24px) rotate(12deg); }
+    .deck-stack.shuffling .stack-card:nth-child(3){ transform: translateY(-18px) rotate(-10deg); }
+    .deck-stack.shuffling .stack-card:nth-child(4){ transform: translateY(18px) rotate(8deg); }
 
-.flip{
-animation:flipCard 0.8s ease;
-}
+    .cards-grid{
+      display: grid;
+      gap: 18px;
+      justify-content: center;
+      align-items: start;
+      padding: 8px 6px 20px;
+    }
 
-@keyframes flipCard{
-0%{transform:rotateY(0deg) scale(1);}
-50%{transform:rotateY(90deg) scale(1.03);}
-100%{transform:rotateY(0deg) scale(1);}
-}
+    .one-card-grid{
+      grid-template-columns: minmax(220px, 300px);
+    }
 
-.glow{
-animation:goldglow 1.6s ease;
-}
+    .three-card-grid{
+      grid-template-columns: repeat(3, minmax(200px, 260px));
+    }
 
-@keyframes goldglow{
-0%{
-box-shadow:0 8px 22px rgba(0,0,0,0.38);
-}
-40%{
-box-shadow:
-0 0 18px rgba(255,215,120,0.85),
-0 0 38px rgba(255,215,120,0.45),
-0 8px 22px rgba(0,0,0,0.38);
-}
-100%{
-box-shadow:0 8px 22px rgba(0,0,0,0.38);
-}
-}
+    .card-slot{
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
 
-.share-row{
-margin-top:12px;
-}
+    .position-label{
+      font-size: 0.95rem;
+      color: #f3e4b5;
+      line-height: 1.4;
+      min-height: 40px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.45);
+    }
 
-#daily-date{
-font-size:16px;
-margin-top:8px;
-color:#ead9ac;
-text-shadow:0 1px 5px rgba(0,0,0,0.35);
-}
+    .oracle-card{
+      width: min(100%, 220px);
+      aspect-ratio: 2 / 3.25;
+      perspective: 1200px;
+      opacity: 0;
+      transform: translateY(20px) scale(.95);
+      transition: opacity .5s ease, transform .5s ease;
+    }
 
-@media (max-width: 700px){
+    .oracle-card.show{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
 
-body{
-padding:10px;
-background-attachment:scroll;
-}
+    .oracle-card .inner{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .9s ease;
+      border-radius: 18px;
+      box-shadow: 0 16px 30px rgba(0,0,0,0.36);
+    }
 
-.panel{
-padding:16px 10px;
-border-radius:16px;
-}
+    .oracle-card.flipped .inner{
+      transform: rotateY(180deg);
+    }
 
-.home-image{
-width:92%;
-max-width:420px;
-}
+    .face{
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      border: 1px solid rgba(255,235,186,0.18);
+      background: rgba(24, 18, 11, 0.5);
+    }
 
-.button{
-width:94%;
-max-width:340px;
-font-size:18px;
-padding:13px 14px;
-margin:6px auto;
-display:block;
-}
+    .face.back{
+      background: center/cover no-repeat url("card-back.jpg");
+    }
 
-.card-stack{
-width:92vw;
-height:480px;
-}
+    .face.front{
+      transform: rotateY(180deg);
+      background: center/cover no-repeat;
+    }
 
-.card-stack.small{
-width:92vw;
-height:420px;
-}
+    .card-name{
+      font-size: 1rem;
+      color: #f7edcf;
+      line-height: 1.4;
+      max-width: 220px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.55);
+    }
 
-.card{
-width:92vw;
-max-width:420px;
-}
+    .message-box{
+      max-width: 950px;
+      margin: 16px auto 0;
+      padding: 18px 18px 20px;
+      border-radius: 18px;
+      background: rgba(18,16,11,0.48);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.2);
+      line-height: 1.75;
+      display: none;
+    }
 
-.small-card{
-width:92vw;
-max-width:420px;
-}
+    .message-box.show{ display: block; }
 
-.card-row{
-gap:14px;
-margin-top:16px;
-}
+    .message-box h3{
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 1.25rem;
+    }
 
-p{
-font-size:17px;
-}
+    .message-box p{
+      margin: 7px 0;
+    }
 
-.label{
-margin-bottom:6px;
-}
+    .share-row{
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
 
-.foxfire{
-width:8px;
-height:8px;
-opacity:0.6;
-}
+    .share-link{
+      display: inline-block;
+      text-decoration: none;
+      color: #f6ebca;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(233,214,158,0.32);
+      background: rgba(67,48,26,0.85);
+      transition: transform .2s ease, background .2s ease;
+    }
 
-.subtitle{
-font-size:15px;
-}
+    .share-link:hover{ transform: translateY(-2px); }
 
-.footer-credit{
-font-size:13px;
-}
-}
-</style>
+    .celtic-layout{
+      display: none;
+      position: relative;
+      max-width: 1080px;
+      margin: 0 auto;
+      min-height: 980px;
+      padding: 16px 10px 20px;
+    }
 
+    .celtic-layout.active{ display: block; }
+
+    .celtic-center{
+      position: absolute;
+      left: 50%;
+      top: 345px;
+      transform: translateX(-50%);
+      width: 520px;
+      height: 400px;
+    }
+
+    .celtic-center .slot1{ position: absolute; left: 150px; top: 95px; }
+    .celtic-center .slot2{ position: absolute; left: 150px; top: 95px; transform: rotate(90deg); }
+    .celtic-center .slot3{ position: absolute; left: 150px; top: 295px; }
+    .celtic-center .slot4{ position: absolute; left: 0; top: 95px; }
+    .celtic-center .slot5{ position: absolute; left: 150px; top: -105px; }
+    .celtic-center .slot6{ position: absolute; left: 300px; top: 95px; }
+
+    .celtic-column{
+      position: absolute;
+      right: 70px;
+      top: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .c-slot .position-label{ min-height: 50px; max-width: 220px; }
+
+    .c-slot .oracle-card{
+      width: 180px;
+    }
+
+    .celtic-center .c-slot .oracle-card{ width: 180px; }
+
+    footer{
+      margin-top: 34px;
+      color: #eedeb2;
+      opacity: .9;
+      font-size: 0.96rem;
+      line-height: 1.7;
+    }
+
+    audio{ display: none; }
+
+    @media (max-width: 980px){
+      .three-card-grid{
+        grid-template-columns: repeat(2, minmax(180px, 240px));
+      }
+
+      .three-card-grid .card-slot:last-child{
+        grid-column: 1 / -1;
+        justify-self: center;
+      }
+
+      .celtic-layout{
+        min-height: auto;
+        display: none;
+      }
+
+      .celtic-layout.active{
+        display: grid;
+        grid-template-columns: repeat(2, minmax(180px, 240px));
+        gap: 18px;
+        justify-content: center;
+        align-items: start;
+      }
+
+      .celtic-center,
+      .celtic-column{
+        position: static;
+        width: auto;
+        height: auto;
+        display: contents;
+      }
+
+      .celtic-center .slot1,
+      .celtic-center .slot2,
+      .celtic-center .slot3,
+      .celtic-center .slot4,
+      .celtic-center .slot5,
+      .celtic-center .slot6{
+        position: static;
+        transform: none;
+      }
+
+      .celtic-layout .c-slot{
+        justify-self: center;
+      }
+
+      .celtic-layout .c-slot:last-child{
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 700px){
+      .page{ padding-left: 10px; padding-right: 10px; }
+
+      .three-card-grid,
+      .celtic-layout.active{
+        grid-template-columns: 1fr;
+      }
+
+      .three-card-grid .card-slot:last-child,
+      .celtic-layout .c-slot:last-child{
+        grid-column: auto;
+      }
+
+      .oracle-card,
+      .c-slot .oracle-card,
+      .celtic-center .c-slot .oracle-card{
+        width: min(76vw, 230px);
+      }
+
+      .position-label,
+      .card-name{ max-width: min(82vw, 260px); }
+
+      .mist-ring{ width: 92vw; height: 92vw; }
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="foxfire" style="left:7%; bottom:5%; animation-duration:8s; animation-delay:0s;"></div>
-<div class="foxfire" style="left:18%; bottom:10%; animation-duration:10s; animation-delay:1.5s;"></div>
-<div class="foxfire" style="left:33%; bottom:7%; animation-duration:9s; animation-delay:0.5s;"></div>
-<div class="foxfire" style="left:49%; bottom:8%; animation-duration:11s; animation-delay:2s;"></div>
-<div class="foxfire" style="left:66%; bottom:6%; animation-duration:9.5s; animation-delay:1s;"></div>
-<div class="foxfire" style="left:81%; bottom:9%; animation-duration:8.5s; animation-delay:2.5s;"></div>
-
-<div class="page">
-
-<div id="home-screen" class="panel">
-<h1>Fox Wisdom Oracle</h1>
-<div class="subtitle">@Dolphintouch (Michelle Billiau-Morseu)</div>
-
-<img src="fox-home.jpg" class="home-image" alt="Fox Wisdom Oracle">
-
-<p>
-Pause for a moment.<br>
-Ask your question.<br>
-Choose the reading that calls to you.
-</p>
-
-<div class="button-row">
-<button class="button" onclick="showSingle()">Single Card</button>
-<button class="button" onclick="showThree()">Three Card Spread</button>
-<button class="button" onclick="showDaily()">Daily Fox Message</button>
-<button class="button" onclick="toggleSound()">Forest Sound On / Off</button>
-</div>
-
-<div class="footer-credit">Fox Wisdom Oracle © Dolphintouch</div>
-</div>
-
-<div id="single-screen" class="hidden panel">
-<h1>Single Card Reading</h1>
-<div class="subtitle">@Dolphintouch (Michelle Billiau-Morseu)</div>
-<p>Tap the deck to shuffle and reveal your fox message.</p>
-
-<div class="card-area">
-<div id="single-mist" class="mist"></div>
-<div id="single-stack" class="card-stack">
-<img id="single-c1" class="card stack-card stack-1" src="card back.jpg" alt="">
-<img id="single-c2" class="card stack-card stack-2" src="card back.jpg" alt="">
-<img id="single-c3" class="card stack-card stack-3" src="card back.jpg" alt="" onclick="drawSingle()">
-</div>
-</div>
-
-<div class="share-row">
-<button class="button" onclick="shareCard('single')">Share This Card</button>
-</div>
-
-<div class="button-row">
-<button class="button" onclick="resetSingle()">Shuffle Again</button>
-<button class="button" onclick="goHome()">Back</button>
-</div>
-
-<div class="footer-credit">Fox Wisdom Oracle © Dolphintouch</div>
-</div>
-
-<div id="three-screen" class="hidden panel">
-<h1>Three Card Spread</h1>
-<div class="subtitle">@Dolphintouch (Michelle Billiau-Morseu)</div>
-<p>Tap each deck to shuffle and reveal your message.</p>
-
-<div class="card-row">
-
-<div>
-<div class="label">Past</div>
-<div class="card-area" style="min-height:430px;">
-<div id="past-mist" class="mist"></div>
-<div id="past-stack" class="card-stack small">
-<img id="past-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
-<img id="past-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
-<img id="past-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('past')">
-</div>
-</div>
-</div>
-
-<div>
-<div class="label">Present</div>
-<div class="card-area" style="min-height:430px;">
-<div id="present-mist" class="mist"></div>
-<div id="present-stack" class="card-stack small">
-<img id="present-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
-<img id="present-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
-<img id="present-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('present')">
-</div>
-</div>
-</div>
-
-<div>
-<div class="label">Future</div>
-<div class="card-area" style="min-height:430px;">
-<div id="future-mist" class="mist"></div>
-<div id="future-stack" class="card-stack small">
-<img id="future-c1" class="card small-card stack-card stack-1" src="card back.jpg" alt="">
-<img id="future-c2" class="card small-card stack-card stack-2" src="card back.jpg" alt="">
-<img id="future-c3" class="card small-card stack-card stack-3" src="card back.jpg" alt="" onclick="drawThree('future')">
-</div>
-</div>
-</div>
-
-</div>
-
-<div class="share-row">
-<button class="button" onclick="shareCard('past')">Share Past</button>
-<button class="button" onclick="shareCard('present')">Share Present</button>
-<button class="button" onclick="shareCard('future')">Share Future</button>
-</div>
-
-<div class="button-row">
-<button class="button" onclick="resetThree()">Shuffle Again</button>
-<button class="button" onclick="goHome()">Back</button>
-</div>
-
-<div class="footer-credit">Fox Wisdom Oracle © Dolphintouch</div>
-</div>
-
-<div id="daily-screen" class="hidden panel">
-<h1>Daily Fox Message</h1>
-<div class="subtitle">@Dolphintouch (Michelle Billiau-Morseu)</div>
-<p>Your fox message for today.</p>
-<div id="daily-date"></div>
-
-<div class="card-area">
-<div id="daily-mist" class="mist"></div>
-<div class="card-stack">
-<img id="daily-card" class="card" src="" alt="">
-</div>
-</div>
-
-<div class="share-row">
-<button class="button" onclick="shareCard('daily')">Share Daily Card</button>
-</div>
-
-<div class="button-row">
-<button class="button" onclick="showDaily()">Refresh</button>
-<button class="button" onclick="goHome()">Back</button>
-</div>
-
-<div class="footer-credit">Fox Wisdom Oracle © Dolphintouch</div>
-</div>
-
-</div>
-
-<audio id="forest-audio" loop>
-  <source src="forest.mp3.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-var cards = [
-"autumn wisdom.jpg",
-"crossing paths.jpg",
-"dancing shadows.jpg",
-"ember eyes.jpg",
-"fern shadows.jpg",
-"forest insitinct.jpg",
-"forest secrets.jpg",
-"fox fire.jpg",
-"gentle cunning.jpg",
-"hidden path.jpg",
-"hidden shelter.jpg",
-"moonlight trail.jpg",
-"moonlit watch.jpg",
-"morning tracks.jpg",
-"quiet observation.jpg",
-"quiet territory.jpg",
-"rustling leaves.jpg",
-"silent steps1.jpg",
-"the clever escape.jpg",
-"the clever plan.jpg",
-"the forest edge.jpg",
-"the guiding paw.jpg",
-"the hidden den.jpg",
-"the old trail.jpg",
-"the patient hunter.jpg",
-"the returning path.jpg",
-"the silent clearing.jpg",
-"the turning season.jpg",
-"the twilight path.jpg",
-"the wandering fox.jpg",
-"watcher.jpg",
-"the listening hollow.jpg"
-];
-
-var currentSingleCard = "";
-var currentPastCard = "";
-var currentPresentCard = "";
-var currentFutureCard = "";
-var currentDailyCard = "";
-
-function randomCard(){
-return cards[Math.floor(Math.random()*cards.length)];
-}
-
-function hideAll(){
-document.getElementById("home-screen").classList.add("hidden");
-document.getElementById("single-screen").classList.add("hidden");
-document.getElementById("three-screen").classList.add("hidden");
-document.getElementById("daily-screen").classList.add("hidden");
-}
-
-function goHome(){
-hideAll();
-document.getElementById("home-screen").classList.remove("hidden");
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function addClassAgain(el, className){
-el.classList.remove(className);
-void el.offsetWidth;
-el.classList.add(className);
-}
-
-function showMist(id){
-var mist = document.getElementById(id);
-addClassAgain(mist, "show");
-}
-
-function startForestSound(){
-var audio = document.getElementById("forest-audio");
-audio.volume = 0.15;
-audio.play().catch(function(){});
-}
-
-function toggleSound(){
-var audio = document.getElementById("forest-audio");
-if(audio.paused){
-audio.volume = 0.15;
-audio.play().catch(function(){});
-} else {
-audio.pause();
-}
-}
-
-function showSingle(){
-hideAll();
-document.getElementById("single-screen").classList.remove("hidden");
-resetSingle();
-startForestSound();
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function drawSingle(){
-var stack = document.getElementById("single-stack");
-var topCard = document.getElementById("single-c3");
-
-addClassAgain(stack, "deck-shuffle");
-
-setTimeout(function(){
-addClassAgain(topCard, "flip");
-}, 500);
-
-setTimeout(function(){
-currentSingleCard = randomCard();
-topCard.src = currentSingleCard;
-addClassAgain(topCard, "glow");
-showMist("single-mist");
-topCard.onclick = null;
-}, 850);
-}
-
-function resetSingle(){
-document.getElementById("single-c1").src = "card back.jpg";
-document.getElementById("single-c2").src = "card back.jpg";
-document.getElementById("single-c3").src = "card back.jpg";
-document.getElementById("single-c3").onclick = function(){ drawSingle(); };
-currentSingleCard = "";
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function showThree(){
-hideAll();
-document.getElementById("three-screen").classList.remove("hidden");
-resetThree();
-startForestSound();
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function drawThree(which){
-var stack = document.getElementById(which + "-stack");
-var topCard = document.getElementById(which + "-c3");
-
-addClassAgain(stack, "deck-shuffle");
-
-setTimeout(function(){
-addClassAgain(topCard, "flip");
-}, 500);
-
-setTimeout(function(){
-var chosen = randomCard();
-topCard.src = chosen;
-addClassAgain(topCard, "glow");
-showMist(which + "-mist");
-topCard.onclick = null;
-
-if(which === "past"){ currentPastCard = chosen; }
-if(which === "present"){ currentPresentCard = chosen; }
-if(which === "future"){ currentFutureCard = chosen; }
-
-}, 850);
-}
-
-function resetThree(){
-["past","present","future"].forEach(function(which){
-document.getElementById(which + "-c1").src = "card back.jpg";
-document.getElementById(which + "-c2").src = "card back.jpg";
-document.getElementById(which + "-c3").src = "card back.jpg";
-document.getElementById(which + "-c3").onclick = function(){ drawThree(which); };
-});
-
-currentPastCard = "";
-currentPresentCard = "";
-currentFutureCard = "";
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function getDailyCard(){
-var now = new Date();
-var key = now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
-var hash = 0;
-
-for(var i=0;i<key.length;i++){
-hash = key.charCodeAt(i) + ((hash << 5) - hash);
-}
-
-var index = Math.abs(hash) % cards.length;
-return cards[index];
-}
-
-function showDaily(){
-hideAll();
-document.getElementById("daily-screen").classList.remove("hidden");
-
-var today = new Date();
-document.getElementById("daily-date").textContent =
-today.toLocaleDateString(undefined, {
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
-});
-
-currentDailyCard = getDailyCard();
-var daily = document.getElementById("daily-card");
-daily.src = currentDailyCard;
-addClassAgain(daily, "glow");
-showMist("daily-mist");
-startForestSound();
-window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function getShareCard(type){
-if(type === "single"){ return currentSingleCard; }
-if(type === "past"){ return currentPastCard; }
-if(type === "present"){ return currentPresentCard; }
-if(type === "future"){ return currentFutureCard; }
-if(type === "daily"){ return currentDailyCard; }
-return "";
-}
-
-function shareCard(type){
-var chosen = getShareCard(type);
-if(!chosen){
-alert("Draw a card first.");
-return;
-}
-
-var cleanName = chosen.replace(".jpg","").replace(/1$/,"");
-var shareText = "My Fox Wisdom Oracle card: " + cleanName;
-var shareUrl = window.location.href;
-
-if(navigator.share){
-navigator.share({
-title:"Fox Wisdom Oracle",
-text:shareText,
-url:shareUrl
-}).catch(function(){});
-return;
-}
-
-var pinterestUrl = "https://pinterest.com/pin/create/button/?url=" + encodeURIComponent(shareUrl) + "&description=" + encodeURIComponent(shareText);
-window.open(pinterestUrl, "_blank");
-}
-</script>
-
+  <div id="fireflies"></div>
+
+  <audio id="forestAudio" loop>
+    <source src="forest-sounds.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="page">
+    <div class="hero">
+      <div class="brand">@Dolphintouch (Michelle Billiau-Morseu)</div>
+      <h1>Fox Wisdom Oracle</h1>
+      <p class="subtitle">
+        Step softly into the woodland and let the fox guide your way.
+        Draw a daily card, walk the Hidden Path, or journey through the
+        <strong>Ancient Forest Woodland Cross</strong> for a deeper reading.
+      </p>
+
+      <div class="top-actions">
+        <button onclick="drawDailyCard()">Daily Fox Message</button>
+        <button onclick="drawThreeCardSpread()">Hidden Path Spread</button>
+        <button onclick="drawAncientForestCross()">Ancient Forest Woodland Cross</button>
+        <button onclick="toggleSound()" id="soundBtn">Forest Sounds: Off</button>
+      </div>
+    </div>
+
+    <div class="info-bar" id="infoBar">
+      Choose a spread above. Breathe slowly, ask the fox spirit for guidance,
+      and trust the card that reveals itself.
+    </div>
+
+    <div class="spread-title" id="spreadTitle">The Woodland Awaits</div>
+    <div class="spread-subtitle" id="spreadSubtitle">
+      Every path begins with stillness. Let the fox move first.
+    </div>
+
+    <div class="reading-note" id="readingNote">
+      Tip: On mobile, scroll slowly after drawing your cards so each message has space to breathe.
+    </div>
+
+    <div class="spread-wrap">
+      <div class="mist-ring" id="mistRing"></div>
+
+      <div class="spread active" id="deckSpread">
+        <div class="deck-stage">
+          <div class="deck-stack" id="deckStack">
+            <div class="stack-card"></div>
+            <div class="stack-card"></div>
+            <div class="stack-card"></div>
+            <div class="stack-card"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spread" id="oneCardSpread">
+        <div class="cards-grid one-card-grid" id="oneCardGrid"></div>
+      </div>
+
+      <div class="spread" id="threeCardSpread">
+        <div class="cards-grid three-card-grid" id="threeCardGrid"></div>
+      </div>
+
+      <div class="celtic-layout" id="celticSpread"></div>
+    </div>
+
+    <div class="message-box" id="messageBox"></div>
+
+    <div class="bottom-actions">
+      <button onclick="reshuffleCurrent()">Shuffle Again</button>
+      <button onclick="scrollToTopSmooth()">Back to Top</button>
+    </div>
+
+    <footer>
+      Fox Wisdom Oracle © Dolphintouch<br>
+      Created by Michelle Billiau-Morseu
+    </footer>
+  </div>
+
+  <script>
+    const cards = [
+      { name: "Moonlit Trail", image: "cards/moonlit-trail.jpg", meaning: "A quiet path is opening before you. Move with trust, even if every step is not yet clear." },
+      { name: "Hidden Path", image: "cards/hidden-path.jpg", meaning: "There is more here than first appears. Look gently again and notice what has been concealed." },
+      { name: "Woodland Trickster", image: "cards/woodland-trickster.jpg", meaning: "Not every twist is a setback. Cleverness and flexibility will help you move through this moment." },
+      { name: "Quiet Observation", image: "cards/quiet-observation.jpg", meaning: "Pause before acting. The fox teaches that stillness often reveals what noise cannot." },
+      { name: "Winter Watch", image: "cards/winter-watch.jpg", meaning: "A season of patience may be needed. Guard your energy and prepare wisely for what comes next." },
+      { name: "Foxfire", image: "cards/foxfire.jpg", meaning: "A spark of inner light remains, even in uncertainty. Trust what glows quietly within you." },
+      { name: "The Listening Hollow", image: "cards/the-listening-hollow.jpg", meaning: "Retreat for a moment and listen deeply. The answer may arrive in silence rather than movement." },
+      { name: "Rustling Leaves", image: "cards/rustling-leaves.jpg", meaning: "Small signs are speaking. Pay attention to little changes, whispers, and subtle movement around you." },
+      { name: "Crossing Paths", image: "cards/crossing-paths.jpg", meaning: "A meeting, choice, or turning point is near. Stay alert to who or what crosses your way." },
+      { name: "The Old Trail", image: "cards/the-old-trail.jpg", meaning: "Something from the past still carries wisdom. Honor what has been learned, but do not remain lost there." },
+      { name: "Fern Shadows", image: "cards/fern-shadows.jpg", meaning: "You do not need to reveal everything yet. Some growth happens safely in private spaces." },
+      { name: "The Turning Season", image: "cards/the-turning-season.jpg", meaning: "Change is already underway. Let yourself shift with the rhythm instead of resisting it." },
+      { name: "Gentle Cunning", image: "cards/gentle-cunning.jpg", meaning: "Use wisdom over force. A soft, thoughtful approach may carry you further than struggle." },
+      { name: "The Forest Edge", image: "cards/the-forest-edge.jpg", meaning: "You stand between what was and what may become. This is a threshold moment." },
+      { name: "Hidden Shelter", image: "cards/hidden-shelter.jpg", meaning: "Protection is near. Rest, recover, and gather your strength before stepping outward again." },
+      { name: "The Clever Escape", image: "cards/the-clever-escape.jpg", meaning: "There is a way through. Think sideways, not straight ahead, and a solution may reveal itself." },
+      { name: "Morning Tracks", image: "cards/morning-tracks.jpg", meaning: "Fresh evidence appears with a new day. Look for signs of movement, progress, or quiet confirmation." },
+      { name: "Autumn Wisdom", image: "cards/autumn-wisdom.jpg", meaning: "Release what is no longer yours to carry. In letting go, deeper wisdom gathers." },
+      { name: "Quiet Territory", image: "cards/quiet-territory.jpg", meaning: "Protect your peace. Not every space should be opened to everyone." },
+      { name: "Moonlit Watch", image: "cards/moonlit-watch.jpg", meaning: "Trust your night vision. Even in emotional darkness, your instincts remain awake." },
+      { name: "The Wandering Fox", image: "cards/the-wandering-fox.jpg", meaning: "Exploration has purpose. A detour may lead you to wisdom you could not reach directly." },
+      { name: "Forest Secrets", image: "cards/forest-secrets.jpg", meaning: "Some truths are revealed only with patience. Let the forest show you what is ready to be known." },
+      { name: "The Clever Plan", image: "cards/the-clever-plan.jpg", meaning: "Strategy matters now. Think ahead, notice patterns, and trust your ability to outmaneuver confusion." },
+      { name: "Woodland Courage", image: "cards/woodland-courage.jpg", meaning: "True courage is not loud. It is the brave heart that protects what matters and stands quietly firm." },
+      { name: "The Silent Clearing", image: "cards/the-silent-clearing.jpg", meaning: "A calm space is opening around you. Use it to hear your own spirit more clearly." },
+      { name: "The Hidden Den", image: "cards/the-hidden-den.jpg", meaning: "Nurture what is precious in private. Not all growth needs to be seen to be real." },
+      { name: "Dancing Shadows", image: "cards/dancing-shadows.jpg", meaning: "Things may seem uncertain or shifting, but movement does not always mean danger. Watch before reacting." },
+      { name: "Protecting the Den", image: "cards/protecting-the-den.jpg", meaning: "You are being called to defend what matters most with calm strength and devotion." },
+      { name: "The Patient Hunter", image: "cards/the-patient-hunter.jpg", meaning: "Timing is everything. Let patience become part of your power." },
+      { name: "Ember Eyes", image: "cards/ember-eyes.jpg", meaning: "There is quiet intensity beneath the surface. Your focus holds more power than you realize." }
+    ];
+
+    const dailySeedKey = "foxWisdomDailyDate";
+    const dailyCardKey = "foxWisdomDailyCard";
+    let currentSpread = "deck";
+    let currentCards = [];
+    let soundOn = false;
+
+    const oneCardLabels = ["Today’s Fox Guidance"];
+    const threeCardLabels = [
+      "What You May Not Yet See",
+      "What Path Is Opening",
+      "The Wisdom of the Fox"
+    ];
+    const celticLabels = [
+      "1. The Present Path",
+      "2. The Crossing Challenge",
+      "3. The Hidden Roots",
+      "4. The Distant Past",
+      "5. The Fox’s Wisdom",
+      "6. The Near Future",
+      "7. Your Inner Self",
+      "8. The Forest Around You",
+      "9. Hopes and Fears",
+      "10. The Hidden Trail Ahead"
+    ];
+
+    const infoBar = document.getElementById("infoBar");
+    const spreadTitle = document.getElementById("spreadTitle");
+    const spreadSubtitle = document.getElementById("spreadSubtitle");
+    const readingNote = document.getElementById("readingNote");
+    const messageBox = document.getElementById("messageBox");
+    const deckStack = document.getElementById("deckStack");
+    const mistRing = document.getElementById("mistRing");
+    const oneCardGrid = document.getElementById("oneCardGrid");
+    const threeCardGrid = document.getElementById("threeCardGrid");
+    const celticSpread = document.getElementById("celticSpread");
+    const forestAudio = document.getElementById("forestAudio");
+    const soundBtn = document.getElementById("soundBtn");
+
+    function createFireflies(count = 18){
+      const holder = document.getElementById("fireflies");
+      holder.innerHTML = "";
+      for(let i = 0; i < count; i++){
+        const fly = document.createElement("span");
+        fly.className = "firefly";
+        fly.style.left = Math.random() * 100 + "vw";
+        fly.style.bottom = (-10 - Math.random() * 20) + "px";
+        fly.style.animationDuration = (12 + Math.random() * 16) + "s, " + (2.2 + Math.random() * 2.5) + "s";
+        fly.style.animationDelay = (Math.random() * 8) + "s";
+        holder.appendChild(fly);
+      }
+    }
+
+    function setActiveSpread(id){
+      document.querySelectorAll(".spread").forEach(el => el.classList.remove("active"));
+      document.getElementById("oneCardSpread").classList.remove("active");
+      document.getElementById("threeCardSpread").classList.remove("active");
+      document.getElementById("deckSpread").classList.remove("active");
+      celticSpread.classList.remove("active");
+
+      if(id === "celtic"){
+        celticSpread.classList.add("active");
+      } else {
+        document.getElementById(id).classList.add("active");
+      }
+    }
+
+    function shuffleArray(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getRandomCards(count){
+      return shuffleArray(cards).slice(0, count);
+    }
+
+    function startShuffleAnimation(){
+      setActiveSpread("deckSpread");
+      messageBox.classList.remove("show");
+      mistRing.classList.remove("show");
+      deckStack.classList.add("shuffling");
+    }
+
+    function stopShuffleAnimation(){
+      deckStack.classList.remove("shuffling");
+      mistRing.classList.add("show");
+    }
+
+    function createCardElement(card, label, delay = 0, extraClass = ""){
+      const slot = document.createElement("div");
+      slot.className = `card-slot ${extraClass}`.trim();
+
+      const position = document.createElement("div");
+      position.className = "position-label";
+      position.textContent = label;
+
+      const oracle = document.createElement("div");
+      oracle.className = "oracle-card";
+
+      const inner = document.createElement("div");
+      inner.className = "inner";
+
+      const back = document.createElement("div");
+      back.className = "face back";
+
+      const front = document.createElement("div");
+      front.className = "face front";
+      front.style.backgroundImage = `url('${card.image}')`;
+
+      inner.appendChild(back);
+      inner.appendChild(front);
+      oracle.appendChild(inner);
+
+      const name = document.createElement("div");
+      name.className = "card-name";
+      name.textContent = card.name;
+
+      slot.appendChild(position);
+      slot.appendChild(oracle);
+      slot.appendChild(name);
+
+      setTimeout(() => {
+        oracle.classList.add("show");
+        setTimeout(() => oracle.classList.add("flipped"), 180);
+      }, delay);
+
+      return slot;
+    }
+
+    function renderOneCard(card){
+      oneCardGrid.innerHTML = "";
+      oneCardGrid.appendChild(createCardElement(card, oneCardLabels[0], 60));
+      setActiveSpread("oneCardSpread");
+    }
+
+    function renderThreeCards(picks){
+      threeCardGrid.innerHTML = "";
+      picks.forEach((card, i) => {
+        threeCardGrid.appendChild(createCardElement(card, threeCardLabels[i], i * 220));
+      });
+      setActiveSpread("threeCardSpread");
+    }
+
+    function renderCelticCross(picks){
+      celticSpread.innerHTML = "";
+
+      const center = document.createElement("div");
+      center.className = "celtic-center";
+
+      for(let i = 0; i < 6; i++){
+        const slot = createCardElement(picks[i], celticLabels[i], i * 180, `c-slot slot${i+1}`);
+        center.appendChild(slot);
+      }
+
+      const column = document.createElement("div");
+      column.className = "celtic-column";
+      for(let i = 6; i < 10; i++){
+        column.appendChild(createCardElement(picks[i], celticLabels[i], i * 180, "c-slot"));
+      }
+
+      celticSpread.appendChild(center);
+      celticSpread.appendChild(column);
+      setActiveSpread("celtic");
+    }
+
+    function showMessageBox(title, html, shareText = ""){
+      const encoded = encodeURIComponent(shareText || title);
+      const pageUrl = encodeURIComponent(window.location.href);
+      messageBox.innerHTML = `
+        <h3>${title}</h3>
+        ${html}
+        <div class="share-row">
+          <a class="share-link" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${encoded}">Share to Facebook</a>
+          <a class="share-link" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/button/?url=${pageUrl}&description=${encoded}">Share to Pinterest</a>
+        </div>
+      `;
+      messageBox.classList.add("show");
+    }
+
+    function getTodayString(){
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function getDailyCard(){
+      const today = getTodayString();
+      const savedDate = localStorage.getItem(dailySeedKey);
+      const savedIndex = localStorage.getItem(dailyCardKey);
+
+      if(savedDate === today && savedIndex !== null && cards[Number(savedIndex)]){
+        return cards[Number(savedIndex)];
+      }
+
+      const index = Math.floor(Math.random() * cards.length);
+      localStorage.setItem(dailySeedKey, today);
+      localStorage.setItem(dailyCardKey, index.toString());
+      return cards[index];
+    }
+
+    function drawDailyCard(){
+      currentSpread = "daily";
+      startShuffleAnimation();
+      infoBar.textContent = "The fox reveals one message to carry with you through the day.";
+      spreadTitle.textContent = "Daily Fox Message";
+      spreadSubtitle.textContent = "One card. One whisper. One path to notice today.";
+      readingNote.textContent = "This daily message remains the same on this device until midnight.";
+
+      const card = getDailyCard();
+      currentCards = [card];
+
+      setTimeout(() => {
+        stopShuffleAnimation();
+        renderOneCard(card);
+        showMessageBox(
+          card.name,
+          `<p><strong>Message:</strong> ${card.meaning}</p><p>Let this fox wisdom travel beside you throughout the day.</p>`,
+          `My Daily Fox Message is '${card.name}' from the Fox Wisdom Oracle.`
+        );
+      }, 1100);
+    }
+
+    function drawThreeCardSpread(){
+      currentSpread = "three";
+      startShuffleAnimation();
+      infoBar.textContent = "The Hidden Path Spread reveals what is unseen, what is opening, and the wisdom the fox wants you to carry.";
+      spreadTitle.textContent = "The Hidden Path Spread";
+      spreadSubtitle.textContent = "A three-card woodland reading for insight, direction, and quiet guidance.";
+      readingNote.textContent = "Read from left to right and notice how the cards speak to one another.";
+
+      const picks = getRandomCards(3);
+      currentCards = picks;
+
+      setTimeout(() => {
+        stopShuffleAnimation();
+        renderThreeCards(picks);
+        showMessageBox(
+          "Your Hidden Path Reading",
+          `
+            <p><strong>${threeCardLabels[0]}:</strong> <em>${picks[0].name}</em> — ${picks[0].meaning}</p>
+            <p><strong>${threeCardLabels[1]}:</strong> <em>${picks[1].name}</em> — ${picks[1].meaning}</p>
+            <p><strong>${threeCardLabels[2]}:</strong> <em>${picks[2].name}</em> — ${picks[2].meaning}</p>
+          `,
+          `My Hidden Path Fox reading: ${picks.map(c => c.name).join(", ")}.`
+        );
+      }, 1200);
+    }
+
+    function drawAncientForestCross(){
+      currentSpread = "celtic";
+      startShuffleAnimation();
+      infoBar.textContent = "The Ancient Forest Woodland Cross offers a deeper ten-card journey through the roots, branches, and hidden trail of your situation.";
+      spreadTitle.textContent = "The Ancient Forest Woodland Cross";
+      spreadSubtitle.textContent = "A deep woodland spread for crossing challenges, inner truth, and the path unfolding ahead.";
+      readingNote.textContent = "Begin with the center cards, then move upward and outward, finishing with the right-hand woodland column.";
+
+      const picks = getRandomCards(10);
+      currentCards = picks;
+
+      setTimeout(() => {
+        stopShuffleAnimation();
+        renderCelticCross(picks);
+
+        const summary = picks.map((card, i) => {
+          return `<p><strong>${celticLabels[i]}:</strong> <em>${card.name}</em> — ${card.meaning}</p>`;
+        }).join("");
+
+        showMessageBox(
+          "Your Ancient Forest Woodland Cross",
+          summary,
+          `My Ancient Forest Woodland Cross reading from Fox Wisdom Oracle: ${picks.map(c => c.name).join(", ")}.`
+        );
+      }, 1400);
+    }
+
+    function reshuffleCurrent(){
+      if(currentSpread === "daily"){
+        drawDailyCard();
+      } else if(currentSpread === "three"){
+        drawThreeCardSpread();
+      } else if(currentSpread === "celtic"){
+        drawAncientForestCross();
+      } else {
+        drawDailyCard();
+      }
+    }
+
+    function scrollToTopSmooth(){
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function toggleSound(){
+      try {
+        if(!soundOn){
+          await forestAudio.play();
+          soundOn = true;
+          soundBtn.textContent = "Forest Sounds: On";
+        } else {
+          forestAudio.pause();
+          forestAudio.currentTime = 0;
+          soundOn = false;
+          soundBtn.textContent = "Forest Sounds: Off";
+        }
+      } catch (err) {
+        alert("Your browser may require you to interact with the page before audio can play.");
+      }
+    }
+
+    createFireflies();
+    setInterval(() => createFireflies(18), 26000);
+  </script>
 </body>
 </html>
