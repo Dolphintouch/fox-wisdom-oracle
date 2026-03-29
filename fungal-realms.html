@@ -1,1 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whispers of the Fungal Realms</title>
+  <style>
+    :root {
+      --bg1: #06131a;
+      --bg2: #0f2a2f;
+      --glow: #7df3e6;
+      --glow-soft: rgba(125, 243, 230, 0.28);
+      --mushroom: #c9a5ff;
+      --pink: #ff8cd7;
+      --text: #eef8f7;
+      --muted: #c8e4df;
+      --panel: rgba(8, 25, 28, 0.66);
+      --border: rgba(173, 255, 244, 0.22);
+    }
 
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 140, 215, 0.08), transparent 20%),
+        radial-gradient(circle at 80% 10%, rgba(125, 243, 230, 0.14), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(201, 165, 255, 0.12), transparent 28%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .spores,
+    .spores::before,
+    .spores::after {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background-image:
+        radial-gradient(circle, rgba(125, 243, 230, 0.85) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(201, 165, 255, 0.7) 0 1.5px, transparent 3px),
+        radial-gradient(circle, rgba(255, 140, 215, 0.55) 0 1.5px, transparent 3px);
+      background-size: 180px 180px, 240px 240px, 320px 320px;
+      animation: drift 32s linear infinite;
+      opacity: 0.45;
+      z-index: 0;
+    }
+
+    .spores::before {
+      animation-duration: 46s;
+      transform: scale(1.1);
+      opacity: 0.28;
+    }
+
+    .spores::after {
+      animation-duration: 60s;
+      transform: scale(1.2);
+      opacity: 0.18;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(-120px); }
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 22px 18px 0;
+    }
+
+    .topbar {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      letter-spacing: 0.06em;
+      font-size: 0.92rem;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav a,
+    .button,
+    button {
+      border: 1px solid var(--border);
+      background: rgba(9, 30, 35, 0.5);
+      color: var(--text);
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.25s ease;
+      box-shadow: 0 0 18px rgba(125, 243, 230, 0.05);
+    }
+
+    .nav a:hover,
+    .button:hover,
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 22px rgba(125, 243, 230, 0.18);
+      background: rgba(15, 41, 46, 0.9);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 26px;
+      align-items: center;
+      min-height: 70vh;
+    }
+
+    .panel {
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 0 40px rgba(125, 243, 230, 0.09);
+    }
+
+    .hero-copy {
+      padding: 34px;
+    }
+
+    .eyebrow {
+      color: #bffbf5;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 14px;
+      line-height: 1.1;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.7rem);
+      text-shadow: 0 0 24px rgba(125, 243, 230, 0.16);
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .hero-card {
+      position: relative;
+      aspect-ratio: 3 / 4.1;
+      overflow: hidden;
+      padding: 16px;
+      display: flex;
+      align-items: end;
+      min-height: 520px;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(125, 243, 230, 0.26), transparent 22%),
+        radial-gradient(circle at 40% 32%, rgba(201, 165, 255, 0.18), transparent 18%),
+        linear-gradient(180deg, rgba(25, 76, 78, 0.35), rgba(4, 17, 18, 0.88)),
+        url('fungal-cover.jpg') center/cover no-repeat;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5, 18, 20, 0.12), rgba(5, 18, 20, 0.82));
+    }
+
+    .hero-card-text {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(6, 22, 26, 0.58);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .section {
+      margin-top: 34px;
+      padding: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .mini-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(8, 28, 31, 0.6);
+      border: 1px solid rgba(173, 255, 244, 0.14);
+      min-height: 180px;
+    }
+
+    .mini-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .draw-wrap {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .draw-card {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      background:
+        radial-gradient(circle at center, rgba(125,243,230,0.18), rgba(7,22,25,0.9));
+    }
+
+    .draw-card::before {
+      content: "Tap to receive a message";
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      color: #d7fffb;
+      opacity: 0.8;
+    }
+
+    .mushroom-icon {
+      font-size: 5rem;
+      filter: drop-shadow(0 0 18px rgba(125, 243, 230, 0.25));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 0.92; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
+
+    .draw-message {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .draw-message .card-name {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #efffff;
+      margin-bottom: 10px;
+    }
+
+    .keywords {
+      color: #bafbf0;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .quote {
+      font-style: italic;
+      color: #f1fffc;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .guidebook {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .footer {
+      margin-top: 34px;
+      text-align: center;
+      color: #cde8e2;
+      font-size: 0.95rem;
+      opacity: 0.86;
+    }
+
+    .small {
+      font-size: 0.95rem;
+      color: #cce5df;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .draw-wrap,
+      .guidebook {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="spores"></div>
+
+  <header>
+    <div class="topbar">
+      <a class="brand" href="index.html">← Back to Fox Wisdom Oracle</a>
+      <nav class="nav">
+        <a href="#draw">Daily Draw</a>
+        <a href="#spread">Three-Card Spread</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#guidebook">Guidebook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="panel hero-copy">
+        <div class="eyebrow">Dolphintouch • Mushroom Trip Oracle</div>
+        <h1>Whispers of the<br>Fungal Realms</h1>
+        <p>
+          Step into a glowing forest of spores, symbols, dream paths, and hidden knowing.
+          This page is inspired by your oracle book and built as a sister realm to your Fox Wisdom site.
+        </p>
+        <p>
+          Let the mushrooms guide you through intuition, transformation, mystery, and cosmic connection.
+          Breathe deeply. Wander softly. Choose the message meant for you.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#draw">Draw a Card</a>
+          <a class="button" href="#spread">Three-Card Spread</a>
+          <a class="button" href="#guidebook">Open the Guidebook Section</a>
+          <button id="audioToggle" type="button">Forest Sound: Off</button>
+        </div>
+      </div>
+
+      <div class="panel hero-card">
+        <div class="hero-card-text">
+          <div class="eyebrow">A Journey Through the Mushroom Trip Oracle</div>
+          <h2 style="margin-bottom:10px;">Hidden paths. Glowing wisdom. Dreamlike messages.</h2>
+          <p class="small" style="margin:0;">
+            Replace <strong>fungal-cover.jpg</strong> with one of your book or card images for the perfect front-page glow.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="panel section">
+      <h2>About This Realm</h2>
+      <p>
+        In this enchanted fungal world, mushrooms become messengers of transformation, intuition, cycles, inner vision, mystery, and spiritual growth.
+        The page below includes a daily card draw and a guidebook-style section you can expand later with more cards, images, or a full flipbook.
+      </p>
+      <div class="grid">
+        <article class="mini-card">
+          <h3>The Forest Breathes Wisdom</h3>
+          <p>Enter slowly. Messages reveal themselves in stillness, symbols, and quiet wonder.</p>
+        </article>
+        <article class="mini-card">
+          <h3>Growth Begins in the Dark</h3>
+          <p>Like mycelium beneath the soil, change is often forming long before it can be seen.</p>
+        </article>
+        <article class="mini-card">
+          <h3>Every Spore Holds a Story</h3>
+          <p>Each draw offers a reflection, a threshold, and a softly glowing invitation inward.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="draw" class="panel section">
+      <h2>Daily Fungal Message</h2>
+      <p>Tap the glowing card to receive a message from the fungal realms.</p>
+      <div class="draw-wrap">
+        <div class="panel draw-card" id="drawCard" aria-label="Draw a fungal realms card" role="button" tabindex="0">
+          <div>
+            <div class="mushroom-icon">🍄</div>
+            <p style="margin-top:14px;">The spores are waiting…</p>
+          </div>
+        </div>
+
+        <div class="panel draw-message" id="messageBox">
+          <div class="card-name">The Spore Bearer</div>
+          <div class="keywords">New Beginnings • Potential • Trust in the Unknown</div>
+          <div class="quote">“I release my dreams into the universe, trusting they will find their way.”</div>
+          <p>
+            The Spore Bearer appears when something quiet but powerful is beginning in your life.
+            Trust what is forming beneath the surface. Not everything needs to be visible to be real.
+          </p>
+          <p class="small">Tap the card again to draw another message.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="spread" class="panel section">
+      <h2>Three-Card Fungal Spread</h2>
+      <p>Tap below to reveal a Past, Present, and Future spread from the glowing realms.</p>
+      <div class="hero-actions" style="margin-bottom:18px;">
+        <button id="spreadButton">Reveal Three Cards</button>
+      </div>
+      <div class="grid" id="spreadGrid">
+        <article class="mini-card">
+          <h3>Past</h3>
+          <p>The old spores of your journey sleep here until you reveal them.</p>
+        </article>
+        <article class="mini-card">
+          <h3>Present</h3>
+          <p>The current pulse of the fungal realms will bloom here.</p>
+        </article>
+        <article class="mini-card">
+          <h3>Future</h3>
+          <p>The next threshold waits beneath the moss and glow.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery" class="panel section">
+      <h2>Fungal Gallery</h2>
+      <p>A place for your mushroom card art, book images, or gallery previews.</p>
+      <div class="grid">
+        <article class="mini-card"><h3>Card Art One</h3><p>Add one of your mushroom card images here.</p></article>
+        <article class="mini-card"><h3>Card Art Two</h3><p>Add another glowing fungal realm image here.</p></article>
+        <article class="mini-card"><h3>Guidebook Page</h3><p>Add a guidebook page preview or a buy link here.</p></article>
+      </div>
+    </section>
+
+    <section id="guidebook" class="panel section">
+      <h2>Guidebook Glimpses</h2>
+      <div class="guidebook">
+        <div>
+          <h3>Ways to expand this page</h3>
+          <p>
+            You can turn this into a full guidebook page later by adding a flipbook, extra card galleries, a three-card spread,
+            or links to buy the deck and book.
+          </p>
+          <p>
+            You can also add ambient forest audio, drifting fireflies, or a mushroom gallery just like the feeling of your Fox Wisdom site.
+          </p>
+        </div>
+        <div>
+          <h3>Suggested file names</h3>
+          <p class="small">
+            <strong>fungal-realms.html</strong><br>
+            <strong>fungal-cover.jpg</strong><br>
+            <strong>fungal-bg.jpg</strong> (optional if you want a custom background)<br>
+            <strong>fungal-forest.mp3</strong> (optional ambient sound)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Whispers of the Fungal Realms © Dolphintouch
+    </div>
+  </main>
+
+    <audio id="forestAudio" loop>
+    <source src="fungal-forest.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const cards = [
+      {
+        name: "The Spore Bearer",
+        keywords: "New Beginnings • Potential • Trust in the Unknown",
+        quote: "I release my dreams into the universe, trusting they will find their way.",
+        message: "The Spore Bearer appears when something quiet but powerful is beginning in your life. Trust what is forming beneath the surface. Not everything needs to be visible to be real."
+      },
+      {
+        name: "The Elder Cap",
+        keywords: "Wisdom • Ancient Knowledge • Patience",
+        quote: "I honor the ancient wisdom within me and trust the patient unfolding of my path.",
+        message: "Slow down and listen. The answers you seek are shaped by time, experience, and the older rhythms of life. Let wisdom rise rather than forcing clarity."
+      },
+      {
+        name: "The Dreamcap",
+        keywords: "Imagination • Intuition • Inner Visions",
+        quote: "I trust the visions of my heart and allow imagination to guide me to new possibilities.",
+        message: "Dreams, flashes of insight, and strange beauty are speaking to you. Give yourself permission to trust the language of symbols and inner knowing."
+      },
+      {
+        name: "The Cosmic Cap",
+        keywords: "Expansion • Altered Perception • Cosmic Awareness",
+        quote: "I open my mind to the infinite wisdom of the universe.",
+        message: "Your awareness is widening. Let go of rigid thinking and allow possibility, wonder, and mystery to guide your next steps."
+      },
+      {
+        name: "The Fractal Forest",
+        keywords: "Infinite Possibilities • Patterns • Limitless Perception",
+        quote: "I see the infinite patterns of the universe and trust their wisdom.",
+        message: "Life may look tangled right now, but meaning is forming through repetition. Notice what keeps returning. A deeper pattern wants to be seen."
+      },
+      {
+        name: "The Cosmic Mycelium",
+        keywords: "Universal Connection • Collective Consciousness • Interdependence",
+        quote: "I am connected to all life, and my energy flows through the infinite web of existence.",
+        message: "You are more supported than you realize. Reach toward community, nature, and the unseen threads linking your life to something greater."
+      },
+      {
+        name: "The Dreamwalker",
+        keywords: "Exploration • Inner Journey • Spiritual Travel",
+        quote: "I trust the wisdom of my dreams and walk fearlessly through the landscapes of my soul.",
+        message: "An inner path is opening. Let your soul travel gently through memory, dream, imagination, and intuition. You do not need logic for every truth."
+      },
+      {
+        name: "The White Light of Love",
+        keywords: "Universal Love • Divine Connection • Oneness",
+        quote: "I am a radiant thread in the web of universal love. I give and receive with an open heart.",
+        message: "Love is moving through your life in seen and unseen ways. Let it soften what fear has tightened. Let it remind you that you are not separate."
+      }
+    ];
+
+    const drawCard = document.getElementById('drawCard');
+    const messageBox = document.getElementById('messageBox');
+    const spreadButton = document.getElementById('spreadButton');
+    const spreadGrid = document.getElementById('spreadGrid');
+    const forestAudio = document.getElementById('forestAudio');
+    const audioToggle = document.getElementById('audioToggle');
+
+    function renderCard(card) {
+      messageBox.innerHTML = `
+        <div class="card-name">${card.name}</div>
+        <div class="keywords">${card.keywords}</div>
+        <div class="quote">“${card.quote}”</div>
+        <p>${card.message}</p>
+        <p class="small">Tap the card again to draw another message.</p>
+      `;
+    }
+
+    function getRandomCard() {
+      return cards[Math.floor(Math.random() * cards.length)];
+    }
+
+    function randomCard() {
+      renderCard(getRandomCard());
+    }
+
+    function renderSpread() {
+      const chosen = [...cards].sort(() => 0.5 - Math.random()).slice(0, 3);
+      const labels = ['Past', 'Present', 'Future'];
+      spreadGrid.innerHTML = chosen.map((card, i) => `
+        <article class="mini-card">
+          <h3>${labels[i]} — ${card.name}</h3>
+          <p><strong>${card.keywords}</strong></p>
+          <p>${card.message}</p>
+        </article>
+      `).join('');
+    }
+
+    drawCard.addEventListener('click', randomCard);
+    drawCard.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        randomCard();
+      }
+    });
+
+    spreadButton.addEventListener('click', renderSpread);
+
+    audioToggle.addEventListener('click', async () => {
+      if (forestAudio.paused) {
+        try {
+          await forestAudio.play();
+          audioToggle.textContent = 'Forest Sound: On';
+        } catch (err) {
+          audioToggle.textContent = 'Audio unavailable';
+        }
+      } else {
+        forestAudio.pause();
+        audioToggle.textContent = 'Forest Sound: Off';
+      }
+    });
+  </script>
+</body>
+</html>
