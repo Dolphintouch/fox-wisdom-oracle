@@ -15,75 +15,68 @@ body {
   text-align: center;
 }
 
-/* Overlay for soft mystical feel */
 .overlay {
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.6);
   min-height: 100vh;
   padding: 40px 20px;
 }
 
-/* Title */
 h1 {
   font-size: 48px;
-  margin-bottom: 10px;
 }
 
-/* Subtitle text */
 .subtitle {
-  font-size: 18px;
-  line-height: 1.6;
   margin-bottom: 30px;
+  line-height: 1.6;
 }
 
-/* Card styling */
 .card {
   width: 260px;
   border-radius: 15px;
-  box-shadow: 0 0 30px rgba(255, 215, 150, 0.35);
+  box-shadow: 0 0 30px rgba(255,215,150,0.4);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: 0.3s;
 }
 
 .card:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 45px rgba(255, 215, 150, 0.6);
 }
 
-/* Hidden section */
 .hidden {
   display: none;
 }
 
-/* Buttons */
+.meaning {
+  margin-top: 20px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
 button {
-  margin-top: 25px;
-  padding: 12px 26px;
-  border: none;
+  margin-top: 15px;
+  padding: 12px 25px;
   border-radius: 25px;
+  border: none;
   background: linear-gradient(45deg, #e6c07b, #d4af37);
-  color: black;
-  font-size: 16px;
   cursor: pointer;
+  font-size: 15px;
 }
 
-/* Footer buttons row */
 .button-row {
-  margin-top: 40px;
-}
-
-.button-row a {
-  text-decoration: none;
+  margin-top: 30px;
 }
 
 .button-row button {
-  margin: 5px;
+  margin: 6px;
 }
 
-/* Tagline */
 .tagline {
   margin-top: 25px;
   font-style: italic;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 </style>
@@ -109,11 +102,11 @@ onclick="drawCard()">
 <!-- DRAWN CARD -->
 <div id="cardSection" class="hidden">
   <img id="cardImage" class="card">
-  <br>
+  <div id="cardMeaning" class="meaning"></div>
   <button onclick="drawCard()">Draw Another Message</button>
 </div>
 
-<!-- BUTTON ROW -->
+<!-- BUTTONS -->
 <div class="button-row">
 
 <a href="index.html">
@@ -128,43 +121,68 @@ onclick="drawCard()">
 
 <p class="tagline">Bring the journey home</p>
 
+<!-- AMAZON BUTTON -->
+<a href="https://www.amazon.com/dp/B0FR151M9T" target="_blank">
+<button>Buy the Book on Amazon</button>
+</a>
+
 </div>
 
 <script>
 
-const cards = [
+const deck = [
 
-"carry the light.jpg",
-"come back to the heart.jpg",
-"come sit with me.jpg",
-"i am part of you now.jpg",
-"i speak in whispers.jpg",
-"i stepped back because i love you.jpg",
-"i walk beside you still.jpg",
-"i want you to live fully.jpg",
-"light a candle for me.jpg",
-"the signs were real.jpg",
-"the thread still holds.jpg",
-"what you build from here.jpg",
-"white-light-of-love.jpg",
-"you are the light now.jpg",
-"you dont have to try so hard.jpg",
-"you were never without me.jpg",
-"you were there at the end.jpg",
-"your laughter still echoes.jpg",
-"youre not making it up.jpg",
-"youve become the safe place.jpg"
+{img:"carry the light.jpg", text:"Carry the love forward. It still lives through you."},
+
+{img:"come back to the heart.jpg", text:"Return to love. That is where you will always find me."},
+
+{img:"come sit with me.jpg", text:"Be still. Sit with me in the quiet."},
+
+{img:"i am part of you now.jpg", text:"I am part of you now. We are not separate."},
+
+{img:"i speak in whispers.jpg", text:"Listen softly. I reach you in quiet ways."},
+
+{img:"i stepped back because i love you.jpg", text:"I stepped back so you could grow. That was love."},
+
+{img:"i walk beside you still.jpg", text:"I walk beside you. Always."},
+
+{img:"i want you to live fully.jpg", text:"Live fully. That is how you honour me."},
+
+{img:"light a candle for me.jpg", text:"Create a moment. I meet you there."},
+
+{img:"the signs were real.jpg", text:"You were right. The signs were real."},
+
+{img:"the thread still holds.jpg", text:"The connection has never broken."},
+
+{img:"what you build from here.jpg", text:"Your future still matters. Keep going."},
+
+{img:"white-light-of-love.jpg", text:"Love surrounds you. Always."},
+
+{img:"you are the light now.jpg", text:"You carry the light forward now."},
+
+{img:"you dont have to try so hard.jpg", text:"You are already enough."},
+
+{img:"you were never without me.jpg", text:"I was always there."},
+
+{img:"you were there at the end.jpg", text:"You gave love when it mattered most."},
+
+{img:"your laughter still echoes.jpg", text:"Joy still connects us."},
+
+{img:"youre not making it up.jpg", text:"Trust what you feel."},
+
+{img:"youve become the safe place.jpg", text:"You have become something strong and beautiful."}
 
 ];
 
 function drawCard() {
 
-  const randomCard = cards[Math.floor(Math.random() * cards.length)];
+  const card = deck[Math.floor(Math.random() * deck.length)];
 
   document.getElementById("welcomeCard").style.display = "none";
   document.getElementById("cardSection").classList.remove("hidden");
 
-  document.getElementById("cardImage").src = randomCard;
+  document.getElementById("cardImage").src = card.img;
+  document.getElementById("cardMeaning").innerText = card.text;
 
 }
 
