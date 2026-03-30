@@ -663,9 +663,9 @@
     </div>
 
     <div class="button-row">
-      <button onclick="startReading('daily')">Daily Message</button>
-      <button onclick="startReading('three')">Three Card Spread</button>
-      <button onclick="startReading('bridge')">Sacred Bridge Spread</button>
+      <button onclick="startReading('daily')">Daily Reading</button>
+      <button onclick="startReading('three')">Three Card Reading</button>
+      <button onclick="startReading('cross')">Special Cross Reading</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
     </div>
 
@@ -818,21 +818,6 @@
       return available[Math.floor(Math.random() * available.length)];
     }
 
-    function activateWelcomeMagic() {
-      const welcomeCard = document.getElementById("mainDeckCard");
-      const welcomeMist = document.getElementById("welcomeMist");
-
-      if (welcomeMist) {
-        welcomeMist.classList.add("active");
-        setTimeout(() => welcomeMist.classList.remove("active"), 1200);
-      }
-
-      if (welcomeCard) {
-        welcomeCard.classList.add("shuffling");
-        setTimeout(() => welcomeCard.classList.remove("shuffling"), 2400);
-      }
-    }
-
     function revealMessagePanel() {
       const messageBox = document.getElementById("messageBox");
       messageBox.classList.remove("fade-in");
@@ -969,7 +954,7 @@
 
     function drawDailyCard() {
       const dailyCard = getRandomCard();
-      showSingleCard(dailyCard, "Daily Message");
+      showSingleCard(dailyCard, "Daily Reading");
     }
 
     function drawThreeCardSpread() {
@@ -977,25 +962,25 @@
       const second = getRandomCard([first.title]);
       const third = getRandomCard([first.title, second.title]);
 
-      showMultiCardSpread("Three Card Spread", [
+      showMultiCardSpread("Three Card Reading", [
         { position: "What your heart needs", card: first },
         { position: "What your loved one wants you to know", card: second },
         { position: "What is healing now", card: third }
       ]);
     }
 
-    function drawSacredBridgeSpread() {
+    function drawSpecialCrossReading() {
       const picked = [];
       while (picked.length < 5) {
         const card = getRandomCard(picked.map(c => c.title));
         picked.push(card);
       }
 
-      showMultiCardSpread("Sacred Bridge Spread", [
+      showMultiCardSpread("Special Cross Reading", [
         { position: "Where you are now", card: picked[0] },
-        { position: "What is asking for trust", card: picked[1] },
+        { position: "What is beneath the surface", card: picked[1] },
         { position: "How love is reaching you", card: picked[2] },
-        { position: "What you can soften", card: picked[3] },
+        { position: "What you can release", card: picked[3] },
         { position: "What carries forward", card: picked[4] }
       ]);
     }
@@ -1004,11 +989,21 @@
       if (isDrawing) return;
       isDrawing = true;
 
-      const dailyCard = getRandomCard();
-      activateWelcomeMagic();
+      const welcomeCard = document.getElementById("mainDeckCard");
+      const welcomeMist = document.getElementById("welcomeMist");
+
+      if (welcomeMist) {
+        welcomeMist.classList.add("active");
+        setTimeout(() => welcomeMist.classList.remove("active"), 1200);
+      }
+
+      if (welcomeCard) {
+        welcomeCard.classList.add("shuffling");
+        setTimeout(() => welcomeCard.classList.remove("shuffling"), 2400);
+      }
 
       setTimeout(() => {
-        showSingleCard(dailyCard, "Daily Message");
+        drawDailyCard();
         setTimeout(() => {
           isDrawing = false;
         }, 1200);
@@ -1030,8 +1025,8 @@
           drawDailyCard();
         } else if (type === "three") {
           drawThreeCardSpread();
-        } else if (type === "bridge") {
-          drawSacredBridgeSpread();
+        } else if (type === "cross") {
+          drawSpecialCrossReading();
         }
 
         setTimeout(() => {
