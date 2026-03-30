@@ -691,7 +691,7 @@
       <img
         id="mainDeckCard"
         class="welcome-card"
-        src="between-you-and-them-welcome-page.jpg"
+        src="fox-welcome-page.jpg"
         alt="Tap to draw your message"
         onclick="drawDailyCardFromCard()"
       >
@@ -874,7 +874,7 @@
 
     function revealCardImage(imgElement, imageSrc, altText, showMessageAfter = false) {
       imgElement.classList.remove("reveal");
-      imgElement.src = "bridge-card-back.jpg";
+      imgElement.src = "card back.jpg";
       imgElement.alt = "Between You and Them card back";
 
       setTimeout(() => {
@@ -900,7 +900,7 @@
         };
 
         tempImg.onerror = () => {
-          imgElement.src = "bridge-card-back.jpg";
+          imgElement.src = "card back.jpg";
           imgElement.alt = "Image not found";
           imgElement.classList.add("reveal");
           showTailSwish();
@@ -922,7 +922,7 @@
         <div class="card-area">
           <div class="mist"></div>
           <div id="tailSwish" class="tail-swish">✨</div>
-          <img id="mainCard" class="oracle-card" src="bridge-card-back.jpg" alt="Between You and Them card back">
+          <img id="mainCard" class="oracle-card" src="card back.jpg" alt="Between You and Them card back">
         </div>
       `;
     }
@@ -957,7 +957,7 @@
             <h3>${item.position}</h3>
             <div class="card-area">
               <div class="mist"></div>
-              <img id="spreadCard${index}" class="oracle-card" src="bridge-card-back.jpg" alt="Between You and Them card back">
+              <img id="spreadCard${index}" class="oracle-card" src="card back.jpg" alt="Between You and Them card back">
             </div>
           </div>
         `;
