@@ -5,54 +5,101 @@
 <title>Between You and Them Oracle</title>
 
 <style>
+
 body {
   margin: 0;
   font-family: Georgia, serif;
   background: url('forest-bg.jpg') no-repeat center center fixed;
   background-size: cover;
-  color: white;
+  color: #f5f0e6;
   text-align: center;
 }
 
-.container {
+/* Overlay for soft mystical feel */
+.overlay {
+  background: rgba(0,0,0,0.55);
+  min-height: 100vh;
   padding: 40px 20px;
 }
 
+/* Title */
+h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+/* Subtitle text */
+.subtitle {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Card styling */
 .card {
   width: 260px;
   border-radius: 15px;
-  box-shadow: 0 0 25px rgba(255,255,255,0.3);
+  box-shadow: 0 0 30px rgba(255, 215, 150, 0.35);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 45px rgba(255, 215, 150, 0.6);
 }
 
+/* Hidden section */
 .hidden {
   display: none;
 }
 
+/* Buttons */
 button {
-  margin-top: 20px;
-  padding: 12px 25px;
+  margin-top: 25px;
+  padding: 12px 26px;
   border: none;
   border-radius: 25px;
-  background: linear-gradient(45deg, gold, #d4af37);
+  background: linear-gradient(45deg, #e6c07b, #d4af37);
   color: black;
   font-size: 16px;
   cursor: pointer;
 }
+
+/* Footer buttons row */
+.button-row {
+  margin-top: 40px;
+}
+
+.button-row a {
+  text-decoration: none;
+}
+
+.button-row button {
+  margin: 5px;
+}
+
+/* Tagline */
+.tagline {
+  margin-top: 25px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="overlay">
 
 <h1>Between You and Them</h1>
-<p>Pause. Breathe. Ask… and receive.</p>
+
+<p class="subtitle">
+Your love is the bridge.<br>
+And it has never broken.<br><br>
+When you are ready, choose your message.
+</p>
 
 <!-- WELCOME CARD -->
 <img id="welcomeCard" class="card"
@@ -63,8 +110,23 @@ onclick="drawCard()">
 <div id="cardSection" class="hidden">
   <img id="cardImage" class="card">
   <br>
-  <button onclick="drawCard()">Draw Again</button>
+  <button onclick="drawCard()">Draw Another Message</button>
 </div>
+
+<!-- BUTTON ROW -->
+<div class="button-row">
+
+<a href="index.html">
+<button>Return Home</button>
+</a>
+
+<a href="guidebook.html">
+<button>Open Guidebook</button>
+</a>
+
+</div>
+
+<p class="tagline">Bring the journey home</p>
 
 </div>
 
