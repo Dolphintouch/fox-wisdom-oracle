@@ -241,7 +241,7 @@
       flex-wrap:wrap;
       justify-content:center;
       gap:10px;
-      margin:20px auto 28px;
+      margin:20px auto 18px;
       max-width:950px;
     }
 
@@ -261,6 +261,120 @@
     button:hover{
       transform:translateY(-2px);
       box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
+    }
+
+    .shop-invite{
+      margin:10px auto 14px;
+      font-size:1.25rem;
+      color:#f3ead0;
+      text-shadow:
+        0 0 8px rgba(196, 172, 96, 0.28),
+        0 0 16px rgba(196, 172, 96, 0.12),
+        0 1px 4px rgba(0,0,0,0.45);
+      font-style:italic;
+      letter-spacing:0.4px;
+      max-width:780px;
+    }
+
+    .shop-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:14px;
+      margin:0 auto 30px;
+      max-width:1000px;
+    }
+
+    .link-button{
+      position:relative;
+      display:inline-block;
+      padding:14px 24px;
+      border-radius:999px;
+      text-decoration:none;
+      font-family:Georgia, serif;
+      font-size:1rem;
+      color:#f8f4e6;
+      background:
+        linear-gradient(
+          to bottom,
+          #7d7350 0%,
+          #6b6241 24%,
+          #564e35 50%,
+          #4a442d 72%,
+          #3f3a27 100%
+        );
+      border:1px solid rgba(210,190,126,0.42);
+      box-shadow:
+        0 0 0 1px rgba(225,205,145,0.10),
+        0 8px 18px rgba(0,0,0,0.30),
+        0 0 10px rgba(200,175,95,0.15),
+        0 0 22px rgba(200,175,95,0.10),
+        inset 0 1px 0 rgba(255,245,210,0.18),
+        inset 0 -2px 6px rgba(18,20,14,0.28);
+      transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        filter 0.22s ease;
+      overflow:hidden;
+      min-width:220px;
+      letter-spacing:0.2px;
+    }
+
+    .link-button::before{
+      content:"";
+      position:absolute;
+      top:-60%;
+      left:-35%;
+      width:38%;
+      height:220%;
+      background:linear-gradient(
+        to right,
+        rgba(255,255,255,0),
+        rgba(233,219,172,0.28),
+        rgba(255,255,255,0)
+      );
+      transform:rotate(18deg);
+      pointer-events:none;
+    }
+
+    .link-button::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:999px;
+      box-shadow:0 0 14px rgba(191,167,96,0.12);
+      opacity:0.9;
+      pointer-events:none;
+    }
+
+    .link-button:hover{
+      transform:translateY(-3px) scale(1.03);
+      filter:brightness(1.06);
+      box-shadow:
+        0 0 0 1px rgba(225,205,145,0.15),
+        0 12px 24px rgba(0,0,0,0.34),
+        0 0 14px rgba(200,175,95,0.24),
+        0 0 28px rgba(200,175,95,0.14),
+        inset 0 1px 0 rgba(255,245,210,0.26),
+        inset 0 -2px 6px rgba(18,20,14,0.32);
+    }
+
+    .link-button:hover::before{
+      animation:goldSheen 1.2s ease;
+    }
+
+    @keyframes goldSheen{
+      0%{
+        left:-35%;
+        opacity:0;
+      }
+      20%{
+        opacity:1;
+      }
+      100%{
+        left:120%;
+        opacity:0;
+      }
     }
 
     .reading-stage{
@@ -521,7 +635,8 @@
         min-height:360px;
       }
 
-      button{
+      button,
+      .link-button{
         width:100%;
         max-width:360px;
       }
@@ -589,6 +704,14 @@
       <button onclick="window.location.href='guidebook.html'">Fox Guidebook</button>
       <button onclick="window.location.href='fungal-realms.html'">🍄 Fungal Realms</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
+    </div>
+
+    <div class="shop-invite">Bring the journey home</div>
+
+    <div class="shop-links">
+      <a class="link-button" href="https://www.amazon.com/dp/B0GSWQJ65W" target="_blank">
+        Buy the Book on Amazon
+      </a>
     </div>
 
     <div class="reading-stage">
