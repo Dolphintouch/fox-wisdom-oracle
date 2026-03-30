@@ -242,11 +242,12 @@
       flex-wrap:wrap;
       justify-content:center;
       gap:10px;
-      margin:20px auto 28px;
+      margin:20px auto 18px;
       max-width:950px;
     }
 
-    button{
+    button,
+    .link-button{
       border:none;
       padding:13px 20px;
       border-radius:999px;
@@ -257,11 +258,23 @@
       cursor:pointer;
       box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
       transition:transform 0.18s ease, box-shadow 0.18s ease;
+      text-decoration:none;
+      display:inline-block;
     }
 
-    button:hover{
+    button:hover,
+    .link-button:hover{
       transform:translateY(-2px);
       box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
+    }
+
+    .shop-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:12px;
+      margin:0 auto 30px;
+      max-width:950px;
     }
 
     .reading-stage{
@@ -493,7 +506,8 @@
         min-height:360px;
       }
 
-      button{
+      button,
+      .link-button{
         width:100%;
         max-width:360px;
       }
@@ -554,6 +568,15 @@
       <button onclick="startReading('cross')">Sacred Mycelium Cross</button>
       <button onclick="window.location.href='index.html'">Fox Home</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
+    </div>
+
+    <div class="shop-links">
+      <a class="link-button" href="https://www.amazon.com/dp/B0DXP8T9DQ" target="_blank">
+        Buy the Book on Amazon
+      </a>
+      <a class="link-button" href="https://www.printerstudio.com/sell/designs/whispers-of-the-fungal-realms-a-journey-through-the-mushroom-trip-oracle.html" target="_blank">
+        Buy the Cards on PrinterStudio
+      </a>
     </div>
 
     <div class="reading-stage">
