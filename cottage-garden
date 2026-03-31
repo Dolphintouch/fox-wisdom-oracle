@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Cottage Garden Oracle</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #f7f1e8;
+      background: #111;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(20, 14, 10, 0.45), rgba(10, 8, 7, 0.62)),
+        url('cottage-garden-bg.jpg') center/cover no-repeat;
+      z-index: -3;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 224, 160, 0.08), rgba(0, 0, 0, 0.3));
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .mist {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255, 240, 210, 0.08), transparent 30%),
+        radial-gradient(circle at 80% 50%, rgba(255, 230, 180, 0.06), transparent 26%),
+        radial-gradient(circle at 45% 80%, rgba(255, 245, 230, 0.06), transparent 28%);
+      filter: blur(18px);
+      animation: driftMist 18s ease-in-out infinite alternate;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @keyframes driftMist {
+      from { transform: translateX(-10px) translateY(0px) scale(1); }
+      to { transform: translateX(10px) translateY(-12px) scale(1.05); }
+    }
+
+    .fireflies {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .firefly {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 228, 140, 0.95);
+      box-shadow: 0 0 10px rgba(255, 215, 110, 0.95), 0 0 22px rgba(255, 215, 110, 0.55);
+      animation: floatFirefly linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatFirefly {
+      0% {
+        transform: translateY(100vh) translateX(0) scale(0.8);
+        opacity: 0;
+      }
+      15% { opacity: 0.9; }
+      50% {
+        transform: translateY(45vh) translateX(24px) scale(1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-10vh) translateX(-20px) scale(0.85);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: min(1100px, 92%);
+      margin: 0 auto;
+      padding: 42px 0 70px;
+    }
+
+    .welcome-screen,
+    .main-site {
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .welcome-screen.hidden,
+    .main-site.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      position: absolute;
+      inset: 0;
+    }
+
+    .welcome-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .welcome-card {
+      width: min(540px, 95%);
+      background: rgba(42, 29, 20, 0.58);
+      border: 1px solid rgba(255, 228, 175, 0.3);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34), 0 0 30px rgba(255, 220, 160, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .welcome-image {
+      width: 100%;
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+      margin-bottom: 22px;
+    }
+
+    .welcome-card h1 {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      font-weight: normal;
+      color: #fff3dc;
+      text-shadow: 0 0 10px rgba(255, 226, 162, 0.35);
+      margin-bottom: 14px;
+    }
+
+    .welcome-card p {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: #f7ead7;
+      margin-bottom: 22px;
+    }
+
+    .enter-btn,
+    .action-btn,
+    .shop-btn,
+    .draw-btn,
+    .spread-btn {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-family: Georgia, "Times New Roman", serif;
+      cursor: pointer;
+      color: #2f1f10;
+      background: linear-gradient(135deg, #fbe8b2, #e8bb63);
+      box-shadow: 0 0 16px rgba(255, 210, 110, 0.3), 0 8px 18px rgba(0, 0, 0, 0.22);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+
+    .enter-btn:hover,
+    .action-btn:hover,
+    .shop-btn:hover,
+    .draw-btn:hover,
+    .spread-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 20px rgba(255, 219, 130, 0.42), 0 10px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    header {
+      text-align: center;
+      padding-top: 30px;
+      padding-bottom: 24px;
+    }
+
+    .title {
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      font-weight: normal;
+      color: #fff3df;
+      text-shadow: 0 0 12px rgba(255, 221, 163, 0.25);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: #f2e5d1;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 26px auto 18px;
+    }
+
+    .reading-panel,
+    .result-panel,
+    .link-panel,
+    .about-panel {
+      background: rgba(43, 31, 24, 0.54);
+      border: 1px solid rgba(255, 231, 186, 0.22);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(8px);
+      margin-top: 24px;
+    }
+
+    .reading-panel h2,
+    .result-panel h2,
+    .link-panel h2,
+    .about-panel h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: normal;
+      margin-bottom: 12px;
+      color: #fff0d4;
+    }
+
+    .reading-panel p,
+    .about-panel p,
+    .result-panel p {
+      text-align: center;
+      line-height: 1.75;
+      color: #f1e6d9;
+      max-width: 760px;
+      margin: 0 auto 18px;
+    }
+
+    .draw-controls {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .cards-area {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    .card-shell {
+      text-align: center;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      perspective: 1100px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.9s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32), 0 0 20px rgba(255, 214, 127, 0.1);
+      border: 1px solid rgba(255, 232, 194, 0.2);
+    }
+
+    .card-back {
+      background:
+        linear-gradient(rgba(41, 27, 19, 0.18), rgba(41, 27, 19, 0.18)),
+        url('cottage-card-back.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card-back span {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255, 244, 225, 0.16);
+      color: #fff7e8;
+      text-shadow: 0 0 8px rgba(255, 223, 165, 0.35);
+      font-size: 1.05rem;
+      line-height: 1.5;
+      border: 1px solid rgba(255, 230, 184, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .card-front {
+      background: #1d150f;
+      transform: rotateY(180deg);
+    }
+
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-glow {
+      animation: revealGlow 1.8s ease;
+    }
+
+    @keyframes revealGlow {
+      0% { box-shadow: 0 0 0 rgba(255, 216, 115, 0), 0 0 0 rgba(255, 216, 115, 0); }
+      50% { box-shadow: 0 0 24px rgba(255, 216, 115, 0.45), 0 0 60px rgba(255, 216, 115, 0.28); }
+      100% { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32), 0 0 20px rgba(255, 214, 127, 0.1); }
+    }
+
+    .card-text {
+      margin-top: 14px;
+      padding: 0 6px;
+    }
+
+    .card-text h3 {
+      font-size: 1.24rem;
+      color: #fff0d5;
+      font-weight: normal;
+      margin-bottom: 8px;
+    }
+
+    .card-role {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #f6dca4;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .card-text p {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      color: #f3e8d8;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .message-box {
+      margin-top: 10px;
+      font-style: italic;
+      color: #ffe9be;
+    }
+
+    .shop-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .shop-btn {
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 26px;
+      color: #e9dbc6;
+      font-size: 0.96rem;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        width: min(94%, 1100px);
+        padding-top: 26px;
+      }
+
+      .reading-panel,
+      .result-panel,
+      .link-panel,
+      .about-panel,
+      .welcome-card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .subtitle,
+      .welcome-card p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mist"></div>
+  <div class="fireflies" id="fireflies"></div>
+
+  <div class="container">
+    <section class="welcome-screen" id="welcomeScreen">
+      <div class="welcome-wrap">
+        <div class="welcome-card">
+          <img src="welcome-archway.jpg" alt="Garden archway welcome image" class="welcome-image">
+          <h1>Step Into the Garden</h1>
+          <p>
+            The old paths remember…<br>
+            Walk gently, and the garden will speak.<br><br>
+            Enter a twilight world of cottage folklore, whispered omens, protective charms,
+            and blooming old-world magic.
+          </p>
+          <button class="enter-btn" id="enterGardenBtn">Enter the Garden</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-site hidden" id="mainSite">
+      <header>
+        <h1 class="title">The Cottage Garden Oracle</h1>
+        <p class="subtitle">
+          Whispers of folklore, omens, blessings, and quiet magic from the old ways —
+          gathered among ivy, foxgloves, garden paths, and the hush of twilight.
+        </p>
+      </header>
+
+      <section class="reading-panel">
+        <h2>Choose Your Reading</h2>
+        <p>
+          Sit quietly for a moment. Breathe. When you are ready, let the garden reveal the guidance waiting for you.
+        </p>
+        <div class="draw-controls">
+          <button class="draw-btn" id="drawOneBtn">Draw a Card</button>
+          <button class="spread-btn" id="drawThreeBtn">Three-Card Spread</button>
+        </div>
+      </section>
+
+      <section class="result-panel" id="resultPanel">
+        <h2>The Garden Reveals…</h2>
+        <p id="readingIntro">Choose a reading above and your cards will appear here.</p>
+        <div class="cards-area" id="cardsArea"></div>
+      </section>
+
+      <section class="link-panel">
+        <h2>Bring the garden home</h2>
+        <div class="shop-buttons">
+          <a class="shop-btn" href="https://www.amazon.com/" target="_blank" rel="noopener noreferrer">View the Book</a>
+          <a class="shop-btn" href="https://www.printerstudio.com/sell/dolphintouchm-shop" target="_blank" rel="noopener noreferrer">Shop the Cards</a>
+          <a class="shop-btn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">Visit My Website</a>
+        </div>
+      </section>
+
+      <section class="about-panel">
+        <h2>About This Oracle</h2>
+        <p>
+          Inspired by old English sayings, superstitions, garden folklore, and the soft mystery of cottage paths,
+          this oracle invites reflection through symbols of luck, protection, caution, renewal, and enchantment.
+        </p>
+        <p>
+          From black cats and broken mirrors to hawthorn, primrose paths, rowan, and foxgloves,
+          each card offers a small doorway into the old ways — and the wisdom still blooming there.
+        </p>
+        <div class="footer-note">
+          Created by Michelle Billiau-Morseu · Dolphintouch
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const cards = [
+      {
+        name: "Walking Under a Ladder",
+        image: "walking-under-a-ladder.jpg",
+        meaning: "Pause before stepping forward. Not every shortcut is wise, and some paths ask for greater care.",
+        message: "Step back, reflect, and choose your next move with awareness.",
+        roleMeanings: {
+          single: "A caution card. Slow down and consider what may be disrupted if you rush.",
+          past: "A recent choice or risk may still be echoing through your present.",
+          present: "You are being asked to notice unseen consequences before moving ahead.",
+          future: "A situation ahead may need patience, not impulse. Let wisdom lead."
+        }
+      },
+      {
+        name: "Black Cats Crossing Your Path",
+        image: "black-cat-crossing-your-path.jpg",
+        meaning: "Luck is shifting. What seems uncertain may be a blessing in disguise.",
+        message: "Trust your instincts. Not every shadow is a warning.",
+        roleMeanings: {
+          single: "A sign that fate is moving around you. Stay open and observant.",
+          past: "An unexpected encounter or twist has shaped your present course.",
+          present: "You are in a moment of shifting luck. Courage and intuition matter now.",
+          future: "A mysterious opportunity may arrive. Welcome it carefully, but do not fear it."
+        }
+      },
+      {
+        name: "Spilled Salt",
+        image: "spilled-salt.jpg",
+        meaning: "Small troubles can grow if ignored, but simple acts can restore balance.",
+        message: "Tend to the little things before they become larger burdens.",
+        roleMeanings: {
+          single: "A reminder to correct small imbalances while they are still easy to mend.",
+          past: "A minor misunderstanding or tension may still be lingering.",
+          present: "Restore harmony now. A small adjustment could change everything.",
+          future: "Be mindful of avoidable conflict. Prevention will be more powerful than repair."
+        }
+      },
+      {
+        name: "A Broken Mirror",
+        image: "broken-mirror.jpg",
+        meaning: "A moment for reflection, accountability, and careful self-honesty.",
+        message: "What needs to be acknowledged can also be healed.",
+        roleMeanings: {
+          single: "This card asks for introspection. Look clearly at patterns you are ready to change.",
+          past: "Something painful or disruptive has altered how you see yourself or your path.",
+          present: "Face what is cracked with gentleness and truth. Healing begins here.",
+          future: "Future growth will come through reflection, not avoidance."
+        }
+      },
+      {
+        name: "Opening an Umbrella Indoors",
+        image: "opening-an-umbrella-indoors.jpg",
+        meaning: "Guard the peace of your home, heart, and sacred spaces.",
+        message: "Do not invite chaos where calm is needed.",
+        roleMeanings: {
+          single: "Boundaries matter. Protect your energy and the atmosphere around you.",
+          past: "Outside stress may have already entered spaces that needed gentleness.",
+          present: "Restore peace. Your environment needs care and clearing.",
+          future: "Prevent avoidable disruption by honoring your limits early."
+        }
+      },
+      {
+        name: "Magpie Superstition",
+        image: "magpie-superstition.jpg",
+        meaning: "Emotion is shifting. Sorrow and joy both carry messages.",
+        message: "What you feel now can become wisdom, if you listen deeply.",
+        roleMeanings: {
+          single: "An emotional turning point. Honor what is leaving and what is arriving.",
+          past: "Recent emotional patterns have shaped how you see the world now.",
+          present: "You are invited to transform pain into insight — or joy into gratitude.",
+          future: "An emotional message is on its way. Receive it with openness."
+        }
+      },
+      {
+        name: "Horseshoes Over Doorways",
+        image: "horseshoes-over-doorways.jpg",
+        meaning: "Protection surrounds you. Blessings are gathering close.",
+        message: "Your home, heart, or spirit can be fortified with intention.",
+        roleMeanings: {
+          single: "A strong sign of protection, luck, and spiritual shelter.",
+          past: "You have already been carried through more than you realise.",
+          present: "This is a time to strengthen boundaries and trust your sanctuary.",
+          future: "Blessings and protection are moving toward you. Keep your door open to good."
+        }
+      },
+      {
+        name: "Knocking on Wood",
+        image: "knocking-on-wood.jpg",
+        meaning: "Ground yourself. Protection often begins with simple acts of faith.",
+        message: "You are safer than your fear is telling you.",
+        roleMeanings: {
+          single: "A call to ground, steady, and reconnect with protective forces.",
+          past: "You have already sought reassurance or spiritual support in quiet ways.",
+          present: "Now is the time to center yourself and trust the support around you.",
+          future: "A need for steadying will arise. Return to simple, grounding rituals."
+        }
+      },
+      {
+        name: "A Bird Flying Into the House",
+        image: "bird-flying-into-house.jpg",
+        meaning: "A major shift is approaching. Endings may make way for renewal.",
+        message: "Release what is ready to leave so new life may enter.",
+        roleMeanings: {
+          single: "A messenger of change. Something is transitioning in your life.",
+          past: "An ending or deep change has shaped your current threshold.",
+          present: "You are standing in the doorway between what was and what will be.",
+          future: "A powerful transition is ahead. Meet it with grace, not fear."
+        }
+      },
+      {
+        name: "Friday the 13th",
+        image: "friday-the-13th.jpg",
+        meaning: "Do not let fear cloud your wisdom. Caution and insight can walk together.",
+        message: "Move with care, but do not hand your power to superstition.",
+        roleMeanings: {
+          single: "An atmosphere of uncertainty, but also heightened intuition.",
+          past: "Fear or tension may have shaped recent choices.",
+          present: "Pause and prepare, but trust that you can meet what comes.",
+          future: "A testing moment may arrive, asking for courage and calm."
+        }
+      },
+      {
+        name: "Finding a Four-Leaf Clover",
+        image: "four-leaf-clover.jpg",
+        meaning: "A rare blessing or beautiful opportunity is near.",
+        message: "Keep your heart open to unexpected gifts.",
+        roleMeanings: {
+          single: "A card of luck, hope, and rare alignment.",
+          past: "A hidden blessing has already helped bring you here.",
+          present: "Something special may be unfolding in quiet ways right now.",
+          future: "Good fortune is approaching. Receive it with gratitude."
+        }
+      },
+      {
+        name: "Hearing an Owl Call at Night",
+        image: "hearing-an-owl-call.jpg",
+        meaning: "A message is approaching. Listen closely to intuition and signs.",
+        message: "Wisdom often arrives in stillness and shadow.",
+        roleMeanings: {
+          single: "A revelation card. Something important wants to be heard.",
+          past: "Inner knowing has already tried to guide you toward this moment.",
+          present: "Be still. Guidance is speaking now.",
+          future: "A truth or sign will soon appear. Stay attentive."
+        }
+      },
+      {
+        name: "Crossing Paths on the Stairs",
+        image: "crossing-paths-on-stairs.jpg",
+        meaning: "Small frictions may reveal deeper imbalances needing care.",
+        message: "Slow down before tension becomes conflict.",
+        roleMeanings: {
+          single: "A reminder to move carefully through relational or emotional tension.",
+          past: "A crossed path or misunderstanding may still be affecting you.",
+          present: "Take extra care with communication and timing.",
+          future: "A clash may be avoided if you lead with patience and awareness."
+        }
+      },
+      {
+        name: "Ladybird Landing on You",
+        image: "ladybird-landing-on-you.jpg",
+        meaning: "A sweet blessing, soft protection, and a little joy are finding you.",
+        message: "Let small moments of beauty count.",
+        roleMeanings: {
+          single: "A lucky card of joy, kindness, and receiving.",
+          past: "Something gentle has already offered more support than you realised.",
+          present: "Open your hands to life’s quiet blessings.",
+          future: "A bright, hopeful moment is on its way."
+        }
+      },
+      {
+        name: "Tea and Reflection",
+        image: "tea-and-reflection.jpg",
+        meaning: "Stillness will help you hear what noise cannot.",
+        message: "Pause. Wisdom often arrives when you stop chasing it.",
+        roleMeanings: {
+          single: "A deeply reflective card. Slow down and let clarity come.",
+          past: "You may have ignored a needed pause or quiet insight.",
+          present: "This is a moment for rest, contemplation, and softness.",
+          future: "Answers will come when you make room for peace."
+        }
+      },
+      {
+        name: "Cottage Gardens",
+        image: "cottage-gardens.jpg",
+        meaning: "Abundance grows in its own time. Let life bloom naturally.",
+        message: "Trust the winding path. It still leads somewhere beautiful.",
+        roleMeanings: {
+          single: "A card of natural growth, gentle abundance, and unfolding beauty.",
+          past: "Seeds have already been planted through your earlier efforts.",
+          present: "You are in a season of becoming. Let things grow without force.",
+          future: "Beauty will emerge from what now feels tangled or uncertain."
+        }
+      },
+      {
+        name: "Moss-Covered Ruins",
+        image: "moss-covered-ruins.jpg",
+        meaning: "Forgotten wisdom still lives beneath the surface.",
+        message: "Return to what was abandoned — something valuable remains there.",
+        roleMeanings: {
+          single: "An invitation to revisit memory, old dreams, or ancestral knowing.",
+          past: "Something left behind still influences your present quietly.",
+          present: "Now is the time to uncover lost insight or hidden history.",
+          future: "Answers will come through what you recover, not what you chase anew."
+        }
+      },
+      {
+        name: "Thatched Roof Cottages",
+        image: "thatched-roof-cottages.jpg",
+        meaning: "Nurture, comfort, and homely peace are needed now.",
+        message: "Rest is not weakness. It is how the soul repairs.",
+        roleMeanings: {
+          single: "A card of homecoming, safety, comfort, and care.",
+          past: "You may be longing for a feeling of home, rest, or belonging.",
+          present: "Tend to your inner world and your physical space with kindness.",
+          future: "A softer, more secure season is ahead if you allow yourself to receive it."
+        }
+      },
+      {
+        name: "As Sure as Eggs is Eggs",
+        image: "as-sure-as-eggs-is-eggs.jpg",
+        meaning: "Some things are already unfolding as they should.",
+        message: "Trust what is steady, natural, and quietly certain.",
+        roleMeanings: {
+          single: "A card of reassurance. What is meant for you is not slipping away.",
+          past: "Faith or patience has already carried you this far.",
+          present: "Release doubt. Something dependable is taking shape now.",
+          future: "What is meant to come will arrive in the right season."
+        }
+      },
+      {
+        name: "Don’t Count Your Chickens",
+        image: "dont-count-your-chickens.jpg",
+        meaning: "Let things develop before deciding the ending.",
+        message: "Patience protects hope from disappointment.",
+        roleMeanings: {
+          single: "A gentle warning against assumptions or rushing ahead.",
+          past: "Premature expectation may have shaped your current uncertainty.",
+          present: "Wait. More is still forming beneath the surface.",
+          future: "A good outcome is possible, but it needs time to fully emerge."
+        }
+      },
+      {
+        name: "April Showers Bring May Flowers",
+        image: "april-showers.jpg",
+        meaning: "Hardship is feeding future growth, even if you cannot yet see the bloom.",
+        message: "What hurts now may still be nurturing something beautiful.",
+        roleMeanings: {
+          single: "A hopeful card of renewal after struggle.",
+          past: "Recent difficulty has already begun preparing the ground for growth.",
+          present: "You are in a cleansing season. Do not lose heart.",
+          future: "Beauty and relief are ahead. Keep tending the soil of your life."
+        }
+      },
+      {
+        name: "Many a Mickle Makes a Muckle",
+        image: "many-a-mickle.jpg",
+        meaning: "Small efforts are building something meaningful.",
+        message: "Do not underestimate slow, steady progress.",
+        roleMeanings: {
+          single: "A card of persistence, quiet progress, and foundation-building.",
+          past: "What seemed small has already brought you further than you know.",
+          present: "Keep going. Consistency matters more than dramatic leaps.",
+          future: "Your steady devotion will become something substantial."
+        }
+      },
+      {
+        name: "There’s nowt so queer as folk",
+        image: "theres-nowt-so-queer-as-folk.jpg",
+        meaning: "Life is strange, varied, and richer for it.",
+        message: "Let difference teach you instead of unsettle you.",
+        roleMeanings: {
+          single: "A card of acceptance, openness, and honoring uniqueness.",
+          past: "A difficult difference may have shaped your present understanding.",
+          present: "Practice compassion — for yourself and for others.",
+          future: "An unexpected person or perspective may bring growth."
+        }
+      },
+      {
+        name: "Hawthorn Magic",
+        image: "hawthorn-magic.jpg",
+        meaning: "Protect what is sacred while staying open to wonder.",
+        message: "Boundaries and enchantment can live side by side.",
+        roleMeanings: {
+          single: "A powerful card of protection, sacred space, and mystical connection.",
+          past: "Your spirit has already been asking for stronger boundaries.",
+          present: "Guard your energy now. Something precious deserves protection.",
+          future: "Magic and guidance will come more clearly once your space is defended."
+        }
+      },
+      {
+        name: "Primrose Paths",
+        image: "primrose-paths.jpg",
+        meaning: "A lighter path may be the truer one.",
+        message: "Joy is also a form of wisdom.",
+        roleMeanings: {
+          single: "A card of playful beginnings, lightness, and open-hearted choice.",
+          past: "A forgotten joy may still be calling you back.",
+          present: "Let yourself choose with softness, not only duty.",
+          future: "A bright, hopeful path is opening ahead."
+        }
+      },
+      {
+        name: "Will-o’-the-Wisp",
+        image: "will-o-the-wisp.jpg",
+        meaning: "Not everything glowing is meant to be followed.",
+        message: "Look deeper before you trust appearances.",
+        roleMeanings: {
+          single: "A caution card about illusion, temptation, or confusion.",
+          past: "You may have been led by something that was not what it seemed.",
+          present: "Pause and question what is drawing you right now.",
+          future: "Discernment will protect you from a misleading path."
+        }
+      }
+    ];
+
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainSite = document.getElementById('mainSite');
+    const enterGardenBtn = document.getElementById('enterGardenBtn');
+    const drawOneBtn = document.getElementById('drawOneBtn');
+    const drawThreeBtn = document.getElementById('drawThreeBtn');
+    const cardsArea = document.getElementById('cardsArea');
+    const readingIntro = document.getElementById('readingIntro');
+
+    function createFireflies() {
+      const firefliesContainer = document.getElementById('fireflies');
+      for (let i = 0; i < 22; i++) {
+        const fly = document.createElement('div');
+        fly.className = 'firefly';
+        fly.style.left = Math.random() * 100 + 'vw';
+        fly.style.animationDuration = (10 + Math.random() * 10) + 's';
+        fly.style.animationDelay = (Math.random() * 10) + 's';
+        fly.style.opacity = (0.35 + Math.random() * 0.6).toFixed(2);
+        const size = 4 + Math.random() * 6;
+        fly.style.width = size + 'px';
+        fly.style.height = size + 'px';
+        firefliesContainer.appendChild(fly);
+      }
+    }
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function createCardElement(card, role = 'single', label = '') {
+      const shell = document.createElement('div');
+      shell.className = 'card-shell';
+
+      const roleText = label || (role === 'single' ? 'Card Drawn' : role.charAt(0).toUpperCase() + role.slice(1));
+      const bodyText = card.roleMeanings?.[role] || card.meaning;
+
+      shell.innerHTML = `
+        <div class="card card-glow">
+          <div class="card-inner">
+            <div class="card-face card-back">
+              <span>Tap to reveal<br>${card.name}</span>
+            </div>
+            <div class="card-face card-front">
+              <img src="${card.image}" alt="${card.name}">
+            </div>
+          </div>
+        </div>
+        <div class="card-text">
+          <div class="card-role">${roleText}</div>
+          <h3>${card.name}</h3>
+          <p>${bodyText}</p>
+          <p class="message-box">“${card.message}”</p>
+        </div>
+      `;
+
+      const cardElement = shell.querySelector('.card');
+      cardElement.addEventListener('click', () => {
+        cardElement.classList.toggle('flipped');
+      });
+
+      setTimeout(() => {
+        cardElement.classList.add('flipped');
+      }, 250);
+
+      return shell;
+    }
+
+    function drawSingleCard() {
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      cardsArea.innerHTML = '';
+      readingIntro.textContent = 'A single card has stepped forward from the twilight garden.';
+      cardsArea.appendChild(createCardElement(card, 'single', 'Garden Guidance'));
+    }
+
+    function drawThreeCards() {
+      const selected = shuffle(cards).slice(0, 3);
+      const roles = ['past', 'present', 'future'];
+      const labels = ['Past Root', 'Present Bloom', 'Future Path'];
+
+      cardsArea.innerHTML = '';
+      readingIntro.textContent = 'The garden has opened a three-card path for reflection: where you have been, where you stand, and what may be unfolding next.';
+
+      selected.forEach((card, index) => {
+        cardsArea.appendChild(createCardElement(card, roles[index], labels[index]));
+      });
+    }
+
+    enterGardenBtn.addEventListener('click', () => {
+      welcomeScreen.classList.add('hidden');
+      mainSite.classList.remove('hidden');
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 150);
+    });
+
+    drawOneBtn.addEventListener('click', drawSingleCard);
+    drawThreeBtn.addEventListener('click', drawThreeCards);
+
+    createFireflies();
+  </script>
+</body>
+</html>
