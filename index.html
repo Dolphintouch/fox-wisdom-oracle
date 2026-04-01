@@ -388,14 +388,6 @@
       margin-right:6px;
     }
 
-    .sparkle-btn::marker{
-      display:none;
-    }
-
-    .sparkle-btn::selection{
-      background:transparent;
-    }
-
     .sparkle-btn::before{
       content:"✨";
       position:absolute;
@@ -428,6 +420,46 @@
     .reading-stage{
       position:relative;
       margin-top:4px;
+    }
+
+    .spread-area{
+      display:none;
+      margin:24px auto 0;
+      max-width:1000px;
+    }
+
+    .spread-area.show{
+      display:block;
+    }
+
+    .cards-grid{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:22px;
+      margin-top:10px;
+    }
+
+    .card-slot{
+      width:min(220px, 84vw);
+      text-align:center;
+    }
+
+    .card-slot h3{
+      margin:0 0 12px;
+      font-size:1.02rem;
+      color:#f6e5d2;
+      text-shadow:0 1px 4px rgba(0,0,0,0.35);
+    }
+
+    .spread-card-img{
+      width:100%;
+      max-width:220px;
+      border-radius:18px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.14),
+        0 12px 24px rgba(0,0,0,0.28),
+        0 0 34px rgba(255,223,160,0.10);
     }
 
     .message-box{
@@ -481,66 +513,6 @@
       opacity:0.95;
     }
 
-    .overlay-book{
-      position:fixed;
-      inset:0;
-      background:rgba(10,15,10,0.85);
-      backdrop-filter:blur(6px);
-      -webkit-backdrop-filter:blur(6px);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-      padding:18px;
-    }
-
-    .overlay-content{
-      width:92%;
-      height:92%;
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow:
-        0 0 40px rgba(255, 220, 140, 0.25),
-        0 0 80px rgba(0, 0, 0, 0.6);
-      position:relative;
-      animation:fadeInOverlay 0.8s ease;
-      background:rgba(20,20,20,0.65);
-    }
-
-    .overlay-content iframe{
-      width:100%;
-      height:100%;
-      border:none;
-      background:#fff;
-    }
-
-    .close-overlay{
-      position:absolute;
-      top:10px;
-      right:16px;
-      font-size:26px;
-      color:#fff;
-      cursor:pointer;
-      z-index:2;
-      background:rgba(0,0,0,0.35);
-      width:38px;
-      height:38px;
-      line-height:36px;
-      border-radius:50%;
-      text-align:center;
-    }
-
-    @keyframes fadeInOverlay{
-      from{
-        opacity:0;
-        transform:scale(0.95);
-      }
-      to{
-        opacity:1;
-        transform:scale(1);
-      }
-    }
-
     @media (max-width:700px){
       body{
         padding:12px 10px;
@@ -558,11 +530,6 @@
 
       .message-box p{
         font-size:1rem;
-      }
-
-      .overlay-content{
-        width:96%;
-        height:88%;
       }
     }
   </style>
@@ -620,12 +587,17 @@
         Buy the Book on Amazon
       </a>
 
-      <a class="link-button sparkle-btn" onclick="openFoxBook()">
+      <a class="link-button sparkle-btn"
+         href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/fox-wisdom-oracle-book-5-125-x-8-25-in"
+         target="_blank"
+         rel="noopener noreferrer">
         <span class="sparkle-icon">✨</span>Step Into the Fox Book
       </a>
     </div>
 
     <div class="reading-stage">
+      <div id="spreadArea" class="spread-area"></div>
+
       <div id="messageBox" class="message-box">
         <h3 id="messageTitle">Your Fox Message</h3>
         <p id="messageText">Tap the card above to begin.</p>
@@ -634,13 +606,6 @@
 
     <div class="footer-note">
       Fox Wisdom Oracle © Dolphintouch
-    </div>
-  </div>
-
-  <div id="foxOverlay" class="overlay-book">
-    <div class="overlay-content">
-      <span class="close-overlay" onclick="closeFoxBook()">✕</span>
-      <iframe src="https://journey-through-the-mushroom-trip-oracle.my.canva.site/fox-wisdom-oracle-book-5-125-x-8-25-in"></iframe>
     </div>
   </div>
 
@@ -686,7 +651,6 @@
 
     let soundOn = false;
     let isDrawing = false;
-    let currentTopCardState = "welcome";
 
     function getRandomCard(excludeTitles = []) {
       const available = cards.filter(card => !excludeTitles.includes(card.title));
@@ -733,6 +697,12 @@
       }, 80);
     }
 
+    function clearSpreadArea() {
+      const spreadArea = document.getElementById("spreadArea");
+      spreadArea.innerHTML = "";
+      spreadArea.classList.remove("show");
+    }
+
     function flipTopCardTo(imageSrc, altText, onDone = null) {
       const mainCard = document.getElementById("mainDeckCard");
       if (!mainCard) return;
@@ -746,7 +716,6 @@
           mainCard.src = imageSrc;
           mainCard.alt = altText;
           mainCard.style.transform = "rotateY(0deg)";
-          currentTopCardState = "drawn";
           if (onDone) onDone();
         };
 
@@ -755,7 +724,6 @@
           mainCard.src = "card back.jpg";
           mainCard.alt = "Missing image: " + imageSrc;
           mainCard.style.transform = "rotateY(0deg)";
-          currentTopCardState = "drawn";
           if (onDone) onDone();
         };
 
@@ -773,11 +741,12 @@
         mainCard.src = "fox-welcome-page.jpg";
         mainCard.alt = "Tap to draw your daily fox message";
         mainCard.style.transform = "rotateY(0deg)";
-        currentTopCardState = "welcome";
       }, 300);
     }
 
     function showSingleCard(card, headingText) {
+      clearSpreadArea();
+
       const messageBox = document.getElementById("messageBox");
       const messageTitle = document.getElementById("messageTitle");
       const messageText = document.getElementById("messageText");
@@ -793,24 +762,35 @@
     }
 
     function showMultiCardSpread(spreadTitle, spreadCards) {
-      const mainCard = document.getElementById("mainDeckCard");
+      const spreadArea = document.getElementById("spreadArea");
       const messageBox = document.getElementById("messageBox");
       const messageTitle = document.getElementById("messageTitle");
       const messageText = document.getElementById("messageText");
 
+      resetTopCardToWelcome();
+
+      spreadArea.innerHTML = `
+        <div class="cards-grid">
+          ${spreadCards.map(item => `
+            <div class="card-slot">
+              <h3>${item.position}</h3>
+              <img class="spread-card-img" src="${item.card.image}" alt="${item.card.title}" onerror="this.src='card back.jpg'">
+            </div>
+          `).join("")}
+        </div>
+      `;
+      spreadArea.classList.add("show");
+
+      let fullMessage = "";
+      spreadCards.forEach(item => {
+        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
+      });
+
       messageBox.classList.add("show");
       messageBox.classList.remove("fade-in");
-
-      flipTopCardTo("card back.jpg", spreadTitle, () => {
-        let fullMessage = "";
-        spreadCards.forEach(item => {
-          fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
-        });
-
-        messageTitle.textContent = spreadTitle;
-        messageText.innerText = fullMessage.trim();
-        revealMessagePanel();
-      });
+      messageTitle.textContent = spreadTitle;
+      messageText.innerText = fullMessage.trim();
+      revealMessagePanel();
     }
 
     function drawDailyCard() {
@@ -903,21 +883,6 @@
         button.textContent = "Forest Sounds: Off";
       }
     }
-
-    function openFoxBook() {
-      document.getElementById("foxOverlay").style.display = "flex";
-    }
-
-    function closeFoxBook() {
-      document.getElementById("foxOverlay").style.display = "none";
-    }
-
-    window.addEventListener("click", function(event) {
-      const overlay = document.getElementById("foxOverlay");
-      if (event.target === overlay) {
-        closeFoxBook();
-      }
-    });
   </script>
 
 </body>
