@@ -1,357 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cottage Garden Oracle</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cottage Garden Oracle</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+*{box-sizing:border-box;}
 
-    body {
-      margin: 0;
-      font-family: Georgia, serif;
-      color: #fffaf6;
-      text-align: center;
-      min-height: 100vh;
-      background:
-        linear-gradient(rgba(33, 22, 16, 0.28), rgba(33, 22, 16, 0.42)),
-        url("../cottage-garden-bg.jpg") center center / cover no-repeat fixed;
-    }
+body{
+  font-family: Georgia, serif;
+  text-align:center;
+  background-image:
+    linear-gradient(rgba(28,34,24,0.52), rgba(28,34,24,0.74)),
+    url("../cottage-garden-bg.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  margin:0;
+  padding:16px;
+  color:#f5ecd9;
+}
 
-    .overlay {
-      min-height: 100vh;
-      padding: 28px 16px 60px;
-    }
+.page-wrap{
+  max-width:1100px;
+  margin:auto;
+}
 
-    h1 {
-      margin: 6px 0 10px;
-      font-size: 3rem;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
-    }
+h1{
+  font-size:3rem;
+}
 
-    .subtitle {
-      max-width: 980px;
-      margin: 0 auto 18px;
-      line-height: 1.6;
-      font-size: 1.08rem;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-    }
+.welcome-card{
+  width:280px;
+  border-radius:20px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
 
-    .button-row {
-      margin: 20px 0 18px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.button-row{
+  margin:20px 0;
+}
 
-    button {
-      padding: 12px 22px;
-      border: none;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #bf936f, #996d4f);
-      color: #fffaf6;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+button{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  margin:5px;
+  background:#9f775d;
+  color:white;
+  cursor:pointer;
+}
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
-    }
+.cards-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+  margin-top:20px;
+}
 
-    .tagline {
-      font-size: 1.35rem;
-      margin: 10px 0 24px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-    }
+.card-slot{
+  width:200px;
+}
 
-    .welcome-wrap {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0 28px;
-    }
+.card-slot img{
+  width:100%;
+  border-radius:15px;
+}
 
-    .welcome-card {
-      width: 260px;
-      max-width: 82vw;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(255, 235, 214, 0.22), 0 12px 32px rgba(0, 0, 0, 0.28);
-      animation: softGlow 3s ease-in-out infinite;
-    }
-
-    .welcome-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .reading-area {
-      display: none;
-      margin-top: 8px;
-    }
-
-    .reading-area.show {
-      display: block;
-      animation: fadeIn 0.8s ease;
-    }
-
-    .card-wrap {
-      perspective: 1200px;
-      width: 240px;
-      margin: 0 auto 22px;
-    }
-
-    .card {
-      width: 240px;
-      height: 420px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.9s ease;
-      border-radius: 20px;
-    }
-
-    .card.flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
-      overflow: hidden;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
-    }
-
-    .card-back {
-      background: url("../cottage-card-back.jpg") center center / cover no-repeat;
-    }
-
-    .card-front {
-      transform: rotateY(180deg);
-      background: #ead7db;
-    }
-
-    .card-front img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .scroll-line {
-      margin: 4px 0 22px;
-      font-size: 1.06rem;
-      color: #fff0e3;
-      text-shadow: 0 0 10px rgba(255, 240, 227, 0.32);
-      animation: pulseText 2.3s ease-in-out infinite;
-    }
-
-    .message-box {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 22px 20px;
-      background: rgba(72, 46, 32, 0.48);
-      border-radius: 24px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-      text-align: center;
-      line-height: 1.7;
-    }
-
-    .message-box h2 {
-      margin: 0 0 10px;
-      font-size: 1.6rem;
-    }
-
-    .message-box p {
-      margin: 8px 0;
-      font-size: 1.04rem;
-    }
-
-    @keyframes softGlow {
-      0%, 100% {
-        box-shadow: 0 0 18px rgba(255, 235, 214, 0.18), 0 12px 32px rgba(0, 0, 0, 0.28);
-      }
-      50% {
-        box-shadow: 0 0 30px rgba(255, 235, 214, 0.34), 0 14px 36px rgba(0, 0, 0, 0.30);
-      }
-    }
-
-    @keyframes pulseText {
-      0%, 100% { opacity: 0.75; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(3px); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 700px) {
-      h1 {
-        font-size: 2.2rem;
-      }
-
-      .tagline {
-        font-size: 1.15rem;
-      }
-
-      .card-wrap,
-      .card {
-        width: 210px;
-        height: 368px;
-      }
-    }
-  </style>
+.message-box{
+  margin-top:20px;
+  padding:15px;
+  background:rgba(255,255,255,0.1);
+  border-radius:15px;
+  display:none;
+}
+</style>
 </head>
+
 <body>
-  <div class="overlay">
-    <h1>Cottage Garden Oracle</h1>
 
-    <div class="subtitle">
-      Step softly into a world of old sayings, charms, omens, and cottage folklore.
-      Draw a single card and listen for the wisdom hidden in the old ways.
-    </div>
+<div class="page-wrap">
 
-    <div class="button-row">
-      <button id="drawBtn">Draw a Card</button>
-      <button onclick="window.location.href='../index.html'">Return to Forest</button>
-    </div>
+<h1>Cottage Garden Oracle</h1>
 
-    <div class="tagline">Step through the archway and listen</div>
+<img
+  src="../welcome-archwa.jpg"
+  class="welcome-card"
+  onclick="drawDaily()"
+/>
 
-    <div class="welcome-wrap" id="welcomeWrap">
-      <div class="welcome-card">
-        <img src="../welcome-archwa.jpg" alt="Welcome Archway">
+<div class="button-row">
+  <button onclick="drawDaily()">Daily Garden Message</button>
+  <button onclick="drawThree()">Three Card Spread</button>
+  <button onclick="drawCross()">Cottage Cross</button>
+  <button onclick="window.location.href='../index.html'">🦊 Fox Wisdom Oracle</button>
+</div>
+
+<div id="cards" class="cards-grid"></div>
+
+<div id="messageBox" class="message-box">
+  <h3 id="title"></h3>
+  <p id="message"></p>
+</div>
+
+</div>
+
+<script>
+
+const deck = [
+{title:"Hawthorn Magic",image:"../hawthorn-magic.jpg",message:"Protect what is sacred while staying open to wonder."},
+{title:"Hearing an Owl Call",image:"../hearing-an-owl-call.jpg",message:"Wisdom calls from the dark edges."},
+{title:"Herbal Remedies",image:"../herbal-remedies.jpg",message:"Healing may be simpler and closer than you think."},
+{title:"Horseshoes Over Doorways",image:"../horseshoes-over-doorways.jpg",message:"Guard your threshold."},
+{title:"Ill Wind",image:"../ill-wind.jpg",message:"Not every change is trouble."},
+{title:"Knocking on Wood",image:"../knocking-on-wood.jpg",message:"Small acts bring protection."},
+{title:"Ladybird Landing on You",image:"../ladybird-landing-on-you.jpg",message:"A small blessing has found you."},
+{title:"Magpie Superstition",image:"../magpie-superstition.jpg",message:"Meaning depends on belief."},
+{title:"Midsummer’s Eve",image:"../midsummers-eve.jpg",message:"The veil is thin."},
+{title:"Rowan Tree Protection",image:"../rowan-tree-protection.jpg",message:"You are protected."},
+{title:"Spilled Salt",image:"../spilled-salt.jpg",message:"Release the moment and move on."},
+{title:"Tea and Reflection",image:"../tea-and-reflection.jpg",message:"Sit with stillness."}
+];
+
+function randomCard(){
+  return deck[Math.floor(Math.random()*deck.length)];
+}
+
+function drawDaily(){
+  const card = randomCard();
+  showCards([card]);
+}
+
+function drawThree(){
+  showCards([randomCard(),randomCard(),randomCard()]);
+}
+
+function drawCross(){
+  showCards([
+    randomCard(),
+    randomCard(),
+    randomCard(),
+    randomCard(),
+    randomCard()
+  ]);
+}
+
+function showCards(cards){
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+
+  cards.forEach(c=>{
+    container.innerHTML += `
+      <div class="card-slot">
+        <img src="${c.image}">
+        <h4>${c.title}</h4>
       </div>
-    </div>
+    `;
+  });
 
-    <div class="reading-area" id="readingArea">
-      <div class="card-wrap">
-        <div class="card" id="oracleCard">
-          <div class="card-face card-back"></div>
-          <div class="card-face card-front">
-            <img id="cardImage" src="" alt="Oracle Card">
-          </div>
-        </div>
-      </div>
+  const main = cards[0];
+  document.getElementById("messageBox").style.display="block";
+  document.getElementById("title").innerText = main.title;
+  document.getElementById("message").innerText = main.message;
+}
 
-      <div class="scroll-line">The path continues below… scroll to reveal your reading</div>
+</script>
 
-      <div class="message-box">
-        <h2 id="cardTitle">Your Reading</h2>
-        <p id="cardMessage"></p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const cottageDeck = [
-        {
-          title: "Black Cat Crossing Your Path",
-          file: "../black-cat-crossing-your-path.jpg",
-          message: "Not every omen is a warning. Some crossings arrive to sharpen your awareness and wake your intuition."
-        },
-        {
-          title: "Broken Mirror",
-          file: "../broken-mirror.jpg",
-          message: "What feels fractured may be asking to be seen honestly. Reflection can still bring truth, even after a break."
-        },
-        {
-          title: "Four Leaf Clover",
-          file: "../four-leaf-clover.jpg",
-          message: "A small blessing may arrive where you least expect it. Keep your eyes open for quiet luck."
-        },
-        {
-          title: "Knocking on Wood",
-          file: "../knocking-on-wood.jpg",
-          message: "There is wisdom in humble rituals. A simple act of faith can steady the heart and protect what matters."
-        },
-        {
-          title: "Magpie Superstition",
-          file: "../magpie-superstition.jpg",
-          message: "What you notice shapes what you feel. Look beyond fear and count the signs with hope, not dread."
-        },
-        {
-          title: "Opening an Umbrella Indoors",
-          file: "../opening-an-umbrella-indoors.jpg",
-          message: "Take care not to invite chaos into a place that needs calm. A little caution now can preserve peace."
-        },
-        {
-          title: "Rowan Tree Protection",
-          file: "../rowan-tree-protection.jpg",
-          message: "You are more protected than you think. Old wisdom surrounds you, even when unseen."
-        },
-        {
-          title: "Spilled Salt",
-          file: "../spilled-salt.jpg",
-          message: "A small upset does not need to become a lasting burden. Clear it gently and move forward."
-        },
-        {
-          title: "Walking Under a Ladder",
-          file: "../walking-under-a-ladder.jpg",
-          message: "Old fears need not rule your path. Walk with awareness, but let choice be stronger than superstition."
-        },
-        {
-          title: "Robin Sightings",
-          file: "../robin-sightings.jpg",
-          message: "A familiar sign may be drawing near. Comfort and remembrance are closer than they seem."
-        },
-        {
-          title: "Ladybird Landing on You",
-          file: "../ladybird-landing-on-you.jpg",
-          message: "A small moment of sweetness can carry a blessing. Let lightness return where worry has lingered."
-        },
-        {
-          title: "Bird in the Hand",
-          file: "../bird-in-the-hand.jpg",
-          message: "Value what is already within reach. What you hold now may be more precious than what you chase."
-        }
-      ];
-
-      const drawBtn = document.getElementById("drawBtn");
-      const welcomeWrap = document.getElementById("welcomeWrap");
-      const readingArea = document.getElementById("readingArea");
-      const oracleCard = document.getElementById("oracleCard");
-      const cardImage = document.getElementById("cardImage");
-      const cardTitle = document.getElementById("cardTitle");
-      const cardMessage = document.getElementById("cardMessage");
-
-      function pickCard() {
-        const randomIndex = Math.floor(Math.random() * cottageDeck.length);
-        return cottageDeck[randomIndex];
-      }
-
-      function drawCard() {
-        const card = pickCard();
-
-        welcomeWrap.style.display = "none";
-        readingArea.classList.add("show");
-        oracleCard.classList.remove("flipped");
-
-        cardImage.src = encodeURI(card.file);
-        cardImage.alt = card.title;
-        cardTitle.textContent = card.title;
-        cardMessage.textContent = card.message;
-
-        setTimeout(() => {
-          oracleCard.classList.add("flipped");
-        }, 220);
-      }
-
-      drawBtn.addEventListener("click", drawCard);
-    })();
-  </script>
 </body>
 </html>
