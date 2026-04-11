@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cottage Garden Oracle</title>
 
 <style>
@@ -9,39 +10,91 @@ body {
   font-family: Georgia, serif;
   text-align: center;
   color: white;
-  background: url('cottage-bg.jpg') no-repeat center center fixed;
+  margin: 0;
+  min-height: 100vh;
+  background: url('cottage-garden-bg.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
+.page-overlay {
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 20px 10px 40px;
+}
+
 h1 {
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 3rem;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.35);
+}
+
+.subtitle {
+  max-width: 1000px;
+  margin: 0 auto 20px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
 }
 
 .buttons {
-  margin: 20px;
+  margin: 20px 0;
 }
 
 button {
-  padding: 10px 18px;
+  padding: 12px 22px;
   margin: 5px;
-  border-radius: 20px;
+  border-radius: 25px;
   border: none;
   background: #b78b6a;
   color: white;
   cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-.cards {
+button:hover {
+  transform: translateY(-1px);
+}
+
+.tagline {
+  margin: 18px 0 28px;
+  font-size: 1.35rem;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+.top-row {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 28px;
   flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.slot {
+  width: 230px;
+  text-align: center;
+}
+
+.position-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
 .card {
-  width: 200px;
-  height: 350px;
+  width: 220px;
+  height: 385px;
   perspective: 1000px;
+  margin: 0 auto;
 }
 
 .inner {
@@ -60,81 +113,143 @@ button {
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 15px;
+  border-radius: 18px;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.35);
 }
 
 .back {
-  background: url('card-back.jpg') center/cover;
+  background: url('cottage-card-back.jpg') center/cover no-repeat;
 }
 
 .front {
   transform: rotateY(180deg);
+  background: #ead3d8;
 }
 
 .front img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 15px;
+  display: block;
+}
+
+@media (max-width: 800px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .slot {
+    width: 100%;
+  }
 }
 </style>
 </head>
 
 <body>
+<div class="page-overlay">
+  <h1>Cottage Garden Oracle</h1>
 
-<h1>Cottage Garden Oracle</h1>
+  <div class="subtitle">
+    Step softly into a garden of old paths, herbs, petals, and whispered signs.
+    Choose your reading and let the cottage garden speak.
+  </div>
 
-<div class="buttons">
-  <button onclick="drawCards()">Cottage Garden Cross</button>
+  <div class="buttons">
+    <button onclick="drawCards()">Cottage Garden Cross</button>
+  </div>
+
+  <div class="tagline">Where petals, herbs, and old paths whisper</div>
+
+  <div class="top-row" id="topRow"></div>
+  <div class="bottom-row" id="bottomRow"></div>
 </div>
-
-<div class="cards" id="cards"></div>
 
 <script>
 const deck = [
-  "bloom.jpg",
-  "flow.jpg",
-  "moon.jpg",
-  "hidden.jpg",
-  "hawthorn.jpg",
-  "primrose.jpg",
-  "ladder.jpg"
+  { title: "Bloom Where You Are Planted", file: "bloom-where-you-are-planted.jpg" },
+  { title: "Go With the Flow", file: "go-with-the-flow.jpg" },
+  { title: "Full Moon Garden", file: "full-moon-garden.jpg" },
+  { title: "Hidden Path", file: "hidden path.jpg" },
+  { title: "Hawthorn Magic", file: "hawthorn-magic.jpg" },
+  { title: "Primrose Paths", file: "primrose-paths.jpg" },
+  { title: "Walking Under a Ladder", file: "walking-under-a-ladder.jpg" }
 ];
 
+const positionsTop = [
+  "Where you stand",
+  "What is hidden",
+  "What nurtures you",
+  "What needs tending"
+];
+
+const positionBottom = "Where the garden opens";
+
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function makeCard(positionText, cardData, delay = 0) {
+  const slot = document.createElement("div");
+  slot.className = "slot";
+
+  const label = document.createElement("div");
+  label.className = "position-title";
+  label.textContent = positionText;
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const inner = document.createElement("div");
+  inner.className = "inner";
+
+  const back = document.createElement("div");
+  back.className = "back";
+
+  const front = document.createElement("div");
+  front.className = "front";
+
+  const image = document.createElement("img");
+  image.src = cardData.file;
+  image.alt = cardData.title;
+
+  front.appendChild(image);
+  inner.appendChild(back);
+  inner.appendChild(front);
+  card.appendChild(inner);
+
+  slot.appendChild(label);
+  slot.appendChild(card);
+
+  setTimeout(() => {
+    card.classList.add("flipped");
+  }, delay);
+
+  return slot;
+}
+
 function drawCards() {
-  const container = document.getElementById("cards");
-  container.innerHTML = "";
+  const topRow = document.getElementById("topRow");
+  const bottomRow = document.getElementById("bottomRow");
 
-  let shuffled = [...deck].sort(() => 0.5 - Math.random()).slice(0,5);
+  topRow.innerHTML = "";
+  bottomRow.innerHTML = "";
 
-  shuffled.forEach((img, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
+  const selected = shuffle(deck).slice(0, 5);
 
-    const inner = document.createElement("div");
-    inner.className = "inner";
+  for (let i = 0; i < 4; i++) {
+    topRow.appendChild(makeCard(positionsTop[i], selected[i], 250 + (i * 220)));
+  }
 
-    const back = document.createElement("div");
-    back.className = "back";
-
-    const front = document.createElement("div");
-    front.className = "front";
-
-    const image = document.createElement("img");
-    image.src = img;
-
-    front.appendChild(image);
-    inner.appendChild(back);
-    inner.appendChild(front);
-    card.appendChild(inner);
-
-    card.onclick = () => card.classList.toggle("flipped");
-
-    container.appendChild(card);
-  });
+  bottomRow.appendChild(makeCard(positionBottom, selected[4], 1200));
 }
 </script>
-
 </body>
 </html>
