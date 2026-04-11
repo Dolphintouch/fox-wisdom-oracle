@@ -118,7 +118,7 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      margin:6px auto 26px;
+      margin:6px auto 10px;
       min-height:470px;
     }
 
@@ -235,6 +235,39 @@
       60%{ transform:translateX(-10px) rotate(-3deg) scale(1.01); }
       80%{ transform:translateX(10px) rotate(3deg) scale(1.01); }
       100%{ transform:translateX(0) rotate(0deg) scale(1); }
+    }
+
+    .scroll-whisper{
+      margin:0 auto 24px;
+      max-width:680px;
+      font-size:1.08rem;
+      color:#f6ead8;
+      font-style:italic;
+      letter-spacing:0.2px;
+      text-shadow:
+        0 0 8px rgba(255,223,160,0.35),
+        0 0 18px rgba(255,223,160,0.18),
+        0 1px 4px rgba(0,0,0,0.45);
+      animation:whisperGlow 3.4s ease-in-out infinite;
+    }
+
+    @keyframes whisperGlow{
+      0%,100%{
+        opacity:0.82;
+        transform:translateY(0);
+        text-shadow:
+          0 0 8px rgba(255,223,160,0.28),
+          0 0 18px rgba(255,223,160,0.14),
+          0 1px 4px rgba(0,0,0,0.45);
+      }
+      50%{
+        opacity:1;
+        transform:translateY(2px);
+        text-shadow:
+          0 0 12px rgba(255,223,160,0.45),
+          0 0 24px rgba(255,223,160,0.22),
+          0 1px 5px rgba(0,0,0,0.48);
+      }
     }
 
     .button-row{
@@ -452,14 +485,48 @@
       text-shadow:0 1px 4px rgba(0,0,0,0.35);
     }
 
-    .spread-card-img{
+    .card-flip{
       width:100%;
       max-width:220px;
+      margin:0 auto;
+      perspective:1000px;
+    }
+
+    .card-flip-inner{
+      position:relative;
+      width:100%;
+      aspect-ratio:220 / 367;
+      transition:transform 0.8s ease;
+      transform-style:preserve-3d;
+    }
+
+    .card-flip.flipped .card-flip-inner{
+      transform:rotateY(180deg);
+    }
+
+    .card-face{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      backface-visibility:hidden;
       border-radius:18px;
+      overflow:hidden;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
         0 0 34px rgba(255,223,160,0.10);
+    }
+
+    .card-face img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .card-front{
+      transform:rotateY(180deg);
     }
 
     .message-box{
@@ -531,6 +598,11 @@
       .message-box p{
         font-size:1rem;
       }
+
+      .scroll-whisper{
+        font-size:1rem;
+        padding:0 8px;
+      }
     }
   </style>
 </head>
@@ -563,10 +635,14 @@
       <img
         id="mainDeckCard"
         class="welcome-card"
-        src="fox-welcome-page.jpg"
+        src="card back.jpg"
         alt="Tap to draw your daily fox message"
         onclick="drawDailyCardFromCard()"
       >
+    </div>
+
+    <div class="scroll-whisper">
+      The path continues below… scroll to reveal your reading.
     </div>
 
     <div class="button-row">
@@ -615,6 +691,8 @@
   </audio>
 
   <script>
+    const CARD_BACK = "card back.jpg";
+
     const cards = [
       { title: "Moonlight Trail", image: "moonlight trail.jpg", message: "A quiet path is opening before you. Trust the gentle pull toward what feels true, even if the way ahead is not fully lit." },
       { title: "Hidden Path", image: "hidden path.jpg", message: "Not everything is meant to be seen at once. Step carefully and allow the next truth to reveal itself in its own time." },
@@ -721,9 +799,8 @@
         };
 
         tempImg.onerror = () => {
-          console.log("Missing image:", imageSrc);
-          mainCard.src = "card back.jpg";
-          mainCard.alt = "Missing image: " + imageSrc;
+          mainCard.src = CARD_BACK;
+          mainCard.alt = "Card back";
           mainCard.style.transform = "rotateY(0deg)";
           if (onDone) onDone();
         };
@@ -739,7 +816,7 @@
       mainCard.style.transform = "rotateY(90deg)";
 
       setTimeout(() => {
-        mainCard.src = "fox-welcome-page.jpg";
+        mainCard.src = CARD_BACK;
         mainCard.alt = "Tap to draw your daily fox message";
         mainCard.style.transform = "rotateY(0deg)";
       }, 300);
@@ -762,6 +839,35 @@
       });
     }
 
+    function createFlipCard(position, card, index) {
+      return `
+        <div class="card-slot">
+          <h3>${position}</h3>
+          <div class="card-flip" id="flip-${index}">
+            <div class="card-flip-inner">
+              <div class="card-face card-back">
+                <img src="${CARD_BACK}" alt="Card back">
+              </div>
+              <div class="card-face card-front">
+                <img src="${card.image}" alt="${card.title}" onerror="this.src='${CARD_BACK}'">
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function flipSpreadCards(spreadCards) {
+      spreadCards.forEach((item, index) => {
+        setTimeout(() => {
+          const flipEl = document.getElementById(`flip-${index}`);
+          if (flipEl) {
+            flipEl.classList.add("flipped");
+          }
+        }, 700 + (index * 450));
+      });
+    }
+
     function showMultiCardSpread(spreadTitle, spreadCards) {
       const spreadArea = document.getElementById("spreadArea");
       const messageBox = document.getElementById("messageBox");
@@ -772,15 +878,12 @@
 
       spreadArea.innerHTML = `
         <div class="cards-grid">
-          ${spreadCards.map(item => `
-            <div class="card-slot">
-              <h3>${item.position}</h3>
-              <img class="spread-card-img" src="${item.card.image}" alt="${item.card.title}" onerror="this.src='card back.jpg'">
-            </div>
-          `).join("")}
+          ${spreadCards.map((item, index) => createFlipCard(item.position, item.card, index)).join("")}
         </div>
       `;
       spreadArea.classList.add("show");
+
+      flipSpreadCards(spreadCards);
 
       let fullMessage = "";
       spreadCards.forEach(item => {
@@ -790,8 +893,11 @@
       messageBox.classList.add("show");
       messageBox.classList.remove("fade-in");
       messageTitle.textContent = spreadTitle;
-      messageText.innerText = fullMessage.trim();
-      revealMessagePanel();
+
+      setTimeout(() => {
+        messageText.innerText = fullMessage.trim();
+        revealMessagePanel();
+      }, 700 + (spreadCards.length * 450));
     }
 
     function drawDailyCard() {
@@ -863,7 +969,7 @@
 
         setTimeout(() => {
           isDrawing = false;
-        }, 1200);
+        }, 2200);
       }, 350);
     }
 
