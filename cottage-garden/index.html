@@ -15,59 +15,116 @@
       text-align: center;
       color: #f5ecd9;
       background:
-        linear-gradient(rgba(28,34,24,0.55), rgba(28,34,24,0.8)),
+        linear-gradient(rgba(28,34,24,0.55), rgba(28,34,24,0.82)),
         url("../cottage-garden-bg.jpg");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
     }
 
     .page-wrap {
       max-width: 1100px;
       margin: auto;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
-      font-size: 2.6rem;
-      margin-bottom: 10px;
+      font-size: 2.8rem;
+      margin: 10px 0 10px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
     }
 
     .blessing {
       margin: 0 auto 20px;
       max-width: 760px;
-      line-height: 1.7;
+      line-height: 1.75;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+    }
+
+    .welcome-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .welcome-mist {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 360px;
+      height: 360px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,236,205,0.20) 0%, rgba(255,228,185,0.12) 32%, rgba(255,220,170,0.05) 54%, transparent 72%);
+      filter: blur(26px);
+      opacity: 0.7;
+      pointer-events: none;
+      animation: mistPulse 5.5s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes mistPulse {
+      0%, 100% {
+        opacity: 0.45;
+        transform: translate(-50%, -50%) scale(0.94);
+      }
+      50% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(1.08);
+      }
     }
 
     .welcome-card {
+      position: relative;
+      z-index: 1;
       width: 300px;
       max-width: 80vw;
       border-radius: 20px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
       box-shadow:
-        0 0 20px rgba(255,215,140,0.2),
-        0 12px 28px rgba(0,0,0,0.4);
+        0 0 24px rgba(255,215,140,0.18),
+        0 14px 30px rgba(0,0,0,0.42);
+      animation: welcomePulse 4.8s ease-in-out infinite;
+      display: block;
     }
 
     .welcome-card:hover {
       transform: scale(1.05);
+      filter: brightness(1.04);
+      box-shadow:
+        0 0 34px rgba(255,215,140,0.30),
+        0 16px 34px rgba(0,0,0,0.45);
+    }
+
+    @keyframes welcomePulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 24px rgba(255,215,140,0.18),
+          0 14px 30px rgba(0,0,0,0.42);
+      }
+      50% {
+        transform: scale(1.015);
+        box-shadow:
+          0 0 38px rgba(255,215,140,0.28),
+          0 18px 34px rgba(0,0,0,0.46);
+      }
     }
 
     .tap-note {
       margin-top: 10px;
       color: #fff0dc;
-      animation: pulse 2s infinite;
+      text-shadow: 0 0 12px rgba(255,240,220,0.25);
+      animation: pulseText 2.5s infinite;
     }
 
-    .scroll-note {
-      margin-top: 20px;
-      color: #fff0dc;
-      animation: pulse 2s infinite;
-      display: none;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.62; }
       50% { opacity: 1; }
     }
 
@@ -91,6 +148,12 @@
       cursor: pointer;
       font-family: Georgia, serif;
       font-size: 1rem;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    button:hover,
+    .link-button:hover {
+      transform: translateY(-2px);
     }
 
     .link-button {
@@ -110,16 +173,19 @@
 
     .card-slot {
       width: 200px;
+      position: relative;
     }
 
     .card-slot h4 {
       margin: 0 0 10px;
       min-height: 2.6em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
     }
 
     .flip-card {
       width: 100%;
-      perspective: 1000px;
+      perspective: 1400px;
+      position: relative;
     }
 
     .flip-card-inner {
@@ -127,7 +193,7 @@
       width: 100%;
       height: 320px;
       transform-style: preserve-3d;
-      transition: transform 0.9s ease;
+      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .flip-card.flipped .flip-card-inner {
@@ -144,7 +210,7 @@
       overflow: hidden;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.38);
     }
 
     .flip-front img,
@@ -159,17 +225,126 @@
       transform: rotateY(180deg);
     }
 
+    .reveal-mist {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      width: 190px;
+      height: 190px;
+      transform: translate(-50%, -50%) scale(0.7);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,240,220,0.28) 0%, rgba(255,228,190,0.15) 30%, rgba(255,220,180,0.05) 50%, transparent 72%);
+      filter: blur(18px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .reveal-mist.show {
+      animation: revealMist 1.8s ease forwards;
+    }
+
+    @keyframes revealMist {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.72);
+      }
+      20% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.3);
+      }
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 4;
+    }
+
+    .spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,238,190,0.95);
+      box-shadow: 0 0 10px rgba(255,232,180,0.9);
+      opacity: 0;
+    }
+
+    .spark.show {
+      animation: sparkRise 1.7s ease-out forwards;
+    }
+
+    @keyframes sparkRise {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.7);
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-55px) translateX(var(--drift, 0px)) scale(1.2);
+      }
+    }
+
     .message-box {
       margin-top: 20px;
       padding: 15px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.10);
       border-radius: 15px;
       display: none;
       white-space: pre-line;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.2);
     }
 
     .message-box.show {
       display: block;
+    }
+
+    .scroll-note {
+      margin-top: 22px;
+      color: #fff0dc;
+      text-shadow: 0 0 12px rgba(255,240,220,0.35);
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .scroll-note.show {
+      display: block;
+      animation: whisperIn 1.6s ease forwards, floatGlow 2.8s ease-in-out infinite 1.6s;
+    }
+
+    @keyframes whisperIn {
+      0% {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(6px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes floatGlow {
+      0%, 100% {
+        opacity: 0.72;
+        transform: translateY(0);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(4px);
+      }
     }
 
     @media (max-width: 700px) {
@@ -181,6 +356,10 @@
 
       .flip-card-inner {
         height: 300px;
+      }
+
+      .card-slot {
+        width: 190px;
       }
     }
   </style>
@@ -195,7 +374,8 @@
       Draw from the garden… let the old ways whisper to you.
     </div>
 
-    <div onclick="startReading('daily')" style="cursor:pointer;">
+    <div class="welcome-wrap" onclick="startReading('daily')" style="cursor:pointer;">
+      <div class="welcome-mist"></div>
       <img src="../card%20back.jpg" class="welcome-card" alt="Draw a card">
     </div>
     <div class="tap-note">Tap the card to reveal your message</div>
@@ -205,6 +385,7 @@
       <button type="button" onclick="startReading('three')">3 Card Spread</button>
       <button type="button" onclick="startReading('cross')">Cottage Cross</button>
       <button type="button" onclick="window.location.href='../index.html'">Fox Oracle</button>
+      <button type="button" onclick="toggleSound()" id="soundButton">Garden Sounds: Off</button>
     </div>
 
     <div class="shop-links">
@@ -225,6 +406,10 @@
     </div>
 
   </div>
+
+  <audio id="gardenAudio" loop>
+    <source src="../forest.mp3.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     const CARD_BACK = "../card%20back.jpg";
@@ -259,6 +444,30 @@
       showCards(draw, type);
     }
 
+    function createParticles(index) {
+      const slot = document.querySelector(`#flip-${index}`)?.closest(".card-slot");
+      if (!slot) return;
+
+      const particles = document.createElement("div");
+      particles.className = "particles";
+
+      for (let i = 0; i < 7; i++) {
+        const spark = document.createElement("div");
+        spark.className = "spark show";
+        spark.style.left = (50 + (Math.random() * 60 - 30)) + "%";
+        spark.style.top = (62 + (Math.random() * 18 - 9)) + "%";
+        spark.style.setProperty("--drift", `${Math.random() * 26 - 13}px`);
+        spark.style.animationDelay = `${Math.random() * 0.25}s`;
+        particles.appendChild(spark);
+      }
+
+      slot.appendChild(particles);
+
+      setTimeout(() => {
+        particles.remove();
+      }, 2000);
+    }
+
     function showCards(draw, type) {
       const container = document.getElementById("cards");
       const scrollNote = document.getElementById("scrollNote");
@@ -267,6 +476,8 @@
       const message = document.getElementById("message");
 
       container.innerHTML = "";
+      scrollNote.classList.remove("show");
+      scrollNote.style.display = "none";
 
       draw.forEach((c, index) => {
         let label = c.title;
@@ -290,6 +501,7 @@
         slot.innerHTML = `
           <h4>${label}</h4>
           <div class="flip-card" id="flip-${index}">
+            <div class="reveal-mist" id="mist-${index}"></div>
             <div class="flip-card-inner">
               <div class="flip-front">
                 <img src="${CARD_BACK}" alt="Card back">
@@ -305,12 +517,20 @@
 
       draw.forEach((_, index) => {
         setTimeout(() => {
-          const el = document.getElementById("flip-" + index);
-          if (el) el.classList.add("flipped");
-        }, 300 + (index * 250));
+          const cardEl = document.getElementById(`flip-${index}`);
+          const mistEl = document.getElementById(`mist-${index}`);
+          if (mistEl) mistEl.classList.add("show");
+          if (cardEl) cardEl.classList.add("flipped");
+          createParticles(index);
+        }, 450 + (index * 420));
       });
 
-      scrollNote.style.display = "block";
+      const totalRevealTime = 900 + (draw.length * 420);
+      setTimeout(() => {
+        scrollNote.style.display = "block";
+        scrollNote.classList.add("show");
+      }, totalRevealTime);
+
       box.classList.add("show");
 
       if (type === "daily") {
@@ -328,6 +548,22 @@
       }
 
       window.scrollTo({ top: 300, behavior: "smooth" });
+    }
+
+    function toggleSound() {
+      const audio = document.getElementById("gardenAudio");
+      const button = document.getElementById("soundButton");
+
+      if (audio.paused) {
+        audio.play().then(() => {
+          button.textContent = "Garden Sounds: On";
+        }).catch(() => {
+          button.textContent = "Garden Sounds: Off";
+        });
+      } else {
+        audio.pause();
+        button.textContent = "Garden Sounds: Off";
+      }
     }
   </script>
 
