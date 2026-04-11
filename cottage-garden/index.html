@@ -13,268 +13,320 @@
     body {
       margin: 0;
       font-family: Georgia, serif;
+      color: #fffaf6;
       text-align: center;
-      color: white;
       min-height: 100vh;
-      background: url('../cottage-garden-bg.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background:
+        linear-gradient(rgba(33, 22, 16, 0.28), rgba(33, 22, 16, 0.42)),
+        url("../cottage-garden-bg.jpg") center center / cover no-repeat fixed;
     }
 
-    .page-overlay {
+    .overlay {
       min-height: 100vh;
-      padding: 20px 14px 50px;
-      background: rgba(255, 255, 255, 0.18);
+      padding: 28px 16px 60px;
     }
 
     h1 {
-      margin: 0 0 14px;
-      font-size: 3.2rem;
-      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+      margin: 6px 0 10px;
+      font-size: 3rem;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
     }
 
     .subtitle {
-      max-width: 1100px;
-      margin: 0 auto 26px;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+      max-width: 980px;
+      margin: 0 auto 18px;
+      line-height: 1.6;
+      font-size: 1.08rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
     }
 
-    .buttons {
-      margin: 18px 0 24px;
+    .button-row {
+      margin: 20px 0 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     button {
       padding: 12px 22px;
-      margin: 5px;
-      border-radius: 24px;
       border: none;
-      background: #b98760;
-      color: white;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, #bf936f, #996d4f);
+      color: #fffaf6;
       font-family: Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
     }
 
     .tagline {
-      margin: 8px 0 30px;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
+      margin: 10px 0 24px;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
     }
 
-    .top-row {
+    .welcome-wrap {
       display: flex;
       justify-content: center;
-      gap: 34px;
-      flex-wrap: wrap;
-      margin-bottom: 38px;
+      margin: 10px 0 28px;
     }
 
-    .bottom-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 6px;
+    .welcome-card {
+      width: 260px;
+      max-width: 82vw;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 235, 214, 0.22), 0 12px 32px rgba(0, 0, 0, 0.28);
+      animation: softGlow 3s ease-in-out infinite;
     }
 
-    .slot {
-      width: 235px;
-      text-align: center;
+    .welcome-card img {
+      width: 100%;
+      display: block;
     }
 
-    .position-title {
-      font-size: 0.98rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-      min-height: 40px;
-      display: flex;
-      align-items: end;
-      justify-content: center;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    .reading-area {
+      display: none;
+      margin-top: 8px;
+    }
+
+    .reading-area.show {
+      display: block;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .card-wrap {
+      perspective: 1200px;
+      width: 240px;
+      margin: 0 auto 22px;
     }
 
     .card {
-      width: 220px;
-      height: 385px;
-      perspective: 1000px;
-      margin: 0 auto;
-    }
-
-    .inner {
-      width: 100%;
-      height: 100%;
+      width: 240px;
+      height: 420px;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.85s ease;
+      transition: transform 0.9s ease;
+      border-radius: 20px;
     }
 
-    .card.flipped .inner {
+    .card.flipped {
       transform: rotateY(180deg);
     }
 
-    .front,
-    .back {
+    .card-face {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
     }
 
-    .back {
-      background: url('../cottage-card-back.jpg') center center / cover no-repeat;
+    .card-back {
+      background: url("../cottage-card-back.jpg") center center / cover no-repeat;
     }
 
-    .front {
+    .card-front {
       transform: rotateY(180deg);
-      background: #ead6dc;
+      background: #ead7db;
     }
 
-    .front img {
+    .card-front img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
 
-    @media (max-width: 900px) {
-      h1 {
-        font-size: 2.4rem;
-      }
+    .scroll-line {
+      margin: 4px 0 22px;
+      font-size: 1.06rem;
+      color: #fff0e3;
+      text-shadow: 0 0 10px rgba(255, 240, 227, 0.32);
+      animation: pulseText 2.3s ease-in-out infinite;
+    }
 
-      .tagline {
-        font-size: 1.2rem;
-      }
+    .message-box {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 22px 20px;
+      background: rgba(72, 46, 32, 0.48);
+      border-radius: 24px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      text-align: center;
+      line-height: 1.7;
+    }
 
-      .top-row {
-        gap: 24px;
+    .message-box h2 {
+      margin: 0 0 10px;
+      font-size: 1.6rem;
+    }
+
+    .message-box p {
+      margin: 8px 0;
+      font-size: 1.04rem;
+    }
+
+    @keyframes softGlow {
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(255, 235, 214, 0.18), 0 12px 32px rgba(0, 0, 0, 0.28);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(255, 235, 214, 0.34), 0 14px 36px rgba(0, 0, 0, 0.30);
       }
     }
 
-    @media (max-width: 600px) {
-      .slot {
-        width: 100%;
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.75; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(3px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 700px) {
+      h1 {
+        font-size: 2.2rem;
       }
 
+      .tagline {
+        font-size: 1.15rem;
+      }
+
+      .card-wrap,
       .card {
-        width: 200px;
-        height: 350px;
+        width: 210px;
+        height: 368px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-overlay">
+  <div class="overlay">
     <h1>Cottage Garden Oracle</h1>
 
     <div class="subtitle">
       Step softly into a garden of old paths, herbs, petals, and whispered signs.
-      Choose your reading and let the cottage garden speak.
+      Draw a single card and let the cottage garden speak in its own gentle way.
     </div>
 
-    <div class="buttons">
-      <button onclick="drawCards()">Cottage Garden Cross</button>
+    <div class="button-row">
+      <button id="drawBtn">Draw a Card</button>
+      <button onclick="window.location.href='../index.html'">Return to Forest</button>
     </div>
 
-    <div class="tagline">Where petals, herbs, and old paths whisper</div>
+    <div class="tagline">Step through the archway and listen</div>
 
-    <div class="top-row" id="topRow"></div>
-    <div class="bottom-row" id="bottomRow"></div>
+    <div class="welcome-wrap" id="welcomeWrap">
+      <div class="welcome-card">
+        <img src="../welcome-archwa.jpg" alt="Welcome Archway">
+      </div>
+    </div>
+
+    <div class="reading-area" id="readingArea">
+      <div class="card-wrap">
+        <div class="card" id="oracleCard">
+          <div class="card-face card-back"></div>
+          <div class="card-face card-front">
+            <img id="cardImage" src="" alt="Oracle Card">
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-line">The path continues below… scroll to reveal your reading</div>
+
+      <div class="message-box">
+        <h2 id="cardTitle">Your Reading</h2>
+        <p id="cardMessage"></p>
+      </div>
+    </div>
   </div>
 
   <script>
-    const deck = [
-      { title: "Bloom Where You Are Planted", file: "../bloom-where-you-are-planted.jpg" },
-      { title: "Go With the Flow", file: "../go-with-the-flow.jpg" },
-      { title: "Full Moon Garden", file: "../full-moon-garden.jpg" },
-      { title: "Hidden Path", file: "../hidden path.jpg" },
-      { title: "Hawthorn Magic", file: "../hawthorn-magic.jpg" },
-      { title: "Primrose Paths", file: "../primrose-paths.jpg" },
-      { title: "Walking Under a Ladder", file: "../walking-under-a-ladder.jpg" }
-    ];
+    (function () {
+      const cottageDeck = [
+        {
+          title: "Bloom Where You Are Planted",
+          file: "../bloom-where-you-are-planted.jpg",
+          message: "Growth begins exactly where your feet are. You do not need perfect conditions to bloom beautifully."
+        },
+        {
+          title: "Go With the Flow",
+          file: "../go-with-the-flow.jpg",
+          message: "Not every path must be forced. Ease, trust, and gentle movement may carry you farther than struggle."
+        },
+        {
+          title: "Full Moon Garden",
+          file: "../full-moon-garden.jpg",
+          message: "What has been quietly growing is ready to be seen. Let illumination show you what is ripening in your life."
+        },
+        {
+          title: "Hidden Path",
+          file: "../hidden path.jpg",
+          message: "You do not need the whole map yet. The next true step will reveal itself when you are ready to take it."
+        },
+        {
+          title: "Hawthorn Magic",
+          file: "../hawthorn-magic.jpg",
+          message: "Protect what is sacred, but do not close your heart to wonder. Boundaries can still leave room for enchantment."
+        },
+        {
+          title: "Primrose Paths",
+          file: "../primrose-paths.jpg",
+          message: "A sweet road is opening before you. Walk it with delight, but keep your inner knowing close."
+        },
+        {
+          title: "Walking Under a Ladder",
+          file: "../walking-under-a-ladder.jpg",
+          message: "Old fears and old sayings need not rule you. Choose your path with intention, not superstition."
+        }
+      ];
 
-    const topLabels = [
-      "Where you stand",
-      "What is hidden",
-      "What nurtures you",
-      "What needs tending"
-    ];
+      const drawBtn = document.getElementById("drawBtn");
+      const welcomeWrap = document.getElementById("welcomeWrap");
+      const readingArea = document.getElementById("readingArea");
+      const oracleCard = document.getElementById("oracleCard");
+      const cardImage = document.getElementById("cardImage");
+      const cardTitle = document.getElementById("cardTitle");
+      const cardMessage = document.getElementById("cardMessage");
 
-    const bottomLabel = "Where the garden opens";
-
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function createCardSlot(positionText, cardData, delay) {
-      const slot = document.createElement("div");
-      slot.className = "slot";
-
-      const label = document.createElement("div");
-      label.className = "position-title";
-      label.textContent = positionText;
-
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const inner = document.createElement("div");
-      inner.className = "inner";
-
-      const back = document.createElement("div");
-      back.className = "back";
-
-      const front = document.createElement("div");
-      front.className = "front";
-
-      const img = document.createElement("img");
-      img.src = encodeURI(cardData.file);
-      img.alt = cardData.title;
-
-      front.appendChild(img);
-      inner.appendChild(back);
-      inner.appendChild(front);
-      card.appendChild(inner);
-
-      slot.appendChild(label);
-      slot.appendChild(card);
-
-      setTimeout(() => {
-        card.classList.add("flipped");
-      }, delay);
-
-      return slot;
-    }
-
-    function drawCards() {
-      const topRow = document.getElementById("topRow");
-      const bottomRow = document.getElementById("bottomRow");
-
-      topRow.innerHTML = "";
-      bottomRow.innerHTML = "";
-
-      const selected = shuffle(deck).slice(0, 5);
-
-      for (let i = 0; i < 4; i++) {
-        topRow.appendChild(createCardSlot(topLabels[i], selected[i], 250 + (i * 220)));
+      function pickCard() {
+        const randomIndex = Math.floor(Math.random() * cottageDeck.length);
+        return cottageDeck[randomIndex];
       }
 
-      bottomRow.appendChild(createCardSlot(bottomLabel, selected[4], 1200));
-    }
+      function drawCard() {
+        const card = pickCard();
+
+        welcomeWrap.style.display = "none";
+        readingArea.classList.add("show");
+        oracleCard.classList.remove("flipped");
+
+        cardImage.src = encodeURI(card.file);
+        cardImage.alt = card.title;
+        cardTitle.textContent = card.title;
+        cardMessage.textContent = card.message;
+
+        setTimeout(() => {
+          oracleCard.classList.add("flipped");
+        }, 220);
+      }
+
+      drawBtn.addEventListener("click", drawCard);
+    })();
   </script>
 </body>
 </html>
