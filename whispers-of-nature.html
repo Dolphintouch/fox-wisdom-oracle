@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whispers of Nature Oracle</title>
+  <style>
+    :root {
+      --bg: #f7efe9;
+      --mist: rgba(255,255,255,0.45);
+      --rose: #d7a8b8;
+      --peach: #efc7b0;
+      --sage: #a7b79c;
+      --gold: #d6b16f;
+      --text: #6d4c57;
+      --soft-shadow: 0 10px 30px rgba(109, 76, 87, 0.18);
+      --card-bg: rgba(255,255,255,0.55);
+      --border: rgba(214,177,111,0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(247,239,233,0.78), rgba(247,239,233,0.84)),
+        url('whispers-bg.jpg') center/cover fixed no-repeat;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .mist {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(255,240,245,0.25), transparent 28%),
+        radial-gradient(circle at 50% 75%, rgba(255,255,255,0.22), transparent 35%);
+      opacity: 0.9;
+      animation: drift 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0px) scale(1); }
+      to { transform: translateY(-16px) scale(1.03); }
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 16px;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(8px);
+      margin-bottom: 18px;
+    }
+
+    .hero {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .hero-image {
+      position: relative;
+      min-height: 420px;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(247,239,233,0.28)),
+        url('whispers-home.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 42px 22px;
+    }
+
+    .hero-overlay {
+      background: rgba(255,255,255,0.40);
+      border: 1px solid rgba(214,177,111,0.35);
+      border-radius: 28px;
+      padding: 28px 24px;
+      max-width: 720px;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 6vw, 4.2rem);
+      font-weight: normal;
+      letter-spacing: 0.4px;
+      color: #7b5563;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    }
+
+    .tagline {
+      margin: 14px auto 0;
+      max-width: 580px;
+      font-size: clamp(1rem, 2.5vw, 1.28rem);
+      line-height: 1.7;
+    }
+
+    .author {
+      margin-top: 16px;
+      font-size: 0.98rem;
+      opacity: 0.9;
+    }
+
+    .section {
+      margin-top: 26px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(12px);
+      padding: 26px;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 1.8rem;
+      font-weight: normal;
+      color: #835e6d;
+      text-align: center;
+    }
+
+    .section p {
+      margin: 0 auto;
+      max-width: 760px;
+      text-align: center;
+      line-height: 1.8;
+      font-size: 1.02rem;
+    }
+
+    .actions {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .action-card {
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(214,177,111,0.32);
+      border-radius: 24px;
+      padding: 22px 18px;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: var(--soft-shadow);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 38px rgba(109,76,87,0.2);
+      background: rgba(255,255,255,0.68);
+    }
+
+    .action-card .icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .action-card .title {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: #7b5563;
+    }
+
+    .action-card .desc {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      opacity: 0.92;
+    }
+
+    .footer {
+      margin-top: 26px;
+      text-align: center;
+      padding: 20px;
+      color: #7d6670;
+      font-size: 0.95rem;
+    }
+
+    .soft-note {
+      margin-top: 18px;
+      text-align: center;
+      font-style: italic;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 640px) {
+      .hero-image { min-height: 360px; }
+      .section { padding: 22px 16px; }
+      .hero-overlay { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mist"></div>
+
+  <div class="wrap">
+    <a class="top-link" href="index.html">← Back to Fox Wisdom Oracle</a>
+
+    <section class="hero">
+      <div class="hero-image">
+        <div class="hero-overlay">
+          <h1>Whispers of Nature Oracle</h1>
+          <p class="tagline">Step gently into a world of soft whispers, wildflowers, quiet knowing, and the gentle wisdom of the earth.</p>
+          <div class="author">by Dolphintouch (Michelle Billiau-Morseu) and AI</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Walk softly with this deck</h2>
+      <p>Choose a single card for the day, wander through a three-card spread, or open the guidebook and let your intuition lead. This space is here to help you breathe, feel, and reconnect with the quiet wisdom already within you.</p>
+
+      <div class="actions">
+        <a class="action-card" href="whispers-daily.html">
+          <div class="icon">🌸</div>
+          <div class="title">Daily Message</div>
+          <div class="desc">Draw one gentle card and receive the message meant for this moment.</div>
+        </a>
+
+        <a class="action-card" href="whispers-three-card.html">
+          <div class="icon">🌿</div>
+          <div class="title">Three Card Spread</div>
+          <div class="desc">Explore where you are, what is unfolding, and what wants to guide you next.</div>
+        </a>
+
+        <a class="action-card" href="whispers-guidebook.html">
+          <div class="icon">📖</div>
+          <div class="title">Guidebook</div>
+          <div class="desc">Read the card meanings, welcome pages, and gentle notes woven through the deck.</div>
+        </a>
+
+        <a class="action-card" href="https://www.printerstudio.com/sell/designs/whispers-of-nature-oracle.html" target="_blank" rel="noopener noreferrer">
+          <div class="icon">🦋</div>
+          <div class="title">Bring the Journey Home</div>
+          <div class="desc">Visit the deck listing and hold these soft whispers in your hands.</div>
+        </a>
+      </div>
+
+      <div class="soft-note">Let what calls to you be the place you begin.</div>
+    </section>
+
+    <div class="footer">
+      Whispers of Nature Oracle © Dolphintouch
+    </div>
+  </div>
+</body>
+</html>
