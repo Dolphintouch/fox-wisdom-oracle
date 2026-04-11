@@ -210,7 +210,7 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      gap: 22px;
+      gap: 18px;
       flex-wrap: wrap;
       margin-top: 20px;
     }
@@ -250,27 +250,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .section-title {
-      font-size: 1.4rem;
-      margin: 38px 0 18px;
-      color: #fff0d4;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .gallery .card {
-      width: 100%;
     }
 
     .portal-section {
@@ -447,18 +426,15 @@
     <div class="controls">
       <button class="action-btn" onclick="drawSingleCard()">Draw One Card</button>
       <button class="action-btn" onclick="drawThreeCards()">Three-Card Spread</button>
-      <button class="action-btn" onclick="showGallery()">Show All Cards</button>
+      <button class="action-btn" onclick="drawSevenCards()">Seven-Card Spread</button>
       <button class="action-btn" onclick="clearReading()">Clear Reading</button>
     </div>
 
     <div id="reading-area" class="reading-area"></div>
 
-    <h2 class="section-title hidden" id="gallery-title">Deck Gallery</h2>
-    <div class="gallery hidden" id="gallery"></div>
-
     <div class="portal-section">
       <h2 class="portal-title">Step into another deck</h2>
-      <a href="whispers-of-nature.html" class="portal-card">
+      <a href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/whispers-of-nature-oracle-" class="portal-card" target="_blank">
         <img src="whispers-home.jpg" alt="Whispers of Nature Oracle">
         <div class="portal-text">Whispers of Nature</div>
       </a>
@@ -538,8 +514,6 @@
 
     const floatingContainer = document.getElementById("floating-container");
     const readingArea = document.getElementById("reading-area");
-    const gallery = document.getElementById("gallery");
-    const galleryTitle = document.getElementById("gallery-title");
 
     function createFloatingThing() {
       const el = document.createElement("div");
@@ -597,7 +571,6 @@
     }
 
     function drawSingleCard() {
-      hideGallery();
       readingArea.innerHTML = "";
       const randomCard = cards[Math.floor(Math.random() * cards.length)];
 
@@ -615,7 +588,6 @@
     }
 
     function drawThreeCards() {
-      hideGallery();
       readingArea.innerHTML = "";
 
       const chosen = shuffleArray(cards).slice(0, 3);
@@ -633,28 +605,26 @@
       });
     }
 
+    function drawSevenCards() {
+      readingArea.innerHTML = "";
+
+      const chosen = shuffleArray(cards).slice(0, 7);
+      const spread = document.createElement("div");
+      spread.className = "spread";
+      readingArea.appendChild(spread);
+
+      chosen.forEach((card, index) => {
+        const back = createBackCardHTML();
+        spread.appendChild(back);
+
+        setTimeout(() => {
+          back.replaceWith(createCardHTML(card, true));
+        }, 500 + index * 220);
+      });
+    }
+
     function clearReading() {
       readingArea.innerHTML = "";
-      hideGallery();
-    }
-
-    function showGallery() {
-      readingArea.innerHTML = "";
-      gallery.innerHTML = "";
-      galleryTitle.classList.remove("hidden");
-      gallery.classList.remove("hidden");
-
-      cards.forEach(card => {
-        gallery.appendChild(createCardHTML(card, true));
-      });
-
-      gallery.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function hideGallery() {
-      galleryTitle.classList.add("hidden");
-      gallery.classList.add("hidden");
-      gallery.innerHTML = "";
     }
 
     function openModal(card) {
