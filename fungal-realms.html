@@ -3,59 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fungal Realms Oracle</title>
+  <title>Whispers of the Fungal Realms</title>
 
   <style>
-    * {
-      box-sizing: border-box;
+    *{
+      box-sizing:border-box;
     }
 
-    body {
-      font-family: Georgia, serif;
-      text-align: center;
+    body{
+      font-family:Georgia, serif;
+      text-align:center;
       background-image:
-        linear-gradient(rgba(18,14,24,0.58), rgba(12,10,18,0.80)),
-        url("fungal-gate.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      padding: 16px;
-      margin: 0;
-      color: #f4e9ff;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
+        linear-gradient(rgba(16,22,16,0.56), rgba(16,22,16,0.76)),
+        url("forest-bg.jpg");
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
+      padding:16px;
+      margin:0;
+      color:#f5f3ee;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
       background:
-        radial-gradient(circle at 18% 20%, rgba(180,140,255,0.08), transparent 22%),
-        radial-gradient(circle at 82% 24%, rgba(120,255,220,0.06), transparent 24%),
-        radial-gradient(circle at 50% 82%, rgba(255,180,255,0.05), transparent 24%);
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(circle at 15% 20%, rgba(140,255,226,0.08), transparent 20%),
+        radial-gradient(circle at 80% 25%, rgba(201,165,255,0.07), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(255,170,225,0.05), transparent 24%),
+        radial-gradient(circle at 30% 68%, rgba(170,255,220,0.05), transparent 18%);
+      pointer-events:none;
+      z-index:0;
     }
 
-    .soft-lights {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
+    .soft-lights{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
     }
 
-    .light {
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(214,190,255,0.92);
-      box-shadow: 0 0 12px rgba(214,190,255,0.85);
-      animation: floatLight linear infinite;
-      opacity: 0.78;
+    .light{
+      position:absolute;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:rgba(180,255,235,0.92);
+      box-shadow:0 0 12px rgba(180,255,235,0.85);
+      animation:floatLight linear infinite;
+      opacity:0.7;
     }
 
     .light:nth-child(1){ left:8%; top:85%; animation-duration:12s; animation-delay:0s; }
@@ -67,374 +68,469 @@
     .light:nth-child(7){ left:86%; top:86%; animation-duration:12s; animation-delay:6s; }
     .light:nth-child(8){ left:54%; top:70%; animation-duration:17s; animation-delay:2.5s; }
 
-    @keyframes floatLight {
-      0% {
-        transform: translateY(0) translateX(0) scale(0.8);
-        opacity: 0;
+    @keyframes floatLight{
+      0%{
+        transform:translateY(0) translateX(0) scale(0.8);
+        opacity:0;
       }
-      20% { opacity: 0.75; }
-      70% { opacity: 0.9; }
-      100% {
-        transform: translateY(-220px) translateX(24px) scale(1.25);
-        opacity: 0;
+      20%{ opacity:0.75; }
+      70%{ opacity:0.85; }
+      100%{
+        transform:translateY(-220px) translateX(24px) scale(1.25);
+        opacity:0;
       }
     }
 
-    .page-wrap {
-      position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-bottom: 60px;
+    .page-wrap{
+      position:relative;
+      z-index:2;
+      max-width:1100px;
+      margin:0 auto;
+      padding-bottom:60px;
     }
 
-    .top-credit {
-      font-size: 1rem;
-      color: #ecdfff;
-      margin-top: 4px;
-      margin-bottom: 10px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
+    .top-credit{
+      font-size:1rem;
+      color:#ebfff8;
+      margin-top:4px;
+      margin-bottom:10px;
+      text-shadow:0 1px 3px rgba(0,0,0,0.45);
     }
 
-    h1 {
-      margin: 10px 0 14px;
-      font-size: clamp(2.3rem, 6vw, 4.4rem);
-      line-height: 1.08;
-      color: #f3e8ff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    h1{
+      margin:10px 0 14px;
+      font-size:clamp(2.3rem, 6vw, 4.4rem);
+      line-height:1.08;
+      color:#f3fffb;
+      text-shadow:0 2px 8px rgba(0,0,0,0.35);
     }
 
-    .blessing {
-      max-width: 760px;
-      margin: 0 auto 18px;
-      color: #f4ebff;
-      font-size: clamp(1rem, 2vw, 1.22rem);
-      line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.38);
+    .blessing{
+      max-width:760px;
+      margin:0 auto 18px;
+      color:#eefcf7;
+      font-size:clamp(1rem, 2vw, 1.25rem);
+      line-height:1.8;
+      text-shadow:0 1px 4px rgba(0,0,0,0.38);
     }
 
-    .welcome-card-wrap {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 6px auto 10px;
-      min-height: 470px;
+    .welcome-card-wrap{
+      position:relative;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin:6px auto 10px;
+      min-height:470px;
     }
 
-    .welcome-mist {
-      position: absolute;
-      width: 440px;
-      height: 440px;
-      border-radius: 50%;
+    .welcome-mist{
+      position:absolute;
+      width:440px;
+      height:440px;
+      border-radius:50%;
       background:
-        radial-gradient(circle, rgba(205,170,255,0.20) 0%, rgba(180,150,255,0.10) 28%, rgba(160,255,220,0.05) 48%, transparent 72%);
-      filter: blur(46px);
-      opacity: 0.64;
-      z-index: 1;
-      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+        radial-gradient(circle, rgba(180,255,235,0.18) 0%, rgba(201,165,255,0.10) 28%, rgba(255,215,245,0.04) 48%, transparent 72%);
+      filter:blur(46px);
+      animation:mistGlow 7s ease-in-out infinite alternate;
+      opacity:0.62;
+      z-index:1;
+      transition:opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
 
-    .welcome-mist.active {
-      opacity: 0.95;
-      transform: scale(1.08);
-      filter: blur(54px);
+    .welcome-mist.active{
+      opacity:0.95;
+      transform:scale(1.08);
+      filter:blur(54px);
     }
 
-    .welcome-halo {
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      z-index: 1;
-      background: radial-gradient(circle, rgba(205,170,255,0.18) 0%, rgba(205,170,255,0.08) 35%, transparent 70%);
-      filter: blur(24px);
-      animation: haloPulse 6s ease-in-out infinite;
-      pointer-events: none;
+    .welcome-halo{
+      position:absolute;
+      width:360px;
+      height:360px;
+      border-radius:50%;
+      z-index:1;
+      background:radial-gradient(circle, rgba(180,255,235,0.18) 0%, rgba(180,255,235,0.08) 35%, transparent 70%);
+      filter:blur(24px);
+      animation:haloPulse 6s ease-in-out infinite;
+      pointer-events:none;
     }
 
-    @keyframes haloPulse {
-      0% { opacity: 0.45; transform: scale(0.96); }
-      50% { opacity: 0.85; transform: scale(1.06); }
-      100% { opacity: 0.45; transform: scale(0.96); }
+    @keyframes haloPulse{
+      0%{
+        opacity:0.45;
+        transform:scale(0.96);
+      }
+      50%{
+        opacity:0.85;
+        transform:scale(1.06);
+      }
+      100%{
+        opacity:0.45;
+        transform:scale(0.96);
+      }
     }
 
-    .welcome-card {
-      position: relative;
-      z-index: 2;
-      width: min(310px, 78vw);
-      max-width: 310px;
-      border-radius: 20px;
+    .welcome-card{
+      position:relative;
+      z-index:2;
+      width:min(310px, 78vw);
+      max-width:310px;
+      border-radius:20px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 14px 28px rgba(0,0,0,0.30),
-        0 0 30px rgba(205,170,255,0.16);
-      cursor: pointer;
-      transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
-      transform-style: preserve-3d;
-      filter: brightness(0.99);
-      animation: welcomePulse 4.6s ease-in-out infinite;
-      user-select: none;
-      -webkit-user-drag: none;
+        0 0 30px rgba(180,255,235,0.14);
+      cursor:pointer;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        filter 0.35s ease;
+      filter:brightness(0.99);
+      animation:welcomePulse 4.6s ease-in-out infinite;
+      user-select:none;
+      -webkit-user-drag:none;
     }
 
-    .welcome-card:hover {
-      transform: translateY(-5px) scale(1.02);
+    .welcome-card:hover{
+      transform:translateY(-5px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.18),
+        0 18px 36px rgba(0,0,0,0.32),
+        0 0 42px rgba(180,255,235,0.24);
+      filter:brightness(1.04);
     }
 
-    .welcome-card.shuffling {
-      animation: deckShuffle 0.8s ease-in-out 3;
+    .welcome-card.shuffling{
+      animation:deckShuffle 0.8s ease-in-out 3;
     }
 
-    @keyframes welcomePulse {
-      0% {
+    @keyframes welcomePulse{
+      0%{
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(205,170,255,0.14);
-        transform: scale(1);
+          0 0 30px rgba(180,255,235,0.12);
+        transform:scale(1);
       }
-      50% {
+      50%{
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.16),
           0 18px 34px rgba(0,0,0,0.32),
-          0 0 42px rgba(205,170,255,0.22);
-        transform: scale(1.015);
+          0 0 42px rgba(180,255,235,0.22);
+        transform:scale(1.015);
       }
-      100% {
+      100%{
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(205,170,255,0.14);
-        transform: scale(1);
+          0 0 30px rgba(180,255,235,0.12);
+        transform:scale(1);
       }
     }
 
-    @keyframes deckShuffle {
-      0% { transform: translateX(0) rotate(0deg) scale(1); }
-      20% { transform: translateX(-14px) rotate(-4deg) scale(1.01); }
-      40% { transform: translateX(14px) rotate(4deg) scale(1.01); }
-      60% { transform: translateX(-10px) rotate(-3deg) scale(1.01); }
-      80% { transform: translateX(10px) rotate(3deg) scale(1.01); }
-      100% { transform: translateX(0) rotate(0deg) scale(1); }
+    @keyframes deckShuffle{
+      0%{ transform:translateX(0) rotate(0deg) scale(1); }
+      20%{ transform:translateX(-14px) rotate(-4deg) scale(1.01); }
+      40%{ transform:translateX(14px) rotate(4deg) scale(1.01); }
+      60%{ transform:translateX(-10px) rotate(-3deg) scale(1.01); }
+      80%{ transform:translateX(10px) rotate(3deg) scale(1.01); }
+      100%{ transform:translateX(0) rotate(0deg) scale(1); }
     }
 
-    .scroll-whisper {
-      margin: 0 auto 24px;
-      max-width: 680px;
-      font-size: 1.08rem;
-      color: #f1e7ff;
-      font-style: italic;
-      letter-spacing: 0.2px;
+    .scroll-whisper{
+      margin:0 auto 24px;
+      max-width:680px;
+      font-size:1.08rem;
+      color:#eefcf7;
+      font-style:italic;
+      letter-spacing:0.2px;
       text-shadow:
-        0 0 8px rgba(205,170,255,0.35),
-        0 0 18px rgba(205,170,255,0.18),
+        0 0 8px rgba(180,255,235,0.35),
+        0 0 18px rgba(180,255,235,0.18),
         0 1px 4px rgba(0,0,0,0.45);
-      animation: whisperGlow 3.4s ease-in-out infinite;
+      animation:whisperGlow 3.4s ease-in-out infinite;
     }
 
-    @keyframes whisperGlow {
-      0%, 100% {
-        opacity: 0.82;
-        transform: translateY(0);
+    @keyframes whisperGlow{
+      0%,100%{
+        opacity:0.82;
+        transform:translateY(0);
       }
-      50% {
-        opacity: 1;
-        transform: translateY(2px);
+      50%{
+        opacity:1;
+        transform:translateY(2px);
       }
     }
 
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px auto 18px;
-      max-width: 950px;
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:10px;
+      margin:20px auto 18px;
+      max-width:950px;
     }
 
-    button {
-      border: none;
-      padding: 13px 20px;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #8364b8, #654b95);
-      color: #f9f3ff;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.20);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    button{
+      border:none;
+      padding:13px 20px;
+      border-radius:999px;
+      background:linear-gradient(to bottom, #4c9084, #356b62);
+      color:#f6fffc;
+      font-family:Georgia, serif;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
     }
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
     }
 
-    .shop-invite {
-      margin: 10px auto 14px;
-      font-size: 1.25rem;
-      color: #f0e6ff;
+    .shop-invite{
+      margin:10px auto 14px;
+      font-size:1.25rem;
+      color:#f3ead0;
       text-shadow:
-        0 0 8px rgba(205,170,255,0.28),
-        0 0 16px rgba(205,170,255,0.12),
+        0 0 8px rgba(196, 172, 96, 0.28),
+        0 0 16px rgba(196, 172, 96, 0.12),
         0 1px 4px rgba(0,0,0,0.45);
-      font-style: italic;
-      letter-spacing: 0.4px;
-      max-width: 780px;
+      font-style:italic;
+      letter-spacing:0.4px;
+      max-width:780px;
     }
 
-    .shop-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin: 0 auto 30px;
-      max-width: 1000px;
+    .shop-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:14px;
+      margin:0 auto 30px;
+      max-width:1000px;
     }
 
-    .link-button {
-      display: inline-block;
-      padding: 14px 24px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #f6f2ff;
-      background: linear-gradient(to bottom, #6d58a1 0%, #5e4b8c 24%, #4d3e75 50%, #40345f 72%, #352b4f 100%);
-      border: 1px solid rgba(205,170,255,0.28);
-      min-width: 220px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+    .link-button{
+      position:relative;
+      display:inline-block;
+      padding:14px 24px;
+      border-radius:999px;
+      text-decoration:none;
+      font-family:Georgia, serif;
+      font-size:1rem;
+      color:#f8f4e6;
+      background:
+        linear-gradient(
+          to bottom,
+          #7d7350 0%,
+          #6b6241 24%,
+          #564e35 50%,
+          #4a442d 72%,
+          #3f3a27 100%
+        );
+      border:1px solid rgba(210,190,126,0.42);
+      box-shadow:
+        0 0 0 1px rgba(225,205,145,0.10),
+        0 8px 18px rgba(0,0,0,0.30),
+        0 0 10px rgba(200,175,95,0.15),
+        0 0 22px rgba(200,175,95,0.10),
+        inset 0 1px 0 rgba(255,245,210,0.18),
+        inset 0 -2px 6px rgba(18,20,14,0.28);
+      transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        filter 0.22s ease;
+      overflow:hidden;
+      min-width:220px;
+      letter-spacing:0.2px;
     }
 
-    .reading-stage {
-      position: relative;
-      margin-top: 4px;
+    .link-button::before{
+      content:"";
+      position:absolute;
+      top:-60%;
+      left:-35%;
+      width:38%;
+      height:220%;
+      background:linear-gradient(
+        to right,
+        rgba(255,255,255,0),
+        rgba(233,219,172,0.28),
+        rgba(255,255,255,0)
+      );
+      transform:rotate(18deg);
+      pointer-events:none;
     }
 
-    .spread-area {
-      display: none;
-      margin: 24px auto 0;
-      max-width: 1000px;
+    .link-button::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:999px;
+      box-shadow:0 0 14px rgba(191,167,96,0.12);
+      opacity:0.9;
+      pointer-events:none;
     }
 
-    .spread-area.show {
-      display: block;
+    .link-button:hover{
+      transform:translateY(-3px) scale(1.03);
+      filter:brightness(1.06);
+      box-shadow:
+        0 0 0 1px rgba(225,205,145,0.15),
+        0 12px 24px rgba(0,0,0,0.34),
+        0 0 14px rgba(200,175,95,0.24),
+        0 0 28px rgba(200,175,95,0.14),
+        inset 0 1px 0 rgba(255,245,210,0.26),
+        inset 0 -2px 6px rgba(18,20,14,0.32);
     }
 
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 22px;
-      margin-top: 10px;
+    .link-button:hover::before{
+      animation:goldSheen 1.2s ease;
     }
 
-    .card-slot {
-      width: min(220px, 84vw);
-      text-align: center;
+    @keyframes goldSheen{
+      0%{
+        left:-35%;
+        opacity:0;
+      }
+      20%{
+        opacity:1;
+      }
+      100%{
+        left:120%;
+        opacity:0;
+      }
     }
 
-    .card-slot h3 {
-      margin: 0 0 12px;
-      font-size: 1.02rem;
-      color: #f0e6ff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    .reading-stage{
+      position:relative;
+      margin-top:4px;
     }
 
-    .card-flip {
-      width: 100%;
-      max-width: 220px;
-      margin: 0 auto;
-      perspective: 1000px;
+    .spread-area{
+      display:none;
+      margin:24px auto 0;
+      max-width:1000px;
     }
 
-    .card-flip-inner {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 220 / 367;
-      transition: transform 0.8s ease;
-      transform-style: preserve-3d;
+    .spread-area.show{
+      display:block;
     }
 
-    .card-flip.flipped .card-flip-inner {
-      transform: rotateY(180deg);
+    .cards-grid{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:22px;
+      margin-top:10px;
     }
 
-    .card-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 18px;
-      overflow: hidden;
+    .card-slot{
+      width:min(220px, 84vw);
+      text-align:center;
+    }
+
+    .card-slot h3{
+      margin:0 0 12px;
+      font-size:1.02rem;
+      color:#f4fffb;
+      text-shadow:0 1px 4px rgba(0,0,0,0.35);
+    }
+
+    .card-flip{
+      width:100%;
+      max-width:220px;
+      margin:0 auto;
+      perspective:1000px;
+    }
+
+    .card-flip-inner{
+      position:relative;
+      width:100%;
+      aspect-ratio:220 / 367;
+      transition:transform 0.8s ease;
+      transform-style:preserve-3d;
+    }
+
+    .card-flip.flipped .card-flip-inner{
+      transform:rotateY(180deg);
+    }
+
+    .card-face{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      backface-visibility:hidden;
+      border-radius:18px;
+      overflow:hidden;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
-        0 0 34px rgba(205,170,255,0.12);
+        0 0 34px rgba(180,255,235,0.10);
     }
 
-    .card-face img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+    .card-face img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
     }
 
-    .card-front {
-      transform: rotateY(180deg);
+    .card-front{
+      transform:rotateY(180deg);
     }
 
-    .message-box {
-      max-width: 900px;
-      margin: 20px auto 0;
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+    .message-box{
+      max-width:900px;
+      margin:20px auto 0;
+      padding:18px 20px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.10);
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
       box-shadow:
         0 6px 16px rgba(0,0,0,0.15),
-        0 0 28px rgba(205,170,255,0.10);
-      display: none;
-      white-space: pre-line;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
+        0 0 28px rgba(180,255,235,0.08);
+      display:none;
+      white-space:pre-line;
+      opacity:0;
+      transform:translateY(12px);
+      transition:opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
     }
 
-    .message-box.show {
-      display: block;
+    .message-box.show{
+      display:block;
     }
 
-    .message-box.fade-in {
-      opacity: 1;
-      transform: translateY(0);
+    .message-box.fade-in{
+      opacity:1;
+      transform:translateY(0);
       box-shadow:
         0 8px 20px rgba(0,0,0,0.18),
-        0 0 34px rgba(205,170,255,0.16);
+        0 0 34px rgba(180,255,235,0.16);
     }
 
-    .message-box h3 {
-      margin: 0 0 10px;
-      font-size: 1.45rem;
-      color: #f3eaff;
+    .message-box h3{
+      margin:0 0 10px;
+      font-size:1.45rem;
+      color:#f7fffd;
     }
 
-    .message-box p {
-      margin: 0;
-      font-size: 1.06rem;
-      line-height: 1.7;
-      color: #fff8ff;
+    .message-box p{
+      margin:0;
+      font-size:1.06rem;
+      line-height:1.7;
+      color:#fbfffe;
     }
 
-    .footer-note {
-      margin-top: 26px;
-      font-size: 0.92rem;
-      color: #eadfff;
-      opacity: 0.95;
+    .footer-note{
+      margin-top:26px;
+      font-size:0.92rem;
+      color:#e6fff7;
+      opacity:0.95;
     }
 
     @media (max-width:700px){
@@ -478,12 +574,12 @@
 
   <div class="page-wrap">
     <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
-    <h1>Fungal Realms Oracle</h1>
+    <h1>Whispers of the Fungal Realms</h1>
 
     <div class="blessing">
-      Step beyond the known path.<br>
-      Listen to the spores, the shadows, the bloom of hidden worlds.<br>
-      When you are ready, let the mycelium speak.
+      Pause within the glowing hush.<br>
+      Listen for what stirs beneath the surface.<br>
+      When you are ready, choose your path.
     </div>
 
     <div class="welcome-card-wrap">
@@ -493,7 +589,7 @@
         id="mainDeckCard"
         class="welcome-card"
         src="fungal-cover.jpg"
-        alt="Tap to draw your fungal message"
+        alt="Tap to draw your daily fungal message"
         onclick="drawDailyCardFromCard()"
       >
     </div>
@@ -505,18 +601,23 @@
     <div class="button-row">
       <button onclick="startReading('daily')">Daily Fungal Message</button>
       <button onclick="startReading('hidden')">Three Card Spread</button>
-      <button onclick="startReading('cross')">Mycelium Cross Reading</button>
-      <button onclick="window.location.href='index.html'">Back to Fox Wisdom</button>
-      <button onclick="toggleSound()" id="soundButton">Fungal Forest Sounds: Off</button>
+      <button onclick="startReading('cross')">Sacred Mycelium Cross</button>
+      <button onclick="window.location.href='index.html'">Fox Home</button>
+      <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
     </div>
 
-    <div class="shop-invite">Step deeper into the realm</div>
+    <div class="shop-invite">Bring the journey home</div>
 
     <div class="shop-links">
-      <a class="link-button"
-         href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/"
-         target="_blank"
-         rel="noopener noreferrer">
+      <a class="link-button" href="https://www.amazon.com/dp/B0DXP8T9DQ" target="_blank">
+        Buy the Book on Amazon
+      </a>
+
+      <a class="link-button" href="https://www.printerstudio.com/sell/designs/whispers-of-the-fungal-realms-a-journey-through-the-mushroom-trip-oracle.html" target="_blank">
+        Buy the Cards on PrinterStudio
+      </a>
+
+      <a class="link-button" href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/" target="_blank">
         Open the Fungal Book
       </a>
     </div>
@@ -531,7 +632,7 @@
     </div>
 
     <div class="footer-note">
-      Fungal Realms Oracle © Dolphintouch
+      Whispers of the Fungal Realms © Dolphintouch
     </div>
   </div>
 
@@ -543,29 +644,56 @@
     const CARD_BACK = "fungal-cover.jpg";
 
     const cards = [
-      { title: "Celestial Spore", image: "celestial-spore.jpg", message: "A higher vision is seeding itself within you. Trust what arrives like starlight in the dark." },
-      { title: "Cosmic Cap", image: "cosmic-cap.jpg", message: "Your perception is stretching beyond the ordinary. Let wonder widen your view." },
-      { title: "Cosmic Fungi", image: "cosmic-fungi.jpg", message: "You are more connected than you realise. Threads you cannot see are already at work." },
-      { title: "Cosmic Mycelium", image: "cosmic-mycelium.jpg", message: "Beneath everything runs a hidden intelligence. Listen for the pattern beneath the surface." },
-      { title: "Dreamcap", image: "dreamcap.jpg", message: "The veil between thought and intuition is thinning. Pay attention to what comes in dreams and drifting moments." },
-      { title: "Dreamwalker", image: "dreamwalker.jpg", message: "You are moving between worlds of knowing. Walk gently and notice what follows you back." },
-      { title: "Echoing Spore", image: "echoing-spore.jpg", message: "Something spoken, felt, or remembered is returning for a reason. Hear the echo." },
-      { title: "Elder Cap", image: "elder-cap.jpg", message: "Ancient knowing is near. Wisdom may come through patience, age, or old remembrance." },
-      { title: "Eternal Spore", image: "eternal-spore.jpg", message: "What is true does not vanish. Some energies continue quietly, even when unseen." },
-      { title: "Ethereal Mycelium", image: "ethereal-mycelium.jpg", message: "You are supported by subtle networks of spirit, instinct, and unseen guidance." },
-      { title: "Luminary Spore", image: "luminary-spore.jpg", message: "A small light can lead you far. Follow what glows softly rather than what shouts." },
-      { title: "Mind Mushroom", image: "mind-mushroom.jpg", message: "Your thoughts are fertile ground. Tend carefully to what you keep feeding." },
-      { title: "Mushroom Gatekeeper", image: "mushroom-gatekeeper.jpg", message: "A threshold is before you. Not every door opens at once, but this one is asking for respect." },
-      { title: "Mycelial Bloom", image: "mycelial-bloom.jpg", message: "Growth is spreading underground before it is visible above. Trust hidden progress." },
-      { title: "Mycelial Dream", image: "mycelial-dream.jpg", message: "A vision is weaving itself through your inner world. Let imagination reveal truth." },
-      { title: "Mycelium Mirror", image: "mycelium-mirror.jpg", message: "The outer world is reflecting something deeper back to you. Notice the pattern." },
-      { title: "Quantum Spore", image: "quantum-spore.jpg", message: "Possibility is multiplying faster than you can see. Stay open to unexpected shifts." },
-      { title: "Shroomlight Lantern", image: "shroomlight-lantern.jpg", message: "Even dim guidance is enough for the next few steps. Let the lantern be small and still trusted." },
-      { title: "Spore Bearer", image: "spore-bearer.jpg", message: "You carry something potent within you. What you spread now matters." },
-      { title: "Spore Dancer", image: "spore-dancer.jpg", message: "Movement, play, and surrender may reveal more than control right now." },
-      { title: "Sporekeeper", image: "sporekeeper.jpg", message: "Guard what is precious. Not every seed is meant to be scattered too soon." },
-      { title: "Starlight Shroom", image: "starlight-shroom.jpg", message: "Magic often grows in hidden places. Trust the strange beauty of your own becoming." },
-      { title: "Third Eye Mushroom", image: "third-eye-mushroom.jpg", message: "See beyond the obvious. Intuition is asking to be trusted more deeply." }
+      { title: "The Spore Bearer", image: "spore-bearer.jpg", message: "Trust what is beginning beneath the surface. Not all growth is visible at once." },
+      { title: "The Elder Cap", image: "elder-cap.jpg", message: "Ancient wisdom and patience are guiding you now." },
+      { title: "The Dreamcap", image: "dreamcap.jpg", message: "Your dreams and imagination hold messages worth listening to." },
+      { title: "The Veiled Seer", image: "veiled-seer.jpg", message: "What is hidden is still speaking. Let subtle knowing reveal itself." },
+      { title: "The Whispering Grove", image: "whispering-grove.jpg", message: "Pause and listen. Quiet guidance is already moving around you." },
+      { title: "The Cosmic Cap", image: "cosmic-cap.jpg", message: "Your awareness is widening. Allow wonder and new perspective in." },
+      { title: "The Fractal Forest", image: "fractal-forest.jpg", message: "Patterns are repeating for a reason. Notice what keeps returning." },
+      { title: "The Kaleidoscopic Bloom", image: "kaleidoscopic-bloom.jpg", message: "Creative energy is stirring and wants to bloom through you." },
+      { title: "The Cosmic Mycelium", image: "cosmic-mycelium.jpg", message: "You are deeply connected to the unseen web of life." },
+      { title: "The Rainbow Shroud", image: "rainbow-shroud.jpg", message: "Truth is shifting in colour and layers. Let perspective soften and expand." },
+      { title: "The Dreamwalker", image: "dreamwalker.jpg", message: "An inner journey is opening. Trust dreams, symbols, and soul-travel." },
+      { title: "The Hypnotic Cap", image: "hypnotic-cap.jpg", message: "There is revelation in repetition. Look closely at what loops through your mind." },
+      { title: "The Eternal Spore", image: "eternal-spore.jpg", message: "Life continues in unseen cycles. What ends transforms, what transforms begins again." },
+      { title: "The Psychedelic Sage", image: "psychedelic-sage.jpg", message: "Wisdom is available when you slow down enough to receive it." },
+      { title: "The Fungal Oracle", image: "fungal-oracle.jpg", message: "The answers you seek may arrive through signs, symbols, and intuition." },
+      { title: "The Spore Dancer", image: "spore-dancer.jpg", message: "Joy and movement can unlock the next doorway." },
+      { title: "The Spores of Time", image: "spores-of-time.jpg", message: "Trust the timing of your life. Growth moves in cycles." },
+      { title: "The Prism Grove", image: "prism-grove.jpg", message: "Shift your view. A new angle reveals a new truth." },
+      { title: "The Mind Bloom", image: "mind-bloom.jpg", message: "Ideas and insight are branching within you. Let them grow." },
+      { title: "The Sporekeeper", image: "sporekeeper.jpg", message: "Guard what is tender. Some dreams grow best in quiet protection." },
+      { title: "The Neon Nexus", image: "neon-nexus.jpg", message: "Powerful connections are gathering. What is drawing you in is not random." },
+      { title: "The Aurora Ascension", image: "aurora-ascension.jpg", message: "Your spirit is being called upward into wider vision and clarity." },
+      { title: "The Sporeshadow", image: "sporeshadow.jpg", message: "Something is moving beneath the surface. Honour what is hidden." },
+      { title: "The Luminescent Labyrinth", image: "luminescent-labyrinth.jpg", message: "You are not lost. The winding way is part of the wisdom." },
+      { title: "The Mycelium Mirror", image: "mycelium-mirror.jpg", message: "What surrounds you may be reflecting something within." },
+      { title: "The Fungal Gate", image: "fungal-gate.jpg", message: "A threshold is open. Step forward when your spirit is ready." },
+      { title: "The Starlight Shroom", image: "starlight-shroom.jpg", message: "You are being guided by something greater than yourself." },
+      { title: "The Shroomlight Lantern", image: "shroomlight-lantern.jpg", message: "Your inner light knows the way, even in uncertainty." },
+      { title: "The White Light of Love", image: "white-light-of-love.jpg", message: "Love is still flowing through the unseen threads of your life." },
+      { title: "The Unity Bloom", image: "unity-bloom.jpg", message: "You are part of a larger whole. Connection strengthens everything." },
+      { title: "The Ethereal Mycelium", image: "ethereal-mycelium.jpg", message: "Subtle support surrounds your path. Trust the unseen web." },
+      { title: "The Pulse of Gaia", image: "pulse-of-gaia.jpg", message: "The living earth is speaking through rhythm, breath, and energy." },
+      { title: "The Fungal Dreamer", image: "fungal-dreamer.jpg", message: "Dreams are showing you what logic cannot yet explain." },
+      { title: "The Mushroom Gatekeeper", image: "mushroom-gatekeeper.jpg", message: "Not every threshold opens at once. Wait for the right invitation." },
+      { title: "The Celestial Spore", image: "celestial-spore.jpg", message: "A seed of higher possibility is being carried toward you." },
+      { title: "The Mycelial Bloom", image: "mycelial-bloom.jpg", message: "Something beautiful is branching out through hidden connection." },
+      { title: "The Spore of Unity", image: "spore-of-unity.jpg", message: "Shared energy and shared purpose can create powerful growth." },
+      { title: "The Luminary Spore", image: "luminary-spore.jpg", message: "A guiding light is emerging from what once felt small." },
+      { title: "The Spirit Mycelium", image: "spirit-mycelium.jpg", message: "Spirit moves through connection, memory, and subtle signs." },
+      { title: "The Echoing Spore", image: "echoing-spore.jpg", message: "A message is repeating because it still wants to be heard." },
+      { title: "The Cosmic Fungi", image: "cosmic-fungi.jpg", message: "You are part of something vast, strange, and luminous." },
+      { title: "The Mycelial Dream", image: "mycelial-dream.jpg", message: "A deeper dream is weaving itself beneath your waking life." },
+      { title: "The Mycelium Star", image: "mycelium-star.jpg", message: "Hidden networks can lead you toward radiant clarity." },
+      { title: "The Quantum Spore", image: "quantum-spore.jpg", message: "Possibility multiplies when you release the need for a single outcome." },
+      { title: "The Third Eye Mushroom", image: "third-eye-mushroom.jpg", message: "Your insight is sharpening. Trust what you sense beyond appearances." },
+      { title: "The Mind Mushroom", image: "mind-mushroom.jpg", message: "Your thoughts are fertile ground. Choose what you cultivate." },
+      { title: "The Spore of Ascension", image: "spore-of-ascension.jpg", message: "You are rising into a new frequency of awareness." },
+      { title: "The Spore of Clarity", image: "spore-of-clarity.jpg", message: "Confusion is thinning. What matters is starting to sharpen." },
+      { title: "The Spore of Awakening", image: "spore-of-awakening.jpg", message: "Something within you is waking up and cannot return to sleep." },
+      { title: "The Spore of Sacred Alignment", image: "spore-of-sacred-alignment.jpg", message: "You are being guided back into alignment with your true path. Trust what feels deeply right." }
     ];
 
     let soundOn = false;
@@ -657,7 +785,7 @@
 
       setTimeout(() => {
         mainCard.src = CARD_BACK;
-        mainCard.alt = "Tap to draw your fungal message";
+        mainCard.alt = "Tap to draw your daily fungal message";
         mainCard.style.transform = "rotateY(0deg)";
       }, 300);
     }
@@ -757,19 +885,19 @@
       ]);
     }
 
-    function drawMyceliumCross() {
+    function drawSacredCross() {
       const picked = [];
       while (picked.length < 5) {
         const card = getRandomCard(picked.map(c => c.title));
         picked.push(card);
       }
 
-      showMultiCardSpread("Mycelium Cross Reading", [
-        { position: "Where you stand", card: picked[0] },
+      showMultiCardSpread("Sacred Mycelium Cross", [
+        { position: "Your present energy", card: picked[0] },
         { position: "What is hidden", card: picked[1] },
-        { position: "What is growing", card: picked[2] },
-        { position: "What transforms you", card: picked[3] },
-        { position: "Where the spores lead", card: picked[4] }
+        { position: "What guides you", card: picked[2] },
+        { position: "What challenges you", card: picked[3] },
+        { position: "Where the path leads", card: picked[4] }
       ]);
     }
 
@@ -804,7 +932,7 @@
         } else if (type === "hidden") {
           drawHiddenPath();
         } else if (type === "cross") {
-          drawMyceliumCross();
+          drawSacredCross();
         }
 
         setTimeout(() => {
@@ -820,14 +948,14 @@
       if (!soundOn) {
         audio.play().then(() => {
           soundOn = true;
-          button.textContent = "Fungal Forest Sounds: On";
+          button.textContent = "Forest Sounds: On";
         }).catch(() => {
           alert("Your browser blocked autoplay. Tap the button again after interacting with the page.");
         });
       } else {
         audio.pause();
         soundOn = false;
-        button.textContent = "Fungal Forest Sounds: Off";
+        button.textContent = "Forest Sounds: Off";
       }
     }
   </script>
