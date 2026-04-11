@@ -507,7 +507,7 @@
       <img
         id="mainDeckCard"
         class="welcome-card"
-        src="whispers-welcome-page.jpg"
+        src="welcome-archwa.jpg"
         alt="Tap to draw your daily Whispers of Nature message"
         onclick="drawDailyCardFromCard()"
       >
@@ -553,44 +553,104 @@
   <script>
     const cards = [
       {
-        title: "The Listening Hollow",
-        image: "the-listening-hollow.jpg",
-        message: "Stillness is not emptiness. When you pause long enough, the natural world begins to answer in its own quiet language."
+        title: "Bearfoot Earth",
+        image: "bearfoot-earth.jpg",
+        message: "Return to what is real, grounded, and steady. The earth is asking you to slow down enough to feel held."
       },
       {
-        title: "Quiet Moss",
-        image: "quiet-moss.jpg",
-        message: "There is healing in slowing down. Softness can hold more wisdom than force."
+        title: "Bloom Where You Are Planted",
+        image: "bloom-where-you-are-planted.jpg",
+        message: "You do not need a perfect place to begin. There is beauty ready to rise exactly where you are."
       },
       {
-        title: "Forest Breath",
-        image: "forest-breath.jpg",
-        message: "Breathe with the trees. Let life return to your body one calm moment at a time."
+        title: "Chasing Light",
+        image: "chasing-light.jpg",
+        message: "Turn toward what gently brightens your spirit. Hope is not far away."
       },
       {
-        title: "Morning Dew",
-        image: "morning-dew.jpg",
-        message: "Fresh hope gathers in the smallest places. What seemed lost may be quietly beginning again."
+        title: "Create With Your Hands",
+        image: "create-with-your-hands.jpg",
+        message: "Healing comes through making, shaping, tending, and touching the world with care."
       },
       {
-        title: "Rooted Light",
-        image: "rooted-light.jpg",
-        message: "Stay grounded in what is true, even while reaching toward something brighter."
+        title: "Earth Child",
+        image: "earth-child.jpg",
+        message: "You belong to the natural world more deeply than you remember. Let that belonging soothe you."
       },
       {
-        title: "Hidden Path",
-        image: "hidden-path.jpg",
-        message: "Not every path reveals itself all at once. Trust the next step, even if the whole way is not yet clear."
+        title: "Follow the Sun",
+        image: "follow-the-sun.jpg",
+        message: "Face what warms you, nourishes you, and brings life back into tired places."
       },
       {
-        title: "Whispering Ferns",
-        image: "whispering-ferns.jpg",
-        message: "Gentle signs surround you. Listen for the message that keeps returning quietly."
+        title: "Go With the Flow",
+        image: "go-with-the-flow.jpg",
+        message: "Not every path must be forced. Sometimes the clearest answer is the one already moving."
       },
       {
-        title: "Ancient Tree",
-        image: "ancient-tree.jpg",
-        message: "Your soul remembers more than your mind does. Strength grows through seasons of weathering."
+        title: "Home Within",
+        image: "home-within.jpg",
+        message: "Safety is not always a place outside you. Come back to the quiet shelter of your own spirit."
+      },
+      {
+        title: "Inner Peace",
+        image: "inner-peace.jpg",
+        message: "Peace is growing beneath the noise. Sit long enough to feel it surface."
+      },
+      {
+        title: "Look at the Stars",
+        image: "look-at-the-stars.jpg",
+        message: "Lift your eyes. A wider view can soften what feels too close and too heavy."
+      },
+      {
+        title: "Music Moves Me",
+        image: "music-moves-me.jpg",
+        message: "Your soul is asking for rhythm, feeling, and release. Let sound carry what words cannot."
+      },
+      {
+        title: "Nurture Your Soul",
+        image: "nurture-your-soul.jpg",
+        message: "You do not need to earn rest, gentleness, or care. Feed what is tender in you."
+      },
+      {
+        title: "Peace Not War",
+        image: "peace-not-war.jpg",
+        message: "Choose the softer road where you can. Not every battle deserves your spirit."
+      },
+      {
+        title: "Roots",
+        image: "roots.jpg",
+        message: "Go deeper before reaching higher. Strength begins where you are anchored."
+      },
+      {
+        title: "See the Magic",
+        image: "see-the-maigic.jpg",
+        message: "Wonder has not left you. It is waiting in the quiet places you rush past."
+      },
+      {
+        title: "Sit With Stillness",
+        image: "sit-with-stillness.jpg",
+        message: "Stillness is not empty. It is full of messages that only arrive when you stop."
+      },
+      {
+        title: "Trust the Journey",
+        image: "trust-the-journey.jpg",
+        message: "You do not need the whole map yet. The path is forming beneath your feet."
+      },
+      {
+        title: "Trust the Quiet",
+        image: "trust-the-quiet.jpg",
+        message: "What is gentle is not weak. What is quiet is not absent. Listen closer."
+      },
+      {
+        title: "You Are Allowed to Rest",
+        image: "you-are-allowed-to-rest.jpg",
+        message: "Pause without guilt. Rest is part of the cycle, not a failure to keep moving."
+      },
+      {
+        title: "You Are Held",
+        image: "you-are-held.jpg",
+        message: "Even now, even here, something loving is carrying you more than you know."
       }
     ];
 
@@ -683,7 +743,7 @@
       mainCard.style.transform = "rotateY(90deg)";
 
       setTimeout(() => {
-        mainCard.src = "whispers-welcome-page.jpg";
+        mainCard.src = "welcome-archwa.jpg";
         mainCard.alt = "Tap to draw your daily Whispers of Nature message";
         mainCard.style.transform = "rotateY(0deg)";
       }, 300);
@@ -728,7 +788,7 @@
 
       let fullMessage = "";
       spreadCards.forEach(item => {
-        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
+        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\\n\\n";
       });
 
       messageBox.classList.add("show");
