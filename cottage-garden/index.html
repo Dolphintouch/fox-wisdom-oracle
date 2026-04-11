@@ -1,572 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cottage Garden Oracle</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cottage Garden Oracle</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+*{box-sizing:border-box;}
 
-    body {
-      margin: 0;
-      padding: 16px;
-      font-family: Georgia, serif;
-      text-align: center;
-      color: #f5ecd9;
-      background:
-        linear-gradient(rgba(28,34,24,0.55), rgba(28,34,24,0.82)),
-        url("../cottage-garden-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      overflow-x: hidden;
-      min-height: 100vh;
-      position: relative;
-    }
+body{
+margin:0;
+padding:16px;
+font-family:Georgia,serif;
+text-align:center;
+color:#f5ecd9;
+background:
+linear-gradient(rgba(28,34,24,0.55), rgba(28,34,24,0.85)),
+url("../cottage-garden-bg.jpg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
 
-    .page-wrap {
-      max-width: 1100px;
-      margin: auto;
-      position: relative;
-      z-index: 2;
-    }
+.page-wrap{max-width:1100px;margin:auto;}
 
-    h1 {
-      font-size: 2.8rem;
-      margin: 10px 0 10px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
-    }
+h1{font-size:2.6rem;}
 
-    .blessing {
-      margin: 0 auto 20px;
-      max-width: 760px;
-      line-height: 1.75;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
-    }
+.welcome-card{
+width:300px;
+max-width:80vw;
+border-radius:20px;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 0 30px rgba(255,215,140,0.3);
+animation:pulse 4s infinite;
+}
 
-    .welcome-wrap {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 6px;
-      cursor: pointer;
-    }
+@keyframes pulse{
+0%,100%{transform:scale(1);}
+50%{transform:scale(1.03);}
+}
 
-    .welcome-mist {
-      position: absolute;
-      inset: 50% auto auto 50%;
-      width: 360px;
-      height: 360px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(255,236,205,0.20) 0%, rgba(255,228,185,0.12) 32%, rgba(255,220,170,0.05) 54%, transparent 72%);
-      filter: blur(26px);
-      opacity: 0.7;
-      pointer-events: none;
-      animation: mistPulse 5.5s ease-in-out infinite;
-      z-index: 0;
-    }
+.tap-note{animation:pulseText 2s infinite;}
 
-    @keyframes mistPulse {
-      0%, 100% {
-        opacity: 0.45;
-        transform: translate(-50%, -50%) scale(0.94);
-      }
-      50% {
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(1.08);
-      }
-    }
+@keyframes pulseText{
+0%,100%{opacity:0.6;}
+50%{opacity:1;}
+}
 
-    .welcome-card {
-      position: relative;
-      z-index: 1;
-      width: 300px;
-      max-width: 80vw;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
-      box-shadow:
-        0 0 24px rgba(255,215,140,0.18),
-        0 14px 30px rgba(0,0,0,0.42);
-      animation: welcomePulse 4.8s ease-in-out infinite;
-      display: block;
-    }
+button,.link-button{
+padding:12px 20px;
+border-radius:30px;
+border:none;
+color:white;
+background:#9f775d;
+cursor:pointer;
+margin:6px;
+}
 
-    .welcome-card:hover {
-      transform: scale(1.05);
-      filter: brightness(1.04);
-      box-shadow:
-        0 0 34px rgba(255,215,140,0.30),
-        0 16px 34px rgba(0,0,0,0.45);
-    }
+.link-button{background:#4a442d;}
 
-    @keyframes welcomePulse {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow:
-          0 0 24px rgba(255,215,140,0.18),
-          0 14px 30px rgba(0,0,0,0.42);
-      }
-      50% {
-        transform: scale(1.015);
-        box-shadow:
-          0 0 38px rgba(255,215,140,0.28),
-          0 18px 34px rgba(0,0,0,0.46);
-      }
-    }
+.cards-grid{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:20px;
+}
 
-    .tap-note {
-      margin-top: 10px;
-      color: #fff0dc;
-      text-shadow: 0 0 12px rgba(255,240,220,0.25);
-      animation: pulseText 2.5s infinite;
-    }
+.card-slot{width:200px;}
 
-    @keyframes pulseText {
-      0%, 100% { opacity: 0.62; }
-      50% { opacity: 1; }
-    }
+.flip-card{
+width:100%;
+perspective:1000px;
+}
 
-    .button-row,
-    .shop-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
+.flip-card-inner{
+position:relative;
+width:100%;
+height:320px;
+transform-style:preserve-3d;
+transition:transform 1.4s ease;
+}
 
-    button,
-    .link-button {
-      padding: 12px 20px;
-      border-radius: 30px;
-      border: none;
-      text-decoration: none;
-      color: white;
-      background: #9f775d;
-      cursor: pointer;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
+.flip-card.flipped .flip-card-inner{
+transform:rotateY(180deg);
+}
 
-    button:hover,
-    .link-button:hover {
-      transform: translateY(-2px);
-    }
+.flip-front,.flip-back{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:15px;
+overflow:hidden;
+}
 
-    .link-button {
-      background: #4a442d;
-    }
+.flip-back{transform:rotateY(180deg);}
 
-    .glow {
-      box-shadow: 0 0 15px rgba(255,215,140,0.5);
-    }
+.flip-front img,.flip-back img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
 
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
+.scroll-note{
+margin-top:20px;
+display:none;
+opacity:0;
+}
 
-    .card-slot {
-      width: 200px;
-      position: relative;
-    }
+.scroll-note.show{
+display:block;
+animation:fadeIn 2s forwards, float 3s infinite 2s;
+}
 
-    .card-slot h4 {
-      margin: 0 0 10px;
-      min-height: 2.6em;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
-    }
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
 
-    .flip-card {
-      width: 100%;
-      perspective: 1400px;
-      position: relative;
-    }
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(4px);}
+}
 
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 320px;
-      transform-style: preserve-3d;
-      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
+.message-box{
+display:none;
+margin-top:20px;
+background:rgba(255,255,255,0.1);
+padding:15px;
+border-radius:15px;
+white-space:pre-line;
+}
 
-    .flip-card.flipped .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flip-front,
-    .flip-back {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 15px;
-      overflow: hidden;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.38);
-    }
-
-    .flip-front img,
-    .flip-back img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .flip-back {
-      transform: rotateY(180deg);
-    }
-
-    .reveal-mist {
-      position: absolute;
-      left: 50%;
-      top: 58%;
-      width: 190px;
-      height: 190px;
-      transform: translate(-50%, -50%) scale(0.7);
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(255,240,220,0.28) 0%, rgba(255,228,190,0.15) 30%, rgba(255,220,180,0.05) 50%, transparent 72%);
-      filter: blur(18px);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    .reveal-mist.show {
-      animation: revealMist 1.8s ease forwards;
-    }
-
-    @keyframes revealMist {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.72);
-      }
-      20% {
-        opacity: 0.9;
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(1.3);
-      }
-    }
-
-    .particles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: visible;
-      z-index: 4;
-    }
-
-    .spark {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,238,190,0.95);
-      box-shadow: 0 0 10px rgba(255,232,180,0.9);
-      opacity: 0;
-    }
-
-    .spark.show {
-      animation: sparkRise 1.7s ease-out forwards;
-    }
-
-    @keyframes sparkRise {
-      0% {
-        opacity: 0;
-        transform: translateY(0) scale(0.7);
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-55px) translateX(var(--drift, 0px)) scale(1.2);
-      }
-    }
-
-    .message-box {
-      margin-top: 20px;
-      padding: 15px;
-      background: rgba(255,255,255,0.10);
-      border-radius: 15px;
-      display: none;
-      white-space: pre-line;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.2);
-    }
-
-    .message-box.show {
-      display: block;
-    }
-
-    .scroll-note {
-      margin-top: 22px;
-      color: #fff0dc;
-      text-shadow: 0 0 12px rgba(255,240,220,0.35);
-      display: none;
-      opacity: 0;
-      transform: translateY(8px);
-    }
-
-    .scroll-note.show {
-      display: block;
-      animation: whisperIn 1.6s ease forwards, floatGlow 2.8s ease-in-out infinite 1.6s;
-    }
-
-    @keyframes whisperIn {
-      0% {
-        opacity: 0;
-        transform: translateY(12px);
-        filter: blur(6px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-      }
-    }
-
-    @keyframes floatGlow {
-      0%, 100% {
-        opacity: 0.72;
-        transform: translateY(0);
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(4px);
-      }
-    }
-
-    @media (max-width: 700px) {
-      button,
-      .link-button {
-        width: 100%;
-        max-width: 360px;
-      }
-
-      .flip-card-inner {
-        height: 300px;
-      }
-
-      .card-slot {
-        width: 190px;
-      }
-    }
-  </style>
+.message-box.show{display:block;}
+</style>
 </head>
+
 <body>
 
-  <div class="page-wrap">
+<div class="page-wrap">
 
-    <h1>Cottage Garden Oracle</h1>
+<h1>Cottage Garden Oracle</h1>
 
-    <div class="blessing">
-      Draw from the garden… let the old ways whisper to you.
-    </div>
+<div onclick="startReading('daily')">
+<img src="../cottage-card-back.jpg" class="welcome-card">
+</div>
 
-    <div class="welcome-wrap" onclick="startReading('daily')">
-      <div class="welcome-mist"></div>
-      <img src="../card%20back.jpg" class="welcome-card" alt="Draw a card">
-    </div>
-    <div class="tap-note">Tap the card to reveal your message</div>
+<div class="tap-note">Tap the card to reveal your message</div>
 
-    <div class="button-row">
-      <button type="button" onclick="startReading('daily')">Daily Message</button>
-      <button type="button" onclick="startReading('three')">3 Card Spread</button>
-      <button type="button" onclick="startReading('cross')">Cottage Cross</button>
-      <button type="button" onclick="window.location.href='../index.html'">Fox Oracle</button>
-      <button type="button" onclick="toggleSound()" id="soundButton">Garden Sounds: Off</button>
-    </div>
+<div>
+<button onclick="startReading('daily')">Daily Message</button>
+<button onclick="startReading('three')">3 Card Spread</button>
+<button onclick="startReading('cross')">Cottage Cross</button>
+<button onclick="window.location.href='../index.html'">Fox Oracle</button>
+</div>
 
-    <div class="shop-links">
-      <a class="link-button glow" href="https://www.printerstudio.com/sell/designs/curses-charms-and-cottage-gard.html" target="_blank" rel="noopener noreferrer">Buy the Cottage Deck</a>
-      <a class="link-button glow" href="https://www.amazon.com/dp/B0DWL4MHQJ" target="_blank" rel="noopener noreferrer">Read the Book</a>
-      <a class="link-button" href="https://dolphintouch.etsy.com" target="_blank" rel="noopener noreferrer">Etsy Shop</a>
-    </div>
+<div>
+<a class="link-button" href="https://www.printerstudio.com/sell/designs/curses-charms-and-cottage-gard.html" target="_blank">Buy Deck</a>
+<a class="link-button" href="https://www.amazon.com/dp/B0DWL4MHQJ" target="_blank">Read Book</a>
+</div>
 
-    <div id="cards" class="cards-grid"></div>
+<div id="cards" class="cards-grid"></div>
 
-    <div id="scrollNote" class="scroll-note">
-      The path continues below… scroll down to reveal your reading
-    </div>
+<div id="scrollNote" class="scroll-note">
+The path continues below… scroll down to reveal your reading
+</div>
 
-    <div id="messageBox" class="message-box">
-      <h3 id="title"></h3>
-      <p id="message"></p>
-    </div>
+<div id="messageBox" class="message-box">
+<h3 id="title"></h3>
+<p id="message"></p>
+</div>
 
-  </div>
+</div>
 
-  <audio id="gardenAudio" loop>
-    <source src="../forest.mp3.mp3" type="audio/mpeg">
-  </audio>
+<script>
 
-  <script>
-    const CARD_BACK = "../cottage-card-back.jpg";
+const CARD_BACK = "../cottage-card-back.jpg";
 
-    const cards = [
-      { title: "Hawthorn Magic", image: "../hawthorn-magic.jpg", message: "Protect what is sacred while staying open to wonder." },
-      { title: "Hearing an Owl Call", image: "../hearing-an-owl-call.jpg", message: "Wisdom calls from the dark edges." },
-      { title: "Herbal Remedies", image: "../herbal-remedies.jpg", message: "Healing may be simpler than you think." },
-      { title: "Horseshoes Over Doorways", image: "../horseshoes-over-doorways.jpg", message: "Guard your threshold." },
-      { title: "Primrose Paths", image: "../primrose-paths.jpg", message: "A gentler path is opening." },
-      { title: "Spilled Salt", image: "../spilled-salt.jpg", message: "Bless the moment and move on." },
-      { title: "Tea and Reflection", image: "../tea-and-reflection.jpg", message: "Stillness holds answers." }
-    ];
+const cards = [
+{ title:"Hawthorn Magic", image:"../hawthorn-magic.jpg", message:"Protect what is sacred while staying open to wonder."},
+{ title:"Hearing an Owl Call", image:"../hearing-an-owl-call.jpg", message:"Wisdom calls from the dark edges."},
+{ title:"Herbal Remedies", image:"../herbal-remedies.jpg", message:"Healing may be simpler than you think."},
+{ title:"Primrose Paths", image:"../primrose-paths.jpg", message:"A gentler path is opening."},
+{ title:"Spilled Salt", image:"../spilled-salt.jpg", message:"Bless the moment and move on."},
+{ title:"Tea and Reflection", image:"../tea-and-reflection.jpg", message:"Stillness holds answers."}
+];
 
-    function shuffle(arr) {
-      const copy = [...arr];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
+function shuffle(a){
+return a.sort(()=>Math.random()-0.5);
+}
 
-    function startReading(type) {
-      let draw = [];
+function startReading(type){
 
-      if (type === "daily") draw = shuffle(cards).slice(0, 1);
-      if (type === "three") draw = shuffle(cards).slice(0, 3);
-      if (type === "cross") draw = shuffle(cards).slice(0, 5);
+let draw=[];
 
-      if (!draw.length) return;
-      showCards(draw, type);
-    }
+if(type==="daily") draw=shuffle([...cards]).slice(0,1);
+if(type==="three") draw=shuffle([...cards]).slice(0,3);
+if(type==="cross") draw=shuffle([...cards]).slice(0,5);
 
-    function createParticles(index) {
-      const slot = document.querySelector(`#flip-${index}`)?.closest(".card-slot");
-      if (!slot) return;
+showCards(draw,type);
+}
 
-      const particles = document.createElement("div");
-      particles.className = "particles";
+function showCards(draw,type){
 
-      for (let i = 0; i < 7; i++) {
-        const spark = document.createElement("div");
-        spark.className = "spark show";
-        spark.style.left = (50 + (Math.random() * 60 - 30)) + "%";
-        spark.style.top = (62 + (Math.random() * 18 - 9)) + "%";
-        spark.style.setProperty("--drift", `${Math.random() * 26 - 13}px`);
-        spark.style.animationDelay = `${Math.random() * 0.25}s`;
-        particles.appendChild(spark);
-      }
+const container=document.getElementById("cards");
+const scrollNote=document.getElementById("scrollNote");
 
-      slot.appendChild(particles);
+container.innerHTML="";
 
-      setTimeout(() => {
-        particles.remove();
-      }, 2000);
-    }
+draw.forEach((c,i)=>{
 
-    function showCards(draw, type) {
-      const container = document.getElementById("cards");
-      const scrollNote = document.getElementById("scrollNote");
-      const box = document.getElementById("messageBox");
-      const title = document.getElementById("title");
-      const message = document.getElementById("message");
+let label=c.title;
 
-      container.innerHTML = "";
-      scrollNote.classList.remove("show");
-      scrollNote.style.display = "none";
+if(type==="three"){
+label=["Past","Present","Hidden Path"][i];
+}
 
-      draw.forEach((c, index) => {
-        let label = c.title;
+if(type==="cross"){
+label=[
+"Where you stand",
+"What is hidden",
+"What nurtures you",
+"What needs tending",
+"Where the garden opens"
+][i];
+}
 
-        if (type === "three") {
-          label = ["Past", "Present", "Hidden Path"][index];
-        }
+container.innerHTML+=`
+<div class="card-slot">
+<h4>${label}</h4>
+<div class="flip-card" id="flip-${i}">
+<div class="flip-card-inner">
+<div class="flip-front">
+<img src="${CARD_BACK}">
+</div>
+<div class="flip-back">
+<img src="${c.image}">
+</div>
+</div>
+</div>
+</div>`;
+});
 
-        if (type === "cross") {
-          label = [
-            "Where you stand",
-            "What is hidden",
-            "What nurtures you",
-            "What needs tending",
-            "Where the garden opens"
-          ][index];
-        }
+draw.forEach((_,i)=>{
+setTimeout(()=>{
+document.getElementById("flip-"+i).classList.add("flipped");
+},400+(i*400));
+});
 
-        const slot = document.createElement("div");
-        slot.className = "card-slot";
-        slot.innerHTML = `
-          <h4>${label}</h4>
-          <div class="flip-card" id="flip-${index}">
-            <div class="reveal-mist" id="mist-${index}"></div>
-            <div class="flip-card-inner">
-              <div class="flip-front">
-                <img src="${CARD_BACK}" alt="Card back">
-              </div>
-              <div class="flip-back">
-                <img src="${c.image}" alt="${c.title}">
-              </div>
-            </div>
-          </div>
-        `;
-        container.appendChild(slot);
-      });
+setTimeout(()=>{
+scrollNote.classList.add("show");
+},1200);
 
-      draw.forEach((_, index) => {
-        setTimeout(() => {
-          const cardEl = document.getElementById(`flip-${index}`);
-          const mistEl = document.getElementById(`mist-${index}`);
-          if (mistEl) mistEl.classList.add("show");
-          if (cardEl) cardEl.classList.add("flipped");
-          createParticles(index);
-        }, 450 + (index * 420));
-      });
+const box=document.getElementById("messageBox");
+box.classList.add("show");
 
-      const totalRevealTime = 900 + (draw.length * 420);
-      setTimeout(() => {
-        scrollNote.style.display = "block";
-        scrollNote.classList.add("show");
-      }, totalRevealTime);
+if(type==="daily"){
+title.innerText=draw[0].title;
+message.innerText=draw[0].message;
+}else{
+title.innerText="Your Reading";
+message.innerText=draw.map(c=>c.title+" — "+c.message).join("\n\n");
+}
+}
 
-      box.classList.add("show");
-
-      if (type === "daily") {
-        title.innerText = draw[0].title;
-        message.innerText = draw[0].message;
-      } else {
-        const lines = draw.map((c, i) => {
-          const labels = type === "three"
-            ? ["Past", "Present", "Hidden Path"]
-            : ["Where you stand", "What is hidden", "What nurtures you", "What needs tending", "Where the garden opens"];
-          return `${labels[i]} — ${c.title}\n${c.message}`;
-        });
-        title.innerText = type === "three" ? "Your Three Card Reading" : "Your Cottage Cross";
-        message.innerText = lines.join("\n\n");
-      }
-
-      window.scrollTo({ top: 300, behavior: "smooth" });
-    }
-
-    function toggleSound() {
-      const audio = document.getElementById("gardenAudio");
-      const button = document.getElementById("soundButton");
-
-      if (audio.paused) {
-        audio.play().then(() => {
-          button.textContent = "Garden Sounds: On";
-        }).catch(() => {
-          button.textContent = "Garden Sounds: Off";
-        });
-      } else {
-        audio.pause();
-        button.textContent = "Garden Sounds: Off";
-      }
-    }
-  </script>
+</script>
 
 </body>
 </html>
