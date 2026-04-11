@@ -276,7 +276,7 @@
             <img src="../cottage-card-back.jpg" alt="Cottage card back">
           </div>
           <div class="welcome-back">
-            <img src="../cottage-card-back.jpg" alt="Cottage card back">
+            <img id="welcomeRevealImage" src="../cottage-card-back.jpg" alt="Revealed card">
           </div>
         </div>
       </div>
@@ -332,14 +332,22 @@
 
     function drawFromWelcomeCard() {
       const welcome = document.getElementById("welcomeFlip");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
+
+      const draw = shuffle(cards).slice(0, 1);
+      const card = draw[0];
+
       welcome.classList.remove("flipped");
+      welcomeRevealImage.src = card.image;
+      welcomeRevealImage.alt = card.title;
+
       setTimeout(() => {
         welcome.classList.add("flipped");
       }, 30);
 
       setTimeout(() => {
-        startReading("daily");
-      }, 800);
+        showCards(draw, "daily");
+      }, 1200);
     }
 
     function startReading(type) {
@@ -359,10 +367,16 @@
       const box = document.getElementById("messageBox");
       const title = document.getElementById("title");
       const message = document.getElementById("message");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
 
       container.innerHTML = "";
       scrollNote.classList.remove("show");
       scrollNote.style.display = "none";
+
+      if (type === "daily" && welcomeRevealImage) {
+        welcomeRevealImage.src = draw[0].image;
+        welcomeRevealImage.alt = draw[0].title;
+      }
 
       draw.forEach((c, i) => {
         let label = c.title;
