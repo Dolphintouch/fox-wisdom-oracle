@@ -1,541 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cottage Garden Oracle</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cottage Garden Oracle</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+*{box-sizing:border-box;}
 
-    body {
-      font-family: Georgia, serif;
-      text-align: center;
-      background-image:
-        linear-gradient(rgba(28,34,24,0.52), rgba(28,34,24,0.74)),
-        url("../cottage-garden-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      padding: 16px;
-      margin: 0;
-      color: #f5ecd9;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
+body{
+  margin:0;
+  padding:16px;
+  font-family:Georgia,serif;
+  text-align:center;
+  color:#f5ecd9;
+  background:
+    linear-gradient(rgba(28,34,24,0.55), rgba(28,34,24,0.8)),
+    url("../cottage-garden-bg.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 18% 20%, rgba(255,236,190,0.08), transparent 20%),
-        radial-gradient(circle at 82% 28%, rgba(255,240,205,0.07), transparent 24%),
-        radial-gradient(circle at 50% 84%, rgba(240,220,175,0.05), transparent 28%);
-      pointer-events: none;
-      z-index: 0;
-    }
+.page-wrap{max-width:1100px;margin:auto;}
 
-    .page-wrap {
-      position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-bottom: 60px;
-    }
+h1{font-size:2.6rem;}
 
-    .top-credit {
-      font-size: 1rem;
-      color: #f4e1cb;
-      margin-top: 4px;
-      margin-bottom: 10px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
-    }
+.blessing{
+  margin-bottom:20px;
+}
 
-    h1 {
-      margin: 10px 0 14px;
-      font-size: clamp(2.3rem, 6vw, 4.2rem);
-      line-height: 1.08;
-      color: #f3e7d6;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
-    }
+/* 🌿 CARD BACK WELCOME */
+.welcome-card{
+  width:300px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:
+    0 0 20px rgba(255,215,140,0.2),
+    0 12px 28px rgba(0,0,0,0.4);
+}
 
-    .blessing {
-      max-width: 760px;
-      margin: 0 auto 18px;
-      color: #f7eedf;
-      font-size: clamp(1rem, 2vw, 1.22rem);
-      line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.38);
-    }
+.welcome-card:hover{
+  transform:scale(1.05);
+}
 
-    .welcome-card-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 6px auto 26px;
-      min-height: 380px;
-    }
+.tap-note{
+  margin-top:10px;
+  color:#fff0dc;
+  animation:pulse 2s infinite;
+}
 
-    .welcome-card {
-      width: min(310px, 78vw);
-      max-width: 310px;
-      border-radius: 20px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 14px 28px rgba(0,0,0,0.30),
-        0 0 30px rgba(255,223,160,0.14);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
+@keyframes pulse{
+  0%,100%{opacity:0.6;}
+  50%{opacity:1;}
+}
 
-    .welcome-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.18),
-        0 18px 36px rgba(0,0,0,0.32),
-        0 0 42px rgba(255,226,168,0.24);
-    }
+/* 🌿 BUTTONS */
+.button-row, .shop-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin:20px 0;
+}
 
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px auto 18px;
-      max-width: 950px;
-    }
+button, .link-button{
+  padding:12px 20px;
+  border-radius:30px;
+  border:none;
+  text-decoration:none;
+  color:white;
+  background:#9f775d;
+  cursor:pointer;
+}
 
-    button {
-      border: none;
-      padding: 13px 20px;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #b88f73, #9f775d);
-      color: #fff7ef;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
+.link-button{
+  background:#4a442d;
+}
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
-    }
+/* ✨ GLOW BUTTON */
+.glow{
+  box-shadow:0 0 15px rgba(255,215,140,0.5);
+}
 
-    .shop-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin: 0 auto 30px;
-      max-width: 1000px;
-    }
+/* 🌿 CARDS */
+.cards-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
 
-    .link-button {
-      position: relative;
-      display: inline-block;
-      padding: 14px 24px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #f8f4e6;
-      background:
-        linear-gradient(
-          to bottom,
-          #7d7350 0%,
-          #6b6241 24%,
-          #564e35 50%,
-          #4a442d 72%,
-          #3f3a27 100%
-        );
-      border: 1px solid rgba(210,190,126,0.42);
-      box-shadow:
-        0 0 0 1px rgba(225,205,145,0.10),
-        0 8px 18px rgba(0,0,0,0.30),
-        0 0 10px rgba(200,175,95,0.15),
-        inset 0 1px 0 rgba(255,245,210,0.18);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
-      min-width: 220px;
-      overflow: hidden;
-    }
+.card-slot{width:200px;}
 
-    .link-button:hover {
-      transform: translateY(-3px) scale(1.03);
-      filter: brightness(1.06);
-    }
+.card-slot img{
+  width:100%;
+  border-radius:15px;
+}
 
-    .glow-button {
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.15),
-        0 0 15px rgba(255,215,140,0.25),
-        0 0 30px rgba(255,200,120,0.15),
-        0 8px 18px rgba(0,0,0,0.30);
-    }
+/* 🌿 MESSAGE */
+.message-box{
+  margin-top:20px;
+  padding:15px;
+  background:rgba(255,255,255,0.1);
+  border-radius:15px;
+  display:none;
+}
 
-    .glow-button::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,230,180,0.25), transparent 60%);
-      animation: glowPulse 4s infinite linear;
-      pointer-events: none;
-    }
+.message-box.show{
+  display:block;
+}
 
-    @keyframes glowPulse {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+/* 🌿 SCROLL MESSAGE */
+.scroll-note{
+  margin-top:20px;
+  color:#fff0dc;
+  animation:pulse 2s infinite;
+  display:none;
+}
 
-    .spread-area {
-      display: none;
-      margin: 24px auto 0;
-      max-width: 1100px;
-    }
-
-    .spread-area.show {
-      display: block;
-    }
-
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 22px;
-      margin-top: 10px;
-    }
-
-    .card-slot {
-      width: min(220px, 84vw);
-      text-align: center;
-    }
-
-    .card-slot h3 {
-      margin: 0 0 12px;
-      font-size: 1.02rem;
-      color: #f6e5d2;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.35);
-      min-height: 2.6em;
-    }
-
-    .card {
-      perspective: 1000px;
-      width: 100%;
-      max-width: 220px;
-      margin: 0 auto;
-    }
-
-    .card-inner {
-      position: relative;
-      width: 100%;
-      height: 330px;
-      transform-style: preserve-3d;
-      transition: transform 0.8s ease;
-    }
-
-    .card.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-front,
-    .card-back {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 18px;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 12px 24px rgba(0,0,0,0.28),
-        0 0 34px rgba(255,223,160,0.10);
-    }
-
-    .card-front img,
-    .card-back img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-    }
-
-    .message-box {
-      max-width: 900px;
-      margin: 20px auto 0;
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-      display: none;
-      white-space: pre-line;
-    }
-
-    .message-box.show {
-      display: block;
-    }
-
-    .message-box h3 {
-      margin: 0 0 10px;
-      font-size: 1.45rem;
-      color: #f7e8d6;
-    }
-
-    .message-box p {
-      margin: 0;
-      font-size: 1.06rem;
-      line-height: 1.7;
-      color: #fff3e8;
-    }
-
-    .footer-note {
-      margin-top: 26px;
-      font-size: 0.92rem;
-      color: #ead8c8;
-      opacity: 0.95;
-    }
-
-    @media (max-width: 700px) {
-      body { padding: 12px 10px; }
-      .welcome-card-wrap { min-height: 320px; }
-      button, .link-button { width: 100%; max-width: 360px; }
-      .message-box p { font-size: 1rem; }
-      .card-inner { height: 300px; }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="page-wrap">
-    <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
 
-    <h1>Cottage Garden Oracle</h1>
+<div class="page-wrap">
 
-    <div class="blessing">
-      Wander through the old garden gate.<br>
-      Listen to the whispers of superstition, bloom, and hearth.<br>
-      When you are ready, choose your path.
-    </div>
+<h1>Cottage Garden Oracle</h1>
 
-    <div class="welcome-card-wrap">
-      <img
-        id="mainDeckCard"
-        class="welcome-card"
-        src="../welcome-archwa.jpg"
-        alt="Tap to draw your cottage garden message"
-        onclick="startReading('daily')"
-      >
-    </div>
+<div class="blessing">
+Draw from the garden… let the old ways whisper to you.
+</div>
 
-    <div class="button-row">
-      <button onclick="startReading('daily')">Daily Garden Message</button>
-      <button onclick="startReading('hidden')">Three Card Spread</button>
-      <button onclick="startReading('cross')">Cottage Cross</button>
-      <button onclick="window.location.href='../index.html'">🦊 Fox Wisdom Oracle</button>
-      <button onclick="toggleSound()" id="soundButton">Garden Sounds: Off</button>
-    </div>
+<!-- 🌿 CARD BACK -->
+<div onclick="startReading('daily')">
+  <img src="../card-back.jpg" class="welcome-card">
+</div>
+<div class="tap-note">Tap the card to reveal your message</div>
 
-    <div class="shop-links">
-      <a class="link-button glow-button" href="https://www.printerstudio.com/sell/designs/curses-charms-and-cottage-gard.html" target="_blank" rel="noopener noreferrer">🦊 Buy the Cottage Deck</a>
-      <a class="link-button glow-button" href="https://www.amazon.com/dp/B0DWL4MHQJ" target="_blank" rel="noopener noreferrer">📖 Read the Book on Amazon</a>
-      <a class="link-button" href="https://dolphintouch.etsy.com" target="_blank" rel="noopener noreferrer">✨ Visit My Etsy Shop</a>
-      <a class="link-button" href="../whispers-of-nature.html">🌿 Whispers of Nature</a>
-      <a class="link-button" href="../fungal-realms.html">🍄 Fungal Realms</a>
-      <a class="link-button" href="../between-you-and-them.html">✨ Between You and Them</a>
-    </div>
+<!-- 🌿 BUTTONS -->
+<div class="button-row">
+  <button onclick="startReading('daily')">Daily Message</button>
+  <button onclick="startReading('three')">3 Card Spread</button>
+  <button onclick="startReading('cross')">Cottage Cross</button>
+  <button onclick="window.location.href='../index.html'">Fox Oracle</button>
+</div>
 
-    <div id="spreadArea" class="spread-area"></div>
+<!-- 🌿 LINKS -->
+<div class="shop-links">
+  <a class="link-button glow" href="https://www.printerstudio.com/sell/designs/curses-charms-and-cottage-gard.html" target="_blank">
+    Buy the Cottage Deck
+  </a>
 
-    <div id="messageBox" class="message-box">
-      <h3 id="messageTitle">Your Cottage Message</h3>
-      <p id="messageText">Tap the card above to begin.</p>
-    </div>
+  <a class="link-button glow" href="https://www.amazon.com/dp/B0DWL4MHQJ" target="_blank">
+    Read the Book
+  </a>
 
-    <div class="footer-note">
-      Cottage Garden Oracle © Dolphintouch
-    </div>
-  </div>
+  <a class="link-button" href="https://dolphintouch.etsy.com" target="_blank">
+    Etsy Shop
+  </a>
+</div>
 
-  <audio id="gardenAudio" loop>
-    <source src="../forest.mp3.mp3" type="audio/mpeg">
-  </audio>
+<!-- 🌿 CARDS -->
+<div id="cards" class="cards-grid"></div>
 
-  <script>
-    const cards = [
-      { title: "April Showers", image: "../april-showers.jpg", message: "Gentle trouble can water future blessings. Not all grey skies mean loss." },
-      { title: "As Sure as Eggs Is Eggs", image: "../as-sure-as-eggs-is-eggs.jpg", message: "Some truths are plain, solid, and steady. Trust what is simple and sure." },
-      { title: "Bird Flying Into the House", image: "../bird-flying-into-house.jpg", message: "A message stirs at the threshold. Pay attention to what tries to enter your awareness." },
-      { title: "Bird in the Hand", image: "../bird-in-the-hand.jpg", message: "Value what is already within reach. Enough may already be resting gently with you." },
-      { title: "Black Cat Crossing Your Path", image: "../black-cat-crossing-your-path.jpg", message: "Mystery is not always misfortune. A shadowed path may still hold blessing." },
-      { title: "Black Cat’s Blessing", image: "../black-cats-blessing.jpg", message: "Protection arrives in forms others misunderstand. Trust the quiet guardians." },
-      { title: "Blackthorn in Your Path", image: "../blackthorn-in-your-path.jpg", message: "A thorned road may still be sacred. Move carefully, but do not turn back too soon." },
-      { title: "Broken Mirror", image: "../broken-mirror.jpg", message: "Not all shattering is ruin. Sometimes a broken image shows what was never true." },
-      { title: "Cats Away, Mice Play", image: "../cats-away-mice-play.jpg", message: "What stirs when no one is watching? Hidden habits may be telling a story." },
-      { title: "Crossing Paths on Stairs", image: "../crossing-paths-on-stairs.jpg", message: "A crossing of energies needs care. Slow down where movement and fate meet." },
-      { title: "Curiosity Killed the Cat", image: "../curiosity-killed-the-cat.jpg", message: "Curiosity is powerful, but timing matters. Not every door must be opened today." },
-      { title: "Don’t Count Your Chickens", image: "../dont-count-your-chickens.jpg", message: "Let outcomes ripen in their own time. Hope is good, but patience is wiser." },
-      { title: "Don’t Cross the Bridge", image: "../dont-cross-the-bridge.jpg", message: "Do not borrow tomorrow’s trouble. Some crossings are not meant for today." },
-      { title: "Don’t Throw the Baby", image: "../dont-throw-the-baby.jpg", message: "Do not cast away something precious in the rush to fix what feels wrong." },
-      { title: "Early Bird", image: "../early-bird.jpg", message: "There is quiet advantage in moving with first light. Begin before the noise rises." },
-      { title: "Four Leaf Clover", image: "../four-leaf-clover.jpg", message: "Luck is near, but it often appears in humble forms. Keep your eyes open." },
-      { title: "Friday the 13th", image: "../friday-the-13th.jpg", message: "Fear can become ritual. Ask what story you are repeating that no longer belongs to you." },
-      { title: "Full Moon Garden", image: "../full-moon-garden.jpg", message: "What has grown in silence now wants to be seen. Let the night reveal it." },
-      { title: "Hare in the Moon", image: "../hare-in-the-moon.jpg", message: "The old stories still speak. Follow the sign that feels strangely familiar." },
-      { title: "Hawthorn Magic", image: "../hawthorn-magic.jpg", message: "Protect what is sacred while staying open to wonder." },
-      { title: "Hearing an Owl Call", image: "../hearing-an-owl-call.jpg", message: "Wisdom calls from the dark edges. Listen closely to what arrives at night." },
-      { title: "Herbal Remedies", image: "../herbal-remedies.jpg", message: "Healing may be simpler, older, and closer to home than you think." },
-      { title: "Horseshoes Over Doorways", image: "../horseshoes-over-doorways.jpg", message: "Guard the threshold. Bless what enters and what leaves your life." },
-      { title: "Ill Wind", image: "../ill-wind.jpg", message: "Not every breeze carries trouble. Sometimes change only sounds frightening at first." },
-      { title: "Knocking on Wood", image: "../knocking-on-wood.jpg", message: "Protection grows from intention. Small acts can steady the spirit." },
-      { title: "Ladybird Landing on You", image: "../ladybird-landing-on-you.jpg", message: "A tiny blessing has found you. Joy may arrive softly and without warning." },
-      { title: "Look Before You Leap", image: "../look-before-you-leap.jpg", message: "The next step matters. Pause long enough to see where your feet will land." },
-      { title: "Magpie Superstition", image: "../magpie-superstition.jpg", message: "Meaning depends on what you believe. Watch what pattern your mind is making." },
-      { title: "Many a Mickle", image: "../many-a-mickle.jpg", message: "Small things gather into abundance. Do not dismiss the little blessings." },
-      { title: "May Your Eyes Be Open", image: "../may-your-eyes-be-open.jpg", message: "A truth is near. Let yourself see it without flinching." },
-      { title: "Midsummer’s Eve", image: "../midsummers-eve.jpg", message: "The veil is thin between wish and becoming. Tend your intentions carefully." },
-      { title: "Moss Covered Ruins", image: "../moss-covered-ruins.jpg", message: "What is old may still be holy. Some forgotten places hold medicine." },
-      { title: "Opening an Umbrella Indoors", image: "../opening-an-umbrella-indoors.jpg", message: "A protective act may feel misplaced. Ask whether you are shielding yourself from the wrong storm." },
-      { title: "Penny Wise", image: "../penny-wise.jpg", message: "What you save now may serve you later. Respect the little stores of strength." },
-      { title: "Primrose Paths", image: "../primrose-paths.jpg", message: "A gentler road is opening. Follow what feels softly inviting, not only what feels dramatic." },
-      { title: "Road Rise to Meet You", image: "../road-rise-to-meet-you.jpg", message: "Blessing can meet you halfway. Keep going." },
-      { title: "Robin Sightings", image: "../robin-sightings.jpg", message: "A small sign carries reassurance. Love and memory may be nearer than they seem." },
-      { title: "Rowan Tree Protection", image: "../rowan-tree-protection.jpg", message: "Sacred boundaries matter. Stand firm in what protects your peace." },
-      { title: "Something Old, Something New", image: "../something-old-new.jpg", message: "The old and the emerging are meant to walk together now." },
-      { title: "Spilled Drink", image: "../spilled-drink.jpg", message: "Do not grieve every small disorder. Some spills clear the air." },
-      { title: "Spilled Salt", image: "../spilled-salt.jpg", message: "A moment of bad luck need not become a long story. Bless the moment and move on." },
-      { title: "Stitch in Time", image: "../stitch-in-time.jpg", message: "A small repair now may save a greater tear later." },
-      { title: "Sweeping Over Someone’s Feet", image: "../sweeping-over-someones-feet.jpg", message: "Mind the small slights and old beliefs. Some things still bruise when ignored." },
-      { title: "Tea and Reflection", image: "../tea-and-reflection.jpg", message: "Stillness is not wasted time. Sit with what wants to settle." }
-    ];
+<div id="scrollNote" class="scroll-note">
+The path continues below… scroll down to reveal your reading
+</div>
 
-    const readingLabels = {
-      daily: ["Daily Garden Message"],
-      hidden: ["Past", "Present", "Hidden Path"],
-      cross: [
-        "Where you stand",
-        "What is hidden",
-        "What nurtures you",
-        "What needs tending",
-        "Where the garden opens"
-      ]
-    };
+<div id="messageBox" class="message-box">
+  <h3 id="title"></h3>
+  <p id="message"></p>
+</div>
 
-    function shuffleArray(array) {
-      const copy = [...array];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
+</div>
 
-    function drawUniqueCards(count) {
-      return shuffleArray(cards).slice(0, count);
-    }
+<script>
 
-    function startReading(type) {
-      let selectedCards = [];
+const cards = [
+  {title:"Hawthorn Magic",image:"../hawthorn-magic.jpg",message:"Protect what is sacred while staying open to wonder."},
+  {title:"Hearing an Owl Call",image:"../hearing-an-owl-call.jpg",message:"Wisdom calls from the dark edges."},
+  {title:"Herbal Remedies",image:"../herbal-remedies.jpg",message:"Healing may be simpler than you think."},
+  {title:"Horseshoes Over Doorways",image:"../horseshoes-over-doorways.jpg",message:"Guard your threshold."},
+  {title:"Primrose Paths",image:"../primrose-paths.jpg",message:"A gentler path is opening."},
+  {title:"Spilled Salt",image:"../spilled-salt.jpg",message:"Bless the moment and move on."},
+  {title:"Tea and Reflection",image:"../tea-and-reflection.jpg",message:"Stillness holds answers."}
+];
 
-      if (type === "daily") {
-        selectedCards = drawUniqueCards(1);
-      } else if (type === "hidden") {
-        selectedCards = drawUniqueCards(3);
-      } else if (type === "cross") {
-        selectedCards = drawUniqueCards(5);
-      } else {
-        return;
-      }
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
 
-      renderReading(type, selectedCards);
-    }
+function startReading(type){
+  let draw=[];
 
-    function renderReading(type, selectedCards) {
-      const spreadArea = document.getElementById("spreadArea");
-      const messageBox = document.getElementById("messageBox");
-      const messageTitle = document.getElementById("messageTitle");
-      const messageText = document.getElementById("messageText");
-      const labels = readingLabels[type] || [];
+  if(type==="daily") draw=shuffle([...cards]).slice(0,1);
+  if(type==="three") draw=shuffle([...cards]).slice(0,3);
+  if(type==="cross") draw=shuffle([...cards]).slice(0,5);
 
-      spreadArea.innerHTML = "";
-      spreadArea.classList.add("show");
+  showCards(draw);
+}
 
-      const grid = document.createElement("div");
-      grid.className = "cards-grid";
+function showCards(draw){
+  const container=document.getElementById("cards");
+  container.innerHTML="";
 
-      selectedCards.forEach((card, index) => {
-        const slot = document.createElement("div");
-        slot.className = "card-slot";
+  draw.forEach(c=>{
+    container.innerHTML+=`
+      <div class="card-slot">
+        <img src="${c.image}">
+        <h4>${c.title}</h4>
+      </div>`;
+  });
 
-        slot.innerHTML = `
-          <h3>${labels[index] || card.title}</h3>
-          <div class="card" id="card-${index}">
-            <div class="card-inner">
-              <div class="card-front">
-                <img src="../cottage-card-back.jpg" alt="Card Back">
-              </div>
-              <div class="card-back">
-                <img src="${card.image}" alt="${card.title}">
-              </div>
-            </div>
-          </div>
-        `;
+  document.getElementById("scrollNote").style.display="block";
 
-        grid.appendChild(slot);
-      });
+  document.getElementById("messageBox").classList.add("show");
+  document.getElementById("title").innerText=draw[0].title;
+  document.getElementById("message").innerText=draw[0].message;
 
-      spreadArea.appendChild(grid);
+  window.scrollTo({top:300,behavior:"smooth"});
+}
 
-      selectedCards.forEach((card, index) => {
-        setTimeout(() => {
-          const cardEl = document.getElementById(`card-${index}`);
-          if (cardEl) cardEl.classList.add("flipped");
-        }, 300 + (index * 250));
-      });
+</script>
 
-      if (type === "daily") {
-        messageTitle.textContent = selectedCards[0].title;
-        messageText.textContent = selectedCards[0].message;
-      } else {
-        messageTitle.textContent = type === "hidden" ? "Your Three Card Reading" : "Your Cottage Cross";
-        messageText.textContent = selectedCards
-          .map((card, index) => `${labels[index]} — ${card.title}\n${card.message}`)
-          .join("\n\n");
-      }
-
-      messageBox.classList.add("show");
-      spreadArea.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function toggleSound() {
-      const audio = document.getElementById("gardenAudio");
-      const button = document.getElementById("soundButton");
-
-      if (audio.paused) {
-        audio.play().then(() => {
-          button.textContent = "Garden Sounds: On";
-        }).catch(() => {
-          button.textContent = "Garden Sounds: Off";
-        });
-      } else {
-        audio.pause();
-        button.textContent = "Garden Sounds: Off";
-      }
-    }
-  </script>
 </body>
 </html>
