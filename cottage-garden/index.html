@@ -321,6 +321,8 @@
       { title:"Tea and Reflection", image:"../tea-and-reflection.jpg", message:"Stillness holds answers." }
     ];
 
+    let welcomeAnimating = false;
+
     function shuffle(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -330,7 +332,22 @@
       return copy;
     }
 
+    function resetWelcomeCard() {
+      const welcome = document.getElementById("welcomeFlip");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
+
+      welcome.classList.remove("flipped");
+
+      setTimeout(() => {
+        welcomeRevealImage.src = CARD_BACK;
+        welcomeRevealImage.alt = "Revealed card";
+      }, 700);
+    }
+
     function drawFromWelcomeCard() {
+      if (welcomeAnimating) return;
+      welcomeAnimating = true;
+
       const welcome = document.getElementById("welcomeFlip");
       const welcomeRevealImage = document.getElementById("welcomeRevealImage");
 
@@ -348,6 +365,14 @@
       setTimeout(() => {
         showCards(draw, "daily");
       }, 1200);
+
+      setTimeout(() => {
+        resetWelcomeCard();
+      }, 3200);
+
+      setTimeout(() => {
+        welcomeAnimating = false;
+      }, 4200);
     }
 
     function startReading(type) {
@@ -373,7 +398,7 @@
       scrollNote.classList.remove("show");
       scrollNote.style.display = "none";
 
-      if (type === "daily" && welcomeRevealImage) {
+      if (type === "daily" && welcomeRevealImage && !welcomeAnimating) {
         welcomeRevealImage.src = draw[0].image;
         welcomeRevealImage.alt = draw[0].title;
       }
