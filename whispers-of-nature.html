@@ -6,56 +6,56 @@
   <title>Whispers of Nature Oracle</title>
 
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    body{
-      font-family:Georgia, serif;
-      text-align:center;
+    body {
+      font-family: Georgia, serif;
+      text-align: center;
       background-image:
         linear-gradient(rgba(12,20,14,0.52), rgba(12,20,14,0.74)),
         url("forest-bg-new.jpg");
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      padding:16px;
-      margin:0;
-      color:#f3ead6;
-      min-height:100vh;
-      overflow-x:hidden;
-      position:relative;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      padding: 16px;
+      margin: 0;
+      color: #f3ead6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
       background:
         radial-gradient(circle at 18% 22%, rgba(210,240,200,0.08), transparent 20%),
         radial-gradient(circle at 82% 26%, rgba(255,235,190,0.06), transparent 24%),
         radial-gradient(circle at 50% 82%, rgba(220,255,220,0.05), transparent 25%);
-      pointer-events:none;
-      z-index:0;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .soft-lights{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:0;
+    .soft-lights {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
     }
 
-    .light{
-      position:absolute;
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:rgba(226,245,210,0.92);
-      box-shadow:0 0 12px rgba(226,245,210,0.82);
-      animation:floatLight linear infinite;
-      opacity:0.72;
+    .light {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(226,245,210,0.92);
+      box-shadow: 0 0 12px rgba(226,245,210,0.82);
+      animation: floatLight linear infinite;
+      opacity: 0.72;
     }
 
     .light:nth-child(1){ left:8%; top:85%; animation-duration:12s; animation-delay:0s; }
@@ -67,302 +67,353 @@
     .light:nth-child(7){ left:86%; top:86%; animation-duration:12s; animation-delay:6s; }
     .light:nth-child(8){ left:54%; top:70%; animation-duration:17s; animation-delay:2.5s; }
 
-    @keyframes floatLight{
-      0%{
-        transform:translateY(0) translateX(0) scale(0.8);
-        opacity:0;
+    @keyframes floatLight {
+      0% {
+        transform: translateY(0) translateX(0) scale(0.8);
+        opacity: 0;
       }
-      20%{ opacity:0.75; }
-      70%{ opacity:0.85; }
-      100%{
-        transform:translateY(-220px) translateX(24px) scale(1.25);
-        opacity:0;
+      20% { opacity: 0.75; }
+      70% { opacity: 0.85; }
+      100% {
+        transform: translateY(-220px) translateX(24px) scale(1.25);
+        opacity: 0;
       }
     }
 
-    .page-wrap{
-      position:relative;
-      z-index:2;
-      max-width:1100px;
-      margin:0 auto;
-      padding-bottom:60px;
+    .page-wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 60px;
     }
 
-    .top-credit{
-      font-size:1rem;
-      color:#e6f0dd;
-      margin-top:4px;
-      margin-bottom:10px;
-      text-shadow:0 1px 3px rgba(0,0,0,0.45);
+    .top-credit {
+      font-size: 1rem;
+      color: #e6f0dd;
+      margin-top: 4px;
+      margin-bottom: 10px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
     }
 
-    h1{
-      margin:10px 0 14px;
-      font-size:clamp(2.2rem, 6vw, 4.2rem);
-      line-height:1.08;
-      color:#edf3e7;
-      text-shadow:0 2px 8px rgba(0,0,0,0.35);
+    h1 {
+      margin: 10px 0 14px;
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      line-height: 1.08;
+      color: #edf3e7;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
     }
 
-    .blessing{
-      max-width:760px;
-      margin:0 auto 18px;
-      color:#f2f7ed;
-      font-size:clamp(1rem, 2vw, 1.2rem);
-      line-height:1.8;
-      text-shadow:0 1px 4px rgba(0,0,0,0.38);
+    .blessing {
+      max-width: 760px;
+      margin: 0 auto 18px;
+      color: #f2f7ed;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.8;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.38);
     }
 
-    .welcome-card-wrap{
-      position:relative;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      margin:6px auto 26px;
-      min-height:470px;
+    .welcome-card-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 6px auto 26px;
+      min-height: 470px;
     }
 
-    .welcome-mist{
-      position:absolute;
-      width:440px;
-      height:440px;
-      border-radius:50%;
+    .welcome-mist {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
       background:
         radial-gradient(circle, rgba(220,255,220,0.18) 0%, rgba(205,245,210,0.10) 28%, rgba(210,255,220,0.04) 48%, transparent 72%);
-      filter:blur(46px);
-      opacity:0.62;
-      z-index:1;
-      transition:opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+      filter: blur(46px);
+      opacity: 0.62;
+      z-index: 1;
+      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
 
-    .welcome-mist.active{
-      opacity:0.95;
-      transform:scale(1.08);
-      filter:blur(54px);
+    .welcome-mist.active {
+      opacity: 0.95;
+      transform: scale(1.08);
+      filter: blur(54px);
     }
 
-    .welcome-halo{
-      position:absolute;
-      width:360px;
-      height:360px;
-      border-radius:50%;
-      z-index:1;
-      background:radial-gradient(circle, rgba(220,255,220,0.17) 0%, rgba(220,255,220,0.08) 35%, transparent 70%);
-      filter:blur(24px);
-      animation:haloPulse 6s ease-in-out infinite;
-      pointer-events:none;
+    .welcome-halo {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      z-index: 1;
+      background: radial-gradient(circle, rgba(220,255,220,0.17) 0%, rgba(220,255,220,0.08) 35%, transparent 70%);
+      filter: blur(24px);
+      animation: haloPulse 6s ease-in-out infinite;
+      pointer-events: none;
     }
 
-    @keyframes haloPulse{
-      0%{ opacity:0.45; transform:scale(0.96); }
-      50%{ opacity:0.85; transform:scale(1.06); }
-      100%{ opacity:0.45; transform:scale(0.96); }
+    @keyframes haloPulse {
+      0% { opacity: 0.45; transform: scale(0.96); }
+      50% { opacity: 0.85; transform: scale(1.06); }
+      100% { opacity: 0.45; transform: scale(0.96); }
     }
 
-    .welcome-card{
-      position:relative;
-      z-index:2;
-      width:min(310px, 78vw);
-      max-width:310px;
-      border-radius:20px;
+    .welcome-card {
+      position: relative;
+      z-index: 2;
+      width: min(310px, 78vw);
+      max-width: 310px;
+      border-radius: 20px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 14px 28px rgba(0,0,0,0.30),
         0 0 30px rgba(220,255,220,0.14);
-      cursor:pointer;
-      transition:
-        transform 0.6s ease,
-        box-shadow 0.35s ease,
-        filter 0.35s ease;
-      transform-style:preserve-3d;
-      filter:brightness(0.99);
-      animation:welcomePulse 4.6s ease-in-out infinite;
-      user-select:none;
-      -webkit-user-drag:none;
+      cursor: pointer;
+      transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      transform-style: preserve-3d;
+      filter: brightness(0.99);
+      animation: welcomePulse 4.6s ease-in-out infinite;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
-    .welcome-card:hover{
-      transform:translateY(-5px) scale(1.02);
+    .welcome-card:hover {
+      transform: translateY(-5px) scale(1.02);
     }
 
-    .welcome-card.shuffling{
-      animation:deckShuffle 0.8s ease-in-out 3;
+    .welcome-card.shuffling {
+      animation: deckShuffle 0.8s ease-in-out 3;
     }
 
-    @keyframes welcomePulse{
-      0%{
+    @keyframes welcomePulse {
+      0% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
           0 0 30px rgba(220,255,220,0.12);
-        transform:scale(1);
+        transform: scale(1);
       }
-      50%{
+      50% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.16),
           0 18px 34px rgba(0,0,0,0.32),
           0 0 42px rgba(220,255,220,0.20);
-        transform:scale(1.015);
+        transform: scale(1.015);
       }
-      100%{
+      100% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
           0 0 30px rgba(220,255,220,0.12);
-        transform:scale(1);
+        transform: scale(1);
       }
     }
 
-    @keyframes deckShuffle{
-      0%{ transform:translateX(0) rotate(0deg) scale(1); }
-      20%{ transform:translateX(-14px) rotate(-4deg) scale(1.01); }
-      40%{ transform:translateX(14px) rotate(4deg) scale(1.01); }
-      60%{ transform:translateX(-10px) rotate(-3deg) scale(1.01); }
-      80%{ transform:translateX(10px) rotate(3deg) scale(1.01); }
-      100%{ transform:translateX(0) rotate(0deg) scale(1); }
+    @keyframes deckShuffle {
+      0% { transform: translateX(0) rotate(0deg) scale(1); }
+      20% { transform: translateX(-14px) rotate(-4deg) scale(1.01); }
+      40% { transform: translateX(14px) rotate(4deg) scale(1.01); }
+      60% { transform: translateX(-10px) rotate(-3deg) scale(1.01); }
+      80% { transform: translateX(10px) rotate(3deg) scale(1.01); }
+      100% { transform: translateX(0) rotate(0deg) scale(1); }
     }
 
-    .button-row{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:10px;
-      margin:20px auto 18px;
-      max-width:950px;
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto 18px;
+      max-width: 950px;
     }
 
-    button{
-      border:none;
-      padding:13px 20px;
-      border-radius:999px;
-      background:linear-gradient(to bottom, #89a98a, #6f8f72);
-      color:#f5fff1;
-      font-family:Georgia, serif;
-      font-size:1rem;
-      cursor:pointer;
-      box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
+    button {
+      border: none;
+      padding: 13px 20px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, #89a98a, #6f8f72);
+      color: #f5fff1;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
     }
 
-    .shop-invite{
-      margin:10px auto 14px;
-      font-size:1.25rem;
-      color:#edf6e8;
-      font-style:italic;
-      letter-spacing:0.4px;
-      max-width:780px;
+    .shop-invite {
+      margin: 10px auto 14px;
+      font-size: 1.25rem;
+      color: #edf6e8;
+      font-style: italic;
+      letter-spacing: 0.4px;
+      max-width: 780px;
     }
 
-    .shop-links{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:14px;
-      margin:0 auto 30px;
-      max-width:1000px;
+    .shop-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 0 auto 30px;
+      max-width: 1000px;
     }
 
-    .link-button{
-      display:inline-block;
-      padding:14px 24px;
-      border-radius:999px;
-      text-decoration:none;
-      font-family:Georgia, serif;
-      font-size:1rem;
-      color:#f4fff0;
-      background:linear-gradient(to bottom, #69896c 0%, #5a775d 24%, #4f694f 50%, #445944 72%, #384938 100%);
-      border:1px solid rgba(200,230,190,0.34);
-      min-width:220px;
+    .link-button {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      color: #f4fff0;
+      background: linear-gradient(to bottom, #69896c 0%, #5a775d 24%, #4f694f 50%, #445944 72%, #384938 100%);
+      border: 1px solid rgba(200,230,190,0.34);
+      min-width: 220px;
     }
 
-    .reading-stage{
-      position:relative;
-      margin-top:4px;
+    .reading-stage {
+      position: relative;
+      margin-top: 4px;
     }
 
-    .spread-area{
-      display:none;
-      margin:24px auto 0;
-      max-width:1000px;
+    .spread-area {
+      display: none;
+      margin: 24px auto 0;
+      max-width: 1000px;
     }
 
-    .spread-area.show{
-      display:block;
+    .spread-area.show {
+      display: block;
     }
 
-    .cards-grid{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:22px;
-      margin-top:10px;
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 10px;
     }
 
-    .card-slot{
-      width:min(220px, 84vw);
-      text-align:center;
+    .card-slot {
+      width: min(220px, 84vw);
+      text-align: center;
     }
 
-    .card-slot h3{
-      margin:0 0 12px;
-      font-size:1.02rem;
-      color:#eef8ea;
+    .card-slot h3 {
+      margin: 0 0 12px;
+      font-size: 1.02rem;
+      color: #eef8ea;
     }
 
-    .spread-card-img{
-      width:100%;
-      max-width:220px;
-      border-radius:18px;
+    .card-flip {
+      width: 100%;
+      max-width: 220px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    .card-flip-inner {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 220 / 367;
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card-flip.flipped .card-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      overflow: hidden;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
         0 0 34px rgba(220,255,220,0.10);
     }
 
-    .message-box{
-      max-width:900px;
-      margin:20px auto 0;
-      padding:18px 20px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(255,255,255,0.10);
-      backdrop-filter:blur(4px);
+    .card-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-front {
+      transform: rotateY(180deg);
+    }
+
+    .message-box {
+      max-width: 900px;
+      margin: 20px auto 0;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(4px);
       box-shadow:
         0 6px 16px rgba(0,0,0,0.15),
         0 0 28px rgba(220,255,220,0.08);
-      display:none;
-      white-space:pre-line;
-      opacity:0;
-      transform:translateY(12px);
-      transition:opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
+      display: none;
+      white-space: pre-line;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
     }
 
-    .message-box.show{
-      display:block;
+    .message-box.show {
+      display: block;
     }
 
-    .message-box.fade-in{
-      opacity:1;
-      transform:translateY(0);
+    .message-box.fade-in {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .message-box h3{
-      margin:0 0 10px;
-      font-size:1.45rem;
-      color:#eef8ea;
+    .message-box h3 {
+      margin: 0 0 10px;
+      font-size: 1.45rem;
+      color: #eef8ea;
     }
 
-    .message-box p{
-      margin:0;
-      font-size:1.06rem;
-      line-height:1.7;
-      color:#fffef9;
+    .message-box p {
+      margin: 0;
+      font-size: 1.06rem;
+      line-height: 1.7;
+      color: #fffef9;
     }
 
-    .footer-note{
-      margin-top:26px;
-      font-size:0.92rem;
-      color:#e5f0df;
-      opacity:0.95;
+    .footer-note {
+      margin-top: 26px;
+      font-size: 0.92rem;
+      color: #e5f0df;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 12px 10px;
+      }
+
+      .welcome-card-wrap {
+        min-height: 400px;
+      }
+
+      button,
+      .link-button {
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .message-box p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -439,6 +490,8 @@
   </audio>
 
   <script>
+    const CARD_BACK = "whispers-card-back.jpg";
+
     const cards = [
       { title: "Bearfoot Earth", image: "bearfoot-earth.jpg", message: "Return to what is real, grounded, and steady. The earth is asking you to slow down enough to feel held." },
       { title: "Bloom Where You Are Planted", image: "bloom-where-you-are-planted.jpg", message: "You do not need a perfect place to begin. There is beauty ready to rise exactly where you are." },
@@ -533,7 +586,7 @@
         };
 
         tempImg.onerror = () => {
-          mainCard.src = "whispers-card-back.jpg";
+          mainCard.src = CARD_BACK;
           mainCard.alt = "Card back";
           mainCard.style.transform = "rotateY(0deg)";
           if (onDone) onDone();
@@ -550,7 +603,7 @@
       mainCard.style.transform = "rotateY(90deg)";
 
       setTimeout(() => {
-        mainCard.src = "whispers-card-back.jpg";
+        mainCard.src = CARD_BACK;
         mainCard.alt = "Tap to draw your daily Whispers of Nature message";
         mainCard.style.transform = "rotateY(0deg)";
       }, 300);
@@ -573,6 +626,35 @@
       });
     }
 
+    function createFlipCard(position, card, index) {
+      return `
+        <div class="card-slot">
+          <h3>${position}</h3>
+          <div class="card-flip" id="flip-${index}">
+            <div class="card-flip-inner">
+              <div class="card-face card-back">
+                <img src="${CARD_BACK}" alt="Card back">
+              </div>
+              <div class="card-face card-front">
+                <img src="${card.image}" alt="${card.title}" onerror="this.src='${CARD_BACK}'">
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function flipSpreadCards(spreadCards) {
+      spreadCards.forEach((item, index) => {
+        setTimeout(() => {
+          const flipEl = document.getElementById(`flip-${index}`);
+          if (flipEl) {
+            flipEl.classList.add("flipped");
+          }
+        }, 700 + (index * 450));
+      });
+    }
+
     function showMultiCardSpread(spreadTitle, spreadCards) {
       const spreadArea = document.getElementById("spreadArea");
       const messageBox = document.getElementById("messageBox");
@@ -583,15 +665,12 @@
 
       spreadArea.innerHTML = `
         <div class="cards-grid">
-          ${spreadCards.map(item => `
-            <div class="card-slot">
-              <h3>${item.position}</h3>
-              <img class="spread-card-img" src="${item.card.image}" alt="${item.card.title}" onerror="this.src='whispers-card-back.jpg'">
-            </div>
-          `).join("")}
+          ${spreadCards.map((item, index) => createFlipCard(item.position, item.card, index)).join("")}
         </div>
       `;
       spreadArea.classList.add("show");
+
+      flipSpreadCards(spreadCards);
 
       let fullMessage = "";
       spreadCards.forEach(item => {
@@ -601,8 +680,11 @@
       messageBox.classList.add("show");
       messageBox.classList.remove("fade-in");
       messageTitle.textContent = spreadTitle;
-      messageText.innerText = fullMessage.trim();
-      revealMessagePanel();
+
+      setTimeout(() => {
+        messageText.innerText = fullMessage.trim();
+        revealMessagePanel();
+      }, 700 + (spreadCards.length * 450));
     }
 
     function drawDailyCard() {
@@ -674,7 +756,7 @@
 
         setTimeout(() => {
           isDrawing = false;
-        }, 1200);
+        }, 2200);
       }, 350);
     }
 
