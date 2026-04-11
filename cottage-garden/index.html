@@ -49,6 +49,7 @@
       position: relative;
       display: inline-block;
       margin-bottom: 6px;
+      cursor: pointer;
     }
 
     .welcome-mist {
@@ -374,7 +375,7 @@
       Draw from the garden… let the old ways whisper to you.
     </div>
 
-    <div class="welcome-wrap" onclick="startReading('daily')" style="cursor:pointer;">
+    <div class="welcome-wrap" onclick="startReading('daily')">
       <div class="welcome-mist"></div>
       <img src="../card%20back.jpg" class="welcome-card" alt="Draw a card">
     </div>
@@ -412,7 +413,7 @@
   </audio>
 
   <script>
-    const CARD_BACK = "../card%20back.jpg";
+    const CARD_BACK = "../cottage-card-back.jpg";
 
     const cards = [
       { title: "Hawthorn Magic", image: "../hawthorn-magic.jpg", message: "Protect what is sacred while staying open to wonder." },
