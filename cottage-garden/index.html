@@ -1,255 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cottage Garden Oracle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cottage Garden Oracle</title>
 
-<style>
-body {
-  font-family: Georgia, serif;
-  text-align: center;
-  color: white;
-  margin: 0;
-  min-height: 100vh;
-  background: url('cottage-garden-bg.jpg') no-repeat center center fixed;
-  background-size: cover;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.page-overlay {
-  min-height: 100vh;
-  background: rgba(0, 0, 0, 0.18);
-  padding: 20px 10px 40px;
-}
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      text-align: center;
+      color: white;
+      min-height: 100vh;
+      background: url('cottage-garden-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-h1 {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 3rem;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.35);
-}
+    .page-overlay {
+      min-height: 100vh;
+      padding: 20px 14px 50px;
+      background: rgba(255, 255, 255, 0.18);
+    }
 
-.subtitle {
-  max-width: 1000px;
-  margin: 0 auto 20px;
-  font-size: 1.1rem;
-  line-height: 1.5;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-}
+    h1 {
+      margin: 0 0 14px;
+      font-size: 3.2rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+    }
 
-.buttons {
-  margin: 20px 0;
-}
+    .subtitle {
+      max-width: 1100px;
+      margin: 0 auto 26px;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+    }
 
-button {
-  padding: 12px 22px;
-  margin: 5px;
-  border-radius: 25px;
-  border: none;
-  background: #b78b6a;
-  color: white;
-  cursor: pointer;
-  font-family: Georgia, serif;
-  font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-}
+    .buttons {
+      margin: 18px 0 24px;
+    }
 
-button:hover {
-  transform: translateY(-1px);
-}
+    button {
+      padding: 12px 22px;
+      margin: 5px;
+      border-radius: 24px;
+      border: none;
+      background: #b98760;
+      color: white;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.tagline {
-  margin: 18px 0 28px;
-  font-size: 1.35rem;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-}
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    }
 
-.top-row {
-  display: flex;
-  justify-content: center;
-  gap: 28px;
-  flex-wrap: wrap;
-  margin-bottom: 34px;
-}
+    .tagline {
+      margin: 8px 0 30px;
+      font-size: 1.4rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    }
 
-.bottom-row {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
+    .top-row {
+      display: flex;
+      justify-content: center;
+      gap: 34px;
+      flex-wrap: wrap;
+      margin-bottom: 38px;
+    }
 
-.slot {
-  width: 230px;
-  text-align: center;
-}
+    .bottom-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 6px;
+    }
 
-.position-title {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
+    .slot {
+      width: 235px;
+      text-align: center;
+    }
 
-.card {
-  width: 220px;
-  height: 385px;
-  perspective: 1000px;
-  margin: 0 auto;
-}
+    .position-title {
+      font-size: 0.98rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      min-height: 40px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
 
-.inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.8s;
-}
+    .card {
+      width: 220px;
+      height: 385px;
+      perspective: 1000px;
+      margin: 0 auto;
+    }
 
-.card.flipped .inner {
-  transform: rotateY(180deg);
-}
+    .inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.85s ease;
+    }
 
-.front, .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 18px;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  overflow: hidden;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.35);
-}
+    .card.flipped .inner {
+      transform: rotateY(180deg);
+    }
 
-.back {
-  background: url('cottage-card-back.jpg') center/cover no-repeat;
-}
+    .front,
+    .back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+    }
 
-.front {
-  transform: rotateY(180deg);
-  background: #ead3d8;
-}
+    .back {
+      background: url('cottage-card-back.jpg') center center / cover no-repeat;
+    }
 
-.front img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+    .front {
+      transform: rotateY(180deg);
+      background: #ead6dc;
+    }
 
-@media (max-width: 800px) {
-  h1 {
-    font-size: 2.2rem;
-  }
+    .front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-  .slot {
-    width: 100%;
-  }
-}
-</style>
+    @media (max-width: 900px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      .tagline {
+        font-size: 1.2rem;
+      }
+
+      .top-row {
+        gap: 24px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .slot {
+        width: 100%;
+      }
+
+      .card {
+        width: 200px;
+        height: 350px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<div class="page-overlay">
-  <h1>Cottage Garden Oracle</h1>
+  <div class="page-overlay">
+    <h1>Cottage Garden Oracle</h1>
 
-  <div class="subtitle">
-    Step softly into a garden of old paths, herbs, petals, and whispered signs.
-    Choose your reading and let the cottage garden speak.
+    <div class="subtitle">
+      Step softly into a garden of old paths, herbs, petals, and whispered signs.
+      Choose your reading and let the cottage garden speak.
+    </div>
+
+    <div class="buttons">
+      <button onclick="drawCards()">Cottage Garden Cross</button>
+    </div>
+
+    <div class="tagline">Where petals, herbs, and old paths whisper</div>
+
+    <div class="top-row" id="topRow"></div>
+    <div class="bottom-row" id="bottomRow"></div>
   </div>
 
-  <div class="buttons">
-    <button onclick="drawCards()">Cottage Garden Cross</button>
-  </div>
+  <script>
+    const deck = [
+      { title: "Bloom Where You Are Planted", file: "bloom-where-you-are-planted.jpg" },
+      { title: "Go With the Flow", file: "go-with-the-flow.jpg" },
+      { title: "Full Moon Garden", file: "full-moon-garden.jpg" },
+      { title: "Hidden Path", file: "hidden path.jpg" },
+      { title: "Hawthorn Magic", file: "hawthorn-magic.jpg" },
+      { title: "Primrose Paths", file: "primrose-paths.jpg" },
+      { title: "Walking Under a Ladder", file: "walking-under-a-ladder.jpg" }
+    ];
 
-  <div class="tagline">Where petals, herbs, and old paths whisper</div>
+    const topLabels = [
+      "Where you stand",
+      "What is hidden",
+      "What nurtures you",
+      "What needs tending"
+    ];
 
-  <div class="top-row" id="topRow"></div>
-  <div class="bottom-row" id="bottomRow"></div>
-</div>
+    const bottomLabel = "Where the garden opens";
 
-<script>
-const deck = [
-  { title: "Bloom Where You Are Planted", file: "bloom-where-you-are-planted.jpg" },
-  { title: "Go With the Flow", file: "go-with-the-flow.jpg" },
-  { title: "Full Moon Garden", file: "full-moon-garden.jpg" },
-  { title: "Hidden Path", file: "hidden path.jpg" },
-  { title: "Hawthorn Magic", file: "hawthorn-magic.jpg" },
-  { title: "Primrose Paths", file: "primrose-paths.jpg" },
-  { title: "Walking Under a Ladder", file: "walking-under-a-ladder.jpg" }
-];
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
 
-const positionsTop = [
-  "Where you stand",
-  "What is hidden",
-  "What nurtures you",
-  "What needs tending"
-];
+    function createCardSlot(positionText, cardData, delay) {
+      const slot = document.createElement("div");
+      slot.className = "slot";
 
-const positionBottom = "Where the garden opens";
+      const label = document.createElement("div");
+      label.className = "position-title";
+      label.textContent = positionText;
 
-function shuffle(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+      const card = document.createElement("div");
+      card.className = "card";
 
-function makeCard(positionText, cardData, delay = 0) {
-  const slot = document.createElement("div");
-  slot.className = "slot";
+      const inner = document.createElement("div");
+      inner.className = "inner";
 
-  const label = document.createElement("div");
-  label.className = "position-title";
-  label.textContent = positionText;
+      const back = document.createElement("div");
+      back.className = "back";
 
-  const card = document.createElement("div");
-  card.className = "card";
+      const front = document.createElement("div");
+      front.className = "front";
 
-  const inner = document.createElement("div");
-  inner.className = "inner";
+      const img = document.createElement("img");
+      img.src = encodeURI(cardData.file);
+      img.alt = cardData.title;
 
-  const back = document.createElement("div");
-  back.className = "back";
+      front.appendChild(img);
+      inner.appendChild(back);
+      inner.appendChild(front);
+      card.appendChild(inner);
 
-  const front = document.createElement("div");
-  front.className = "front";
+      slot.appendChild(label);
+      slot.appendChild(card);
 
-  const image = document.createElement("img");
-  image.src = cardData.file;
-  image.alt = cardData.title;
+      setTimeout(() => {
+        card.classList.add("flipped");
+      }, delay);
 
-  front.appendChild(image);
-  inner.appendChild(back);
-  inner.appendChild(front);
-  card.appendChild(inner);
+      return slot;
+    }
 
-  slot.appendChild(label);
-  slot.appendChild(card);
+    function drawCards() {
+      const topRow = document.getElementById("topRow");
+      const bottomRow = document.getElementById("bottomRow");
 
-  setTimeout(() => {
-    card.classList.add("flipped");
-  }, delay);
+      topRow.innerHTML = "";
+      bottomRow.innerHTML = "";
 
-  return slot;
-}
+      const selected = shuffle(deck).slice(0, 5);
 
-function drawCards() {
-  const topRow = document.getElementById("topRow");
-  const bottomRow = document.getElementById("bottomRow");
+      for (let i = 0; i < 4; i++) {
+        topRow.appendChild(createCardSlot(topLabels[i], selected[i], 250 + (i * 220)));
+      }
 
-  topRow.innerHTML = "";
-  bottomRow.innerHTML = "";
-
-  const selected = shuffle(deck).slice(0, 5);
-
-  for (let i = 0; i < 4; i++) {
-    topRow.appendChild(makeCard(positionsTop[i], selected[i], 250 + (i * 220)));
-  }
-
-  bottomRow.appendChild(makeCard(positionBottom, selected[4], 1200));
-}
-</script>
+      bottomRow.appendChild(createCardSlot(bottomLabel, selected[4], 1200));
+    }
+  </script>
 </body>
 </html>
