@@ -154,18 +154,9 @@
     }
 
     @keyframes haloPulse{
-      0%{
-        opacity:0.45;
-        transform:scale(0.96);
-      }
-      50%{
-        opacity:0.85;
-        transform:scale(1.06);
-      }
-      100%{
-        opacity:0.45;
-        transform:scale(0.96);
-      }
+      0%{ opacity:0.45; transform:scale(0.96); }
+      50%{ opacity:0.85; transform:scale(1.06); }
+      100%{ opacity:0.45; transform:scale(0.96); }
     }
 
     .welcome-card{
@@ -192,11 +183,6 @@
 
     .welcome-card:hover{
       transform:translateY(-5px) scale(1.02);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.18),
-        0 18px 36px rgba(0,0,0,0.32),
-        0 0 42px rgba(220,255,220,0.22);
-      filter:brightness(1.04);
     }
 
     .welcome-card.shuffling{
@@ -255,22 +241,12 @@
       font-size:1rem;
       cursor:pointer;
       box-shadow:0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
-      transition:transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    button:hover{
-      transform:translateY(-2px);
-      box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
     }
 
     .shop-invite{
       margin:10px auto 14px;
       font-size:1.25rem;
       color:#edf6e8;
-      text-shadow:
-        0 0 8px rgba(170, 210, 170, 0.24),
-        0 0 16px rgba(170, 210, 170, 0.10),
-        0 1px 4px rgba(0,0,0,0.45);
       font-style:italic;
       letter-spacing:0.4px;
       max-width:780px;
@@ -286,7 +262,6 @@
     }
 
     .link-button{
-      position:relative;
       display:inline-block;
       padding:14px 24px;
       border-radius:999px;
@@ -294,71 +269,9 @@
       font-family:Georgia, serif;
       font-size:1rem;
       color:#f4fff0;
-      background:
-        linear-gradient(
-          to bottom,
-          #69896c 0%,
-          #5a775d 24%,
-          #4f694f 50%,
-          #445944 72%,
-          #384938 100%
-        );
+      background:linear-gradient(to bottom, #69896c 0%, #5a775d 24%, #4f694f 50%, #445944 72%, #384938 100%);
       border:1px solid rgba(200,230,190,0.34);
-      box-shadow:
-        0 0 0 1px rgba(225,245,220,0.08),
-        0 8px 18px rgba(0,0,0,0.30),
-        0 0 10px rgba(180,220,180,0.12),
-        0 0 22px rgba(180,220,180,0.08),
-        inset 0 1px 0 rgba(245,255,240,0.14),
-        inset 0 -2px 6px rgba(18,20,14,0.28);
-      transition:
-        transform 0.22s ease,
-        box-shadow 0.22s ease,
-        filter 0.22s ease;
-      overflow:hidden;
       min-width:220px;
-      letter-spacing:0.2px;
-      cursor:pointer;
-    }
-
-    .link-button::before{
-      content:"";
-      position:absolute;
-      top:-60%;
-      left:-35%;
-      width:38%;
-      height:220%;
-      background:linear-gradient(
-        to right,
-        rgba(255,255,255,0),
-        rgba(230,255,230,0.22),
-        rgba(255,255,255,0)
-      );
-      transform:rotate(18deg);
-      pointer-events:none;
-    }
-
-    .link-button:hover{
-      transform:translateY(-3px) scale(1.03);
-      filter:brightness(1.06);
-    }
-
-    .link-button:hover::before{
-      animation:greenSheen 1.2s ease;
-    }
-
-    @keyframes greenSheen{
-      0%{
-        left:-35%;
-        opacity:0;
-      }
-      20%{
-        opacity:1;
-      }
-      100%{
-        left:120%;
-        opacity:0;
-      }
     }
 
     .reading-stage{
@@ -393,7 +306,6 @@
       margin:0 0 12px;
       font-size:1.02rem;
       color:#eef8ea;
-      text-shadow:0 1px 4px rgba(0,0,0,0.35);
     }
 
     .spread-card-img{
@@ -414,7 +326,6 @@
       border:1px solid rgba(255,255,255,0.18);
       background:rgba(255,255,255,0.10);
       backdrop-filter:blur(4px);
-      -webkit-backdrop-filter:blur(4px);
       box-shadow:
         0 6px 16px rgba(0,0,0,0.15),
         0 0 28px rgba(220,255,220,0.08);
@@ -432,9 +343,6 @@
     .message-box.fade-in{
       opacity:1;
       transform:translateY(0);
-      box-shadow:
-        0 8px 20px rgba(0,0,0,0.18),
-        0 0 34px rgba(220,255,220,0.14);
     }
 
     .message-box h3{
@@ -455,26 +363,6 @@
       font-size:0.92rem;
       color:#e5f0df;
       opacity:0.95;
-    }
-
-    @media (max-width:700px){
-      body{
-        padding:12px 10px;
-      }
-
-      .welcome-card-wrap{
-        min-height:400px;
-      }
-
-      button,
-      .link-button{
-        width:100%;
-        max-width:360px;
-      }
-
-      .message-box p{
-        font-size:1rem;
-      }
     }
   </style>
 </head>
@@ -507,7 +395,7 @@
       <img
         id="mainDeckCard"
         class="welcome-card"
-        src="welcome-archwa.jpg"
+        src="whispers-card-back.jpg"
         alt="Tap to draw your daily Whispers of Nature message"
         onclick="drawDailyCardFromCard()"
       >
@@ -552,106 +440,26 @@
 
   <script>
     const cards = [
-      {
-        title: "Bearfoot Earth",
-        image: "bearfoot-earth.jpg",
-        message: "Return to what is real, grounded, and steady. The earth is asking you to slow down enough to feel held."
-      },
-      {
-        title: "Bloom Where You Are Planted",
-        image: "bloom-where-you-are-planted.jpg",
-        message: "You do not need a perfect place to begin. There is beauty ready to rise exactly where you are."
-      },
-      {
-        title: "Chasing Light",
-        image: "chasing-light.jpg",
-        message: "Turn toward what gently brightens your spirit. Hope is not far away."
-      },
-      {
-        title: "Create With Your Hands",
-        image: "create-with-your-hands.jpg",
-        message: "Healing comes through making, shaping, tending, and touching the world with care."
-      },
-      {
-        title: "Earth Child",
-        image: "earth-child.jpg",
-        message: "You belong to the natural world more deeply than you remember. Let that belonging soothe you."
-      },
-      {
-        title: "Follow the Sun",
-        image: "follow-the-sun.jpg",
-        message: "Face what warms you, nourishes you, and brings life back into tired places."
-      },
-      {
-        title: "Go With the Flow",
-        image: "go-with-the-flow.jpg",
-        message: "Not every path must be forced. Sometimes the clearest answer is the one already moving."
-      },
-      {
-        title: "Home Within",
-        image: "home-within.jpg",
-        message: "Safety is not always a place outside you. Come back to the quiet shelter of your own spirit."
-      },
-      {
-        title: "Inner Peace",
-        image: "inner-peace.jpg",
-        message: "Peace is growing beneath the noise. Sit long enough to feel it surface."
-      },
-      {
-        title: "Look at the Stars",
-        image: "look-at-the-stars.jpg",
-        message: "Lift your eyes. A wider view can soften what feels too close and too heavy."
-      },
-      {
-        title: "Music Moves Me",
-        image: "music-moves-me.jpg",
-        message: "Your soul is asking for rhythm, feeling, and release. Let sound carry what words cannot."
-      },
-      {
-        title: "Nurture Your Soul",
-        image: "nurture-your-soul.jpg",
-        message: "You do not need to earn rest, gentleness, or care. Feed what is tender in you."
-      },
-      {
-        title: "Peace Not War",
-        image: "peace-not-war.jpg",
-        message: "Choose the softer road where you can. Not every battle deserves your spirit."
-      },
-      {
-        title: "Roots",
-        image: "roots.jpg",
-        message: "Go deeper before reaching higher. Strength begins where you are anchored."
-      },
-      {
-        title: "See the Magic",
-        image: "see-the-maigic.jpg",
-        message: "Wonder has not left you. It is waiting in the quiet places you rush past."
-      },
-      {
-        title: "Sit With Stillness",
-        image: "sit-with-stillness.jpg",
-        message: "Stillness is not empty. It is full of messages that only arrive when you stop."
-      },
-      {
-        title: "Trust the Journey",
-        image: "trust-the-journey.jpg",
-        message: "You do not need the whole map yet. The path is forming beneath your feet."
-      },
-      {
-        title: "Trust the Quiet",
-        image: "trust-the-quiet.jpg",
-        message: "What is gentle is not weak. What is quiet is not absent. Listen closer."
-      },
-      {
-        title: "You Are Allowed to Rest",
-        image: "you-are-allowed-to-rest.jpg",
-        message: "Pause without guilt. Rest is part of the cycle, not a failure to keep moving."
-      },
-      {
-        title: "You Are Held",
-        image: "you-are-held.jpg",
-        message: "Even now, even here, something loving is carrying you more than you know."
-      }
+      { title: "Bearfoot Earth", image: "bearfoot-earth.jpg", message: "Return to what is real, grounded, and steady. The earth is asking you to slow down enough to feel held." },
+      { title: "Bloom Where You Are Planted", image: "bloom-where-you-are-planted.jpg", message: "You do not need a perfect place to begin. There is beauty ready to rise exactly where you are." },
+      { title: "Chasing Light", image: "chasing-light.jpg", message: "Turn toward what gently brightens your spirit. Hope is not far away." },
+      { title: "Create With Your Hands", image: "create-with-your-hands.jpg", message: "Healing comes through making, shaping, tending, and touching the world with care." },
+      { title: "Earth Child", image: "earth-child.jpg", message: "You belong to the natural world more deeply than you remember. Let that belonging soothe you." },
+      { title: "Follow the Sun", image: "follow-the-sun.jpg", message: "Face what warms you, nourishes you, and brings life back into tired places." },
+      { title: "Go With the Flow", image: "go-with-the-flow.jpg", message: "Not every path must be forced. Sometimes the clearest answer is the one already moving." },
+      { title: "Home Within", image: "home-within.jpg", message: "Safety is not always a place outside you. Come back to the quiet shelter of your own spirit." },
+      { title: "Inner Peace", image: "inner-peace.jpg", message: "Peace is growing beneath the noise. Sit long enough to feel it surface." },
+      { title: "Look at the Stars", image: "look-at-the-stars.jpg", message: "Lift your eyes. A wider view can soften what feels too close and too heavy." },
+      { title: "Music Moves Me", image: "music-moves-me.jpg", message: "Your soul is asking for rhythm, feeling, and release. Let sound carry what words cannot." },
+      { title: "Nurture Your Soul", image: "nurture-your-soul.jpg", message: "You do not need to earn rest, gentleness, or care. Feed what is tender in you." },
+      { title: "Peace Not War", image: "peace-not-war.jpg", message: "Choose the softer road where you can. Not every battle deserves your spirit." },
+      { title: "Roots", image: "roots.jpg", message: "Go deeper before reaching higher. Strength begins where you are anchored." },
+      { title: "See the Magic", image: "see-the-maigic.jpg", message: "Wonder has not left you. It is waiting in the quiet places you rush past." },
+      { title: "Sit With Stillness", image: "sit-with-stillness.jpg", message: "Stillness is not empty. It is full of messages that only arrive when you stop." },
+      { title: "Trust the Journey", image: "trust-the-journey.jpg", message: "You do not need the whole map yet. The path is forming beneath your feet." },
+      { title: "Trust the Quiet", image: "trust-the-quiet.jpg", message: "What is gentle is not weak. What is quiet is not absent. Listen closer." },
+      { title: "You Are Allowed to Rest", image: "you-are-allowed-to-rest.jpg", message: "Pause without guilt. Rest is part of the cycle, not a failure to keep moving." },
+      { title: "You Are Held", image: "you-are-held.jpg", message: "Even now, even here, something loving is carrying you more than you know." }
     ];
 
     let soundOn = false;
@@ -725,9 +533,8 @@
         };
 
         tempImg.onerror = () => {
-          console.log("Missing image:", imageSrc);
           mainCard.src = "whispers-card-back.jpg";
-          mainCard.alt = "Missing image: " + imageSrc;
+          mainCard.alt = "Card back";
           mainCard.style.transform = "rotateY(0deg)";
           if (onDone) onDone();
         };
@@ -743,7 +550,7 @@
       mainCard.style.transform = "rotateY(90deg)";
 
       setTimeout(() => {
-        mainCard.src = "welcome-archwa.jpg";
+        mainCard.src = "whispers-card-back.jpg";
         mainCard.alt = "Tap to draw your daily Whispers of Nature message";
         mainCard.style.transform = "rotateY(0deg)";
       }, 300);
@@ -788,7 +595,7 @@
 
       let fullMessage = "";
       spreadCards.forEach(item => {
-        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\\n\\n";
+        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
       });
 
       messageBox.classList.add("show");
