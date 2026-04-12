@@ -1,826 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Whispers of Nature Oracle</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whispers of Nature Oracle</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+body{
+  font-family: Georgia, serif;
+  text-align:center;
+  background-image:linear-gradient(rgba(12,20,14,0.6), rgba(12,20,14,0.8)), url("forest-bg-new.jpg");
+  background-size:cover;
+  background-attachment:fixed;
+  color:#f3ead6;
+  margin:0;
+  padding:20px;
+}
 
-    body {
-      font-family: Georgia, serif;
-      text-align: center;
-      background-image:
-        linear-gradient(rgba(12,20,14,0.52), rgba(12,20,14,0.74)),
-        url("forest-bg-new.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      padding: 16px;
-      margin: 0;
-      color: #f3ead6;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
+h1{font-size:3em;}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 18% 22%, rgba(210,240,200,0.08), transparent 20%),
-        radial-gradient(circle at 82% 26%, rgba(255,235,190,0.06), transparent 24%),
-        radial-gradient(circle at 50% 82%, rgba(220,255,220,0.05), transparent 25%);
-      pointer-events: none;
-      z-index: 0;
-    }
+.welcome-card{
+  width:260px;
+  border-radius:18px;
+  cursor:pointer;
+  transition:0.8s;
+}
 
-    .soft-lights {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
+.button-row{
+  margin:20px;
+}
 
-    .light {
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(226,245,210,0.92);
-      box-shadow: 0 0 12px rgba(226,245,210,0.82);
-      animation: floatLight linear infinite;
-      opacity: 0.72;
-    }
+button{
+  padding:12px 18px;
+  margin:6px;
+  border-radius:30px;
+  border:none;
+  background:#6f8f72;
+  color:white;
+  cursor:pointer;
+}
 
-    .light:nth-child(1){ left:8%; top:85%; animation-duration:12s; animation-delay:0s; }
-    .light:nth-child(2){ left:20%; top:75%; animation-duration:14s; animation-delay:2s; }
-    .light:nth-child(3){ left:30%; top:88%; animation-duration:13s; animation-delay:4s; }
-    .light:nth-child(4){ left:45%; top:78%; animation-duration:16s; animation-delay:1s; }
-    .light:nth-child(5){ left:60%; top:85%; animation-duration:14s; animation-delay:3s; }
-    .light:nth-child(6){ left:74%; top:79%; animation-duration:15s; animation-delay:5s; }
-    .light:nth-child(7){ left:86%; top:86%; animation-duration:12s; animation-delay:6s; }
-    .light:nth-child(8){ left:54%; top:70%; animation-duration:17s; animation-delay:2.5s; }
+.shop-links{
+  margin:20px;
+}
 
-    @keyframes floatLight {
-      0% {
-        transform: translateY(0) translateX(0) scale(0.8);
-        opacity: 0;
-      }
-      20% { opacity: 0.75; }
-      70% { opacity: 0.85; }
-      100% {
-        transform: translateY(-220px) translateX(24px) scale(1.25);
-        opacity: 0;
-      }
-    }
+.link-button{
+  display:inline-block;
+  margin:8px;
+  padding:12px 20px;
+  border-radius:30px;
+  background:#4f694f;
+  color:white;
+  text-decoration:none;
+}
 
-    .page-wrap {
-      position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-bottom: 60px;
-    }
+.cards-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
 
-    .top-credit {
-      font-size: 1rem;
-      color: #e6f0dd;
-      margin-top: 4px;
-      margin-bottom: 10px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
-    }
+.card{
+  width:180px;
+}
 
-    h1 {
-      margin: 10px 0 14px;
-      font-size: clamp(2.2rem, 6vw, 4.2rem);
-      line-height: 1.08;
-      color: #edf3e7;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
-    }
+.card img{
+  width:100%;
+  border-radius:14px;
+}
 
-    .blessing {
-      max-width: 760px;
-      margin: 0 auto 18px;
-      color: #f2f7ed;
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.38);
-    }
-
-    .welcome-card-wrap {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 6px auto 10px;
-      min-height: 470px;
-    }
-
-    .welcome-mist {
-      position: absolute;
-      width: 440px;
-      height: 440px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(220,255,220,0.18) 0%, rgba(205,245,210,0.10) 28%, rgba(210,255,220,0.04) 48%, transparent 72%);
-      filter: blur(46px);
-      opacity: 0.62;
-      z-index: 1;
-      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
-    }
-
-    .welcome-mist.active {
-      opacity: 0.95;
-      transform: scale(1.08);
-      filter: blur(54px);
-    }
-
-    .welcome-halo {
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      z-index: 1;
-      background: radial-gradient(circle, rgba(220,255,220,0.17) 0%, rgba(220,255,220,0.08) 35%, transparent 70%);
-      filter: blur(24px);
-      animation: haloPulse 6s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes haloPulse {
-      0% { opacity: 0.45; transform: scale(0.96); }
-      50% { opacity: 0.85; transform: scale(1.06); }
-      100% { opacity: 0.45; transform: scale(0.96); }
-    }
-
-    .welcome-card {
-      position: relative;
-      z-index: 2;
-      width: min(310px, 78vw);
-      max-width: 310px;
-      border-radius: 20px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 14px 28px rgba(0,0,0,0.30),
-        0 0 30px rgba(220,255,220,0.14);
-      cursor: pointer;
-      transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
-      transform-style: preserve-3d;
-      filter: brightness(0.99);
-      animation: welcomePulse 4.6s ease-in-out infinite;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .welcome-card:hover {
-      transform: translateY(-5px) scale(1.02);
-    }
-
-    .welcome-card.shuffling {
-      animation: deckShuffle 0.8s ease-in-out 3;
-    }
-
-    @keyframes welcomePulse {
-      0% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(220,255,220,0.12);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.16),
-          0 18px 34px rgba(0,0,0,0.32),
-          0 0 42px rgba(220,255,220,0.20);
-        transform: scale(1.015);
-      }
-      100% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(220,255,220,0.12);
-        transform: scale(1);
-      }
-    }
-
-    @keyframes deckShuffle {
-      0% { transform: translateX(0) rotate(0deg) scale(1); }
-      20% { transform: translateX(-14px) rotate(-4deg) scale(1.01); }
-      40% { transform: translateX(14px) rotate(4deg) scale(1.01); }
-      60% { transform: translateX(-10px) rotate(-3deg) scale(1.01); }
-      80% { transform: translateX(10px) rotate(3deg) scale(1.01); }
-      100% { transform: translateX(0) rotate(0deg) scale(1); }
-    }
-
-    .scroll-whisper {
-      margin: 0 auto 24px;
-      max-width: 680px;
-      font-size: 1.08rem;
-      color: #eef8ea;
-      font-style: italic;
-      letter-spacing: 0.2px;
-      text-shadow:
-        0 0 8px rgba(220,255,220,0.35),
-        0 0 18px rgba(220,255,220,0.18),
-        0 1px 4px rgba(0,0,0,0.45);
-      animation: whisperGlow 3.4s ease-in-out infinite;
-    }
-
-    @keyframes whisperGlow {
-      0%, 100% {
-        opacity: 0.82;
-        transform: translateY(0);
-        text-shadow:
-          0 0 8px rgba(220,255,220,0.28),
-          0 0 18px rgba(220,255,220,0.14),
-          0 1px 4px rgba(0,0,0,0.45);
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(2px);
-        text-shadow:
-          0 0 12px rgba(220,255,220,0.45),
-          0 0 24px rgba(220,255,220,0.22),
-          0 1px 5px rgba(0,0,0,0.48);
-      }
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px auto 18px;
-      max-width: 950px;
-    }
-
-    button {
-      border: none;
-      padding: 13px 20px;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #89a98a, #6f8f72);
-      color: #f5fff1;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
-    }
-
-    .shop-invite {
-      margin: 10px auto 14px;
-      font-size: 1.25rem;
-      color: #edf6e8;
-      font-style: italic;
-      letter-spacing: 0.4px;
-      max-width: 780px;
-    }
-
-    .shop-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin: 0 auto 30px;
-      max-width: 1000px;
-    }
-
-    .link-button {
-      display: inline-block;
-      padding: 14px 24px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #f4fff0;
-      background: linear-gradient(to bottom, #69896c 0%, #5a775d 24%, #4f694f 50%, #445944 72%, #384938 100%);
-      border: 1px solid rgba(200,230,190,0.34);
-      min-width: 220px;
-    }
-
-    .reading-stage {
-      position: relative;
-      margin-top: 4px;
-    }
-
-    .spread-area {
-      display: none;
-      margin: 24px auto 0;
-      max-width: 1000px;
-    }
-
-    .spread-area.show {
-      display: block;
-    }
-
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 22px;
-      margin-top: 10px;
-    }
-
-    .card-slot {
-      width: min(220px, 84vw);
-      text-align: center;
-    }
-
-    .card-slot h3 {
-      margin: 0 0 12px;
-      font-size: 1.02rem;
-      color: #eef8ea;
-    }
-
-    .card-flip {
-      width: 100%;
-      max-width: 220px;
-      margin: 0 auto;
-      perspective: 1000px;
-    }
-
-    .card-flip-inner {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 220 / 367;
-      transition: transform 0.8s ease;
-      transform-style: preserve-3d;
-    }
-
-    .card-flip.flipped .card-flip-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 12px 24px rgba(0,0,0,0.28),
-        0 0 34px rgba(220,255,220,0.10);
-    }
-
-    .card-face img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card-front {
-      transform: rotateY(180deg);
-    }
-
-    .message-box {
-      max-width: 900px;
-      margin: 20px auto 0;
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      box-shadow:
-        0 6px 16px rgba(0,0,0,0.15),
-        0 0 28px rgba(220,255,220,0.08);
-      display: none;
-      white-space: pre-line;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
-    }
-
-    .message-box.show {
-      display: block;
-    }
-
-    .message-box.fade-in {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .message-box h3 {
-      margin: 0 0 10px;
-      font-size: 1.45rem;
-      color: #eef8ea;
-    }
-
-    .message-box p {
-      margin: 0;
-      font-size: 1.06rem;
-      line-height: 1.7;
-      color: #fffef9;
-    }
-
-    .footer-note {
-      margin-top: 26px;
-      font-size: 0.92rem;
-      color: #e5f0df;
-      opacity: 0.95;
-    }
-
-    @media (max-width: 700px) {
-      body {
-        padding: 12px 10px;
-      }
-
-      .welcome-card-wrap {
-        min-height: 400px;
-      }
-
-      button,
-      .link-button {
-        width: 100%;
-        max-width: 360px;
-      }
-
-      .message-box p {
-        font-size: 1rem;
-      }
-
-      .scroll-whisper {
-        font-size: 1rem;
-        padding: 0 8px;
-      }
-    }
-  </style>
+.message-box{
+  margin-top:20px;
+  padding:15px;
+  background:rgba(255,255,255,0.1);
+  border-radius:14px;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="soft-lights">
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-  </div>
+<h1>Whispers of Nature Oracle</h1>
 
-  <div class="page-wrap">
-    <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
-    <h1>Whispers of Nature Oracle</h1>
+<img id="mainCard" class="welcome-card"
+src="whispers-card-back.jpg"
+onclick="drawDailyCard()">
 
-    <div class="blessing">
-      Step softly into the hush of leaves.<br>
-      Listen for the murmur beneath the wind.<br>
-      When you are ready, let the forest speak.
-    </div>
+<div class="button-row">
+<button onclick="drawDailyCard()">Daily</button>
+<button onclick="drawThree()">3 Card Spread</button>
+<button onclick="drawCross()">Cross Reading</button>
+</div>
 
-    <div class="welcome-card-wrap">
-      <div id="welcomeMist" class="welcome-mist"></div>
-      <div class="welcome-halo"></div>
-      <img
-        id="mainDeckCard"
-        class="welcome-card"
-        src="whispers-card-back.jpg"
-        alt="Tap to draw your daily Whispers of Nature message"
-        onclick="drawDailyCardFromCard()"
-      >
-    </div>
+<div class="shop-links">
+<a class="link-button"
+href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/whispers-of-nature-oracle-"
+target="_blank">Open Book</a>
 
-    <div class="scroll-whisper">
-      The path continues below… scroll to reveal your reading.
-    </div>
+<a class="link-button"
+href="https://www.amazon.com/dp/B0GWWD9D4C?ref=sp_email"
+target="_blank">Amazon Book</a>
+</div>
 
-    <div class="button-row">
-      <button onclick="startReading('daily')">Daily Nature Message</button>
-      <button onclick="startReading('hidden')">Three Card Spread</button>
-      <button onclick="startReading('cross')">Whispers Cross Reading</button>
-      <button onclick="window.location.href='index.html'">Back to Fox Wisdom</button>
-      <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
-    </div>
+<div id="cards" class="cards-grid"></div>
 
-    <div class="shop-invite">Step deeper into the whispers</div>
+<div id="message" class="message-box"></div>
 
-    <div class="shop-links">
-      <a class="link-button"
-         href="https://journey-through-the-mushroom-trip-oracle.my.canva.site/whispers-of-nature-oracle-"
-         target="_blank"
-         rel="noopener noreferrer">
-        Open the Whispers Book
-      </a>
-    </div>
+<script>
 
-    <div class="reading-stage">
-      <div id="spreadArea" class="spread-area"></div>
+const whispersCards = [
+{title:"Roots", image:"roots.jpg", message:"Go deeper before reaching higher."},
+{title:"Inner Peace", image:"inner-peace.jpg", message:"Peace is growing beneath the noise."},
+{title:"Follow the Sun", image:"follow-the-sun.jpg", message:"Turn toward what warms you."},
+{title:"Trust the Journey", image:"trust-the-journey.jpg", message:"The path is forming beneath your feet."},
+{title:"You Are Held", image:"you-are-held.jpg", message:"Something loving is holding you."}
+];
 
-      <div id="messageBox" class="message-box">
-        <h3 id="messageTitle">Your Nature Message</h3>
-        <p id="messageText">Tap the card above to begin.</p>
-      </div>
-    </div>
+function getRandom(exclude=[]){
+let pool=whispersCards.filter(c=>!exclude.includes(c.title));
+return pool[Math.floor(Math.random()*pool.length)];
+}
 
-    <div class="footer-note">
-      Whispers of Nature Oracle © Dolphintouch
-    </div>
-  </div>
+function drawDailyCard(){
+let card=getRandom();
+document.getElementById("mainCard").src=card.image;
+document.getElementById("cards").innerHTML="";
+document.getElementById("message").innerHTML=
+"<h3>"+card.title+"</h3><p>"+card.message+"</p>";
+}
 
-  <audio id="forestAudio" loop>
-    <source src="forest.mp3.mp3" type="audio/mpeg">
-  </audio>
+function drawThree(){
+let c1=getRandom();
+let c2=getRandom([c1.title]);
+let c3=getRandom([c1.title,c2.title]);
 
-  <script>
-    const CARD_BACK = "whispers-card-back.jpg";
+showSpread([c1,c2,c3],["Past","Present","Future"]);
+}
 
-    const whispersCards = [
-      { title: "Bearfoot Earth", image: "bearfoot-earth.jpg", message: "Return to what is real, grounded, and steady. The earth is asking you to slow down enough to feel held." },
-      { title: "Bloom Where You Are Planted", image: "bloom-where-you-are-planted.jpg", message: "You do not need a perfect place to begin. There is beauty ready to rise exactly where you are." },
-      { title: "Chasing Light", image: "chasing-light.jpg", message: "Turn toward what gently brightens your spirit. Hope is not far away." },
-      { title: "Create With Your Hands", image: "create-with-your-hands.jpg", message: "Healing comes through making, shaping, tending, and touching the world with care." },
-      { title: "Earth Child", image: "earth-child.jpg", message: "You belong to the natural world more deeply than you remember. Let that belonging soothe you." },
-      { title: "Follow the Sun", image: "follow-the-sun.jpg", message: "Face what warms you, nourishes you, and brings life back into tired places." },
-      { title: "Go With the Flow", image: "go-with-the-flow.jpg", message: "Not every path must be forced. Sometimes the clearest answer is the one already moving." },
-      { title: "Home Within", image: "home-within.jpg", message: "Safety is not always a place outside you. Come back to the quiet shelter of your own spirit." },
-      { title: "Inner Peace", image: "inner-peace.jpg", message: "Peace is growing beneath the noise. Sit long enough to feel it surface." },
-      { title: "Look at the Stars", image: "look-at-the-stars.jpg", message: "Lift your eyes. A wider view can soften what feels too close and too heavy." },
-      { title: "Music Moves Me", image: "music-moves-me.jpg", message: "Your soul is asking for rhythm, feeling, and release. Let sound carry what words cannot." },
-      { title: "Nurture Your Soul", image: "nurture-your-soul.jpg", message: "You do not need to earn rest, gentleness, or care. Feed what is tender in you." },
-      { title: "Peace Not War", image: "peace-not-war.jpg", message: "Choose the softer road where you can. Not every battle deserves your spirit." },
-      { title: "Roots", image: "roots.jpg", message: "Go deeper before reaching higher. Strength begins where you are anchored." },
-      { title: "See the Magic", image: "see-the-maigic.jpg", message: "Wonder has not left you. It is waiting in the quiet places you rush past." },
-      { title: "Sit With Stillness", image: "sit-with-stillness.jpg", message: "Stillness is not empty. It is full of messages that only arrive when you stop." },
-      { title: "Trust the Journey", image: "trust-the-journey.jpg", message: "You do not need the whole map yet. The path is forming beneath your feet." },
-      { title: "Trust the Quiet", image: "trust-the-quiet.jpg", message: "What is gentle is not weak. What is quiet is not absent. Listen closer." },
-      { title: "You Are Allowed to Rest", image: "you-are-allowed-to-rest.jpg", message: "Pause without guilt. Rest is part of the cycle, not a failure to keep moving." },
-      { title: "You Are Held", image: "you-are-held.jpg", message: "Even now, even here, something loving is carrying you more than you know." }
-    ];
+function drawCross(){
+let picked=[];
+while(picked.length<5){
+let c=getRandom(picked.map(x=>x.title));
+picked.push(c);
+}
 
-    let soundOn = false;
-    let isDrawing = false;
+showSpread(picked,[
+"Where you are",
+"Hidden",
+"Nourishment",
+"Block",
+"Path"
+]);
+}
 
-    function getRandomCard(excludeTitles = []) {
-      const available = whispersCards.filter(card => !excludeTitles.includes(card.title));
-      return available[Math.floor(Math.random() * available.length)];
-    }
+function showSpread(cards,labels){
+let html="";
+cards.forEach((c,i)=>{
+html+=`
+<div class="card">
+<h4>${labels[i]}</h4>
+<img src="${c.image}">
+<p>${c.title}</p>
+</div>`;
+});
+document.getElementById("cards").innerHTML=html;
 
-    function getDailyCard() {
-      const today = new Date().toDateString();
-      const savedDate = localStorage.getItem("whispersDailyDate");
-      let dailyCard;
+let msg="";
+cards.forEach((c,i)=>{
+msg+=labels[i]+": "+c.message+"<br><br>";
+});
+document.getElementById("message").innerHTML=msg;
+}
 
-      if (savedDate === today) {
-        const savedTitle = localStorage.getItem("whispersDailyCardTitle");
-        dailyCard = whispersCards.find(card => card.title === savedTitle) || getRandomCard();
-      } else {
-        dailyCard = getRandomCard();
-        localStorage.setItem("whispersDailyDate", today);
-        localStorage.setItem("whispersDailyCardTitle", dailyCard.title);
-      }
-
-      return dailyCard;
-    }
-
-    function activateWelcomeMagic() {
-      const welcomeCard = document.getElementById("mainDeckCard");
-      const welcomeMist = document.getElementById("welcomeMist");
-
-      if (welcomeMist) {
-        welcomeMist.classList.add("active");
-        setTimeout(() => welcomeMist.classList.remove("active"), 1200);
-      }
-
-      if (welcomeCard) {
-        welcomeCard.classList.add("shuffling");
-        setTimeout(() => welcomeCard.classList.remove("shuffling"), 2400);
-      }
-    }
-
-    function revealMessagePanel() {
-      const messageBox = document.getElementById("messageBox");
-      messageBox.classList.remove("fade-in");
-      setTimeout(() => {
-        messageBox.classList.add("fade-in");
-      }, 80);
-    }
-
-    function clearSpreadArea() {
-      const spreadArea = document.getElementById("spreadArea");
-      spreadArea.innerHTML = "";
-      spreadArea.classList.remove("show");
-    }
-
-    function flipTopCardTo(imageSrc, altText, onDone = null) {
-      const mainCard = document.getElementById("mainDeckCard");
-      if (!mainCard) return;
-
-      mainCard.style.transform = "rotateY(90deg)";
-
-      setTimeout(() => {
-        const tempImg = new Image();
-
-        tempImg.onload = () => {
-          mainCard.src = imageSrc;
-          mainCard.alt = altText;
-          mainCard.style.transform = "rotateY(0deg)";
-          if (onDone) onDone();
-        };
-
-        tempImg.onerror = () => {
-          mainCard.src = CARD_BACK;
-          mainCard.alt = "Card back";
-          mainCard.style.transform = "rotateY(0deg)";
-          if (onDone) onDone();
-        };
-
-        tempImg.src = imageSrc;
-      }, 300);
-    }
-
-    function resetTopCardToWelcome() {
-      const mainCard = document.getElementById("mainDeckCard");
-      if (!mainCard) return;
-
-      mainCard.style.transform = "rotateY(90deg)";
-
-      setTimeout(() => {
-        mainCard.src = CARD_BACK;
-        mainCard.alt = "Tap to draw your daily Whispers of Nature message";
-        mainCard.style.transform = "rotateY(0deg)";
-      }, 300);
-    }
-
-    function showSingleCard(card, headingText) {
-      clearSpreadArea();
-
-      const messageBox = document.getElementById("messageBox");
-      const messageTitle = document.getElementById("messageTitle");
-      const messageText = document.getElementById("messageText");
-
-      messageBox.classList.add("show");
-      messageBox.classList.remove("fade-in");
-
-      flipTopCardTo(card.image, card.title, () => {
-        messageTitle.textContent = headingText + ": " + card.title;
-        messageText.textContent = card.message;
-        revealMessagePanel();
-      });
-    }
-
-    function createFlipCard(position, card, index) {
-      return `
-        <div class="card-slot">
-          <h3>${position}</h3>
-          <div class="card-flip" id="flip-${index}">
-            <div class="card-flip-inner">
-              <div class="card-face card-back">
-                <img src="${CARD_BACK}" alt="Card back">
-              </div>
-              <div class="card-face card-front">
-                <img src="${card.image}" alt="${card.title}" onerror="this.src='${CARD_BACK}'">
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function flipSpreadCards(spreadCards) {
-      spreadCards.forEach((item, index) => {
-        setTimeout(() => {
-          const flipEl = document.getElementById(`flip-${index}`);
-          if (flipEl) {
-            flipEl.classList.add("flipped");
-          }
-        }, 700 + (index * 450));
-      });
-    }
-
-    function showMultiCardSpread(spreadTitle, spreadCards) {
-      const spreadArea = document.getElementById("spreadArea");
-      const messageBox = document.getElementById("messageBox");
-      const messageTitle = document.getElementById("messageTitle");
-      const messageText = document.getElementById("messageText");
-
-      resetTopCardToWelcome();
-
-      spreadArea.innerHTML = `
-        <div class="cards-grid">
-          ${spreadCards.map((item, index) => createFlipCard(item.position, item.card, index)).join("")}
-        </div>
-      `;
-      spreadArea.classList.add("show");
-
-      flipSpreadCards(spreadCards);
-
-      let fullMessage = "";
-      spreadCards.forEach(item => {
-        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
-      });
-
-      messageBox.classList.add("show");
-      messageBox.classList.remove("fade-in");
-      messageTitle.textContent = spreadTitle;
-
-      setTimeout(() => {
-        messageText.innerText = fullMessage.trim();
-        revealMessagePanel();
-      }, 700 + (spreadCards.length * 450));
-    }
-
-    function drawDailyCard() {
-      const dailyCard = getDailyCard();
-      showSingleCard(dailyCard, "Daily Nature Message");
-    }
-
-    function drawHiddenPath() {
-      const first = getRandomCard();
-      const second = getRandomCard([first.title]);
-      const third = getRandomCard([first.title, second.title]);
-
-      showMultiCardSpread("Three Card Spread", [
-        { position: "Past", card: first },
-        { position: "Present", card: second },
-        { position: "Future", card: third }
-      ]);
-    }
-
-    function drawNatureCross() {
-      const picked = [];
-      while (picked.length < 5) {
-        const card = getRandomCard(picked.map(c => c.title));
-        picked.push(card);
-      }
-
-      showMultiCardSpread("Whispers Cross Reading", [
-        { position: "Where you stand", card: picked[0] },
-        { position: "What is hidden", card: picked[1] },
-        { position: "What nourishes you", card: picked[2] },
-        { position: "What blocks growth", card: picked[3] },
-        { position: "Where the path opens", card: picked[4] }
-      ]);
-    }
-
-    function drawDailyCardFromCard() {
-      if (isDrawing) return;
-      isDrawing = true;
-
-      const dailyCard = getDailyCard();
-      activateWelcomeMagic();
-
-      setTimeout(() => {
-        showSingleCard(dailyCard, "Daily Nature Message");
-        setTimeout(() => {
-          isDrawing = false;
-        }, 1200);
-      }, 2400);
-    }
-
-    function startReading(type) {
-      if (isDrawing) return;
-      isDrawing = true;
-
-      const welcomeMist = document.getElementById("welcomeMist");
-      if (welcomeMist) {
-        welcomeMist.classList.add("active");
-        setTimeout(() => welcomeMist.classList.remove("active"), 1000);
-      }
-
-      setTimeout(() => {
-        if (type === "daily") {
-          drawDailyCard();
-        } else if (type === "hidden") {
-          drawHiddenPath();
-        } else if (type === "cross") {
-          drawNatureCross();
-        }
-
-        setTimeout(() => {
-          isDrawing = false;
-        }, 2200);
-      }, 350);
-    }
-
-    function toggleSound() {
-      const audio = document.getElementById("forestAudio");
-      const button = document.getElementById("soundButton");
-
-      if (!soundOn) {
-        audio.play().then(() => {
-          soundOn = true;
-          button.textContent = "Forest Sounds: On";
-        }).catch(() => {
-          alert("Your browser blocked autoplay. Tap the button again after interacting with the page.");
-        });
-      } else {
-        audio.pause();
-        soundOn = false;
-        button.textContent = "Forest Sounds: Off";
-      }
-    }
-  </script>
+</script>
 
 </body>
 </html>
