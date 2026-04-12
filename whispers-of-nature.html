@@ -1,319 +1,633 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Whispers of Nature Oracle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whispers of Nature Oracle</title>
 
-<style>
-*{box-sizing:border-box;}
+  <style>
+    * { box-sizing: border-box; }
 
-body{
-margin:0;
-padding:16px;
-font-family:Georgia,serif;
-text-align:center;
-color:#eef4ea;
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Georgia, serif;
+      text-align: center;
+      color: #eef4ea;
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(18,34,24,0.52), rgba(18,34,24,0.82)),
+        url("forest-bg-new.jpg"),
+        url("forest-bg.jpg");
+      background-size: cover, cover, cover;
+      background-position: center, center, center;
+      background-attachment: fixed, fixed, fixed;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-/* ✅ FIXED BACKGROUND PATH */
-background:
-linear-gradient(rgba(18,34,24,0.55), rgba(18,34,24,0.85)),
-url("forest-bg.jpg");  /* <-- make sure this file exists in SAME folder */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
 
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-}
+    .top-credit {
+      font-size: 1rem;
+      color: #e7f2e2;
+      margin-top: 4px;
+      margin-bottom: 10px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
 
-.page-wrap{max-width:1100px;margin:auto;}
+    h1 {
+      margin: 10px 0 14px;
+      font-size: clamp(2.3rem, 6vw, 4rem);
+      line-height: 1.08;
+      color: #eef7eb;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
 
-h1{font-size:2.6rem;}
+    .blessing {
+      max-width: 760px;
+      margin: 0 auto 18px;
+      line-height: 1.8;
+      color: #eef7eb;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.38);
+    }
 
-.welcome-flip{
-width:300px;
-max-width:80vw;
-perspective:1200px;
-cursor:pointer;
-}
+    .fireflies {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
 
-.welcome-inner{
-position:relative;
-width:100%;
-height:420px;
-transform-style:preserve-3d;
-transition:transform 1.2s ease;
-}
+    .firefly {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(215,255,185,0.9);
+      box-shadow: 0 0 10px rgba(190,255,160,0.9);
+      opacity: 0;
+      animation: fireflyFloat linear infinite;
+    }
 
-.welcome-flip.flipped .welcome-inner{
-transform:rotateY(180deg);
-}
+    @keyframes fireflyFloat {
+      0% {
+        transform: translateY(0) translateX(0) scale(0.7);
+        opacity: 0;
+      }
+      10% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% {
+        transform: translateY(-180px) translateX(25px) scale(1.15);
+        opacity: 0;
+      }
+    }
 
-.welcome-front,.welcome-back{
-position:absolute;
-width:100%;
-height:100%;
-backface-visibility:hidden;
-border-radius:20px;
-overflow:hidden;
-}
+    .welcome-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 18px;
+    }
 
-.welcome-back{transform:rotateY(180deg);}
+    .welcome-flip {
+      width: 300px;
+      max-width: 80vw;
+      perspective: 1200px;
+      cursor: pointer;
+    }
 
-.welcome-front img,.welcome-back img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+    .welcome-flip.shuffling {
+      animation: shuffleCard 0.75s ease-in-out 2;
+    }
 
-.tap-note{
-animation:pulseText 2s infinite;
-}
+    @keyframes shuffleCard {
+      0%   { transform: translateX(0) rotate(0deg); }
+      20%  { transform: translateX(-14px) rotate(-4deg); }
+      40%  { transform: translateX(12px) rotate(4deg); }
+      60%  { transform: translateX(-10px) rotate(-3deg); }
+      80%  { transform: translateX(8px) rotate(2deg); }
+      100% { transform: translateX(0) rotate(0deg); }
+    }
 
-@keyframes pulseText{
-0%,100%{opacity:0.6;}
-50%{opacity:1;}
-}
+    .welcome-inner {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      transform-style: preserve-3d;
+      transition: transform 1.2s ease;
+    }
 
-button,.link-button{
-padding:12px 20px;
-border-radius:30px;
-border:none;
-color:white;
-background:#58755d;
-cursor:pointer;
-margin:6px;
-}
+    .welcome-flip.flipped .welcome-inner {
+      transform: rotateY(180deg);
+    }
 
-.link-button{background:#374737;}
+    .welcome-front,
+    .welcome-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      box-shadow:
+        0 0 30px rgba(186,255,178,0.18),
+        0 12px 28px rgba(0,0,0,0.4);
+    }
 
-.cards-grid{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:20px;
-}
+    .welcome-front img,
+    .welcome-back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-.card-slot{width:200px;}
+    .welcome-back {
+      transform: rotateY(180deg);
+    }
 
-.flip-card{
-width:100%;
-perspective:1000px;
-}
+    .tap-note {
+      margin-top: 10px;
+      color: #eff9e9;
+      text-shadow: 0 0 12px rgba(220,255,210,0.25);
+      animation: pulseText 2.2s infinite;
+    }
 
-.flip-card-inner{
-position:relative;
-width:100%;
-height:320px;
-transform-style:preserve-3d;
-transition:transform 1.4s ease;
-}
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.62; }
+      50% { opacity: 1; }
+    }
 
-.flip-card.flipped .flip-card-inner{
-transform:rotateY(180deg);
-}
+    .button-row,
+    .shop-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 20px auto;
+      max-width: 1000px;
+    }
 
-.flip-front,.flip-back{
-position:absolute;
-width:100%;
-height:100%;
-backface-visibility:hidden;
-border-radius:15px;
-overflow:hidden;
-}
+    button,
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: none;
+      color: white;
+      background: #58755d;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.2;
+      white-space: normal;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.flip-back{transform:rotateY(180deg);}
+    button:hover,
+    .link-button:hover {
+      transform: translateY(-2px);
+    }
 
-.flip-front img,.flip-back img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+    .link-button {
+      background: #374737;
+    }
 
-/* ✨ glow */
-.flip-card.flipped .flip-back{
-box-shadow:0 0 25px rgba(186,255,178,0.6);
-}
+    .glow {
+      box-shadow: 0 0 15px rgba(186,255,178,0.35);
+    }
 
-/* ✨ scroll whisper */
-.scroll-note{
-display:none;
-opacity:0;
-margin-top:20px;
-}
+    .subheading {
+      margin: 18px 0 8px;
+      font-size: 1.08rem;
+      color: #e8f4e5;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+    }
 
-.scroll-note.show{
-display:block;
-animation:fadeIn 2s forwards;
-}
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 8px;
+    }
 
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(10px);}
-to{opacity:1; transform:translateY(0);}
-}
+    .card-slot {
+      width: 200px;
+    }
 
-/* ✨ fireflies */
-.firefly{
-position:fixed;
-width:6px;
-height:6px;
-background:#d4ffb5;
-border-radius:50%;
-box-shadow:0 0 10px #d4ffb5;
-opacity:0;
-animation:fly linear infinite;
-}
+    .card-slot h4 {
+      margin: 0 0 10px;
+      min-height: 2.8em;
+    }
 
-@keyframes fly{
-0%{transform:translateY(0); opacity:0;}
-10%{opacity:1;}
-100%{transform:translateY(-200px); opacity:0;}
-}
+    .flip-card {
+      width: 100%;
+      perspective: 1000px;
+    }
 
-.message-box{
-display:none;
-margin-top:20px;
-background:rgba(255,255,255,0.1);
-padding:15px;
-border-radius:15px;
-white-space:pre-line;
-}
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 1.3s ease;
+    }
 
-.message-box.show{display:block;}
-</style>
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front img,
+    .flip-back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .flip-card.flipped .flip-back {
+      box-shadow:
+        0 0 26px rgba(186,255,178,0.45),
+        0 0 40px rgba(186,255,178,0.2),
+        0 12px 28px rgba(0,0,0,0.35);
+    }
+
+    .scroll-note {
+      margin-top: 22px;
+      color: #edf8ea;
+      display: none;
+      opacity: 0;
+      text-shadow: 0 0 12px rgba(220,255,220,0.3);
+    }
+
+    .scroll-note.show {
+      display: block;
+      animation: fadeWhisper 1.5s forwards;
+    }
+
+    @keyframes fadeWhisper {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+        filter: blur(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    .message-box {
+      display: none;
+      margin-top: 20px;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 15px;
+      white-space: pre-line;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+    }
+
+    .message-box.show {
+      display: block;
+    }
+
+    @media (max-width: 700px) {
+      .welcome-inner {
+        height: 360px;
+      }
+
+      .flip-card-inner {
+        height: 300px;
+      }
+
+      .card-slot {
+        width: 190px;
+      }
+
+      button,
+      .link-button {
+        width: 100%;
+        max-width: 360px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="page-wrap">
+  <div class="fireflies" id="fireflies"></div>
 
-<h1>Whispers of Nature Oracle</h1>
+  <div class="page-wrap">
 
-<div class="welcome-flip" id="welcomeFlip" onclick="drawFromWelcomeCard()">
-<div class="welcome-inner">
-<div class="welcome-front">
-<img src="whispers-card-back.jpg">
-</div>
-<div class="welcome-back">
-<img id="welcomeRevealImage" src="whispers-card-back.jpg">
-</div>
-</div>
-</div>
+    <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
 
-<div class="tap-note">Tap the card to reveal your message</div>
+    <h1>Whispers of Nature Oracle</h1>
 
-<div>
-<button onclick="startReading('daily')">Daily</button>
-<button onclick="startReading('three')">3 Card</button>
-<button onclick="startReading('cross')">Cross</button>
-<button onclick="window.location.href='index.html'">Back</button>
-</div>
+    <div class="blessing">
+      Step softly into the hush of leaves.<br>
+      Listen for the murmur beneath the wind.<br>
+      When you are ready, let the forest speak.
+    </div>
 
-<div id="cards" class="cards-grid"></div>
+    <div class="welcome-area">
+      <div class="welcome-flip" id="welcomeFlip" onclick="drawFromWelcomeCard()">
+        <div class="welcome-inner">
+          <div class="welcome-front">
+            <img src="whispers-card-back.jpg" alt="Whispers card back">
+          </div>
+          <div class="welcome-back">
+            <img id="welcomeRevealImage" src="whispers-card-back.jpg" alt="Revealed card">
+          </div>
+        </div>
+      </div>
+      <div class="tap-note">Tap the card to reveal your daily Whispers message</div>
+    </div>
 
-<div id="scrollNote" class="scroll-note">
-The path continues below… scroll to reveal your reading
-</div>
+    <div class="button-row">
+      <button type="button" onclick="startReading('daily')">Daily Nature Message</button>
+      <button type="button" onclick="startReading('three')">Three Card Spread</button>
+      <button type="button" onclick="startReading('cross')">Whispers Cross Reading</button>
+      <button type="button" onclick="window.location.href='index.html'">Back to Fox Wisdom</button>
+      <button type="button" onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
+    </div>
 
-<div id="messageBox" class="message-box">
-<h3 id="title"></h3>
-<p id="message"></p>
-</div>
+    <div class="shop-links">
+      <a class="link-button glow" href="guidebook.html">Open the Whispers Book</a>
+      <a class="link-button" href="https://dolphintouch.etsy.com" target="_blank" rel="noopener noreferrer">Visit Etsy Shop</a>
+    </div>
 
-</div>
+    <div class="subheading">Step deeper into the whispers</div>
 
-<script>
+    <div id="cards" class="cards-grid"></div>
 
-/* ✨ fireflies */
-for(let i=0;i<12;i++){
-let f=document.createElement("div");
-f.className="firefly";
-f.style.left=Math.random()*100+"vw";
-f.style.top=(70+Math.random()*30)+"vh";
-f.style.animationDuration=(6+Math.random()*6)+"s";
-f.style.animationDelay=Math.random()*5+"s";
-document.body.appendChild(f);
-}
+    <div id="scrollNote" class="scroll-note">
+      The path continues below… scroll to reveal your reading.
+    </div>
 
-const CARD_BACK="whispers-card-back.jpg";
+    <div id="messageBox" class="message-box">
+      <h3 id="title">Your Nature Message</h3>
+      <p id="message">Tap the card above to begin.</p>
+    </div>
 
-/* ✅ CLEAN WHISPERS ONLY */
-const cards=[
-{title:"Follow the Sun",image:"follow-the-sun.jpg",message:"Turn toward what helps you grow."},
-{title:"Inner Peace",image:"inner-peace.jpg",message:"Return to your centre."},
-{title:"Trust the Journey",image:"trust-the-journey.jpg",message:"Not all is revealed at once."},
-{title:"Whispering Grove",image:"whispering-grove.jpg",message:"Nature is speaking to you."},
-{title:"White Light of Love",image:"white-light-of-love.jpg",message:"Compassion surrounds you."}
-];
+  </div>
 
-function shuffle(a){return a.sort(()=>Math.random()-0.5);}
+  <audio id="forestAudio" loop>
+    <source src="forest.mp3.mp3" type="audio/mpeg">
+  </audio>
 
-function drawFromWelcomeCard(){
-let draw=shuffle([...cards]).slice(0,1);
-let card=draw[0];
+  <script>
+    const CARD_BACK = "whispers-card-back.jpg";
 
-let welcome=document.getElementById("welcomeFlip");
-let img=document.getElementById("welcomeRevealImage");
+    const whispersCards = [
+      { title: "Aurora Ascension", image: "aurora-ascension.jpg", message: "A higher clarity is stirring. Trust the light that rises from within." },
+      { title: "Bearfoot Earth", image: "bearfoot-earth.jpg", message: "Ground yourself in what is real, rooted, and gently alive." },
+      { title: "Chasing Light", image: "chasing-light.jpg", message: "Follow what brightens your spirit, not what drains it." },
+      { title: "Come Back to the Heart", image: "come back to the heart.jpg", message: "The truest answer may be softer than the mind expects." },
+      { title: "Come Sit With Me", image: "come sit with me.jpg", message: "Stillness is an invitation, not an emptiness." },
+      { title: "Create With Your Hands", image: "create-with-your-hands.jpg", message: "Something healing wants to move through you into form." },
+      { title: "Earth Child", image: "earth-child.jpg", message: "You belong to the living world more deeply than you remember." },
+      { title: "Follow the Sun", image: "follow-the-sun.jpg", message: "Turn toward warmth, truth, and what helps you grow." },
+      { title: "Home Within", image: "home-within.jpg", message: "You are not as far from your own centre as you fear." },
+      { title: "Inner Peace", image: "inner-peace.jpg", message: "Peace is not passivity. It is a return to your own clear ground." },
+      { title: "Kaleidoscopic Bloom", image: "kaleidoscopic-bloom.jpg", message: "You are allowed to open in many colours, not just one." },
+      { title: "Look at the Stars", image: "look-at-the-stars.jpg", message: "Lift your eyes. There is more possibility around you than you can presently see." },
+      { title: "May Your Eyes Be Open", image: "may-your-eyes-be-open.jpg", message: "Something is ready to be noticed with gentleness and honesty." },
+      { title: "Mind Bloom", image: "mind-bloom.jpg", message: "A new thought is ready to flower if given light and patience." },
+      { title: "Music Moves Me", image: "music-moves-me.jpg", message: "Let rhythm shift what words cannot." },
+      { title: "Nurture Your Soul", image: "nurture-your-soul.jpg", message: "Feed the part of you that has been waiting quietly for care." },
+      { title: "Peace Not War", image: "peace-not-war.jpg", message: "Choose softness where conflict has become a habit." },
+      { title: "Road Rise to Meet You", image: "road-rise-to-meet-you.jpg", message: "You do not have to force every step. Help may rise to meet you." },
+      { title: "Sit With Stillness", image: "sit-with-stillness.jpg", message: "What seems empty may be the doorway to your next knowing." },
+      { title: "Thatched Roof Cottages", image: "thatched-roof-cottages.jpg", message: "Seek the simple shelter that restores your spirit." },
+      { title: "The Signs Were Real", image: "the signs were real.jpg", message: "What you felt mattered. Trust the quiet confirmations." },
+      { title: "The World Feel Different", image: "the-world-feel-different.jpg", message: "You are changing, and the world is answering that change." },
+      { title: "Trust the Journey", image: "trust-the-journey.jpg", message: "Not every path reveals itself all at once." },
+      { title: "Trust the Quiet", image: "trust-the-quiet.jpg", message: "Silence may carry the clearest truth today." },
+      { title: "Unity Bloom", image: "unity-bloom.jpg", message: "What seemed separate may be trying to come together." },
+      { title: "What You Build From Here", image: "what you build from here.jpg", message: "The next chapter begins with one true, grounded choice." },
+      { title: "Whispering Grove", image: "whispering-grove.jpg", message: "Listen for what the living world is trying to tell you." },
+      { title: "White Light of Love", image: "white-light-of-love.jpg", message: "Compassion is a force that protects as much as it heals." },
+      { title: "Winds of Heaven", image: "winds-of-heaven.jpg", message: "Change is moving around you. Let it clear what no longer belongs." },
+      { title: "Wishing on a Star", image: "wishing-on-a-star.jpg", message: "Hope is holy when paired with willingness." }
+    ];
 
-img.src=card.image;
+    let welcomeAnimating = false;
 
-setTimeout(()=>{welcome.classList.add("flipped");},50);
+    function makeFireflies() {
+      const container = document.getElementById("fireflies");
+      container.innerHTML = "";
+      for (let i = 0; i < 14; i++) {
+        const firefly = document.createElement("div");
+        firefly.className = "firefly";
+        firefly.style.left = (Math.random() * 100) + "vw";
+        firefly.style.top = (65 + Math.random() * 30) + "vh";
+        firefly.style.animationDuration = (8 + Math.random() * 8) + "s";
+        firefly.style.animationDelay = (Math.random() * 8) + "s";
+        container.appendChild(firefly);
+      }
+    }
 
-setTimeout(()=>{
-showCards(draw,"daily");
-welcome.classList.remove("flipped");
-img.src=CARD_BACK;
-},3000);
-}
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
 
-function startReading(type){
-let draw=[];
-if(type==="daily")draw=shuffle([...cards]).slice(0,1);
-if(type==="three")draw=shuffle([...cards]).slice(0,3);
-if(type==="cross")draw=shuffle([...cards]).slice(0,5);
+    function resetWelcomeCard() {
+      const welcome = document.getElementById("welcomeFlip");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
 
-showCards(draw,type);
-}
+      welcome.classList.remove("flipped");
 
-function showCards(draw,type){
+      setTimeout(() => {
+        welcomeRevealImage.src = CARD_BACK;
+        welcomeRevealImage.alt = "Revealed card";
+      }, 700);
+    }
 
-let container=document.getElementById("cards");
-let scroll=document.getElementById("scrollNote");
+    function drawFromWelcomeCard() {
+      if (welcomeAnimating) return;
+      welcomeAnimating = true;
 
-container.innerHTML="";
+      const welcome = document.getElementById("welcomeFlip");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
 
-draw.forEach((c,i)=>{
-container.innerHTML+=`
-<div class="card-slot">
-<div class="flip-card" id="flip-${i}">
-<div class="flip-card-inner">
-<div class="flip-front"><img src="${CARD_BACK}"></div>
-<div class="flip-back"><img src="${c.image}"></div>
-</div>
-</div>
-</div>`;
-});
+      const draw = shuffle(whispersCards).slice(0, 1);
+      const card = draw[0];
 
-draw.forEach((_,i)=>{
-setTimeout(()=>{
-document.getElementById("flip-"+i).classList.add("flipped");
-},400+(i*400));
-});
+      welcome.classList.remove("flipped");
+      welcome.classList.remove("shuffling");
+      welcomeRevealImage.src = card.image;
+      welcomeRevealImage.alt = card.title;
 
-setTimeout(()=>{scroll.classList.add("show");},1200);
+      setTimeout(() => {
+        welcome.classList.add("shuffling");
+      }, 20);
 
-let box=document.getElementById("messageBox");
-box.classList.add("show");
+      setTimeout(() => {
+        welcome.classList.remove("shuffling");
+        welcome.classList.add("flipped");
+      }, 1450);
 
-if(type==="daily"){
-title.innerText=draw[0].title;
-message.innerText=draw[0].message;
-}else{
-title.innerText="Your Reading";
-message.innerText=draw.map(c=>c.title+" — "+c.message).join("\n\n");
-}
-}
+      setTimeout(() => {
+        showCards(draw, "daily");
+      }, 2350);
 
-</script>
+      setTimeout(() => {
+        resetWelcomeCard();
+      }, 4350);
+
+      setTimeout(() => {
+        welcomeAnimating = false;
+      }, 5200);
+    }
+
+    function startReading(type) {
+      let draw = [];
+
+      if (type === "daily") draw = shuffle(whispersCards).slice(0, 1);
+      if (type === "three") draw = shuffle(whispersCards).slice(0, 3);
+      if (type === "cross") draw = shuffle(whispersCards).slice(0, 5);
+
+      if (!draw.length) return;
+      showCards(draw, type);
+    }
+
+    function showCards(draw, type) {
+      const container = document.getElementById("cards");
+      const scrollNote = document.getElementById("scrollNote");
+      const box = document.getElementById("messageBox");
+      const title = document.getElementById("title");
+      const message = document.getElementById("message");
+      const welcomeRevealImage = document.getElementById("welcomeRevealImage");
+
+      container.innerHTML = "";
+      scrollNote.classList.remove("show");
+      scrollNote.style.display = "none";
+
+      if (type === "daily" && welcomeRevealImage && !welcomeAnimating) {
+        welcomeRevealImage.src = draw[0].image;
+        welcomeRevealImage.alt = draw[0].title;
+      }
+
+      draw.forEach((c, i) => {
+        let label = c.title;
+
+        if (type === "three") {
+          label = ["Past", "Present", "Hidden Path"][i];
+        }
+
+        if (type === "cross") {
+          label = [
+            "Where you stand",
+            "What is hidden",
+            "What nurtures you",
+            "What is unfolding",
+            "What the forest reveals"
+          ][i];
+        }
+
+        container.innerHTML += `
+          <div class="card-slot">
+            <h4>${label}</h4>
+            <div class="flip-card" id="flip-${i}">
+              <div class="flip-card-inner">
+                <div class="flip-front">
+                  <img src="${CARD_BACK}" alt="Card back">
+                </div>
+                <div class="flip-back">
+                  <img src="${c.image}" alt="${c.title}">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      draw.forEach((_, i) => {
+        setTimeout(() => {
+          const el = document.getElementById("flip-" + i);
+          if (el) el.classList.add("flipped");
+        }, 450 + (i * 450));
+      });
+
+      setTimeout(() => {
+        scrollNote.style.display = "block";
+        scrollNote.classList.add("show");
+      }, 1300 + (draw.length * 350));
+
+      box.classList.add("show");
+
+      if (type === "daily") {
+        title.innerText = draw[0].title;
+        message.innerText = draw[0].message;
+      } else {
+        title.innerText = type === "three" ? "Your Nature Reading" : "Your Whispers Cross Reading";
+        message.innerText = draw.map((c, i) => {
+          const labels = type === "three"
+            ? ["Past", "Present", "Hidden Path"]
+            : ["Where you stand", "What is hidden", "What nurtures you", "What is unfolding", "What the forest reveals"];
+          return `${labels[i]} — ${c.title}\n${c.message}`;
+        }).join("\n\n");
+      }
+
+      window.scrollTo({ top: 320, behavior: "smooth" });
+    }
+
+    function toggleSound() {
+      const audio = document.getElementById("forestAudio");
+      const button = document.getElementById("soundButton");
+
+      if (audio.paused) {
+        audio.play().then(() => {
+          button.textContent = "Forest Sounds: On";
+        }).catch(() => {
+          button.textContent = "Forest Sounds: Off";
+        });
+      } else {
+        audio.pause();
+        button.textContent = "Forest Sounds: Off";
+      }
+    }
+
+    makeFireflies();
+  </script>
 
 </body>
 </html>
