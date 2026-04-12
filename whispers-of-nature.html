@@ -170,12 +170,16 @@
         0 14px 28px rgba(0,0,0,0.30),
         0 0 30px rgba(220,255,220,0.14);
       cursor: pointer;
-      transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
+      transition:
+        transform 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease,
+        filter 0.35s ease;
       transform-style: preserve-3d;
       filter: brightness(0.99);
       animation: welcomePulse 4.6s ease-in-out infinite;
       user-select: none;
       -webkit-user-drag: none;
+      transform-origin: center center;
     }
 
     .welcome-card:hover {
@@ -184,6 +188,36 @@
 
     .welcome-card.shuffling {
       animation: deckShuffle 0.8s ease-in-out 3;
+    }
+
+    .welcome-card.revealed-glow {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.16),
+        0 14px 28px rgba(0,0,0,0.32),
+        0 0 32px rgba(220,255,220,0.28),
+        0 0 56px rgba(220,255,220,0.18);
+      animation: revealedPulse 2.6s ease-in-out infinite;
+    }
+
+    .welcome-card.revealing {
+      filter: brightness(1.02);
+    }
+
+    @keyframes revealedPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.16),
+          0 14px 28px rgba(0,0,0,0.32),
+          0 0 28px rgba(220,255,220,0.24),
+          0 0 48px rgba(220,255,220,0.14);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.18),
+          0 16px 32px rgba(0,0,0,0.34),
+          0 0 38px rgba(220,255,220,0.35),
+          0 0 70px rgba(220,255,220,0.22);
+      }
     }
 
     @keyframes welcomePulse {
@@ -217,6 +251,40 @@
       60% { transform: translateX(-10px) rotate(-3deg) scale(1.01); }
       80% { transform: translateX(10px) rotate(3deg) scale(1.01); }
       100% { transform: translateX(0) rotate(0deg) scale(1); }
+    }
+
+    .reveal-drift-mist {
+      position: absolute;
+      width: 420px;
+      height: 260px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.82);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      filter: blur(34px);
+      background:
+        radial-gradient(circle, rgba(220,255,220,0.26) 0%, rgba(220,255,220,0.12) 30%, rgba(220,255,220,0.04) 55%, transparent 76%);
+    }
+
+    .reveal-drift-mist.show {
+      animation: driftMist 3.2s ease-out forwards;
+    }
+
+    @keyframes driftMist {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.82);
+      }
+      15% {
+        opacity: 0.85;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-44%, -58%) scale(1.18);
+      }
     }
 
     .scroll-whisper {
@@ -481,6 +549,7 @@
     <div class="welcome-card-wrap">
       <div id="welcomeMist" class="welcome-mist"></div>
       <div class="welcome-halo"></div>
+      <div id="revealMist" class="reveal-drift-mist"></div>
       <img
         id="mainDeckCard"
         class="welcome-card"
@@ -531,6 +600,10 @@
     <source src="forest.mp3.mp3" type="audio/mpeg">
   </audio>
 
+  <audio id="whisperAudio" preload="auto">
+    <source src="whisper.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     const CARD_BACK = "whispers-card-back.jpg";
 
@@ -559,6 +632,13 @@
 
     let soundOn = false;
     let isDrawing = false;
+
+    function playWhisperSound() {
+      const whisper = document.getElementById("whisperAudio");
+      if (!whisper) return;
+      whisper.currentTime = 0;
+      whisper.play().catch(() => {});
+    }
 
     function getRandomCard(excludeTitles = []) {
       const available = whispersCards.filter(card => !excludeTitles.includes(card.title));
@@ -597,6 +677,14 @@
       }
     }
 
+    function showRevealMist() {
+      const mist = document.getElementById("revealMist");
+      if (!mist) return;
+      mist.classList.remove("show");
+      void mist.offsetWidth;
+      mist.classList.add("show");
+    }
+
     function revealMessagePanel() {
       const messageBox = document.getElementById("messageBox");
       messageBox.classList.remove("fade-in");
@@ -615,6 +703,7 @@
       const mainCard = document.getElementById("mainDeckCard");
       if (!mainCard) return;
 
+      mainCard.classList.add("revealing");
       mainCard.style.transform = "rotateY(90deg)";
 
       setTimeout(() => {
@@ -624,6 +713,9 @@
           mainCard.src = imageSrc;
           mainCard.alt = altText;
           mainCard.style.transform = "rotateY(0deg)";
+          mainCard.classList.add("revealed-glow");
+          showRevealMist();
+          playWhisperSound();
           if (onDone) onDone();
         };
 
@@ -631,11 +723,12 @@
           mainCard.src = CARD_BACK;
           mainCard.alt = "Card back";
           mainCard.style.transform = "rotateY(0deg)";
+          mainCard.classList.remove("revealed-glow");
           if (onDone) onDone();
         };
 
         tempImg.src = imageSrc;
-      }, 300);
+      }, 520);
     }
 
     function resetTopCardToWelcome() {
@@ -648,7 +741,8 @@
         mainCard.src = CARD_BACK;
         mainCard.alt = "Tap to draw your daily Whispers of Nature message";
         mainCard.style.transform = "rotateY(0deg)";
-      }, 300);
+        mainCard.classList.remove("revealed-glow", "revealing");
+      }, 520);
     }
 
     function showSingleCard(card, headingText) {
@@ -773,7 +867,7 @@
         showSingleCard(dailyCard, "Daily Nature Message");
         setTimeout(() => {
           isDrawing = false;
-        }, 1200);
+        }, 1800);
       }, 2400);
     }
 
@@ -798,7 +892,7 @@
 
         setTimeout(() => {
           isDrawing = false;
-        }, 2200);
+        }, 2600);
       }, 350);
     }
 
