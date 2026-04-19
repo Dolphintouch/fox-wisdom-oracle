@@ -1,947 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The In-Between Moments Oracle</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Georgia, serif;
-      text-align: center;
-      background-image:
-        linear-gradient(rgba(34, 24, 36, 0.34), rgba(22, 16, 28, 0.58)),
-        url("in-between-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      padding: 18px;
-      margin: 0;
-      color: #f8eef5;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255, 232, 244, 0.12), transparent 24%),
-        radial-gradient(circle at 82% 22%, rgba(255, 243, 228, 0.08), transparent 24%),
-        radial-gradient(circle at 50% 80%, rgba(255, 228, 242, 0.07), transparent 28%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .soft-lights {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .light {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255, 241, 247, 0.95);
-      box-shadow: 0 0 14px rgba(255, 236, 245, 0.85);
-      animation: floatLight linear infinite;
-      opacity: 0.72;
-    }
-
-    .light:nth-child(1){ left:7%; top:85%; animation-duration:12s; animation-delay:0s; }
-    .light:nth-child(2){ left:18%; top:73%; animation-duration:15s; animation-delay:2s; }
-    .light:nth-child(3){ left:30%; top:88%; animation-duration:13s; animation-delay:4s; }
-    .light:nth-child(4){ left:44%; top:77%; animation-duration:16s; animation-delay:1s; }
-    .light:nth-child(5){ left:58%; top:86%; animation-duration:15s; animation-delay:3s; }
-    .light:nth-child(6){ left:72%; top:76%; animation-duration:14s; animation-delay:5s; }
-    .light:nth-child(7){ left:86%; top:88%; animation-duration:12s; animation-delay:6s; }
-    .light:nth-child(8){ left:54%; top:70%; animation-duration:17s; animation-delay:2.5s; }
-
-    @keyframes floatLight {
-      0% {
-        transform: translateY(0) translateX(0) scale(0.8);
-        opacity: 0;
-      }
-      20% { opacity: 0.72; }
-      70% { opacity: 0.86; }
-      100% {
-        transform: translateY(-230px) translateX(24px) scale(1.2);
-        opacity: 0;
-      }
-    }
-
-    .page-wrap {
-      position: relative;
-      z-index: 2;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding-bottom: 70px;
-    }
-
-    .top-credit {
-      font-size: 1rem;
-      color: #f6e4ef;
-      margin-top: 2px;
-      margin-bottom: 10px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-    }
-
-    h1 {
-      margin: 10px 0 14px;
-      font-size: clamp(2.3rem, 6vw, 4.5rem);
-      line-height: 1.06;
-      color: #fff7fb;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.32);
-    }
-
-    .blessing {
-      max-width: 760px;
-      margin: 0 auto 18px;
-      color: #fff5fa;
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.36);
-    }
-
-    .welcome-card-wrap {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 8px auto 10px;
-      min-height: 500px;
-    }
-
-    .welcome-mist {
-      position: absolute;
-      width: 490px;
-      height: 490px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, rgba(255,240,248,0.24) 0%, rgba(244,224,236,0.11) 30%, rgba(235,215,228,0.04) 50%, transparent 74%);
-      filter: blur(56px);
-      opacity: 0.72;
-      z-index: 1;
-      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
-    }
-
-    .welcome-mist.active {
-      opacity: 1;
-      transform: scale(1.08);
-      filter: blur(60px);
-    }
-
-    .welcome-halo {
-      position: absolute;
-      width: 390px;
-      height: 390px;
-      border-radius: 50%;
-      z-index: 1;
-      background: radial-gradient(circle, rgba(255,232,245,0.18) 0%, rgba(240,220,235,0.07) 38%, transparent 72%);
-      filter: blur(26px);
-      animation: haloPulse 6s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes haloPulse {
-      0% { opacity: 0.45; transform: scale(0.96); }
-      50% { opacity: 0.9; transform: scale(1.07); }
-      100% { opacity: 0.45; transform: scale(0.96); }
-    }
-
-    .welcome-card {
-      position: relative;
-      z-index: 2;
-      width: min(310px, 78vw);
-      max-width: 310px;
-      border-radius: 20px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 16px 34px rgba(0,0,0,0.30),
-        0 0 42px rgba(255,224,240,0.20);
-      cursor: pointer;
-      transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
-      transform-style: preserve-3d;
-      filter: brightness(1);
-      animation: welcomePulse 4.8s ease-in-out infinite;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .welcome-card:hover {
-      transform: translateY(-6px) scale(1.025);
-    }
-
-    .welcome-card.shuffling {
-      animation: deckShuffle 0.8s ease-in-out 3;
-    }
-
-    @keyframes welcomePulse {
-      0% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.14),
-          0 16px 34px rgba(0,0,0,0.30),
-          0 0 34px rgba(255,224,240,0.16);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.18),
-          0 20px 40px rgba(0,0,0,0.34),
-          0 0 52px rgba(255,224,240,0.26);
-        transform: scale(1.018);
-      }
-      100% {
-        box-shadow:
-          0 0 0 1px rgba(255,255,255,0.14),
-          0 16px 34px rgba(0,0,0,0.30),
-          0 0 34px rgba(255,224,240,0.16);
-        transform: scale(1);
-      }
-    }
-
-    @keyframes deckShuffle {
-      0% { transform: translateX(0) rotate(0deg) scale(1); }
-      20% { transform: translateX(-14px) rotate(-4deg) scale(1.01); }
-      40% { transform: translateX(14px) rotate(4deg) scale(1.01); }
-      60% { transform: translateX(-10px) rotate(-3deg) scale(1.01); }
-      80% { transform: translateX(10px) rotate(3deg) scale(1.01); }
-      100% { transform: translateX(0) rotate(0deg) scale(1); }
-    }
-
-    .scroll-whisper {
-      margin: 0 auto 26px;
-      max-width: 700px;
-      font-size: 1.12rem;
-      color: #fff3f8;
-      font-style: italic;
-      letter-spacing: 0.2px;
-      text-shadow:
-        0 0 8px rgba(255,224,240,0.38),
-        0 0 18px rgba(255,224,240,0.18),
-        0 1px 4px rgba(0,0,0,0.4);
-      animation: whisperGlow 3.4s ease-in-out infinite;
-    }
-
-    @keyframes whisperGlow {
-      0%, 100% {
-        opacity: 0.84;
-        transform: translateY(0);
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(2px);
-      }
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 22px auto 20px;
-      max-width: 980px;
-    }
-
-    button {
-      border: none;
-      padding: 13px 22px;
-      border-radius: 999px;
-      background: linear-gradient(to bottom, #d1abc3, #b68ea8);
-      color: #fff8fc;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow:
-        0 6px 14px rgba(0,0,0,0.20),
-        0 0 14px rgba(255,224,240,0.12),
-        inset 0 0 0 1px rgba(255,255,255,0.24);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-2px) scale(1.02);
-      filter: brightness(1.04);
-      box-shadow:
-        0 8px 18px rgba(0,0,0,0.24),
-        0 0 18px rgba(255,224,240,0.20),
-        inset 0 0 0 1px rgba(255,255,255,0.28);
-    }
-
-    .shop-invite {
-      margin: 12px auto 16px;
-      font-size: 1.28rem;
-      color: #fff2f8;
-      font-style: italic;
-      letter-spacing: 0.4px;
-      max-width: 780px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.32);
-    }
-
-    .shop-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin: 0 auto 32px;
-      max-width: 1000px;
-    }
-
-    .link-button {
-      display: inline-block;
-      padding: 15px 28px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #fffafc;
-      background: linear-gradient(to bottom, #9e7f98 0%, #866a82 24%, #745c71 50%, #654f62 72%, #564450 100%);
-      border: 1px solid rgba(255,232,245,0.24);
-      min-width: 240px;
-      box-shadow:
-        0 10px 20px rgba(0,0,0,0.28),
-        0 0 16px rgba(255,224,240,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.18);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
-    }
-
-    .link-button:hover {
-      transform: translateY(-3px) scale(1.03);
-      filter: brightness(1.05);
-      box-shadow:
-        0 12px 24px rgba(0,0,0,0.32),
-        0 0 22px rgba(255,224,240,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.24);
-    }
-
-    .reading-stage {
-      position: relative;
-      margin-top: 8px;
-    }
-
-    .spread-area {
-      display: none;
-      margin: 34px auto 0;
-      max-width: 1180px;
-    }
-
-    .spread-area.show {
-      display: block;
-      animation: spreadFade 1s ease;
-    }
-
-    @keyframes spreadFade {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .spread-title {
-      font-size: 1.9rem;
-      color: #fff7fb;
-      margin: 0 0 26px;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-    }
-
-    .cards-grid.three-card-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(220px, 1fr));
-      justify-items: center;
-      align-items: start;
-      gap: 26px 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .cards-grid.cross-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
-      justify-items: center;
-      align-items: start;
-      gap: 28px 18px;
-      max-width: 1060px;
-      margin: 0 auto;
-    }
-
-    .cards-grid.cross-grid .bottom-center {
-      grid-column: 2 / span 2;
-      justify-self: center;
-      margin-top: 8px;
-    }
-
-    .card-slot {
-      width: min(220px, 84vw);
-      text-align: center;
-      position: relative;
-    }
-
-    .card-slot::before {
-      content: "";
-      position: absolute;
-      inset: auto 18px 10px 18px;
-      height: 26px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,228,240,0.24), transparent 70%);
-      filter: blur(10px);
-      z-index: 0;
-    }
-
-    .card-slot h3 {
-      position: relative;
-      z-index: 2;
-      margin: 0 0 12px;
-      font-size: 1.1rem;
-      color: #fff7fb;
-      line-height: 1.2;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
-    }
-
-    .card-flip {
-      width: 100%;
-      max-width: 220px;
-      margin: 0 auto;
-      perspective: 1200px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .card-flip-inner {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 220 / 367;
-      transition: transform 0.9s ease;
-      transform-style: preserve-3d;
-    }
-
-    .card-flip.flipped .card-flip-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.16),
-        0 14px 26px rgba(0,0,0,0.28),
-        0 0 34px rgba(255,224,240,0.14);
-      background: rgba(255,255,255,0.05);
-    }
-
-    .card-face img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card-front {
-      transform: rotateY(180deg);
-    }
-
-    .message-box {
-      max-width: 940px;
-      margin: 30px auto 0;
-      padding: 24px 24px;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(50, 38, 55, 0.34);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow:
-        0 12px 28px rgba(0,0,0,0.20),
-        0 0 36px rgba(255,224,240,0.12);
-      display: none;
-      white-space: pre-line;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 1.2s ease, transform 1.2s ease;
-    }
-
-    .message-box.show {
-      display: block;
-    }
-
-    .message-box.fade-in {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .message-box h3 {
-      margin: 0 0 12px;
-      font-size: 1.55rem;
-      color: #fff6fb;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.28);
-    }
-
-    .message-box p {
-      margin: 0;
-      font-size: 1.08rem;
-      line-height: 1.8;
-      color: #fffafd;
-    }
-
-    .footer-note {
-      margin-top: 28px;
-      font-size: 0.92rem;
-      color: #efdce9;
-      opacity: 0.95;
-    }
-
-    @media (max-width: 980px) {
-      .cards-grid.three-card-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cards-grid.cross-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .cards-grid.cross-grid .bottom-center {
-        grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 700px) {
-      body {
-        padding: 12px 10px;
-      }
-
-      .welcome-card-wrap {
-        min-height: 400px;
-      }
-
-      button,
-      .link-button {
-        width: 100%;
-        max-width: 360px;
-      }
-
-      .cards-grid.cross-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cards-grid.cross-grid .bottom-center {
-        grid-column: auto;
-      }
-
-      .message-box p {
-        font-size: 1rem;
-      }
-
-      .scroll-whisper {
-        font-size: 1rem;
-        padding: 0 8px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The In-Between Moments Oracle</title>
+
+<style>
+body {
+  font-family: Georgia, serif;
+  text-align: center;
+
+  /* ✅ FIXED BACKGROUND */
+  background-image:
+    linear-gradient(rgba(34, 24, 36, 0.5), rgba(22, 16, 28, 0.7)),
+    url("forest-bg-new.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+/* ✨ soft glow overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,200,230,0.12), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(255,220,240,0.08), transparent 30%);
+  pointer-events: none;
+}
+
+/* ✨ title */
+h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+/* ✨ subtitle */
+.blessing {
+  font-style: italic;
+  margin-bottom: 30px;
+  color: #ffeef8;
+}
+
+/* ✨ main card */
+.welcome-card {
+  width: 260px;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(255,200,230,0.3);
+  transition: transform 0.5s ease;
+}
+
+.welcome-card:hover {
+  transform: scale(1.05);
+}
+
+/* ✨ buttons */
+.button-row {
+  margin: 30px 0;
+}
+
+button {
+  margin: 6px;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  background: #c89bb8;
+  color: white;
+  cursor: pointer;
+  font-family: Georgia, serif;
+}
+
+button:hover {
+  background: #d8a8c6;
+}
+
+/* ✨ spread layout */
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 200px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(255,200,230,0.25);
+}
+
+/* ✨ message */
+.message-box {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(50,40,60,0.6);
+  border-radius: 20px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="soft-lights">
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-    <div class="light"></div>
-  </div>
+<h1>The In-Between Moments Oracle</h1>
 
-  <div class="page-wrap">
-    <div class="top-credit">@Dolphintouch (Michelle Billiau-Morseu)</div>
-    <h1>The In-Between Moments Oracle</h1>
+<div class="blessing">
+In the quiet spaces between moments…<br>
+something waits to be felt.
+</div>
 
-    <div class="blessing">
-      In the quiet spaces between moments…<br>
-      something waits to be felt.
-    </div>
+<img id="mainCard" class="welcome-card"
+src="in-between-card-back.jpg"
+onclick="drawCard()">
 
-    <div class="welcome-card-wrap">
-      <div id="welcomeMist" class="welcome-mist"></div>
-      <div class="welcome-halo"></div>
-      <img
-        id="mainDeckCard"
-        class="welcome-card"
-        src="in-between-card-back.jpg"
-        alt="Tap to draw your daily In-Between Moments message"
-        onclick="drawDailyCardFromCard()"
-      />
-    </div>
+<div class="button-row">
+<button onclick="drawCard()">Daily Card</button>
+<button onclick="drawThree()">3 Card Spread</button>
+<button onclick="location.href='index.html'">Back to Fox</button>
+</div>
 
-    <div class="scroll-whisper">
-      The hush continues below… scroll to reveal your reading.
-    </div>
+<div id="cards" class="cards"></div>
 
-    <div class="button-row">
-      <button onclick="startReading('daily')">Daily In-Between Message</button>
-      <button onclick="startReading('three')">Three Card Spread</button>
-      <button onclick="startReading('cross')">In-Between Cross Reading</button>
-      <button onclick="window.location.href='index.html'">Back to Fox Wisdom</button>
-      <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
-    </div>
+<div id="message" class="message-box"></div>
 
-    <div class="shop-invite">Step gently into the stillness</div>
+<script>
+const cards = [
+{title:"A Moment for Yourself",image:"a-moment-for-yourself.jpg",message:"Step back. You deserve softness."},
+{title:"The Quiet Pause",image:"the-quiet-pause.jpg",message:"Not all pauses are setbacks."},
+{title:"Held in Gentle Light",image:"held-in-gentle-light.jpg",message:"You are supported more than you know."},
+{title:"You Can Breathe Again",image:"you-can-breathe-again.jpg",message:"Relief is entering your life."},
+{title:"Let Go Gracefully",image:"let-go-gracefully.jpg",message:"Release gently."},
+{title:"The Love That Never Ends",image:"the-love-that-never-ends.jpg",message:"Love continues."}
+];
 
-    <div class="shop-links">
-      <a class="link-button" href="index.html">Return to the Oracle Path</a>
-    </div>
+function randomCard(){
+return cards[Math.floor(Math.random()*cards.length)];
+}
 
-    <div class="reading-stage">
-      <div id="spreadArea" class="spread-area"></div>
+function drawCard(){
+const card=randomCard();
 
-      <div id="messageBox" class="message-box">
-        <h3 id="messageTitle">Your In-Between Message</h3>
-        <p id="messageText">Tap the card above to begin.</p>
-      </div>
-    </div>
+document.getElementById("mainCard").src=card.image;
 
-    <div class="footer-note">
-      The In-Between Moments Oracle © Dolphintouch
-    </div>
-  </div>
+document.getElementById("message").innerHTML=
+"<h2>"+card.title+"</h2><p>"+card.message+"</p>";
 
-  <audio id="forestAudio" loop>
-    <source src="forest.mp3.mp3" type="audio/mpeg" />
-  </audio>
+document.getElementById("cards").innerHTML="";
+}
 
-  <script>
-    const CARD_BACK = "in-between-card-back.jpg";
+function drawThree(){
+let selected=[];
 
-    const inBetweenCards = [
-      { title: "A Moment for Yourself", image: "a-moment-for-yourself.jpg", message: "Step back from the noise. This is a reminder that your soul needs gentleness too." },
-      { title: "The Moment Before You Speak", image: "the-moment-before-you-speak.jpg", message: "There is truth gathering softly inside you. Let your heart catch up before your words do." },
-      { title: "The Breath You Forgot to Finish", image: "forgotten-breath.jpg", message: "You have been holding more than you realise. Pause. Exhale fully. Let your body know it is safe." },
-      { title: "The Silence That Said It All", image: "the-silence-that-said-it-all.jpg", message: "Not every truth arrived through words. Some moments were understood in the hush between them." },
-      { title: "The Step You Didn’t Take", image: "the-step-you-didnt-take.jpg", message: "Do not punish yourself for what fear once held back. That version of you was surviving the best way she knew." },
-      { title: "The Thing You Finally Let Go", image: "the-thing-you-finally-let-go.jpg", message: "Something heavy has already begun loosening its grip. Release is not loss. It is room returning." },
-      { title: "The Part of You That Came Back Different", image: "the-part-of-you-that-came-back-different.jpg", message: "You are not the same after what you have walked through. This change carries wisdom, not failure." },
-      { title: "The Realisation That Arrived Gently", image: "the-realisation-that-arrived-gently.jpg", message: "Not all awakenings arrive like thunder. Some come as a soft knowing you can no longer ignore." },
-      { title: "The Acceptance That Softened You", image: "the-acceptance-that-softened-you.jpg", message: "When resistance loosens, tenderness enters. Acceptance is not giving up. It is making peace." },
-      { title: "The Truth You Could No Longer Ignore", image: "the-truth-you-could-no-longer-ignore.jpg", message: "A truth has been waiting patiently for your eyes to rest upon it. What is real can finally be faced." },
-      { title: "The Embrace of Your Unfolding Self", image: "the-embrace-of-your-unfolding-self.jpg", message: "Meet yourself with kindness as you become. You are not late. You are unfolding in your own sacred timing." },
-      { title: "The Self-Belief That Changed You", image: "the-self-belief-that-changed-you.jpg", message: "A quieter confidence is rising within you. Believe the version of yourself who knows she is capable." },
-      { title: "The Power You Now Hold", image: "the-power-you-now-hold.jpg", message: "Your light no longer needs permission to exist. What once felt fragile now rests in your own hands." },
-      { title: "The Connection You Are Building", image: "the-connection-you-are-building.jpg", message: "What is forming between hearts needs honesty, patience, and presence. Let it grow gently." },
-      { title: "The Inner Child You Are Embracing", image: "the-inner-child-you-are-embracing.jpg", message: "A younger part of you is asking to be held with tenderness. What she needed then can be offered now." },
-      { title: "The Care You Are Offering", image: "the-care-you-are-offering.jpg", message: "Your care matters, even when it feels unseen. The softness you give is a form of quiet strength." },
-      { title: "The Piece of You That Grew Tired", image: "the-piece-of-you-that-grew-tired.jpg", message: "There is no shame in exhaustion. Rest the part of you that has been carrying too much for too long." },
-      { title: "The Healing That Begins Inside", image: "the-healing-that-begins-inside.jpg", message: "Real healing often begins in silence, deep within. Honour the invisible work your heart is doing." },
-      { title: "The Love That Never Ends", image: "the-love-that-never-ends.jpg", message: "Love does not vanish when form changes. What is true in love continues, quietly and faithfully." },
-      { title: "The Feeling of Being Forgotten", image: "the-feeling-of-being-forgotten.jpg", message: "This ache deserves to be named. Feeling forgotten does not make you unworthy of remembrance or love." },
-      { title: "The Loss That Leaves an Emptiness", image: "the-loss-that-leaves-an-emptiness.jpg", message: "Some absences change the shape of everything. Let yourself honour the emptiness without rushing to fill it." },
-      { title: "Waiting for the Sun to Rise", image: "waiting-for-the-sun-to-rise.jpg", message: "You are not failing because it is still dark. Dawn arrives in its own time. Stay with the quiet hope." },
-      { title: "The Quiet Pause", image: "the-quiet-pause.jpg", message: "Not every pause is a setback. Some pauses are sacred spaces where the soul gathers itself again." },
-      { title: "Beginning to Find Her Way Again", image: "beginning-to-find-her-way-again.jpg", message: "Something in you is remembering the path. Even the smallest return is still a return." },
-      { title: "A Brave and Honest Conversation", image: "a-brave-and-honest-conversation.jpg", message: "Truth spoken with gentleness can change a life. Let honesty become a bridge instead of a wound." },
-      { title: "The Strength No One Saw", image: "the-strength-no-one-saw.jpg", message: "You survived moments that no one fully understood. Your quiet endurance was strength all the same." },
-      { title: "The Part of You That Was Always Enough", image: "the-part-of-you-that-was-always-enough.jpg", message: "You were never missing the part that mattered most. Your worth has always lived beneath the doubt." },
-      { title: "The Place You Never Quite Belonged", image: "the-place-you-never-quite-belonged.jpg", message: "Feeling out of place shaped you, but it does not define your home. Belonging may still be finding you." },
-      { title: "The Reasons No One Heard", image: "the-reasons-no-one-heard.jpg", message: "Some stories were silenced before they could be understood. Your reasons still deserve compassion." },
-      { title: "Held in Gentle Light", image: "held-in-gentle-light.jpg", message: "You are being cradled more softly than you know. Let yourself be supported by what cannot always be seen." },
-      { title: "You Weren’t Alone", image: "you-werent-alone.jpg", message: "Even in the moments that felt deserted, presence remained. Something stayed beside you." },
-      { title: "You’re Becoming Lighter", image: "youre-becoming-lighter.jpg", message: "The weight is shifting. You may not notice it every day, but your spirit is learning how to rise." },
-      { title: "The Light You Kept Protecting", image: "the-light-you-kept-protecting.jpg", message: "What was most sacred in you survived. Honour the quiet courage it took to keep that light alive." },
-      { title: "Feels Like Home", image: "feels-like-home.jpg", message: "Peace is returning in a form your body recognises. This belonging is not borrowed. It is yours." },
-      { title: "You Can Breathe Again", image: "you-can-breathe-again.jpg", message: "Relief is entering where pressure once lived. Let your breath become a doorway back to yourself." },
-      { title: "You Don’t Have to Carry It Anymore", image: "you-dont-have-to-carry-it-anymore.jpg", message: "This burden does not have to remain in your hands. Set it down. You are allowed to be held too." },
-      { title: "You Can Rest Now", image: "you-can-rest-now.jpg", message: "The striving can soften here. Rest is not retreat from life. It is love offered to a tired soul." },
-      { title: "And You Begin Again", image: "and-you-begin-again.jpg", message: "This is not starting from nothing. This is beginning again with more truth, more tenderness, and more light." },
-      { title: "You Hold the Light Within", image: "you-hold-the-light-within.jpg", message: "What you have been seeking also lives inside you. Your inner light has not left. It has only been waiting." },
-      { title: "Let Go Gracefully", image: "let-go-gracefully.jpg", message: "What is finished can be released with tenderness. Grace does not force. It allows." }
-    ];
+while(selected.length<3){
+let c=randomCard();
+if(!selected.includes(c)) selected.push(c);
+}
 
-    let soundOn = false;
-    let isDrawing = false;
+let html="";
+selected.forEach(c=>{
+html+=`<div>
+<img class="card" src="${c.image}">
+<p>${c.title}</p>
+</div>`;
+});
 
-    function getRandomCard(excludeTitles = []) {
-      const available = inBetweenCards.filter(card => !excludeTitles.includes(card.title));
-      return available[Math.floor(Math.random() * available.length)];
-    }
+document.getElementById("cards").innerHTML=html;
 
-    function getDailyCard() {
-      const today = new Date().toDateString();
-      const savedDate = localStorage.getItem("inBetweenDailyDate");
-      let dailyCard;
-
-      if (savedDate === today) {
-        const savedTitle = localStorage.getItem("inBetweenDailyCardTitle");
-        dailyCard = inBetweenCards.find(card => card.title === savedTitle) || getRandomCard();
-      } else {
-        dailyCard = getRandomCard();
-        localStorage.setItem("inBetweenDailyDate", today);
-        localStorage.setItem("inBetweenDailyCardTitle", dailyCard.title);
-      }
-
-      return dailyCard;
-    }
-
-    function activateWelcomeMagic() {
-      const welcomeCard = document.getElementById("mainDeckCard");
-      const welcomeMist = document.getElementById("welcomeMist");
-
-      if (welcomeMist) {
-        welcomeMist.classList.add("active");
-        setTimeout(() => welcomeMist.classList.remove("active"), 1200);
-      }
-
-      if (welcomeCard) {
-        welcomeCard.classList.add("shuffling");
-        setTimeout(() => welcomeCard.classList.remove("shuffling"), 2400);
-      }
-    }
-
-    function revealMessagePanel() {
-      const messageBox = document.getElementById("messageBox");
-      messageBox.classList.remove("fade-in");
-      setTimeout(() => {
-        messageBox.classList.add("fade-in");
-      }, 80);
-    }
-
-    function clearSpreadArea() {
-      const spreadArea = document.getElementById("spreadArea");
-      spreadArea.innerHTML = "";
-      spreadArea.classList.remove("show");
-    }
-
-    function flipTopCardTo(imageSrc, altText, onDone = null) {
-      const mainCard = document.getElementById("mainDeckCard");
-      if (!mainCard) return;
-
-      mainCard.style.transform = "rotateY(90deg)";
-
-      setTimeout(() => {
-        const tempImg = new Image();
-
-        tempImg.onload = () => {
-          mainCard.src = imageSrc;
-          mainCard.alt = altText;
-          mainCard.style.transform = "rotateY(0deg)";
-          if (onDone) onDone();
-        };
-
-        tempImg.onerror = () => {
-          mainCard.src = CARD_BACK;
-          mainCard.alt = "Card back";
-          mainCard.style.transform = "rotateY(0deg)";
-          if (onDone) onDone();
-        };
-
-        tempImg.src = imageSrc;
-      }, 300);
-    }
-
-    function resetTopCardToWelcome() {
-      const mainCard = document.getElementById("mainDeckCard");
-      if (!mainCard) return;
-
-      mainCard.style.transform = "rotateY(90deg)";
-
-      setTimeout(() => {
-        mainCard.src = CARD_BACK;
-        mainCard.alt = "Tap to draw your daily In-Between Moments message";
-        mainCard.style.transform = "rotateY(0deg)";
-      }, 300);
-    }
-
-    function showSingleCard(card, headingText) {
-      clearSpreadArea();
-
-      const messageBox = document.getElementById("messageBox");
-      const messageTitle = document.getElementById("messageTitle");
-      const messageText = document.getElementById("messageText");
-
-      messageBox.classList.add("show");
-      messageBox.classList.remove("fade-in");
-
-      flipTopCardTo(card.image, card.title, () => {
-        messageTitle.textContent = headingText + ": " + card.title;
-        messageText.textContent = card.message;
-        revealMessagePanel();
-      });
-    }
-
-    function createFlipCard(position, card, index) {
-      return `
-        <div class="card-slot ${position === 'What the moment is leading toward' ? 'bottom-center' : ''}">
-          <h3>${position}</h3>
-          <div class="card-flip" id="flip-${index}">
-            <div class="card-flip-inner">
-              <div class="card-face card-back">
-                <img src="${CARD_BACK}" alt="Card back">
-              </div>
-              <div class="card-face card-front">
-                <img src="${card.image}" alt="${card.title}" onerror="this.src='${CARD_BACK}'">
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function flipSpreadCards(spreadCards) {
-      spreadCards.forEach((item, index) => {
-        setTimeout(() => {
-          const flipEl = document.getElementById(`flip-${index}`);
-          if (flipEl) flipEl.classList.add("flipped");
-        }, 700 + (index * 450));
-      });
-    }
-
-    function showMultiCardSpread(spreadTitle, spreadCards, layoutType) {
-      const spreadArea = document.getElementById("spreadArea");
-      const messageBox = document.getElementById("messageBox");
-      const messageTitle = document.getElementById("messageTitle");
-      const messageText = document.getElementById("messageText");
-
-      resetTopCardToWelcome();
-
-      spreadArea.innerHTML = `
-        <h2 class="spread-title">${spreadTitle}</h2>
-        <div class="cards-grid ${layoutType}">
-          ${spreadCards.map((item, index) => createFlipCard(item.position, item.card, index)).join("")}
-        </div>
-      `;
-      spreadArea.classList.add("show");
-
-      flipSpreadCards(spreadCards);
-
-      let fullMessage = "";
-      spreadCards.forEach(item => {
-        fullMessage += item.position + " — " + item.card.title + ": " + item.card.message + "\n\n";
-      });
-
-      messageBox.classList.add("show");
-      messageBox.classList.remove("fade-in");
-      messageTitle.textContent = spreadTitle;
-
-      setTimeout(() => {
-        messageText.innerText = fullMessage.trim();
-        revealMessagePanel();
-      }, 700 + (spreadCards.length * 450));
-    }
-
-    function drawDailyCard() {
-      const dailyCard = getDailyCard();
-      showSingleCard(dailyCard, "Daily In-Between Message");
-    }
-
-    function drawThreeCardSpread() {
-      const first = getRandomCard();
-      const second = getRandomCard([first.title]);
-      const third = getRandomCard([first.title, second.title]);
-
-      showMultiCardSpread(
-        "Three Card Spread",
-        [
-          { position: "What lingers", card: first },
-          { position: "What is opening", card: second },
-          { position: "What is gently arriving", card: third }
-        ],
-        "three-card-grid"
-      );
-    }
-
-    function drawInBetweenCross() {
-      const picked = [];
-      while (picked.length < 5) {
-        const card = getRandomCard(picked.map(c => c.title));
-        picked.push(card);
-      }
-
-      showMultiCardSpread(
-        "In-Between Cross Reading",
-        [
-          { position: "Where you are now", card: picked[0] },
-          { position: "What sits beneath the surface", card: picked[1] },
-          { position: "What asks for tenderness", card: picked[2] },
-          { position: "What is shifting", card: picked[3] },
-          { position: "What the moment is leading toward", card: picked[4] }
-        ],
-        "cross-grid"
-      );
-    }
-
-    function drawDailyCardFromCard() {
-      if (isDrawing) return;
-      isDrawing = true;
-
-      const dailyCard = getDailyCard();
-      activateWelcomeMagic();
-
-      setTimeout(() => {
-        showSingleCard(dailyCard, "Daily In-Between Message");
-        setTimeout(() => { isDrawing = false; }, 1200);
-      }, 2400);
-    }
-
-    function startReading(type) {
-      if (isDrawing) return;
-      isDrawing = true;
-
-      const welcomeMist = document.getElementById("welcomeMist");
-      if (welcomeMist) {
-        welcomeMist.classList.add("active");
-        setTimeout(() => welcomeMist.classList.remove("active"), 1000);
-      }
-
-      setTimeout(() => {
-        if (type === "daily") {
-          drawDailyCard();
-        } else if (type === "three") {
-          drawThreeCardSpread();
-        } else if (type === "cross") {
-          drawInBetweenCross();
-        }
-
-        setTimeout(() => { isDrawing = false; }, 2200);
-      }, 350);
-    }
-
-    function toggleSound() {
-      const audio = document.getElementById("forestAudio");
-      const button = document.getElementById("soundButton");
-
-      if (!soundOn) {
-        audio.play().then(() => {
-          soundOn = true;
-          button.textContent = "Forest Sounds: On";
-        }).catch(() => {
-          alert("Your browser blocked autoplay. Tap the button again after interacting with the page.");
-        });
-      } else {
-        audio.pause();
-        soundOn = false;
-        button.textContent = "Forest Sounds: Off";
-      }
-    }
-  </script>
+document.getElementById("message").innerHTML="";
+}
+</script>
 
 </body>
 </html>
