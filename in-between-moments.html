@@ -12,8 +12,8 @@
       font-family: Georgia, serif;
       text-align: center;
       background-image:
-        linear-gradient(rgba(28,22,30,0.52), rgba(22,18,26,0.76)),
-        url("in-between-bg.jpg");
+        linear-gradient(rgba(40,30,45,0.45), rgba(25,20,30,0.65)),
+        url("forest-bg-new.jpg");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -322,7 +322,7 @@
     .spread-area {
       display: none;
       margin: 24px auto 0;
-      max-width: 1000px;
+      max-width: 1100px;
     }
 
     .spread-area.show {
@@ -346,6 +346,7 @@
       margin: 0 0 12px;
       font-size: 1.02rem;
       color: #f7eef4;
+      line-height: 1.2;
     }
 
     .card-flip {
@@ -379,6 +380,7 @@
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
         0 0 34px rgba(255,224,240,0.10);
+      background: rgba(255,255,255,0.05);
     }
 
     .card-face img {
@@ -526,221 +528,48 @@
     const CARD_BACK = "in-between-card-back.jpg";
 
     const inBetweenCards = [
-      {
-        title: "A Moment for Yourself",
-        image: "a-moment-for-yourself.jpg",
-        message: "Step back from the noise. This is a reminder that your soul needs gentleness too."
-      },
-      {
-        title: "The Moment Before You Speak",
-        image: "the-moment-before-you-speak.jpg",
-        message: "There is truth gathering softly inside you. Let your heart catch up before your words do."
-      },
-      {
-        title: "The Breath You Forgot to Finish",
-        image: "the-breath-you-forgot-to-finish.jpg",
-        message: "You have been holding more than you realise. Pause. Exhale fully. Let your body know it is safe."
-      },
-      {
-        title: "The Silence That Said It All",
-        image: "the-silence-that-said-it-all.jpg",
-        message: "Not every truth arrived through words. Some moments were understood in the hush between them."
-      },
-      {
-        title: "The Step You Didn’t Take",
-        image: "the-step-you-didnt-take.jpg",
-        message: "Do not punish yourself for what fear once held back. That version of you was surviving the best way she knew."
-      },
-      {
-        title: "The Thing You Finally Let Go",
-        image: "the-thing-you-finally-let-go.jpg",
-        message: "Something heavy has already begun loosening its grip. Release is not loss. It is room returning."
-      },
-      {
-        title: "The Part of You That Came Back Different",
-        image: "the-part-of-you-that-came-back-different.jpg",
-        message: "You are not the same after what you have walked through. This change carries wisdom, not failure."
-      },
-      {
-        title: "The Realisation That Arrived Gently",
-        image: "the-realisation-that-arrived-gently.jpg",
-        message: "Not all awakenings arrive like thunder. Some come as a soft knowing you can no longer ignore."
-      },
-      {
-        title: "The Acceptance That Softened You",
-        image: "the-acceptance-that-softened-you.jpg",
-        message: "When resistance loosens, tenderness enters. Acceptance is not giving up. It is making peace."
-      },
-      {
-        title: "The Truth You Could No Longer Ignore",
-        image: "the-truth-you-could-no-longer-ignore.jpg",
-        message: "A truth has been waiting patiently for your eyes to rest upon it. What is real can finally be faced."
-      },
-      {
-        title: "The Embrace of Your Unfolding Self",
-        image: "the-embrace-of-your-unfolding-self.jpg",
-        message: "Meet yourself with kindness as you become. You are not late. You are unfolding in your own sacred timing."
-      },
-      {
-        title: "The Self-Belief That Changed You",
-        image: "the-self-belief-that-changed-you.jpg",
-        message: "A quieter confidence is rising within you. Believe the version of yourself who knows she is capable."
-      },
-      {
-        title: "The Power You Now Hold",
-        image: "the-power-you-now-hold.jpg",
-        message: "Your light no longer needs permission to exist. What once felt fragile now rests in your own hands."
-      },
-      {
-        title: "The Life You Are Growing Into",
-        image: "the-life-you-are-growing-into.jpg",
-        message: "Something new is taking root. Trust the life that is forming around the person you are becoming."
-      },
-      {
-        title: "The Connection You Are Building",
-        image: "the-connection-you-are-building.jpg",
-        message: "What is forming between hearts needs honesty, patience, and presence. Let it grow gently."
-      },
-      {
-        title: "The Inner Child You Are Embracing",
-        image: "the-inner-child-you-are-embracing.jpg",
-        message: "A younger part of you is asking to be held with tenderness. What she needed then can be offered now."
-      },
-      {
-        title: "The Care You Are Offering",
-        image: "the-care-you-are-offering.jpg",
-        message: "Your care matters, even when it feels unseen. The softness you give is a form of quiet strength."
-      },
-      {
-        title: "The Piece of You That Grew Tired",
-        image: "the-piece-of-you-that-grew-tired.jpg",
-        message: "There is no shame in exhaustion. Rest the part of you that has been carrying too much for too long."
-      },
-      {
-        title: "The Healing That Begins Inside",
-        image: "the-healing-that-begins-inside.jpg",
-        message: "Real healing often begins in silence, deep within. Honour the invisible work your heart is doing."
-      },
-      {
-        title: "The Love That Never Ends",
-        image: "the-love-that-never-ends.jpg",
-        message: "Love does not vanish when form changes. What is true in love continues, quietly and faithfully."
-      },
-      {
-        title: "The Feeling of Being Forgotten",
-        image: "the-feeling-of-being-forgotten.jpg",
-        message: "This ache deserves to be named. Feeling forgotten does not make you unworthy of remembrance or love."
-      },
-      {
-        title: "The Loss That Leaves an Emptiness",
-        image: "the-loss-that-leaves-an-emptiness.jpg",
-        message: "Some absences change the shape of everything. Let yourself honour the emptiness without rushing to fill it."
-      },
-      {
-        title: "Waiting for the Sun to Rise",
-        image: "waiting-for-the-sun-to-rise.jpg",
-        message: "You are not failing because it is still dark. Dawn arrives in its own time. Stay with the quiet hope."
-      },
-      {
-        title: "The Quiet Pause",
-        image: "the-quiet-pause.jpg",
-        message: "Not every pause is a setback. Some pauses are sacred spaces where the soul gathers itself again."
-      },
-      {
-        title: "Beginning to Find Her Way Again",
-        image: "beginning-to-find-her-way-again.jpg",
-        message: "Something in you is remembering the path. Even the smallest return is still a return."
-      },
-      {
-        title: "A Brave and Honest Conversation",
-        image: "a-brave-and-honest-conversation.jpg",
-        message: "Truth spoken with gentleness can change a life. Let honesty become a bridge instead of a wound."
-      },
-      {
-        title: "The Strength No One Saw",
-        image: "the-strength-no-one-saw.jpg",
-        message: "You survived moments that no one fully understood. Your quiet endurance was strength all the same."
-      },
-      {
-        title: "The Part of You That Was Always Enough",
-        image: "the-part-of-you-that-was-always-enough.jpg",
-        message: "You were never missing the part that mattered most. Your worth has always lived beneath the doubt."
-      },
-      {
-        title: "The Place You Never Quite Belonged",
-        image: "the-place-you-never-quite-belonged.jpg",
-        message: "Feeling out of place shaped you, but it does not define your home. Belonging may still be finding you."
-      },
-      {
-        title: "The Reasons No One Heard",
-        image: "the-reasons-no-one-heard.jpg",
-        message: "Some stories were silenced before they could be understood. Your reasons still deserve compassion."
-      },
-      {
-        title: "When Tears Became Prayers",
-        image: "when-tears-became-prayers.jpg",
-        message: "What overflowed from pain became its own sacred language. Nothing truly felt is wasted."
-      },
-      {
-        title: "Held in Gentle Light",
-        image: "held-in-gentle-light.jpg",
-        message: "You are being cradled more softly than you know. Let yourself be supported by what cannot always be seen."
-      },
-      {
-        title: "You Weren’t Alone",
-        image: "you-werent-alone.jpg",
-        message: "Even in the moments that felt deserted, presence remained. Something stayed beside you."
-      },
-      {
-        title: "You’re Becoming Lighter",
-        image: "youre-becoming-lighter.jpg",
-        message: "The weight is shifting. You may not notice it every day, but your spirit is learning how to rise."
-      },
-      {
-        title: "The Light You Kept Protecting",
-        image: "the-light-you-kept-protecting.jpg",
-        message: "What was most sacred in you survived. Honour the quiet courage it took to keep that light alive."
-      },
-      {
-        title: "Feels Like Home",
-        image: "feels-like-home.jpg",
-        message: "Peace is returning in a form your body recognises. This belonging is not borrowed. It is yours."
-      },
-      {
-        title: "All is Well",
-        image: "all-is-well.jpg",
-        message: "In this moment, let your heart unclench. Not everything is solved, but something deep within is settling."
-      },
-      {
-        title: "You Can Breathe Again",
-        image: "you-can-breathe-again.jpg",
-        message: "Relief is entering where pressure once lived. Let your breath become a doorway back to yourself."
-      },
-      {
-        title: "You Don’t Have to Carry It Anymore",
-        image: "you-dont-have-to-carry-it-anymore.jpg",
-        message: "This burden does not have to remain in your hands. Set it down. You are allowed to be held too."
-      },
-      {
-        title: "You Can Rest Now",
-        image: "you-can-rest-now.jpg",
-        message: "The striving can soften here. Rest is not retreat from life. It is love offered to a tired soul."
-      },
-      {
-        title: "And You Begin Again",
-        image: "and-you-begin-again.jpg",
-        message: "This is not starting from nothing. This is beginning again with more truth, more tenderness, and more light."
-      },
-      {
-        title: "You Hold the Light Within",
-        image: "you-hold-the-light-within.jpg",
-        message: "What you have been seeking also lives inside you. Your inner light has not left. It has only been waiting."
-      },
-      {
-        title: "Let Go Gracefully",
-        image: "let-go-gracefully.jpg",
-        message: "What is finished can be released with tenderness. Grace does not force. It allows."
-      }
+      { title: "A Moment for Yourself", image: "a-moment-for-yourself.jpg", message: "Step back from the noise. This is a reminder that your soul needs gentleness too." },
+      { title: "The Moment Before You Speak", image: "the-moment-before-you-speak.jpg", message: "There is truth gathering softly inside you. Let your heart catch up before your words do." },
+      { title: "The Breath You Forgot to Finish", image: "forgotten-breath.jpg", message: "You have been holding more than you realise. Pause. Exhale fully. Let your body know it is safe." },
+      { title: "The Silence That Said It All", image: "the-silence-that-said-it-all.jpg", message: "Not every truth arrived through words. Some moments were understood in the hush between them." },
+      { title: "The Step You Didn’t Take", image: "the-step-you-didnt-take.jpg", message: "Do not punish yourself for what fear once held back. That version of you was surviving the best way she knew." },
+      { title: "The Thing You Finally Let Go", image: "the-thing-you-finally-let-go.jpg", message: "Something heavy has already begun loosening its grip. Release is not loss. It is room returning." },
+      { title: "The Part of You That Came Back Different", image: "the-part-of-you-that-came-back-different.jpg", message: "You are not the same after what you have walked through. This change carries wisdom, not failure." },
+      { title: "The Realisation That Arrived Gently", image: "the-realisation-that-arrived-gently.jpg", message: "Not all awakenings arrive like thunder. Some come as a soft knowing you can no longer ignore." },
+      { title: "The Acceptance That Softened You", image: "the-acceptance-that-softened-you.jpg", message: "When resistance loosens, tenderness enters. Acceptance is not giving up. It is making peace." },
+      { title: "The Truth You Could No Longer Ignore", image: "the-truth-you-could-no-longer-ignore.jpg", message: "A truth has been waiting patiently for your eyes to rest upon it. What is real can finally be faced." },
+      { title: "The Embrace of Your Unfolding Self", image: "the-embrace-of-your-unfolding-self.jpg", message: "Meet yourself with kindness as you become. You are not late. You are unfolding in your own sacred timing." },
+      { title: "The Self-Belief That Changed You", image: "the-self-belief-that-changed-you.jpg", message: "A quieter confidence is rising within you. Believe the version of yourself who knows she is capable." },
+      { title: "The Power You Now Hold", image: "the-power-you-now-hold.jpg", message: "Your light no longer needs permission to exist. What once felt fragile now rests in your own hands." },
+      { title: "The Life You Are Growing Into", image: "the-life-you-are-growing-into.jpg", message: "Something new is taking root. Trust the life that is forming around the person you are becoming." },
+      { title: "The Connection You Are Building", image: "the-connection-you-are-building.jpg", message: "What is forming between hearts needs honesty, patience, and presence. Let it grow gently." },
+      { title: "The Inner Child You Are Embracing", image: "the-inner-child-you-are-embracing.jpg", message: "A younger part of you is asking to be held with tenderness. What she needed then can be offered now." },
+      { title: "The Care You Are Offering", image: "the-care-you-are-offering.jpg", message: "Your care matters, even when it feels unseen. The softness you give is a form of quiet strength." },
+      { title: "The Piece of You That Grew Tired", image: "the-piece-of-you-that-grew-tired.jpg", message: "There is no shame in exhaustion. Rest the part of you that has been carrying too much for too long." },
+      { title: "The Healing That Begins Inside", image: "the-healing-that-begins-inside.jpg", message: "Real healing often begins in silence, deep within. Honour the invisible work your heart is doing." },
+      { title: "The Love That Never Ends", image: "the-love-that-never-ends.jpg", message: "Love does not vanish when form changes. What is true in love continues, quietly and faithfully." },
+      { title: "The Feeling of Being Forgotten", image: "the-feeling-of-being-forgotten.jpg", message: "This ache deserves to be named. Feeling forgotten does not make you unworthy of remembrance or love." },
+      { title: "The Loss That Leaves an Emptiness", image: "the-loss-that-leaves-an-emptiness.jpg", message: "Some absences change the shape of everything. Let yourself honour the emptiness without rushing to fill it." },
+      { title: "Waiting for the Sun to Rise", image: "waiting-for-the-sun-to-rise.jpg", message: "You are not failing because it is still dark. Dawn arrives in its own time. Stay with the quiet hope." },
+      { title: "The Quiet Pause", image: "the-quiet-pause.jpg", message: "Not every pause is a setback. Some pauses are sacred spaces where the soul gathers itself again." },
+      { title: "Beginning to Find Her Way Again", image: "beginning-to-find-her-way-again.jpg", message: "Something in you is remembering the path. Even the smallest return is still a return." },
+      { title: "A Brave and Honest Conversation", image: "a-brave-and-honest-conversation.jpg", message: "Truth spoken with gentleness can change a life. Let honesty become a bridge instead of a wound." },
+      { title: "The Strength No One Saw", image: "the-strength-no-one-saw.jpg", message: "You survived moments that no one fully understood. Your quiet endurance was strength all the same." },
+      { title: "The Part of You That Was Always Enough", image: "the-part-of-you-that-was-always-enough.jpg", message: "You were never missing the part that mattered most. Your worth has always lived beneath the doubt." },
+      { title: "The Place You Never Quite Belonged", image: "the-place-you-never-quite-belonged.jpg", message: "Feeling out of place shaped you, but it does not define your home. Belonging may still be finding you." },
+      { title: "The Reasons No One Heard", image: "the-reasons-no-one-heard.jpg", message: "Some stories were silenced before they could be understood. Your reasons still deserve compassion." },
+      { title: "When Tears Became Prayers", image: "when-tears-became-prayers.jpg", message: "What overflowed from pain became its own sacred language. Nothing truly felt is wasted." },
+      { title: "Held in Gentle Light", image: "held-in-gentle-light.jpg", message: "You are being cradled more softly than you know. Let yourself be supported by what cannot always be seen." },
+      { title: "You Weren’t Alone", image: "you-werent-alone.jpg", message: "Even in the moments that felt deserted, presence remained. Something stayed beside you." },
+      { title: "You’re Becoming Lighter", image: "youre-becoming-lighter.jpg", message: "The weight is shifting. You may not notice it every day, but your spirit is learning how to rise." },
+      { title: "The Light You Kept Protecting", image: "the-light-you-kept-protecting.jpg", message: "What was most sacred in you survived. Honour the quiet courage it took to keep that light alive." },
+      { title: "Feels Like Home", image: "feels-like-home.jpg", message: "Peace is returning in a form your body recognises. This belonging is not borrowed. It is yours." },
+      { title: "You Can Breathe Again", image: "you-can-breathe-again.jpg", message: "Relief is entering where pressure once lived. Let your breath become a doorway back to yourself." },
+      { title: "You Don’t Have to Carry It Anymore", image: "you-dont-have-to-carry-it-anymore.jpg", message: "This burden does not have to remain in your hands. Set it down. You are allowed to be held too." },
+      { title: "You Can Rest Now", image: "you-can-rest-now.jpg", message: "The striving can soften here. Rest is not retreat from life. It is love offered to a tired soul." },
+      { title: "And You Begin Again", image: "and-you-begin-again.jpg", message: "This is not starting from nothing. This is beginning again with more truth, more tenderness, and more light." },
+      { title: "You Hold the Light Within", image: "you-hold-the-light-within.jpg", message: "What you have been seeking also lives inside you. Your inner light has not left. It has only been waiting." },
+      { title: "Let Go Gracefully", image: "let-go-gracefully.jpg", message: "What is finished can be released with tenderness. Grace does not force. It allows." }
     ];
 
     let soundOn = false;
