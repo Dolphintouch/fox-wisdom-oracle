@@ -18,13 +18,13 @@
       font-family: Georgia, serif;
       text-align: center;
       background-image:
-        linear-gradient(rgba(34, 24, 36, 0.38), rgba(24, 18, 28, 0.58)),
+        linear-gradient(rgba(34, 24, 36, 0.34), rgba(22, 16, 28, 0.58)),
         url("in-between-bg.jpg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
-      padding: 16px;
+      padding: 18px;
       margin: 0;
       color: #f8eef5;
       min-height: 100vh;
@@ -37,9 +37,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255, 227, 240, 0.14), transparent 24%),
-        radial-gradient(circle at 82% 24%, rgba(255, 243, 225, 0.09), transparent 25%),
-        radial-gradient(circle at 50% 82%, rgba(255, 225, 240, 0.08), transparent 26%);
+        radial-gradient(circle at 18% 18%, rgba(255, 232, 244, 0.12), transparent 24%),
+        radial-gradient(circle at 82% 22%, rgba(255, 243, 228, 0.08), transparent 24%),
+        radial-gradient(circle at 50% 80%, rgba(255, 228, 242, 0.07), transparent 28%);
       pointer-events: none;
       z-index: 0;
     }
@@ -57,7 +57,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(255, 239, 247, 0.95);
+      background: rgba(255, 241, 247, 0.95);
       box-shadow: 0 0 14px rgba(255, 236, 245, 0.85);
       animation: floatLight linear infinite;
       opacity: 0.72;
@@ -77,12 +77,8 @@
         transform: translateY(0) translateX(0) scale(0.8);
         opacity: 0;
       }
-      20% {
-        opacity: 0.72;
-      }
-      70% {
-        opacity: 0.86;
-      }
+      20% { opacity: 0.72; }
+      70% { opacity: 0.86; }
       100% {
         transform: translateY(-230px) translateX(24px) scale(1.2);
         opacity: 0;
@@ -92,7 +88,7 @@
     .page-wrap {
       position: relative;
       z-index: 2;
-      max-width: 1120px;
+      max-width: 1180px;
       margin: 0 auto;
       padding-bottom: 70px;
     }
@@ -106,9 +102,9 @@
     }
 
     h1 {
-      margin: 12px 0 14px;
-      font-size: clamp(2.3rem, 6vw, 4.3rem);
-      line-height: 1.08;
+      margin: 10px 0 14px;
+      font-size: clamp(2.3rem, 6vw, 4.5rem);
+      line-height: 1.06;
       color: #fff7fb;
       text-shadow: 0 2px 10px rgba(0,0,0,0.32);
     }
@@ -133,13 +129,13 @@
 
     .welcome-mist {
       position: absolute;
-      width: 480px;
-      height: 480px;
+      width: 490px;
+      height: 490px;
       border-radius: 50%;
       background:
-        radial-gradient(circle, rgba(255,240,248,0.22) 0%, rgba(244,224,236,0.11) 30%, rgba(235,215,228,0.04) 48%, transparent 72%);
-      filter: blur(52px);
-      opacity: 0.7;
+        radial-gradient(circle, rgba(255,240,248,0.24) 0%, rgba(244,224,236,0.11) 30%, rgba(235,215,228,0.04) 50%, transparent 74%);
+      filter: blur(56px);
+      opacity: 0.72;
       z-index: 1;
       transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
@@ -147,13 +143,13 @@
     .welcome-mist.active {
       opacity: 1;
       transform: scale(1.08);
-      filter: blur(58px);
+      filter: blur(60px);
     }
 
     .welcome-halo {
       position: absolute;
-      width: 380px;
-      height: 380px;
+      width: 390px;
+      height: 390px;
       border-radius: 50%;
       z-index: 1;
       background: radial-gradient(circle, rgba(255,232,245,0.18) 0%, rgba(240,220,235,0.07) 38%, transparent 72%);
@@ -176,19 +172,19 @@
       border-radius: 20px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
-        0 14px 30px rgba(0,0,0,0.30),
-        0 0 38px rgba(255,224,240,0.18);
+        0 16px 34px rgba(0,0,0,0.30),
+        0 0 42px rgba(255,224,240,0.20);
       cursor: pointer;
       transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
       transform-style: preserve-3d;
       filter: brightness(1);
-      animation: welcomePulse 4.6s ease-in-out infinite;
+      animation: welcomePulse 4.8s ease-in-out infinite;
       user-select: none;
       -webkit-user-drag: none;
     }
 
     .welcome-card:hover {
-      transform: translateY(-5px) scale(1.02);
+      transform: translateY(-6px) scale(1.025);
     }
 
     .welcome-card.shuffling {
@@ -199,22 +195,22 @@
       0% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 30px rgba(0,0,0,0.30),
-          0 0 32px rgba(255,224,240,0.14);
+          0 16px 34px rgba(0,0,0,0.30),
+          0 0 34px rgba(255,224,240,0.16);
         transform: scale(1);
       }
       50% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.18),
-          0 18px 36px rgba(0,0,0,0.34),
-          0 0 46px rgba(255,224,240,0.24);
-        transform: scale(1.015);
+          0 20px 40px rgba(0,0,0,0.34),
+          0 0 52px rgba(255,224,240,0.26);
+        transform: scale(1.018);
       }
       100% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 30px rgba(0,0,0,0.30),
-          0 0 32px rgba(255,224,240,0.14);
+          0 16px 34px rgba(0,0,0,0.30),
+          0 0 34px rgba(255,224,240,0.16);
         transform: scale(1);
       }
     }
@@ -229,10 +225,10 @@
     }
 
     .scroll-whisper {
-      margin: 0 auto 24px;
-      max-width: 680px;
-      font-size: 1.08rem;
-      color: #fff2f8;
+      margin: 0 auto 26px;
+      max-width: 700px;
+      font-size: 1.12rem;
+      color: #fff3f8;
       font-style: italic;
       letter-spacing: 0.2px;
       text-shadow:
@@ -257,32 +253,39 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin: 20px auto 18px;
-      max-width: 950px;
+      gap: 12px;
+      margin: 22px auto 20px;
+      max-width: 980px;
     }
 
     button {
       border: none;
-      padding: 13px 20px;
+      padding: 13px 22px;
       border-radius: 999px;
-      background: linear-gradient(to bottom, #c59cb8, #ab829d);
-      color: #fff7fb;
+      background: linear-gradient(to bottom, #d1abc3, #b68ea8);
+      color: #fff8fc;
       font-family: Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(255,255,255,0.22);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      box-shadow:
+        0 6px 14px rgba(0,0,0,0.20),
+        0 0 14px rgba(255,224,240,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.24);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
     }
 
     button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.24);
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.04);
+      box-shadow:
+        0 8px 18px rgba(0,0,0,0.24),
+        0 0 18px rgba(255,224,240,0.20),
+        inset 0 0 0 1px rgba(255,255,255,0.28);
     }
 
     .shop-invite {
-      margin: 10px auto 14px;
-      font-size: 1.25rem;
+      margin: 12px auto 16px;
+      font-size: 1.28rem;
       color: #fff2f8;
       font-style: italic;
       letter-spacing: 0.4px;
@@ -295,13 +298,13 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 14px;
-      margin: 0 auto 30px;
+      margin: 0 auto 32px;
       max-width: 1000px;
     }
 
     .link-button {
       display: inline-block;
-      padding: 14px 24px;
+      padding: 15px 28px;
       border-radius: 999px;
       text-decoration: none;
       font-family: Georgia, serif;
@@ -309,11 +312,11 @@
       color: #fffafc;
       background: linear-gradient(to bottom, #9e7f98 0%, #866a82 24%, #745c71 50%, #654f62 72%, #564450 100%);
       border: 1px solid rgba(255,232,245,0.24);
-      min-width: 220px;
+      min-width: 240px;
       box-shadow:
-        0 8px 18px rgba(0,0,0,0.28),
-        0 0 12px rgba(255,224,240,0.10),
-        inset 0 1px 0 rgba(255,255,255,0.16);
+        0 10px 20px rgba(0,0,0,0.28),
+        0 0 16px rgba(255,224,240,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.18);
       transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
     }
 
@@ -322,41 +325,92 @@
       filter: brightness(1.05);
       box-shadow:
         0 12px 24px rgba(0,0,0,0.32),
-        0 0 20px rgba(255,224,240,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.22);
+        0 0 22px rgba(255,224,240,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.24);
     }
 
     .reading-stage {
       position: relative;
-      margin-top: 4px;
+      margin-top: 8px;
     }
 
     .spread-area {
       display: none;
-      margin: 24px auto 0;
-      max-width: 1100px;
+      margin: 34px auto 0;
+      max-width: 1180px;
     }
 
     .spread-area.show {
       display: block;
+      animation: spreadFade 1s ease;
     }
 
-    .cards-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 22px;
-      margin-top: 10px;
+    @keyframes spreadFade {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .spread-title {
+      font-size: 1.9rem;
+      color: #fff7fb;
+      margin: 0 0 26px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+
+    .cards-grid.three-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      justify-items: center;
+      align-items: start;
+      gap: 26px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cards-grid.cross-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      justify-items: center;
+      align-items: start;
+      gap: 28px 18px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .cards-grid.cross-grid .bottom-center {
+      grid-column: 2 / span 2;
+      justify-self: center;
+      margin-top: 8px;
     }
 
     .card-slot {
       width: min(220px, 84vw);
       text-align: center;
+      position: relative;
+    }
+
+    .card-slot::before {
+      content: "";
+      position: absolute;
+      inset: auto 18px 10px 18px;
+      height: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,228,240,0.24), transparent 70%);
+      filter: blur(10px);
+      z-index: 0;
     }
 
     .card-slot h3 {
+      position: relative;
+      z-index: 2;
       margin: 0 0 12px;
-      font-size: 1.02rem;
+      font-size: 1.1rem;
       color: #fff7fb;
       line-height: 1.2;
       text-shadow: 0 1px 3px rgba(0,0,0,0.45);
@@ -366,14 +420,16 @@
       width: 100%;
       max-width: 220px;
       margin: 0 auto;
-      perspective: 1000px;
+      perspective: 1200px;
+      position: relative;
+      z-index: 2;
     }
 
     .card-flip-inner {
       position: relative;
       width: 100%;
       aspect-ratio: 220 / 367;
-      transition: transform 0.8s ease;
+      transition: transform 0.9s ease;
       transform-style: preserve-3d;
     }
 
@@ -390,9 +446,9 @@
       border-radius: 18px;
       overflow: hidden;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,0.14),
-        0 12px 24px rgba(0,0,0,0.28),
-        0 0 34px rgba(255,224,240,0.10);
+        0 0 0 1px rgba(255,255,255,0.16),
+        0 14px 26px rgba(0,0,0,0.28),
+        0 0 34px rgba(255,224,240,0.14);
       background: rgba(255,255,255,0.05);
     }
 
@@ -408,22 +464,22 @@
     }
 
     .message-box {
-      max-width: 900px;
-      margin: 20px auto 0;
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
+      max-width: 940px;
+      margin: 30px auto 0;
+      padding: 24px 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(50, 38, 55, 0.34);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       box-shadow:
-        0 8px 20px rgba(0,0,0,0.18),
-        0 0 34px rgba(255,224,240,0.14);
+        0 12px 28px rgba(0,0,0,0.20),
+        0 0 36px rgba(255,224,240,0.12);
       display: none;
       white-space: pre-line;
       opacity: 0;
       transform: translateY(12px);
-      transition: opacity 1.2s ease, transform 1.2s ease, box-shadow 1.2s ease;
+      transition: opacity 1.2s ease, transform 1.2s ease;
     }
 
     .message-box.show {
@@ -436,31 +492,71 @@
     }
 
     .message-box h3 {
-      margin: 0 0 10px;
-      font-size: 1.45rem;
+      margin: 0 0 12px;
+      font-size: 1.55rem;
       color: #fff6fb;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.28);
     }
 
     .message-box p {
       margin: 0;
-      font-size: 1.06rem;
-      line-height: 1.7;
+      font-size: 1.08rem;
+      line-height: 1.8;
       color: #fffafd;
     }
 
     .footer-note {
-      margin-top: 26px;
+      margin-top: 28px;
       font-size: 0.92rem;
       color: #efdce9;
       opacity: 0.95;
     }
 
+    @media (max-width: 980px) {
+      .cards-grid.three-card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cards-grid.cross-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cards-grid.cross-grid .bottom-center {
+        grid-column: 1 / -1;
+      }
+    }
+
     @media (max-width: 700px) {
-      body { padding: 12px 10px; }
-      .welcome-card-wrap { min-height: 400px; }
-      button, .link-button { width: 100%; max-width: 360px; }
-      .message-box p { font-size: 1rem; }
-      .scroll-whisper { font-size: 1rem; padding: 0 8px; }
+      body {
+        padding: 12px 10px;
+      }
+
+      .welcome-card-wrap {
+        min-height: 400px;
+      }
+
+      button,
+      .link-button {
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .cards-grid.cross-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cards-grid.cross-grid .bottom-center {
+        grid-column: auto;
+      }
+
+      .message-box p {
+        font-size: 1rem;
+      }
+
+      .scroll-whisper {
+        font-size: 1rem;
+        padding: 0 8px;
+      }
     }
   </style>
 </head>
@@ -551,7 +647,6 @@
       { title: "The Embrace of Your Unfolding Self", image: "the-embrace-of-your-unfolding-self.jpg", message: "Meet yourself with kindness as you become. You are not late. You are unfolding in your own sacred timing." },
       { title: "The Self-Belief That Changed You", image: "the-self-belief-that-changed-you.jpg", message: "A quieter confidence is rising within you. Believe the version of yourself who knows she is capable." },
       { title: "The Power You Now Hold", image: "the-power-you-now-hold.jpg", message: "Your light no longer needs permission to exist. What once felt fragile now rests in your own hands." },
-      { title: "The Life You Are Growing Into", image: "the-life-you-are-growing-into.jpg", message: "Something new is taking root. Trust the life that is forming around the person you are becoming." },
       { title: "The Connection You Are Building", image: "the-connection-you-are-building.jpg", message: "What is forming between hearts needs honesty, patience, and presence. Let it grow gently." },
       { title: "The Inner Child You Are Embracing", image: "the-inner-child-you-are-embracing.jpg", message: "A younger part of you is asking to be held with tenderness. What she needed then can be offered now." },
       { title: "The Care You Are Offering", image: "the-care-you-are-offering.jpg", message: "Your care matters, even when it feels unseen. The softness you give is a form of quiet strength." },
@@ -568,7 +663,6 @@
       { title: "The Part of You That Was Always Enough", image: "the-part-of-you-that-was-always-enough.jpg", message: "You were never missing the part that mattered most. Your worth has always lived beneath the doubt." },
       { title: "The Place You Never Quite Belonged", image: "the-place-you-never-quite-belonged.jpg", message: "Feeling out of place shaped you, but it does not define your home. Belonging may still be finding you." },
       { title: "The Reasons No One Heard", image: "the-reasons-no-one-heard.jpg", message: "Some stories were silenced before they could be understood. Your reasons still deserve compassion." },
-      { title: "When Tears Became Prayers", image: "when-tears-became-prayers.jpg", message: "What overflowed from pain became its own sacred language. Nothing truly felt is wasted." },
       { title: "Held in Gentle Light", image: "held-in-gentle-light.jpg", message: "You are being cradled more softly than you know. Let yourself be supported by what cannot always be seen." },
       { title: "You Weren’t Alone", image: "you-werent-alone.jpg", message: "Even in the moments that felt deserted, presence remained. Something stayed beside you." },
       { title: "You’re Becoming Lighter", image: "youre-becoming-lighter.jpg", message: "The weight is shifting. You may not notice it every day, but your spirit is learning how to rise." },
@@ -695,7 +789,7 @@
 
     function createFlipCard(position, card, index) {
       return `
-        <div class="card-slot">
+        <div class="card-slot ${position === 'What the moment is leading toward' ? 'bottom-center' : ''}">
           <h3>${position}</h3>
           <div class="card-flip" id="flip-${index}">
             <div class="card-flip-inner">
@@ -720,7 +814,7 @@
       });
     }
 
-    function showMultiCardSpread(spreadTitle, spreadCards) {
+    function showMultiCardSpread(spreadTitle, spreadCards, layoutType) {
       const spreadArea = document.getElementById("spreadArea");
       const messageBox = document.getElementById("messageBox");
       const messageTitle = document.getElementById("messageTitle");
@@ -729,7 +823,8 @@
       resetTopCardToWelcome();
 
       spreadArea.innerHTML = `
-        <div class="cards-grid">
+        <h2 class="spread-title">${spreadTitle}</h2>
+        <div class="cards-grid ${layoutType}">
           ${spreadCards.map((item, index) => createFlipCard(item.position, item.card, index)).join("")}
         </div>
       `;
@@ -762,11 +857,15 @@
       const second = getRandomCard([first.title]);
       const third = getRandomCard([first.title, second.title]);
 
-      showMultiCardSpread("Three Card Spread", [
-        { position: "What lingers", card: first },
-        { position: "What is opening", card: second },
-        { position: "What is gently arriving", card: third }
-      ]);
+      showMultiCardSpread(
+        "Three Card Spread",
+        [
+          { position: "What lingers", card: first },
+          { position: "What is opening", card: second },
+          { position: "What is gently arriving", card: third }
+        ],
+        "three-card-grid"
+      );
     }
 
     function drawInBetweenCross() {
@@ -776,13 +875,17 @@
         picked.push(card);
       }
 
-      showMultiCardSpread("In-Between Cross Reading", [
-        { position: "Where you are now", card: picked[0] },
-        { position: "What sits beneath the surface", card: picked[1] },
-        { position: "What asks for tenderness", card: picked[2] },
-        { position: "What is shifting", card: picked[3] },
-        { position: "What the moment is leading toward", card: picked[4] }
-      ]);
+      showMultiCardSpread(
+        "In-Between Cross Reading",
+        [
+          { position: "Where you are now", card: picked[0] },
+          { position: "What sits beneath the surface", card: picked[1] },
+          { position: "What asks for tenderness", card: picked[2] },
+          { position: "What is shifting", card: picked[3] },
+          { position: "What the moment is leading toward", card: picked[4] }
+        ],
+        "cross-grid"
+      );
     }
 
     function drawDailyCardFromCard() {
