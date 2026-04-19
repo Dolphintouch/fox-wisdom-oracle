@@ -6,22 +6,20 @@
   <title>The In-Between Moments Oracle</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Georgia, serif;
       text-align: center;
       background-image:
-        linear-gradient(rgba(20,22,24,0.54), rgba(18,20,22,0.78)),
+        linear-gradient(rgba(28,22,30,0.52), rgba(22,18,26,0.76)),
         url("in-between-bg.jpg");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       padding: 16px;
       margin: 0;
-      color: #f2ebe2;
+      color: #f6edf4;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
@@ -32,9 +30,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at 16% 22%, rgba(255,235,205,0.09), transparent 22%),
-        radial-gradient(circle at 82% 24%, rgba(214,224,234,0.08), transparent 24%),
-        radial-gradient(circle at 50% 80%, rgba(245,232,210,0.05), transparent 28%);
+        radial-gradient(circle at 15% 20%, rgba(255,220,240,0.08), transparent 22%),
+        radial-gradient(circle at 80% 25%, rgba(255,240,210,0.06), transparent 24%),
+        radial-gradient(circle at 50% 80%, rgba(255,230,245,0.05), transparent 26%);
       pointer-events: none;
       z-index: 0;
     }
@@ -52,10 +50,10 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(245,232,214,0.92);
-      box-shadow: 0 0 14px rgba(245,232,214,0.78);
+      background: rgba(255,235,245,0.92);
+      box-shadow: 0 0 14px rgba(255,235,245,0.80);
       animation: floatLight linear infinite;
-      opacity: 0.68;
+      opacity: 0.7;
     }
 
     .light:nth-child(1){ left:8%; top:85%; animation-duration:12s; animation-delay:0s; }
@@ -90,7 +88,7 @@
 
     .top-credit {
       font-size: 1rem;
-      color: #eadfd3;
+      color: #f0dce9;
       margin-top: 4px;
       margin-bottom: 10px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.45);
@@ -100,14 +98,14 @@
       margin: 10px 0 14px;
       font-size: clamp(2.2rem, 6vw, 4.1rem);
       line-height: 1.08;
-      color: #f5eee8;
+      color: #f7eef4;
       text-shadow: 0 2px 8px rgba(0,0,0,0.35);
     }
 
     .blessing {
       max-width: 760px;
       margin: 0 auto 18px;
-      color: #f4eee8;
+      color: #f6edf4;
       font-size: clamp(1rem, 2vw, 1.18rem);
       line-height: 1.8;
       text-shadow: 0 1px 4px rgba(0,0,0,0.38);
@@ -128,7 +126,7 @@
       height: 440px;
       border-radius: 50%;
       background:
-        radial-gradient(circle, rgba(240,230,220,0.18) 0%, rgba(225,225,232,0.10) 28%, rgba(220,220,226,0.04) 48%, transparent 72%);
+        radial-gradient(circle, rgba(255,235,245,0.18) 0%, rgba(240,220,235,0.10) 28%, rgba(230,210,226,0.04) 48%, transparent 72%);
       filter: blur(46px);
       opacity: 0.62;
       z-index: 1;
@@ -147,7 +145,7 @@
       height: 360px;
       border-radius: 50%;
       z-index: 1;
-      background: radial-gradient(circle, rgba(245,232,214,0.16) 0%, rgba(223,228,235,0.08) 35%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,232,245,0.16) 0%, rgba(240,220,235,0.08) 35%, transparent 70%);
       filter: blur(24px);
       animation: haloPulse 6s ease-in-out infinite;
       pointer-events: none;
@@ -168,7 +166,7 @@
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 14px 28px rgba(0,0,0,0.30),
-        0 0 30px rgba(235,224,210,0.14);
+        0 0 30px rgba(255,224,240,0.14);
       cursor: pointer;
       transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
       transform-style: preserve-3d;
@@ -191,21 +189,21 @@
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(235,224,210,0.12);
+          0 0 30px rgba(255,224,240,0.12);
         transform: scale(1);
       }
       50% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.16),
           0 18px 34px rgba(0,0,0,0.32),
-          0 0 42px rgba(235,224,210,0.20);
+          0 0 42px rgba(255,224,240,0.20);
         transform: scale(1.015);
       }
       100% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
           0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(235,224,210,0.12);
+          0 0 30px rgba(255,224,240,0.12);
         transform: scale(1);
       }
     }
@@ -223,12 +221,12 @@
       margin: 0 auto 24px;
       max-width: 680px;
       font-size: 1.08rem;
-      color: #f2ece5;
+      color: #f6edf4;
       font-style: italic;
       letter-spacing: 0.2px;
       text-shadow:
-        0 0 8px rgba(235,224,210,0.35),
-        0 0 18px rgba(235,224,210,0.18),
+        0 0 8px rgba(255,224,240,0.35),
+        0 0 18px rgba(255,224,240,0.18),
         0 1px 4px rgba(0,0,0,0.45);
       animation: whisperGlow 3.4s ease-in-out infinite;
     }
@@ -257,8 +255,8 @@
       border: none;
       padding: 13px 20px;
       border-radius: 999px;
-      background: linear-gradient(to bottom, #b3a8a0, #978d86);
-      color: #fffaf5;
+      background: linear-gradient(to bottom, #c59cb8, #ab829d);
+      color: #fff7fb;
       font-family: Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
@@ -274,7 +272,7 @@
     .shop-invite {
       margin: 10px auto 14px;
       font-size: 1.25rem;
-      color: #f0e8df;
+      color: #f4ebf2;
       font-style: italic;
       letter-spacing: 0.4px;
       max-width: 780px;
@@ -296,13 +294,13 @@
       text-decoration: none;
       font-family: Georgia, serif;
       font-size: 1rem;
-      color: #fffaf5;
-      background: linear-gradient(to bottom, #8c847e 0%, #756d68 24%, #645d59 50%, #57514e 72%, #494442 100%);
-      border: 1px solid rgba(245,232,214,0.24);
+      color: #fffafc;
+      background: linear-gradient(to bottom, #9e7f98 0%, #866a82 24%, #745c71 50%, #654f62 72%, #564450 100%);
+      border: 1px solid rgba(255,232,245,0.24);
       min-width: 220px;
       box-shadow:
         0 8px 18px rgba(0,0,0,0.28),
-        0 0 12px rgba(235,224,210,0.10),
+        0 0 12px rgba(255,224,240,0.10),
         inset 0 1px 0 rgba(255,255,255,0.16);
       transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
     }
@@ -312,7 +310,7 @@
       filter: brightness(1.05);
       box-shadow:
         0 12px 24px rgba(0,0,0,0.32),
-        0 0 20px rgba(235,224,210,0.18),
+        0 0 20px rgba(255,224,240,0.18),
         inset 0 1px 0 rgba(255,255,255,0.22);
     }
 
@@ -347,7 +345,7 @@
     .card-slot h3 {
       margin: 0 0 12px;
       font-size: 1.02rem;
-      color: #f3ece5;
+      color: #f7eef4;
     }
 
     .card-flip {
@@ -380,7 +378,7 @@
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
         0 12px 24px rgba(0,0,0,0.28),
-        0 0 34px rgba(235,224,210,0.10);
+        0 0 34px rgba(255,224,240,0.10);
     }
 
     .card-face img {
@@ -405,7 +403,7 @@
       -webkit-backdrop-filter: blur(4px);
       box-shadow:
         0 6px 16px rgba(0,0,0,0.15),
-        0 0 28px rgba(235,224,210,0.08);
+        0 0 28px rgba(255,224,240,0.08);
       display: none;
       white-space: pre-line;
       opacity: 0;
@@ -422,52 +420,35 @@
       transform: translateY(0);
       box-shadow:
         0 8px 20px rgba(0,0,0,0.18),
-        0 0 34px rgba(235,224,210,0.14);
+        0 0 34px rgba(255,224,240,0.14);
     }
 
     .message-box h3 {
       margin: 0 0 10px;
       font-size: 1.45rem;
-      color: #f7f1ea;
+      color: #fff6fb;
     }
 
     .message-box p {
       margin: 0;
       font-size: 1.06rem;
       line-height: 1.7;
-      color: #fffaf5;
+      color: #fffafd;
     }
 
     .footer-note {
       margin-top: 26px;
       font-size: 0.92rem;
-      color: #e8dfd7;
+      color: #efdce9;
       opacity: 0.95;
     }
 
     @media (max-width: 700px) {
-      body {
-        padding: 12px 10px;
-      }
-
-      .welcome-card-wrap {
-        min-height: 400px;
-      }
-
-      button,
-      .link-button {
-        width: 100%;
-        max-width: 360px;
-      }
-
-      .message-box p {
-        font-size: 1rem;
-      }
-
-      .scroll-whisper {
-        font-size: 1rem;
-        padding: 0 8px;
-      }
+      body { padding: 12px 10px; }
+      .welcome-card-wrap { min-height: 400px; }
+      button, .link-button { width: 100%; max-width: 360px; }
+      .message-box p { font-size: 1rem; }
+      .scroll-whisper { font-size: 1rem; padding: 0 8px; }
     }
   </style>
 </head>
@@ -511,7 +492,7 @@
 
     <div class="button-row">
       <button onclick="startReading('daily')">Daily In-Between Message</button>
-      <button onclick="startReading('hidden')">Three Card Spread</button>
+      <button onclick="startReading('three')">Three Card Spread</button>
       <button onclick="startReading('cross')">In-Between Cross Reading</button>
       <button onclick="window.location.href='index.html'">Back to Fox Wisdom</button>
       <button onclick="toggleSound()" id="soundButton">Forest Sounds: Off</button>
@@ -520,9 +501,7 @@
     <div class="shop-invite">Step gently into the stillness</div>
 
     <div class="shop-links">
-      <a class="link-button" href="index.html">
-        Return to the Oracle Path
-      </a>
+      <a class="link-button" href="index.html">Return to the Oracle Path</a>
     </div>
 
     <div class="reading-stage">
@@ -547,26 +526,221 @@
     const CARD_BACK = "in-between-card-back.jpg";
 
     const inBetweenCards = [
-      { title: "The Pause Between Breaths", image: "the-pause-between-breaths.jpg", message: "There is meaning in the moment before the next step. Let yourself rest in the hush without forcing an answer." },
-      { title: "A Quiet Unfolding", image: "a-quiet-unfolding.jpg", message: "Not everything blooms loudly. Some truths soften open in silence, almost unnoticed, until one day you realise they were always there." },
-      { title: "The Space You Almost Missed", image: "the-space-you-almost-missed.jpg", message: "What feels small may hold the deepest tenderness. Look again at what you nearly brushed past." },
-      { title: "Stillness Has a Voice", image: "stillness-has-a-voice.jpg", message: "Silence is not empty. It is speaking in its own gentle way, asking you to listen with more than your ears." },
-      { title: "Before the Next Becoming", image: "before-the-next-becoming.jpg", message: "You are not behind. You are simply standing in the sacred place where one version of life ends and another begins." },
-      { title: "The Soft Return", image: "the-soft-return.jpg", message: "What belongs to you will find its way back, not always in the same form, but with the same quiet truth." },
-      { title: "Held in the Middle", image: "held-in-the-middle.jpg", message: "You do not need to rush to the edge of certainty. There is wisdom in being gently held between what was and what will be." },
-      { title: "The Weight of Tender Things", image: "the-weight-of-tender-things.jpg", message: "Some feelings ask not to be fixed, only carried with kindness. Treat your heart as something living and worthy of gentleness." },
-      { title: "A Moment of Almost Light", image: "a-moment-of-almost-light.jpg", message: "Hope does not always arrive as brilliance. Sometimes it comes as the faintest glow that asks only to be noticed." },
-      { title: "The Quiet After", image: "the-quiet-after.jpg", message: "Something has already shifted. Honour what comes after the storm, after the ache, after the ending." },
-      { title: "Between Leaving and Arrival", image: "between-leaving-and-arrival.jpg", message: "You are in passage. Do not mistake transition for failure. Roads between worlds can still be holy." },
-      { title: "The Unspoken Tenderness", image: "the-unspoken-tenderness.jpg", message: "Not everything loving is said aloud. Some care lives in looks, pauses, small acts, and the ache of what remains unsaid." },
-      { title: "Where the Silence Settles", image: "where-the-silence-settles.jpg", message: "Sit with what lingers. Beneath it may be the truest thing you have felt in a long while." },
-      { title: "The Gentle Threshold", image: "the-gentle-threshold.jpg", message: "You are standing at a doorway that does not need to be forced. When the time is right, it will open with ease." },
-      { title: "A Change Too Soft to Name", image: "a-change-too-soft-to-name.jpg", message: "Transformation is already underway, even if you do not yet have words for it. Trust the subtle shift." },
-      { title: "The Memory Between Heartbeats", image: "the-memory-between-heartbeats.jpg", message: "Something remembered is trying to return, not to haunt you, but to help you understand where love still lives." },
-      { title: "Resting in the Unknown", image: "resting-in-the-unknown.jpg", message: "You do not need every answer tonight. Let mystery be a blanket instead of a threat." },
-      { title: "The Shape of Waiting", image: "the-shape-of-waiting.jpg", message: "Waiting is not emptiness. It is a form of listening, of gathering, of becoming ready for what is coming." },
-      { title: "What Remains Warm", image: "what-remains-warm.jpg", message: "Notice what still glows. Even after loss, confusion, or change, some small ember continues to keep watch over you." },
-      { title: "The Moment Before Meaning", image: "the-moment-before-meaning.jpg", message: "Not every experience must be understood immediately. Some moments need to be felt first and named later." }
+      {
+        title: "A Moment for Yourself",
+        image: "a-moment-for-yourself.jpg",
+        message: "Step back from the noise. This is a reminder that your soul needs gentleness too."
+      },
+      {
+        title: "The Moment Before You Speak",
+        image: "the-moment-before-you-speak.jpg",
+        message: "There is truth gathering softly inside you. Let your heart catch up before your words do."
+      },
+      {
+        title: "The Breath You Forgot to Finish",
+        image: "the-breath-you-forgot-to-finish.jpg",
+        message: "You have been holding more than you realise. Pause. Exhale fully. Let your body know it is safe."
+      },
+      {
+        title: "The Silence That Said It All",
+        image: "the-silence-that-said-it-all.jpg",
+        message: "Not every truth arrived through words. Some moments were understood in the hush between them."
+      },
+      {
+        title: "The Step You Didn’t Take",
+        image: "the-step-you-didnt-take.jpg",
+        message: "Do not punish yourself for what fear once held back. That version of you was surviving the best way she knew."
+      },
+      {
+        title: "The Thing You Finally Let Go",
+        image: "the-thing-you-finally-let-go.jpg",
+        message: "Something heavy has already begun loosening its grip. Release is not loss. It is room returning."
+      },
+      {
+        title: "The Part of You That Came Back Different",
+        image: "the-part-of-you-that-came-back-different.jpg",
+        message: "You are not the same after what you have walked through. This change carries wisdom, not failure."
+      },
+      {
+        title: "The Realisation That Arrived Gently",
+        image: "the-realisation-that-arrived-gently.jpg",
+        message: "Not all awakenings arrive like thunder. Some come as a soft knowing you can no longer ignore."
+      },
+      {
+        title: "The Acceptance That Softened You",
+        image: "the-acceptance-that-softened-you.jpg",
+        message: "When resistance loosens, tenderness enters. Acceptance is not giving up. It is making peace."
+      },
+      {
+        title: "The Truth You Could No Longer Ignore",
+        image: "the-truth-you-could-no-longer-ignore.jpg",
+        message: "A truth has been waiting patiently for your eyes to rest upon it. What is real can finally be faced."
+      },
+      {
+        title: "The Embrace of Your Unfolding Self",
+        image: "the-embrace-of-your-unfolding-self.jpg",
+        message: "Meet yourself with kindness as you become. You are not late. You are unfolding in your own sacred timing."
+      },
+      {
+        title: "The Self-Belief That Changed You",
+        image: "the-self-belief-that-changed-you.jpg",
+        message: "A quieter confidence is rising within you. Believe the version of yourself who knows she is capable."
+      },
+      {
+        title: "The Power You Now Hold",
+        image: "the-power-you-now-hold.jpg",
+        message: "Your light no longer needs permission to exist. What once felt fragile now rests in your own hands."
+      },
+      {
+        title: "The Life You Are Growing Into",
+        image: "the-life-you-are-growing-into.jpg",
+        message: "Something new is taking root. Trust the life that is forming around the person you are becoming."
+      },
+      {
+        title: "The Connection You Are Building",
+        image: "the-connection-you-are-building.jpg",
+        message: "What is forming between hearts needs honesty, patience, and presence. Let it grow gently."
+      },
+      {
+        title: "The Inner Child You Are Embracing",
+        image: "the-inner-child-you-are-embracing.jpg",
+        message: "A younger part of you is asking to be held with tenderness. What she needed then can be offered now."
+      },
+      {
+        title: "The Care You Are Offering",
+        image: "the-care-you-are-offering.jpg",
+        message: "Your care matters, even when it feels unseen. The softness you give is a form of quiet strength."
+      },
+      {
+        title: "The Piece of You That Grew Tired",
+        image: "the-piece-of-you-that-grew-tired.jpg",
+        message: "There is no shame in exhaustion. Rest the part of you that has been carrying too much for too long."
+      },
+      {
+        title: "The Healing That Begins Inside",
+        image: "the-healing-that-begins-inside.jpg",
+        message: "Real healing often begins in silence, deep within. Honour the invisible work your heart is doing."
+      },
+      {
+        title: "The Love That Never Ends",
+        image: "the-love-that-never-ends.jpg",
+        message: "Love does not vanish when form changes. What is true in love continues, quietly and faithfully."
+      },
+      {
+        title: "The Feeling of Being Forgotten",
+        image: "the-feeling-of-being-forgotten.jpg",
+        message: "This ache deserves to be named. Feeling forgotten does not make you unworthy of remembrance or love."
+      },
+      {
+        title: "The Loss That Leaves an Emptiness",
+        image: "the-loss-that-leaves-an-emptiness.jpg",
+        message: "Some absences change the shape of everything. Let yourself honour the emptiness without rushing to fill it."
+      },
+      {
+        title: "Waiting for the Sun to Rise",
+        image: "waiting-for-the-sun-to-rise.jpg",
+        message: "You are not failing because it is still dark. Dawn arrives in its own time. Stay with the quiet hope."
+      },
+      {
+        title: "The Quiet Pause",
+        image: "the-quiet-pause.jpg",
+        message: "Not every pause is a setback. Some pauses are sacred spaces where the soul gathers itself again."
+      },
+      {
+        title: "Beginning to Find Her Way Again",
+        image: "beginning-to-find-her-way-again.jpg",
+        message: "Something in you is remembering the path. Even the smallest return is still a return."
+      },
+      {
+        title: "A Brave and Honest Conversation",
+        image: "a-brave-and-honest-conversation.jpg",
+        message: "Truth spoken with gentleness can change a life. Let honesty become a bridge instead of a wound."
+      },
+      {
+        title: "The Strength No One Saw",
+        image: "the-strength-no-one-saw.jpg",
+        message: "You survived moments that no one fully understood. Your quiet endurance was strength all the same."
+      },
+      {
+        title: "The Part of You That Was Always Enough",
+        image: "the-part-of-you-that-was-always-enough.jpg",
+        message: "You were never missing the part that mattered most. Your worth has always lived beneath the doubt."
+      },
+      {
+        title: "The Place You Never Quite Belonged",
+        image: "the-place-you-never-quite-belonged.jpg",
+        message: "Feeling out of place shaped you, but it does not define your home. Belonging may still be finding you."
+      },
+      {
+        title: "The Reasons No One Heard",
+        image: "the-reasons-no-one-heard.jpg",
+        message: "Some stories were silenced before they could be understood. Your reasons still deserve compassion."
+      },
+      {
+        title: "When Tears Became Prayers",
+        image: "when-tears-became-prayers.jpg",
+        message: "What overflowed from pain became its own sacred language. Nothing truly felt is wasted."
+      },
+      {
+        title: "Held in Gentle Light",
+        image: "held-in-gentle-light.jpg",
+        message: "You are being cradled more softly than you know. Let yourself be supported by what cannot always be seen."
+      },
+      {
+        title: "You Weren’t Alone",
+        image: "you-werent-alone.jpg",
+        message: "Even in the moments that felt deserted, presence remained. Something stayed beside you."
+      },
+      {
+        title: "You’re Becoming Lighter",
+        image: "youre-becoming-lighter.jpg",
+        message: "The weight is shifting. You may not notice it every day, but your spirit is learning how to rise."
+      },
+      {
+        title: "The Light You Kept Protecting",
+        image: "the-light-you-kept-protecting.jpg",
+        message: "What was most sacred in you survived. Honour the quiet courage it took to keep that light alive."
+      },
+      {
+        title: "Feels Like Home",
+        image: "feels-like-home.jpg",
+        message: "Peace is returning in a form your body recognises. This belonging is not borrowed. It is yours."
+      },
+      {
+        title: "All is Well",
+        image: "all-is-well.jpg",
+        message: "In this moment, let your heart unclench. Not everything is solved, but something deep within is settling."
+      },
+      {
+        title: "You Can Breathe Again",
+        image: "you-can-breathe-again.jpg",
+        message: "Relief is entering where pressure once lived. Let your breath become a doorway back to yourself."
+      },
+      {
+        title: "You Don’t Have to Carry It Anymore",
+        image: "you-dont-have-to-carry-it-anymore.jpg",
+        message: "This burden does not have to remain in your hands. Set it down. You are allowed to be held too."
+      },
+      {
+        title: "You Can Rest Now",
+        image: "you-can-rest-now.jpg",
+        message: "The striving can soften here. Rest is not retreat from life. It is love offered to a tired soul."
+      },
+      {
+        title: "And You Begin Again",
+        image: "and-you-begin-again.jpg",
+        message: "This is not starting from nothing. This is beginning again with more truth, more tenderness, and more light."
+      },
+      {
+        title: "You Hold the Light Within",
+        image: "you-hold-the-light-within.jpg",
+        message: "What you have been seeking also lives inside you. Your inner light has not left. It has only been waiting."
+      },
+      {
+        title: "Let Go Gracefully",
+        image: "let-go-gracefully.jpg",
+        message: "What is finished can be released with tenderness. Grace does not force. It allows."
+      }
     ];
 
     let soundOn = false;
@@ -702,9 +876,7 @@
       spreadCards.forEach((item, index) => {
         setTimeout(() => {
           const flipEl = document.getElementById(`flip-${index}`);
-          if (flipEl) {
-            flipEl.classList.add("flipped");
-          }
+          if (flipEl) flipEl.classList.add("flipped");
         }, 700 + (index * 450));
       });
     }
@@ -746,14 +918,14 @@
       showSingleCard(dailyCard, "Daily In-Between Message");
     }
 
-    function drawHiddenPath() {
+    function drawThreeCardSpread() {
       const first = getRandomCard();
       const second = getRandomCard([first.title]);
       const third = getRandomCard([first.title, second.title]);
 
       showMultiCardSpread("Three Card Spread", [
         { position: "What lingers", card: first },
-        { position: "What is being felt", card: second },
+        { position: "What is opening", card: second },
         { position: "What is gently arriving", card: third }
       ]);
     }
@@ -768,8 +940,8 @@
       showMultiCardSpread("In-Between Cross Reading", [
         { position: "Where you are now", card: picked[0] },
         { position: "What sits beneath the surface", card: picked[1] },
-        { position: "What wants tenderness", card: picked[2] },
-        { position: "What is quietly shifting", card: picked[3] },
+        { position: "What asks for tenderness", card: picked[2] },
+        { position: "What is shifting", card: picked[3] },
         { position: "What the moment is leading toward", card: picked[4] }
       ]);
     }
@@ -783,9 +955,7 @@
 
       setTimeout(() => {
         showSingleCard(dailyCard, "Daily In-Between Message");
-        setTimeout(() => {
-          isDrawing = false;
-        }, 1200);
+        setTimeout(() => { isDrawing = false; }, 1200);
       }, 2400);
     }
 
@@ -802,15 +972,13 @@
       setTimeout(() => {
         if (type === "daily") {
           drawDailyCard();
-        } else if (type === "hidden") {
-          drawHiddenPath();
+        } else if (type === "three") {
+          drawThreeCardSpread();
         } else if (type === "cross") {
           drawInBetweenCross();
         }
 
-        setTimeout(() => {
-          isDrawing = false;
-        }, 2200);
+        setTimeout(() => { isDrawing = false; }, 2200);
       }, 350);
     }
 
