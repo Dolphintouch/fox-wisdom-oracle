@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The In-Between Moments Oracle</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: Georgia, serif;
       text-align: center;
       background-image:
-        linear-gradient(rgba(40,30,45,0.45), rgba(25,20,30,0.65)),
-        url("forest-bg-new.jpg");
+        linear-gradient(rgba(34, 24, 36, 0.38), rgba(24, 18, 28, 0.58)),
+        url("in-between-bg.jpg");
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       background-attachment: fixed;
       padding: 16px;
       margin: 0;
-      color: #f6edf4;
+      color: #f8eef5;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
@@ -30,9 +37,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at 15% 20%, rgba(255,220,240,0.08), transparent 22%),
-        radial-gradient(circle at 80% 25%, rgba(255,240,210,0.06), transparent 24%),
-        radial-gradient(circle at 50% 80%, rgba(255,230,245,0.05), transparent 26%);
+        radial-gradient(circle at 20% 20%, rgba(255, 227, 240, 0.14), transparent 24%),
+        radial-gradient(circle at 82% 24%, rgba(255, 243, 225, 0.09), transparent 25%),
+        radial-gradient(circle at 50% 82%, rgba(255, 225, 240, 0.08), transparent 26%);
       pointer-events: none;
       z-index: 0;
     }
@@ -50,30 +57,34 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(255,235,245,0.92);
-      box-shadow: 0 0 14px rgba(255,235,245,0.80);
+      background: rgba(255, 239, 247, 0.95);
+      box-shadow: 0 0 14px rgba(255, 236, 245, 0.85);
       animation: floatLight linear infinite;
-      opacity: 0.7;
+      opacity: 0.72;
     }
 
-    .light:nth-child(1){ left:8%; top:85%; animation-duration:12s; animation-delay:0s; }
-    .light:nth-child(2){ left:18%; top:72%; animation-duration:14s; animation-delay:2s; }
-    .light:nth-child(3){ left:31%; top:88%; animation-duration:13s; animation-delay:4s; }
-    .light:nth-child(4){ left:46%; top:77%; animation-duration:16s; animation-delay:1s; }
-    .light:nth-child(5){ left:60%; top:84%; animation-duration:15s; animation-delay:3s; }
-    .light:nth-child(6){ left:73%; top:78%; animation-duration:14s; animation-delay:5s; }
-    .light:nth-child(7){ left:86%; top:86%; animation-duration:12s; animation-delay:6s; }
-    .light:nth-child(8){ left:55%; top:69%; animation-duration:17s; animation-delay:2.5s; }
+    .light:nth-child(1){ left:7%; top:85%; animation-duration:12s; animation-delay:0s; }
+    .light:nth-child(2){ left:18%; top:73%; animation-duration:15s; animation-delay:2s; }
+    .light:nth-child(3){ left:30%; top:88%; animation-duration:13s; animation-delay:4s; }
+    .light:nth-child(4){ left:44%; top:77%; animation-duration:16s; animation-delay:1s; }
+    .light:nth-child(5){ left:58%; top:86%; animation-duration:15s; animation-delay:3s; }
+    .light:nth-child(6){ left:72%; top:76%; animation-duration:14s; animation-delay:5s; }
+    .light:nth-child(7){ left:86%; top:88%; animation-duration:12s; animation-delay:6s; }
+    .light:nth-child(8){ left:54%; top:70%; animation-duration:17s; animation-delay:2.5s; }
 
     @keyframes floatLight {
       0% {
         transform: translateY(0) translateX(0) scale(0.8);
         opacity: 0;
       }
-      20% { opacity: 0.7; }
-      70% { opacity: 0.82; }
+      20% {
+        opacity: 0.72;
+      }
+      70% {
+        opacity: 0.86;
+      }
       100% {
-        transform: translateY(-220px) translateX(24px) scale(1.22);
+        transform: translateY(-230px) translateX(24px) scale(1.2);
         opacity: 0;
       }
     }
@@ -81,34 +92,34 @@
     .page-wrap {
       position: relative;
       z-index: 2;
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
     .top-credit {
       font-size: 1rem;
-      color: #f0dce9;
-      margin-top: 4px;
+      color: #f6e4ef;
+      margin-top: 2px;
       margin-bottom: 10px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
 
     h1 {
-      margin: 10px 0 14px;
-      font-size: clamp(2.2rem, 6vw, 4.1rem);
+      margin: 12px 0 14px;
+      font-size: clamp(2.3rem, 6vw, 4.3rem);
       line-height: 1.08;
-      color: #f7eef4;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      color: #fff7fb;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.32);
     }
 
     .blessing {
       max-width: 760px;
       margin: 0 auto 18px;
-      color: #f6edf4;
-      font-size: clamp(1rem, 2vw, 1.18rem);
+      color: #fff5fa;
+      font-size: clamp(1rem, 2vw, 1.2rem);
       line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.38);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.36);
     }
 
     .welcome-card-wrap {
@@ -116,44 +127,44 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 6px auto 10px;
-      min-height: 470px;
+      margin: 8px auto 10px;
+      min-height: 500px;
     }
 
     .welcome-mist {
       position: absolute;
-      width: 440px;
-      height: 440px;
+      width: 480px;
+      height: 480px;
       border-radius: 50%;
       background:
-        radial-gradient(circle, rgba(255,235,245,0.18) 0%, rgba(240,220,235,0.10) 28%, rgba(230,210,226,0.04) 48%, transparent 72%);
-      filter: blur(46px);
-      opacity: 0.62;
+        radial-gradient(circle, rgba(255,240,248,0.22) 0%, rgba(244,224,236,0.11) 30%, rgba(235,215,228,0.04) 48%, transparent 72%);
+      filter: blur(52px);
+      opacity: 0.7;
       z-index: 1;
       transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
 
     .welcome-mist.active {
-      opacity: 0.95;
+      opacity: 1;
       transform: scale(1.08);
-      filter: blur(54px);
+      filter: blur(58px);
     }
 
     .welcome-halo {
       position: absolute;
-      width: 360px;
-      height: 360px;
+      width: 380px;
+      height: 380px;
       border-radius: 50%;
       z-index: 1;
-      background: radial-gradient(circle, rgba(255,232,245,0.16) 0%, rgba(240,220,235,0.08) 35%, transparent 70%);
-      filter: blur(24px);
+      background: radial-gradient(circle, rgba(255,232,245,0.18) 0%, rgba(240,220,235,0.07) 38%, transparent 72%);
+      filter: blur(26px);
       animation: haloPulse 6s ease-in-out infinite;
       pointer-events: none;
     }
 
     @keyframes haloPulse {
       0% { opacity: 0.45; transform: scale(0.96); }
-      50% { opacity: 0.85; transform: scale(1.06); }
+      50% { opacity: 0.9; transform: scale(1.07); }
       100% { opacity: 0.45; transform: scale(0.96); }
     }
 
@@ -165,12 +176,12 @@
       border-radius: 20px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.14),
-        0 14px 28px rgba(0,0,0,0.30),
-        0 0 30px rgba(255,224,240,0.14);
+        0 14px 30px rgba(0,0,0,0.30),
+        0 0 38px rgba(255,224,240,0.18);
       cursor: pointer;
       transition: transform 0.6s ease, box-shadow 0.35s ease, filter 0.35s ease;
       transform-style: preserve-3d;
-      filter: brightness(0.99);
+      filter: brightness(1);
       animation: welcomePulse 4.6s ease-in-out infinite;
       user-select: none;
       -webkit-user-drag: none;
@@ -188,22 +199,22 @@
       0% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(255,224,240,0.12);
+          0 14px 30px rgba(0,0,0,0.30),
+          0 0 32px rgba(255,224,240,0.14);
         transform: scale(1);
       }
       50% {
         box-shadow:
-          0 0 0 1px rgba(255,255,255,0.16),
-          0 18px 34px rgba(0,0,0,0.32),
-          0 0 42px rgba(255,224,240,0.20);
+          0 0 0 1px rgba(255,255,255,0.18),
+          0 18px 36px rgba(0,0,0,0.34),
+          0 0 46px rgba(255,224,240,0.24);
         transform: scale(1.015);
       }
       100% {
         box-shadow:
           0 0 0 1px rgba(255,255,255,0.14),
-          0 14px 28px rgba(0,0,0,0.30),
-          0 0 30px rgba(255,224,240,0.12);
+          0 14px 30px rgba(0,0,0,0.30),
+          0 0 32px rgba(255,224,240,0.14);
         transform: scale(1);
       }
     }
@@ -221,19 +232,19 @@
       margin: 0 auto 24px;
       max-width: 680px;
       font-size: 1.08rem;
-      color: #f6edf4;
+      color: #fff2f8;
       font-style: italic;
       letter-spacing: 0.2px;
       text-shadow:
-        0 0 8px rgba(255,224,240,0.35),
+        0 0 8px rgba(255,224,240,0.38),
         0 0 18px rgba(255,224,240,0.18),
-        0 1px 4px rgba(0,0,0,0.45);
+        0 1px 4px rgba(0,0,0,0.4);
       animation: whisperGlow 3.4s ease-in-out infinite;
     }
 
     @keyframes whisperGlow {
       0%, 100% {
-        opacity: 0.82;
+        opacity: 0.84;
         transform: translateY(0);
       }
       50% {
@@ -272,10 +283,11 @@
     .shop-invite {
       margin: 10px auto 14px;
       font-size: 1.25rem;
-      color: #f4ebf2;
+      color: #fff2f8;
       font-style: italic;
       letter-spacing: 0.4px;
       max-width: 780px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.32);
     }
 
     .shop-links {
@@ -345,8 +357,9 @@
     .card-slot h3 {
       margin: 0 0 12px;
       font-size: 1.02rem;
-      color: #f7eef4;
+      color: #fff7fb;
       line-height: 1.2;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
     }
 
     .card-flip {
@@ -401,11 +414,11 @@
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       box-shadow:
-        0 6px 16px rgba(0,0,0,0.15),
-        0 0 28px rgba(255,224,240,0.08);
+        0 8px 20px rgba(0,0,0,0.18),
+        0 0 34px rgba(255,224,240,0.14);
       display: none;
       white-space: pre-line;
       opacity: 0;
@@ -420,9 +433,6 @@
     .message-box.fade-in {
       opacity: 1;
       transform: translateY(0);
-      box-shadow:
-        0 8px 20px rgba(0,0,0,0.18),
-        0 0 34px rgba(255,224,240,0.14);
     }
 
     .message-box h3 {
@@ -485,7 +495,7 @@
         src="in-between-card-back.jpg"
         alt="Tap to draw your daily In-Between Moments message"
         onclick="drawDailyCardFromCard()"
-      >
+      />
     </div>
 
     <div class="scroll-whisper">
@@ -521,7 +531,7 @@
   </div>
 
   <audio id="forestAudio" loop>
-    <source src="forest.mp3.mp3" type="audio/mpeg">
+    <source src="forest.mp3.mp3" type="audio/mpeg" />
   </audio>
 
   <script>
