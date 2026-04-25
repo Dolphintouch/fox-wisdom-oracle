@@ -14,7 +14,7 @@
       font-family: Georgia, serif;
       color: #f8e8c8;
       background-image:
-        linear-gradient(rgba(7, 18, 12, 0.58), rgba(7, 18, 12, 0.88)),
+        linear-gradient(rgba(7, 18, 12, 0.58), rgba(7, 18, 12, 0.9)),
         url("forest-bg.jpg");
       background-size: cover;
       background-position: center;
@@ -56,7 +56,7 @@
     .page {
       position: relative;
       z-index: 2;
-      width: min(1200px, 100%);
+      width: min(1220px, 100%);
       margin: 0 auto;
       padding: 18px 14px 34px;
     }
@@ -66,7 +66,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
     }
 
@@ -88,7 +88,7 @@
 
     h1 {
       margin: 8px 0 4px;
-      font-size: clamp(2.5rem, 7vw, 5.2rem);
+      font-size: clamp(2.5rem, 7vw, 5.1rem);
       line-height: 1;
       color: #f7dfb2;
       text-shadow:
@@ -98,29 +98,30 @@
     }
 
     .intro {
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto 18px;
       color: #fff0d8;
-      font-size: clamp(1rem, 2vw, 1.22rem);
+      font-size: clamp(1rem, 2vw, 1.18rem);
       line-height: 1.5;
       text-shadow: 0 2px 5px rgba(0,0,0,0.45);
     }
 
     .game-layout {
       display: grid;
-      grid-template-columns: 250px minmax(320px, 1fr) 280px;
+      grid-template-columns: minmax(320px, 1fr) 300px;
       gap: 18px;
       align-items: stretch;
       margin-top: 12px;
     }
 
+    .game-shell,
+    .side-panel,
     .wood-panel,
-    .reward-panel,
-    .game-frame {
+    .message-panel {
       border-radius: 28px;
       border: 1px solid rgba(255, 211, 125, 0.42);
       background:
-        linear-gradient(rgba(33, 25, 15, 0.86), rgba(20, 35, 20, 0.82)),
+        linear-gradient(rgba(33, 25, 15, 0.86), rgba(20, 35, 20, 0.84)),
         radial-gradient(circle at top, rgba(255,225,155,0.16), transparent 36%);
       box-shadow:
         0 18px 38px rgba(0,0,0,0.35),
@@ -129,8 +130,10 @@
       position: relative;
     }
 
+    .game-shell::before,
+    .side-panel::before,
     .wood-panel::before,
-    .reward-panel::before {
+    .message-panel::before {
       content: "";
       position: absolute;
       inset: 8px;
@@ -139,62 +142,11 @@
       pointer-events: none;
     }
 
-    .wood-panel {
-      padding: 24px 18px;
-      text-align: left;
+    .game-shell {
+      padding: 16px;
     }
 
-    .wood-panel h2,
-    .reward-panel h2 {
-      margin: 0 0 18px;
-      color: #f8dc9e;
-      font-size: 1.75rem;
-      text-align: center;
-      text-shadow: 0 0 8px rgba(255,210,120,0.22);
-    }
-
-    .how-item {
-      display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 10px;
-      align-items: start;
-      margin: 0 0 18px;
-      color: #fff0d7;
-      line-height: 1.35;
-    }
-
-    .how-icon {
-      font-size: 2rem;
-      text-align: center;
-      filter: drop-shadow(0 0 7px rgba(255,220,150,0.4));
-    }
-
-    .how-item strong {
-      color: #ffe0a0;
-      font-size: 1.05rem;
-    }
-
-    .points {
-      display: block;
-      margin-top: 5px;
-      color: #ffd679;
-      font-weight: bold;
-    }
-
-    .bad-points { color: #ff9a80; }
-
-    .tip-box {
-      margin-top: 20px;
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255, 236, 190, 0.12);
-      border: 1px solid rgba(255, 220, 150, 0.2);
-      color: #ffeccd;
-      text-align: center;
-      line-height: 1.45;
-    }
-
-    .game-card-title {
+    .game-title-board {
       margin: 0 auto 12px;
       width: fit-content;
       max-width: 100%;
@@ -206,24 +158,19 @@
       box-shadow: 0 0 22px rgba(255,210,120,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
-    .game-card-title h2 {
+    .game-title-board h2 {
       margin: 0;
       color: #f8dfaf;
-      font-size: clamp(2rem, 5vw, 3.7rem);
+      font-size: clamp(2rem, 5vw, 3.5rem);
       line-height: 1;
       text-shadow: 0 3px 8px rgba(0,0,0,0.42);
     }
 
-    .game-card-title p {
+    .game-title-board p {
       margin: 8px 0 0;
       color: #fff0d3;
       font-size: 1.05rem;
       line-height: 1.35;
-    }
-
-    .game-frame {
-      padding: 14px;
-      background: rgba(12, 28, 22, 0.78);
     }
 
     .stats {
@@ -248,13 +195,13 @@
 
     #game {
       position: relative;
-      height: min(56vh, 530px);
-      min-height: 430px;
+      height: min(65vh, 650px);
+      min-height: 560px;
       border-radius: 24px;
       overflow: hidden;
       border: 1px solid rgba(255, 218, 130, 0.35);
       background:
-        radial-gradient(circle at 50% 15%, rgba(70, 130, 120, 0.26), transparent 35%),
+        radial-gradient(circle at 50% 16%, rgba(70, 130, 120, 0.26), transparent 35%),
         linear-gradient(to top, rgba(18, 45, 25, 0.98), rgba(12, 30, 28, 0.88), rgba(5, 12, 22, 0.58));
       box-shadow:
         inset 0 -40px 70px rgba(0,0,0,0.4),
@@ -286,8 +233,8 @@
       opacity: 0.85;
     }
 
-    .lantern.left { left: 9%; }
-    .lantern.right { right: 9%; }
+    .lantern.left { left: 7%; }
+    .lantern.right { right: 7%; }
 
     .hill {
       position: absolute;
@@ -367,7 +314,7 @@
       box-shadow: 0 0 28px rgba(255,215,130,0.3), inset 0 1px 0 rgba(255,255,255,0.18);
     }
 
-    /* Chibi fox seen from behind, like the mockup */
+    /* BACK VIEW FOXY PLAYER */
     #fox {
       position: absolute;
       left: 50%;
@@ -433,9 +380,7 @@
       animation: foxBounce 1.8s ease-in-out infinite;
     }
 
-    #fox.catch {
-      animation: foxCatch 0.36s ease;
-    }
+    #fox.catch { animation: foxCatch 0.36s ease; }
 
     @keyframes foxCatch {
       0% { transform: translateX(-50%) scale(1); }
@@ -497,35 +442,114 @@
     .paw.p1 { left: 47px; }
     .paw.p2 { left: 76px; }
 
+    /* FALLING CHARACTERS */
     .item {
       position: absolute;
-      top: -60px;
+      top: -80px;
       transform: translateX(-50%);
       z-index: 9;
       user-select: none;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
-      filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));
     }
 
-    /* 🌼 Dandelion seed pods (soft floating, magical drift) */
-    .dandelion {
-      font-size: 36px;
-      text-shadow:
-        0 0 10px rgba(255,248,215,0.95),
-        0 0 24px rgba(255,224,140,0.5);
+    .dandelion-character {
+      width: 58px;
+      height: 88px;
       animation: dandelionFloat linear forwards;
+      filter: drop-shadow(0 0 12px rgba(255,230,150,0.75));
     }
 
-    .dandelion::after {
+    .dandy-face {
+      position: absolute;
+      left: 12px;
+      top: 8px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fffbdc, #fff1a9 68%, #ffd46c 100%);
+      box-shadow: 0 0 22px rgba(255,245,190,0.95), inset 0 0 8px rgba(255,255,255,0.9);
+    }
+
+    .dandy-face::before {
+      content: "";
+      position: absolute;
+      inset: -13px;
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 0deg, rgba(255,245,205,0.95) 0 4deg, transparent 4deg 12deg);
+      filter: blur(0.4px);
+      opacity: 0.9;
+      z-index: -1;
+    }
+
+    .dandy-eye {
+      position: absolute;
+      top: 16px;
+      width: 6px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4a2818;
+    }
+
+    .dandy-eye::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .dandy-eye.left { left: 12px; }
+    .dandy-eye.right { right: 12px; }
+
+    .dandy-mouth {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      width: 10px;
+      height: 6px;
+      transform: translateX(-50%);
+      border-bottom: 2px solid #7e4324;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .dandy-stem {
+      position: absolute;
+      left: 31px;
+      top: 48px;
+      width: 5px;
+      height: 32px;
+      background: linear-gradient(#eec36a, #a87a24);
+      border-radius: 999px;
+      transform: rotate(-15deg);
+      transform-origin: top;
+      box-shadow: 0 0 8px rgba(255,220,120,0.55);
+    }
+
+    .dandy-seed {
+      position: absolute;
+      left: 25px;
+      bottom: 0;
+      width: 15px;
+      height: 20px;
+      background: radial-gradient(circle, #ffe7a3, #c8841d);
+      border-radius: 60% 60% 70% 70%;
+      box-shadow: 0 0 8px rgba(255,210,110,0.8);
+    }
+
+    .dandelion-character::after {
       content: "";
       position: absolute;
       left: 50%;
-      top: 30px;
+      top: 45px;
       width: 2px;
-      height: 44px;
+      height: 58px;
       transform: translateX(-50%);
-      background: linear-gradient(to bottom, rgba(255,240,190,0.7), transparent);
+      background: linear-gradient(to bottom, rgba(255,240,190,0.78), transparent);
       filter: blur(1px);
       opacity: 0.8;
       pointer-events: none;
@@ -533,27 +557,102 @@
 
     @keyframes dandelionFloat {
       0% { transform: translateX(-50%) translateX(0) rotate(0deg) scale(1); }
-      25% { transform: translateX(-50%) translateX(25px) rotate(10deg) scale(1.05); }
-      50% { transform: translateX(-50%) translateX(-20px) rotate(-8deg) scale(1); }
-      75% { transform: translateX(-50%) translateX(18px) rotate(6deg) scale(0.95); }
-      100% { top: calc(100% + 70px); transform: translateX(-50%) translateX(-10px) rotate(-5deg) scale(0.9); }
+      25% { transform: translateX(-50%) translateX(28px) rotate(10deg) scale(1.04); }
+      50% { transform: translateX(-50%) translateX(-24px) rotate(-8deg) scale(1); }
+      75% { transform: translateX(-50%) translateX(20px) rotate(6deg) scale(0.96); }
+      100% { top: calc(100% + 90px); transform: translateX(-50%) translateX(-10px) rotate(-5deg) scale(0.92); }
     }
 
-    /* 🐑 Fluffy sheep tumbling down */
-    .sheep {
-      font-size: 42px;
+    .sheep-character {
+      width: 72px;
+      height: 70px;
       animation: sheepTumble linear forwards;
+      filter: drop-shadow(0 0 12px rgba(255,245,220,0.5)) drop-shadow(0 5px 8px rgba(0,0,0,0.25));
     }
 
-    .sheep::after {
+    .sheep-wool {
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 24% 25%, #fff8e6 0 11px, transparent 12px),
+        radial-gradient(circle at 48% 13%, #fff8e6 0 13px, transparent 14px),
+        radial-gradient(circle at 72% 28%, #fff4df 0 12px, transparent 13px),
+        radial-gradient(circle at 28% 62%, #fff1d8 0 13px, transparent 14px),
+        radial-gradient(circle at 70% 64%, #fff8e6 0 14px, transparent 15px),
+        radial-gradient(circle at 50% 48%, #fff4df 0 27px, transparent 28px);
+      box-shadow: inset 0 -6px 10px rgba(190,120,60,0.08), 0 0 18px rgba(255,240,200,0.5);
+    }
+
+    .sheep-face {
+      position: absolute;
+      left: 22px;
+      top: 21px;
+      width: 31px;
+      height: 29px;
+      border-radius: 50%;
+      background: #b7794e;
+      z-index: 2;
+    }
+
+    .sheep-ear {
+      position: absolute;
+      top: 23px;
+      width: 17px;
+      height: 12px;
+      background: #b7794e;
+      border-radius: 70% 40% 70% 40%;
+      z-index: 1;
+    }
+
+    .sheep-ear.left { left: 8px; transform: rotate(-25deg); }
+    .sheep-ear.right { right: 8px; transform: rotate(25deg) scaleX(-1); }
+
+    .sheep-eye {
+      position: absolute;
+      top: 9px;
+      width: 6px;
+      height: 8px;
+      background: #24130d;
+      border-radius: 50%;
+    }
+
+    .sheep-eye::after {
       content: "";
       position: absolute;
-      inset: 10px;
+      top: 1px;
+      left: 1px;
+      width: 2px;
+      height: 2px;
       border-radius: 50%;
-      box-shadow: 0 0 22px rgba(255, 245, 220, 0.55);
-      opacity: 0.65;
-      pointer-events: none;
+      background: white;
     }
+
+    .sheep-eye.left { left: 8px; }
+    .sheep-eye.right { right: 8px; }
+
+    .sheep-mouth {
+      position: absolute;
+      left: 50%;
+      bottom: 7px;
+      width: 10px;
+      height: 6px;
+      transform: translateX(-50%);
+      border-bottom: 2px solid #3b1e12;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .sheep-blush {
+      position: absolute;
+      top: 17px;
+      width: 6px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,120,120,0.55);
+    }
+
+    .sheep-blush.left { left: 4px; }
+    .sheep-blush.right { right: 4px; }
 
     @keyframes sheepTumble {
       0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
@@ -561,144 +660,315 @@
       40% { transform: translateX(-50%) translateY(-4px) rotate(144deg) scale(1); }
       60% { transform: translateX(-50%) translateY(12px) rotate(216deg) scale(1.07); }
       80% { transform: translateX(-50%) translateY(-2px) rotate(288deg) scale(1); }
-      100% { top: calc(100% + 70px); transform: translateX(-50%) translateY(8px) rotate(360deg) scale(1.05); }
+      100% { top: calc(100% + 90px); transform: translateX(-50%) translateY(8px) rotate(360deg) scale(1.05); }
     }
 
-    /* 🪨 Rocks fall heavier and faster */
-    .rock {
-      font-size: 40px;
+    .rock-character {
+      width: 58px;
+      height: 52px;
       animation: rockFall linear forwards;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,0.5));
     }
 
+    .rock-body {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #8b8172, #4f473e);
+      border-radius: 46% 54% 42% 58%;
+      clip-path: polygon(16% 22%, 42% 4%, 73% 11%, 95% 42%, 76% 90%, 30% 96%, 5% 68%);
+      box-shadow: inset -8px -8px 12px rgba(0,0,0,0.25), inset 8px 8px 10px rgba(255,255,255,0.14);
+    }
+
+    .rock-character::after,
+    .sheep-character::after,
+    .rock-character::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -45px;
+      width: 3px;
+      height: 70px;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, rgba(255,210,110,0.0), rgba(255,210,110,0.72), transparent);
+      filter: blur(1.3px);
+      opacity: 0.75;
+      z-index: -1;
+    }
+
     @keyframes rockFall {
       0% { transform: translateX(-50%) rotate(0deg); }
-      100% { top: calc(100% + 70px); transform: translateX(-50%) rotate(140deg); }
-    }
-      30% { transform: translateX(-50%) translateX(24px) rotate(14deg); }
-      65% { transform: translateX(-50%) translateX(-18px) rotate(-12deg); }
-      100% { top: calc(100% + 70px); transform: translateX(-50%) translateX(20px) rotate(24deg); }
+      100% { top: calc(100% + 90px); transform: translateX(-50%) rotate(140deg); }
     }
 
-    .reward-panel {
-      padding: 24px 18px;
-    }
-
-    .reward-card {
-      margin: 16px auto;
-      width: 190px;
-      min-height: 270px;
-      border-radius: 22px;
-      border: 2px solid rgba(255, 218, 130, 0.65);
-      background:
-        radial-gradient(circle at 50% 18%, rgba(255,218,130,0.22), transparent 34%),
-        linear-gradient(rgba(20, 36, 24, 0.96), rgba(11, 20, 17, 0.97));
-      box-shadow:
-        0 0 28px rgba(255,210,120,0.25),
-        inset 0 0 20px rgba(255,220,150,0.08);
-      padding: 14px;
+    .side-panel {
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 14px;
     }
 
-    .reward-card h3 {
-      margin: 0;
-      color: #f9d895;
-      font-size: 1.35rem;
-    }
-
-    .reward-fox {
-      margin: 12px auto;
-      width: 95px;
-      height: 95px;
+    .helper-card {
       position: relative;
+      padding: 18px 14px;
+      border-radius: 24px;
+      background: rgba(7, 18, 12, 0.35);
+      border: 1px solid rgba(255,220,150,0.22);
+      min-height: 260px;
     }
 
-    .reward-fox .rf-tail {
+    .speech {
+      position: relative;
+      margin: 0 auto 15px;
+      padding: 15px 14px;
+      max-width: 230px;
+      border-radius: 24px;
+      background: #fff0cf;
+      color: #3b2416;
+      font-size: 1.12rem;
+      line-height: 1.35;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.22);
+    }
+
+    .speech::after {
+      content: "";
       position: absolute;
-      left: 4px;
-      bottom: 28px;
-      width: 52px;
-      height: 30px;
-      background: linear-gradient(90deg, #fff0d2 0 22%, #e37b36 26%, #f3a14c 100%);
-      border-radius: 70% 30% 60% 65%;
+      left: 58%;
+      bottom: -16px;
+      border-width: 16px 10px 0 4px;
+      border-style: solid;
+      border-color: #fff0cf transparent transparent transparent;
       transform: rotate(-18deg);
     }
 
-    .reward-fox .rf-body {
+    /* FRONT VIEW SMALL FOXY HELPER */
+    .front-fox {
+      position: relative;
+      margin: 0 auto;
+      width: 154px;
+      height: 170px;
+      filter: drop-shadow(0 0 18px rgba(255,165,70,0.25)) drop-shadow(0 10px 10px rgba(0,0,0,0.28));
+    }
+
+    .front-tail {
       position: absolute;
-      left: 34px;
-      bottom: 12px;
-      width: 42px;
-      height: 42px;
-      background: #ef8c3f;
+      right: 2px;
+      bottom: 35px;
+      width: 72px;
+      height: 54px;
+      background: linear-gradient(135deg, #e78234 0 58%, #fff1d2 60% 100%);
+      border-radius: 65% 35% 65% 50%;
+      transform: rotate(22deg);
+      animation: frontTailWag 1.7s ease-in-out infinite;
+    }
+
+    @keyframes frontTailWag {
+      0%,100% { transform: rotate(22deg); }
+      50% { transform: rotate(34deg); }
+    }
+
+    .front-body {
+      position: absolute;
+      left: 45px;
+      bottom: 16px;
+      width: 70px;
+      height: 72px;
+      background: linear-gradient(150deg, #e17332, #f4a24f);
+      border-radius: 50% 50% 43% 43%;
+    }
+
+    .front-belly {
+      position: absolute;
+      left: 18px;
+      bottom: 7px;
+      width: 36px;
+      height: 46px;
+      background: #fff0d2;
       border-radius: 50%;
     }
 
-    .reward-fox .rf-head {
+    .front-head {
       position: absolute;
-      left: 31px;
-      bottom: 47px;
-      width: 48px;
-      height: 42px;
-      background: #f29a48;
-      border-radius: 50%;
+      left: 30px;
+      top: 14px;
+      width: 96px;
+      height: 86px;
+      background: linear-gradient(145deg, #e57232, #f7a650);
+      border-radius: 48% 48% 45% 45%;
+      animation: helperNod 2.2s ease-in-out infinite;
     }
 
-    .reward-fox .rf-head::before,
-    .reward-fox .rf-head::after {
-      content: "";
+    @keyframes helperNod {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .front-ear {
       position: absolute;
-      top: -15px;
-      width: 20px;
-      height: 25px;
-      background: #df7134;
+      top: -31px;
+      width: 39px;
+      height: 49px;
+      background: #d9602e;
       clip-path: polygon(50% 0, 100% 100%, 0 100%);
     }
 
-    .reward-fox .rf-head::before { left: 3px; transform: rotate(-14deg); }
-    .reward-fox .rf-head::after { right: 3px; transform: rotate(14deg); }
+    .front-ear.left { left: 6px; transform: rotate(-16deg); }
+    .front-ear.right { right: 6px; transform: rotate(16deg); }
 
-    .reward-fox .rf-eye {
-      position: absolute;
-      top: 16px;
-      width: 8px;
-      height: 10px;
-      background: #24130d;
-      border-radius: 50%;
-    }
-
-    .reward-fox .rf-eye::after {
+    .front-ear::after {
       content: "";
       position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 3px;
-      height: 3px;
-      background: white;
+      left: 11px;
+      top: 15px;
+      width: 17px;
+      height: 23px;
+      background: #ffd1bb;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+
+    .front-cheek {
+      position: absolute;
+      bottom: 10px;
+      width: 42px;
+      height: 35px;
+      background: #fff0d2;
       border-radius: 50%;
     }
 
-    .reward-fox .rf-eye.left { left: 12px; }
-    .reward-fox .rf-eye.right { right: 12px; }
+    .front-cheek.left { left: 12px; }
+    .front-cheek.right { right: 12px; }
 
-    .reward-fox .rf-nose {
+    .front-eye {
+      position: absolute;
+      top: 35px;
+      width: 16px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 25%, white 0 3px, #6b3b19 4px, #24130d 70%);
+      z-index: 4;
+      animation: helperBlink 4s infinite;
+    }
+
+    .front-eye.left { left: 24px; }
+    .front-eye.right { right: 24px; }
+
+    @keyframes helperBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.12); }
+    }
+
+    .front-nose {
       position: absolute;
       left: 50%;
-      bottom: 9px;
+      bottom: 25px;
+      width: 10px;
+      height: 8px;
       transform: translateX(-50%);
-      width: 7px;
-      height: 5px;
       background: #24130d;
       border-radius: 50%;
+      z-index: 5;
+    }
+
+    .front-smile {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      width: 23px;
+      height: 13px;
+      transform: translateX(-50%);
+      border-bottom: 3px solid #552611;
+      border-radius: 0 0 20px 20px;
+      z-index: 5;
+    }
+
+    .front-paw {
+      position: absolute;
+      bottom: 35px;
+      width: 18px;
+      height: 26px;
+      background: #4b2517;
+      border-radius: 999px;
+      z-index: 5;
+    }
+
+    .front-paw.left { left: 48px; transform: rotate(-10deg); }
+    .front-paw.right { right: 48px; transform: rotate(10deg); }
+
+    .wood-panel,
+    .message-panel {
+      padding: 18px;
+      text-align: left;
+    }
+
+    .wood-panel h2,
+    .message-panel h2 {
+      margin: 0 0 12px;
+      color: #f8dc9e;
+      font-size: 1.65rem;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255,210,120,0.22);
+    }
+
+    .how-item {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 14px;
+      color: #fff0d7;
+      line-height: 1.35;
+    }
+
+    .mini-dandy,
+    .mini-sheep,
+    .mini-rock {
+      transform: scale(0.56);
+      transform-origin: center;
+      width: 74px;
+      height: 74px;
+      margin-left: -12px;
+    }
+
+    .how-item strong {
+      color: #ffe0a0;
+      font-size: 1.02rem;
+    }
+
+    .points {
+      display: block;
+      margin-top: 4px;
+      color: #bfff82;
+      font-weight: bold;
+    }
+
+    .bad-points { color: #ff9a80; }
+
+    .move-box {
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 236, 190, 0.12);
+      border: 1px solid rgba(255, 220, 150, 0.2);
+      color: #ffeccd;
+      text-align: center;
+      line-height: 1.45;
+      font-size: 1rem;
+    }
+
+    .message-panel {
+      text-align: center;
+      color: #fff0d7;
+    }
+
+    #rewardTitle {
+      color: #f9d895;
+      font-size: 1.45rem;
+      margin: 10px 0 8px;
     }
 
     #rewardMessage {
-      color: #fff0d7;
       line-height: 1.55;
-      font-size: 1rem;
-      margin: 8px 0 0;
+      font-size: 1.02rem;
+      margin: 0;
     }
 
     .bottom-controls {
@@ -774,40 +1044,20 @@
     }
 
     @media (max-width: 980px) {
-      .game-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .wood-panel,
-      .reward-panel {
-        max-width: 720px;
-        margin: 0 auto;
-        width: 100%;
-      }
-
-      .wood-panel {
-        text-align: center;
-      }
-
-      .how-item {
-        max-width: 420px;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: left;
-      }
+      .game-layout { grid-template-columns: 1fr; }
+      .side-panel { max-width: 720px; margin: 0 auto; width: 100%; }
+      #game { min-height: 520px; }
     }
 
     @media (max-width: 650px) {
       .top-bar { justify-content: center; }
-      #game {
-        min-height: 430px;
-        cursor: default;
-      }
-      .game-frame { padding: 10px; }
+      #game { min-height: 460px; cursor: default; }
+      .game-shell { padding: 10px; }
       .stat-pill { min-width: 95px; font-size: 0.92rem; }
-      #fox { transform: translateX(-50%) scale(0.88); }
-      .game-card-title { padding: 14px 18px; }
+      #fox { transform: translateX(-50%) scale(0.82); }
+      .game-title-board { padding: 14px 18px; }
       .tree.t1, .tree.t4 { opacity: 0.36; }
+      .front-fox { transform: scale(0.9); }
     }
   </style>
 </head>
@@ -822,89 +1072,51 @@
 
     <h1>Foxfire Forest Game</h1>
     <p class="intro">
-      Help little Foxy collect dandelion wishes and catch fluffy sheep as they float through the enchanted forest.
-      When the path is complete, receive a gentle oracle message.
+      Help little Foxy catch glowing dandelion wishes and fluffy sheep as they tumble through the enchanted forest. Avoid the falling rocks and receive a gentle fox message.
     </p>
 
     <section class="game-layout">
-      <aside class="wood-panel">
-        <h2>How to Play</h2>
-
-        <div class="how-item">
-          <div class="how-icon">🌼</div>
-          <div>
-            <strong>Catch Dandelion Wishes</strong><br>
-            Move left or right to catch the floating wishes.
-            <span class="points">+10 points</span>
-          </div>
-        </div>
-
-        <div class="how-item">
-          <div class="how-icon">🐑</div>
-          <div>
-            <strong>Catch Fluffy Sheep</strong><br>
-            Catch the sheep for a bigger blessing.
-            <span class="points">+50 points</span>
-          </div>
-        </div>
-
-        <div class="how-item">
-          <div class="how-icon">🪨</div>
-          <div>
-            <strong>Avoid the Rocks</strong><br>
-            Don’t let the stones bump little Foxy.
-            <span class="points bad-points">-1 heart</span>
-          </div>
-        </div>
-
-        <div class="tip-box">
-          🐾 Tip: Use your mouse, finger, or arrow keys to move.
-        </div>
-      </aside>
-
-      <section>
-        <div class="game-card-title">
+      <section class="game-shell">
+        <div class="game-title-board">
           <h2>Foxfire Forest</h2>
-          <p>Catch wishes, gather courage, and follow the glow.</p>
+          <p>Catch wishes and sheep, avoid rocks, and follow the glow.</p>
         </div>
 
-        <div class="game-frame">
-          <div class="stats">
-            <div class="stat-pill">🌼 <span id="score">0</span></div>
-            <div class="stat-pill">🧡 <span id="hearts">3</span></div>
-            <div class="stat-pill">⭐ <span id="time">45</span>s</div>
+        <div class="stats">
+          <div class="stat-pill">Score: <span id="score">0</span></div>
+          <div class="stat-pill">Hearts: <span id="hearts">3</span> 🧡</div>
+          <div class="stat-pill">Time: <span id="time">45</span>s</div>
+        </div>
+
+        <div id="game" aria-label="Foxfire Forest game area">
+          <div class="moon"></div>
+          <div class="lantern left"></div>
+          <div class="lantern right"></div>
+          <div class="tree t1"></div>
+          <div class="tree t2"></div>
+          <div class="tree t3"></div>
+          <div class="tree t4"></div>
+          <div class="flower f1">✿</div>
+          <div class="flower f2">❀</div>
+          <div class="flower f3">✿</div>
+          <div class="flower f4">❀</div>
+          <div class="hill"></div>
+
+          <div id="fox" aria-label="Cute fox player">
+            <div class="fox-shadow"></div>
+            <div class="fox-tail"></div>
+            <div class="fox-body"></div>
+            <div class="paw p1"></div>
+            <div class="paw p2"></div>
+            <div class="fox-head-back">
+              <div class="ear left"></div>
+              <div class="ear right"></div>
+              <div class="head-fluff"></div>
+            </div>
           </div>
 
-          <div id="game" aria-label="Foxfire Forest game area">
-            <div class="moon"></div>
-            <div class="lantern left"></div>
-            <div class="lantern right"></div>
-            <div class="tree t1"></div>
-            <div class="tree t2"></div>
-            <div class="tree t3"></div>
-            <div class="tree t4"></div>
-            <div class="flower f1">✿</div>
-            <div class="flower f2">❀</div>
-            <div class="flower f3">✿</div>
-            <div class="flower f4">❀</div>
-            <div class="hill"></div>
-
-            <div id="fox" aria-label="Cute fox">
-              <div class="fox-shadow"></div>
-              <div class="fox-tail"></div>
-              <div class="fox-body"></div>
-              <div class="paw p1"></div>
-              <div class="paw p2"></div>
-              <div class="fox-head-back">
-                <div class="ear left"></div>
-                <div class="ear right"></div>
-                <div class="head-fluff"></div>
-              </div>
-            </div>
-
-            <div id="playOverlay" class="play-overlay">
-              <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
-            </div>
+          <div id="playOverlay" class="play-overlay">
+            <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
           </div>
         </div>
 
@@ -914,27 +1126,84 @@
         </div>
       </section>
 
-      <aside class="reward-panel">
-        <h2>Your Reward</h2>
-        <p id="rewardIntro">Play the game to receive your forest message.</p>
+      <aside class="side-panel">
+        <div class="helper-card">
+          <div class="speech" id="foxSpeech">You’re doing amazing! Catch the glowing wishes, little one. ✨</div>
 
-        <div class="reward-card">
-          <h3 id="rewardTitle">Whisper of Courage</h3>
-          <div class="reward-fox">
-            <div class="rf-tail"></div>
-            <div class="rf-body"></div>
-            <div class="rf-head">
-              <div class="rf-eye left"></div>
-              <div class="rf-eye right"></div>
-              <div class="rf-nose"></div>
+          <div class="front-fox" aria-label="Friendly fox helper">
+            <div class="front-tail"></div>
+            <div class="front-body"><div class="front-belly"></div></div>
+            <div class="front-head">
+              <div class="front-ear left"></div>
+              <div class="front-ear right"></div>
+              <div class="front-cheek left"></div>
+              <div class="front-cheek right"></div>
+              <div class="front-eye left"></div>
+              <div class="front-eye right"></div>
+              <div class="front-nose"></div>
+              <div class="front-smile"></div>
             </div>
+            <div class="front-paw left"></div>
+            <div class="front-paw right"></div>
           </div>
-          <p id="rewardMessage">
-            You are braver than you believe. Trust your heart and take the next gentle step.
-          </p>
         </div>
 
-        <button onclick="drawAnotherMessage()">↻ Draw Another Message</button>
+        <div class="wood-panel">
+          <h2>How to Play</h2>
+
+          <div class="how-item">
+            <div class="mini-dandy dandelion-character">
+              <div class="dandy-face">
+                <div class="dandy-eye left"></div>
+                <div class="dandy-eye right"></div>
+                <div class="dandy-mouth"></div>
+              </div>
+              <div class="dandy-stem"></div>
+              <div class="dandy-seed"></div>
+            </div>
+            <div>
+              <strong>Catch Dandelion Wishes</strong>
+              <span class="points">+10 points</span>
+            </div>
+          </div>
+
+          <div class="how-item">
+            <div class="mini-sheep sheep-character">
+              <div class="sheep-ear left"></div>
+              <div class="sheep-ear right"></div>
+              <div class="sheep-wool"></div>
+              <div class="sheep-face">
+                <div class="sheep-eye left"></div>
+                <div class="sheep-eye right"></div>
+                <div class="sheep-blush left"></div>
+                <div class="sheep-blush right"></div>
+                <div class="sheep-mouth"></div>
+              </div>
+            </div>
+            <div>
+              <strong>Catch Fluffy Sheep</strong>
+              <span class="points">+50 points</span>
+            </div>
+          </div>
+
+          <div class="how-item">
+            <div class="mini-rock rock-character"><div class="rock-body"></div></div>
+            <div>
+              <strong>Avoid the Rocks</strong>
+              <span class="points bad-points">-1 heart</span>
+            </div>
+          </div>
+
+          <div class="move-box">Move with your mouse, finger, arrow keys, or A / D.</div>
+        </div>
+
+        <div class="message-panel">
+          <h2>Your Message ♡</h2>
+          <h3 id="rewardTitle">Whisper of Courage</h3>
+          <p id="rewardMessage">You are braver than you believe. Trust your heart and take the next gentle step.</p>
+          <br>
+          <button onclick="drawAnotherMessage()">Draw Another Message</button>
+        </div>
       </aside>
     </section>
 
@@ -948,9 +1217,9 @@
     const heartsEl = document.getElementById("hearts");
     const timeEl = document.getElementById("time");
     const playOverlay = document.getElementById("playOverlay");
-    const rewardIntro = document.getElementById("rewardIntro");
     const rewardTitle = document.getElementById("rewardTitle");
     const rewardMessage = document.getElementById("rewardMessage");
+    const foxSpeech = document.getElementById("foxSpeech");
 
     let score = 0;
     let hearts = 3;
@@ -991,6 +1260,14 @@
       }
     ];
 
+    const helperLines = [
+      "You’re doing amazing! Keep catching those wishes. ✨",
+      "Watch out for the stones, little one! 🪨",
+      "That sheep is full of blessings! Catch it! 🐑",
+      "Follow the glowing dandelions. They know the way. 🌼",
+      "Soft paws, brave heart. You’ve got this. ♡"
+    ];
+
     function startGame() {
       if (gameRunning) return;
 
@@ -1006,9 +1283,9 @@
       timeEl.textContent = timeLeft;
       fox.style.left = foxPercent + "%";
       playOverlay.classList.add("hidden");
-      rewardIntro.textContent = "Foxy is gathering your message...";
       rewardTitle.textContent = "The Forest is Listening";
-      rewardMessage.textContent = "Catch wishes, avoid stones, and let the path reveal your message.";
+      rewardMessage.textContent = "Catch wishes, gather courage, and let the path reveal your message.";
+      foxSpeech.textContent = "Let’s go, little Foxy! Catch the glowing wishes. ✨";
 
       spawnTimer = setInterval(spawnItem, 650);
       countdownTimer = setInterval(() => {
@@ -1045,18 +1322,21 @@
       if (score >= 320) index = 6;
 
       const chosen = messages[index];
-      rewardIntro.textContent = hearts <= 0 ? "Little Foxy needs a rest. Here is your gentle message." : "Amazing work, Foxy! Here is your oracle message.";
       rewardTitle.textContent = hearts <= 0 ? "Rest Beneath the Ferns" : chosen.title;
       rewardMessage.textContent = hearts <= 0
         ? "Even brave little foxes need to curl up and breathe. Rest is not failure. Begin again when your spirit feels warm."
         : chosen.text;
+
+      foxSpeech.textContent = hearts <= 0
+        ? "Rest for a moment, little one. The forest will wait for you. ♡"
+        : "Beautifully done! Your forest message is ready. ✨";
     }
 
     function drawAnotherMessage() {
       const chosen = messages[Math.floor(Math.random() * messages.length)];
-      rewardIntro.textContent = "A fresh forest whisper has arrived.";
       rewardTitle.textContent = chosen.title;
       rewardMessage.textContent = chosen.text;
+      foxSpeech.textContent = "A fresh whisper has floated in for you. ♡";
     }
 
     function spawnItem() {
@@ -1067,21 +1347,40 @@
 
       const chance = Math.random();
       if (chance < 0.58) {
-        item.textContent = "🌼";
         item.dataset.type = "dandelion";
-        item.classList.add("dandelion");
+        item.classList.add("dandelion-character");
+        item.innerHTML = `
+          <div class="dandy-face">
+            <div class="dandy-eye left"></div>
+            <div class="dandy-eye right"></div>
+            <div class="dandy-mouth"></div>
+          </div>
+          <div class="dandy-stem"></div>
+          <div class="dandy-seed"></div>
+        `;
       } else if (chance < 0.82) {
-        item.textContent = "🐑";
         item.dataset.type = "sheep";
-        item.classList.add("sheep");
+        item.classList.add("sheep-character");
+        item.innerHTML = `
+          <div class="sheep-ear left"></div>
+          <div class="sheep-ear right"></div>
+          <div class="sheep-wool"></div>
+          <div class="sheep-face">
+            <div class="sheep-eye left"></div>
+            <div class="sheep-eye right"></div>
+            <div class="sheep-blush left"></div>
+            <div class="sheep-blush right"></div>
+            <div class="sheep-mouth"></div>
+          </div>
+        `;
       } else {
-        item.textContent = "🪨";
         item.dataset.type = "rock";
-        item.classList.add("rock");
+        item.classList.add("rock-character");
+        item.innerHTML = `<div class="rock-body"></div>`;
       }
 
       item.style.left = (8 + Math.random() * 84) + "%";
-      item.style.animationDuration = (3.1 + Math.random() * 1.4) + "s";
+      item.style.animationDuration = (3.2 + Math.random() * 1.55) + "s";
       game.appendChild(item);
 
       const check = setInterval(() => {
@@ -1118,17 +1417,20 @@
         score += 10;
         makeSparkleBurst(burstX, burstY);
         makeFloatingScore(burstX, burstY, "+10 wish");
+        foxSpeech.textContent = "A glowing wish! Keep going. 🌼";
       }
 
       if (type === "sheep") {
         score += 50;
         makeSparkleBurst(burstX, burstY);
         makeFloatingScore(burstX, burstY, "+50 fluffy blessing");
+        foxSpeech.textContent = "You caught a fluffy blessing! 🐑";
       }
 
       if (type === "rock") {
         hearts--;
         makeFloatingScore(burstX, burstY, "-1 heart");
+        foxSpeech.textContent = "Ouch! Careful of those stones. 🪨";
       }
 
       if (hearts < 0) hearts = 0;
