@@ -89,7 +89,9 @@ body::before {
   align-items: center;
 }
 
-#volumeSlider { width: 100px; }
+#volumeSlider {
+  width: 100px;
+}
 
 .brand {
   color: #ffe8bd;
@@ -155,7 +157,9 @@ h1 {
   pointer-events: none;
 }
 
-.game-shell { padding: 16px; }
+.game-shell {
+  padding: 16px;
+}
 
 .game-title-board {
   margin: 0 auto 12px;
@@ -344,7 +348,9 @@ h1 {
   user-select: none;
 }
 
-#fox.catch { animation: foxCatch 0.36s ease; }
+#fox.catch {
+  animation: foxCatch 0.36s ease;
+}
 
 @keyframes foxCatch {
   0% { transform: translateX(-50%) scale(1); }
@@ -455,36 +461,245 @@ h1 {
 .helper-card {
   padding: 18px 14px;
   min-height: 285px;
+  background:
+    linear-gradient(rgba(28, 21, 13, 0.78), rgba(16, 31, 20, 0.76)),
+    radial-gradient(circle at top, rgba(255,225,155,0.12), transparent 38%);
 }
 
 .speech {
-  margin-bottom: 15px;
-  padding: 12px;
+  position: relative;
+  margin: 0 auto 15px;
+  padding: 15px 14px;
+  max-width: 230px;
+  border-radius: 24px;
   background: #fff0cf;
   color: #3b2416;
-  border-radius: 20px;
+  font-size: 1.12rem;
+  line-height: 1.35;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.22);
+}
+
+.speech::after {
+  content: "";
+  position: absolute;
+  left: 58%;
+  bottom: -16px;
+  border-width: 16px 10px 0 4px;
+  border-style: solid;
+  border-color: #fff0cf transparent transparent transparent;
+  transform: rotate(-18deg);
 }
 
 .helper-fox-img {
-  width: 180px;
   display: block;
-  margin: auto;
+  width: 190px;
+  max-width: 100%;
+  margin: 0 auto;
+  filter:
+    drop-shadow(0 0 18px rgba(255,165,70,0.28))
+    drop-shadow(0 10px 10px rgba(0,0,0,0.28))
+    brightness(1.12)
+    contrast(1.08)
+    saturate(1.1);
+}
+
+.wood-panel,
+.message-panel {
+  padding: 18px;
+  text-align: left;
+}
+
+.wood-panel h2,
+.message-panel h2 {
+  margin: 0 0 12px;
+  color: #f8dc9e;
+  font-size: 1.65rem;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(255,210,120,0.22);
 }
 
 .how-item {
   display: grid;
   grid-template-columns: 58px 1fr;
   gap: 10px;
-  margin-bottom: 14px;
+  align-items: center;
+  margin: 0 0 14px;
+  color: #fff0d7;
+  line-height: 1.35;
 }
 
 .how-icon-img {
   width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 10px rgba(255,220,150,0.38))
+    brightness(1.08)
+    contrast(1.08)
+    saturate(1.08);
 }
 
-.points { color: #bfff82; }
-.bad-points { color: #ff9a80; }
+.how-item strong {
+  color: #ffe0a0;
+  font-size: 1.02rem;
+}
 
+.points {
+  display: block;
+  margin-top: 4px;
+  color: #bfff82;
+  font-weight: bold;
+}
+
+.bad-points {
+  color: #ff9a80;
+}
+
+.move-box {
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 236, 190, 0.12);
+  border: 1px solid rgba(255, 220, 150, 0.2);
+  color: #ffeccd;
+  text-align: center;
+  line-height: 1.45;
+  font-size: 1rem;
+}
+
+.message-panel {
+  text-align: center;
+  color: #fff0d7;
+}
+
+#rewardTitle {
+  color: #f9d895;
+  font-size: 1.45rem;
+  margin: 10px 0 8px;
+}
+
+#rewardMessage {
+  line-height: 1.55;
+  font-size: 1.02rem;
+  margin: 0;
+}
+
+.bottom-controls {
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-family: Georgia, serif;
+  font-size: 1.05rem;
+  color: #ffe9c1;
+  background: linear-gradient(to bottom, #47742a, #2e4b1f);
+  border: 1px solid rgba(255, 218, 130, 0.48);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.soft-note {
+  margin: 18px auto 0;
+  color: #ffe9c1;
+  font-size: 1rem;
+  opacity: 0.92;
+}
+
+.sparkle-burst {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffe7a1;
+  box-shadow:
+    0 0 10px #ffe7a1,
+    18px -8px 0 -2px rgba(255,231,161,0.9),
+    -16px -10px 0 -3px rgba(255,231,161,0.8),
+    12px 16px 0 -3px rgba(255,231,161,0.75),
+    -14px 13px 0 -3px rgba(255,231,161,0.75);
+  pointer-events: none;
+  z-index: 25;
+  animation: burstPop 0.65s ease forwards;
+}
+
+@keyframes burstPop {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6) rotate(45deg); }
+}
+
+.floating-score {
+  position: absolute;
+  z-index: 26;
+  color: #ffe6a3;
+  font-size: 1.15rem;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(255,220,140,0.8), 0 2px 5px rgba(0,0,0,0.5);
+  pointer-events: none;
+  animation: floatScore 0.9s ease forwards;
+}
+
+@keyframes floatScore {
+  0% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -42px); }
+}
+
+.fox-trail {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 231, 161, 0.95);
+  box-shadow:
+    0 0 10px rgba(255,231,161,0.9),
+    0 0 22px rgba(255,190,90,0.45);
+  pointer-events: none;
+  z-index: 17;
+  animation: foxTrailFade 0.75s ease forwards;
+}
+
+@keyframes foxTrailFade {
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.4) translateY(-18px);
+  }
+}
+
+@media (max-width: 980px) {
+  .game-layout { grid-template-columns: 1fr; }
+  .side-panel { max-width: 720px; margin: 0 auto; width: 100%; }
+  #game { min-height: 520px; }
+}
+
+@media (max-width: 650px) {
+  .top-bar { justify-content: center; }
+  #game { min-height: 460px; cursor: default; }
+  .game-shell { padding: 10px; }
+  .stat-pill { min-width: 95px; font-size: 0.92rem; }
+  #fox { width: 132px; }
+  .game-title-board { padding: 14px 18px; }
+  .tree.t1, .tree.t4 { opacity: 0.36; }
+  .helper-fox-img { width: 170px; }
+  .dandelion-item { width: 64px; }
+  .sheep-item { width: 78px; }
+  .rock-item { width: 72px; }
+}
 </style>
 </head>
 
@@ -493,14 +708,21 @@ h1 {
 
 <main class="page">
   <div class="top-bar">
-    <a class="back-link" href="index.html">← Back</a>
+    <a class="back-link" href="index.html">← Back to Oracle</a>
+    <div class="brand">Dolphintouch presents</div>
+
     <div class="sound-controls">
-      <button id="muteBtn">🔊</button>
+      <button class="sound-button" id="muteBtn">🔊 Sound</button>
       <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.6">
     </div>
   </div>
 
-  <h1>Foxfire Forest</h1>
+  <h1>Foxfire Forest Game</h1>
+
+  <p class="intro">
+    Help little Foxy catch glowing dandelion wishes and fluffy sheep as they tumble through the enchanted forest.
+    Avoid the falling rocks and receive a gentle fox message.
+  </p>
 
   <section class="game-layout">
     <section class="game-shell">
@@ -511,11 +733,11 @@ h1 {
 
       <div class="stats">
         <div class="stat-pill">Score: <span id="score">0</span></div>
-        <div class="stat-pill">Hearts: <span id="hearts">3</span></div>
-        <div class="stat-pill">Time: <span id="time">45</span></div>
+        <div class="stat-pill">Hearts: <span id="hearts">3</span> 🧡</div>
+        <div class="stat-pill">Time: <span id="time">45</span>s</div>
       </div>
 
-      <div id="game">
+      <div id="game" aria-label="Foxfire Forest game area">
         <div class="moon"></div>
         <div class="lantern left"></div>
         <div class="lantern right"></div>
@@ -523,10 +745,12 @@ h1 {
         <div class="tree t2"></div>
         <div class="tree t3"></div>
         <div class="tree t4"></div>
+
         <div class="flower f1">✿</div>
         <div class="flower f2">❀</div>
         <div class="flower f3">✿</div>
         <div class="flower f4">❀</div>
+
         <div class="hill"></div>
 
         <img id="fox" alt="Cute fox player">
@@ -539,7 +763,9 @@ h1 {
 
     <aside class="side-panel">
       <div class="helper-card">
-        <div class="speech" id="foxSpeech">Catch the wishes ✨</div>
+        <div class="speech" id="foxSpeech">
+          You’re doing amazing! Catch the glowing wishes, little one. ✨
+        </div>
         <img class="helper-fox-img" alt="Friendly fox helper">
       </div>
 
@@ -547,22 +773,46 @@ h1 {
         <h2>How to Play</h2>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="dandelion-new.png" alt="Dandelion wish">
-          <div><strong>Dandelion</strong><span class="points">+10</span></div>
+          <img class="how-icon-img" data-clean-src="dandelion-new.png" alt="Dandelion wish">
+          <div>
+            <strong>Catch Dandelion Wishes</strong>
+            <span class="points">+10 points</span>
+          </div>
         </div>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="sheep-new.png" alt="Fluffy sheep">
-          <div><strong>Sheep</strong><span class="points">+50</span></div>
+          <img class="how-icon-img" data-clean-src="sheep-new.png" alt="Fluffy sheep">
+          <div>
+            <strong>Catch Fluffy Sheep</strong>
+            <span class="points">+50 points</span>
+          </div>
         </div>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="rock-new.png" alt="Falling rock">
-          <div><strong>Rock</strong><span class="bad-points">-1</span></div>
+          <img class="how-icon-img" data-clean-src="rock-new.png" alt="Falling rock">
+          <div>
+            <strong>Avoid the Rocks</strong>
+            <span class="points bad-points">-1 heart</span>
+          </div>
         </div>
+
+        <div class="move-box">
+          Move Foxy with your mouse, finger, or arrow keys.
+        </div>
+      </div>
+
+      <div class="message-panel">
+        <h2 id="rewardTitle">Whisper of Courage</h2>
+        <p id="rewardMessage">Press play and let the forest whisper something kind to you.</p>
       </div>
     </aside>
   </section>
+
+  <div class="bottom-controls">
+    <button onclick="startGame()">Restart Game</button>
+  </div>
+
+  <p class="soft-note">A tiny enchanted forest game by Dolphintouch.</p>
 </main>
 
 <script>
@@ -574,26 +824,29 @@ const scoreEl = document.getElementById("score");
 const heartsEl = document.getElementById("hearts");
 const timeEl = document.getElementById("time");
 const foxSpeech = document.getElementById("foxSpeech");
+const rewardTitle = document.getElementById("rewardTitle");
+const rewardMessage = document.getElementById("rewardMessage");
 const muteBtn = document.getElementById("muteBtn");
 const volumeSlider = document.getElementById("volumeSlider");
 
 let score = 0;
 let hearts = 3;
 let timeLeft = 45;
-let foxPercent = 50;
 let gameRunning = false;
 let spawnTimer = null;
 let countdownTimer = null;
+let foxPercent = 50;
 let soundOn = true;
 let masterVolume = 0.6;
 let moveLeft = false;
 let moveRight = false;
+let lastTrailTime = 0;
 
-const cleanCache = {};
+const cleanedImages = {};
 
-function cleanImage(src, callback) {
-  if (cleanCache[src]) {
-    callback(cleanCache[src]);
+function cleanWhiteBackground(src, callback) {
+  if (cleanedImages[src]) {
+    callback(cleanedImages[src]);
     return;
   }
 
@@ -616,23 +869,25 @@ function cleanImage(src, callback) {
       const g = data[i + 1];
       const b = data[i + 2];
 
-      if (r > 205 && g > 205 && b > 205) {
+      if (r > 245 && g > 245 && b > 245) {
         data[i + 3] = 0;
       }
     }
 
     ctx.putImageData(imageData, 0, 0);
     const cleaned = canvas.toDataURL("image/png");
-    cleanCache[src] = cleaned;
+    cleanedImages[src] = cleaned;
     callback(cleaned);
   };
 
-  img.onerror = () => callback(src);
+  img.onerror = () => {
+    callback(src);
+  };
 }
 
-function setCleanImage(el, src) {
-  cleanImage(src, cleaned => {
-    el.src = cleaned;
+function setCleanImage(element, src) {
+  cleanWhiteBackground(src, cleaned => {
+    element.src = cleaned;
   });
 }
 
@@ -640,7 +895,8 @@ setCleanImage(fox, "foxy-player-new.png");
 setCleanImage(helperFox, "foxy-helper-new.png");
 
 document.querySelectorAll(".how-icon-img").forEach(icon => {
-  setCleanImage(icon, icon.dataset.src);
+  const src = icon.getAttribute("data-clean-src");
+  setCleanImage(icon, src);
 });
 
 const sounds = {
@@ -680,7 +936,7 @@ updateVolumes();
 
 muteBtn.addEventListener("click", () => {
   soundOn = !soundOn;
-  muteBtn.textContent = soundOn ? "🔊" : "🔇";
+  muteBtn.textContent = soundOn ? "🔊 Sound" : "🔇 Muted";
   updateVolumes();
 
   if (!soundOn) {
@@ -695,10 +951,33 @@ volumeSlider.addEventListener("input", () => {
   updateVolumes();
 });
 
+const messages = [
+  {
+    title: "Whisper of Courage",
+    text: "You are braver than you believe. Trust your heart and take the next gentle step."
+  },
+  {
+    title: "Foxfire Blessing",
+    text: "A little glow follows you, even when the path feels dark."
+  },
+  {
+    title: "Forest Friend",
+    text: "You do not have to rush. Gentle paws still make their way home."
+  },
+  {
+    title: "Dandelion Wish",
+    text: "Make a wish and let it float softly into the trees."
+  },
+  {
+    title: "Tiny Triumph",
+    text: "Every small catch is still a victory. The forest noticed."
+  }
+];
+
 function startGame() {
   clearInterval(spawnTimer);
   clearInterval(countdownTimer);
-  document.querySelectorAll(".item, .sparkle-burst, .floating-score").forEach(el => el.remove());
+  document.querySelectorAll(".item, .sparkle-burst, .floating-score, .fox-trail").forEach(el => el.remove());
 
   score = 0;
   hearts = 3;
@@ -710,7 +989,10 @@ function startGame() {
   heartsEl.textContent = hearts;
   timeEl.textContent = timeLeft;
   fox.style.left = foxPercent + "%";
+
   foxSpeech.textContent = "Catch the glowing wishes, little one. ✨";
+  rewardTitle.textContent = "Foxfire Forest";
+  rewardMessage.textContent = "The forest has opened. Follow the glow.";
 
   playOverlay.classList.add("hidden");
 
@@ -718,14 +1000,20 @@ function startGame() {
   sounds.bg.play().catch(() => {});
 
   spawnTimer = setInterval(spawnItem, 850);
-  countdownTimer = setInterval(() => {
-    if (!gameRunning) return;
-    timeLeft--;
-    timeEl.textContent = timeLeft;
-    if (timeLeft <= 0) finishGame();
-  }, 1000);
+  countdownTimer = setInterval(tickTime, 1000);
 
   requestAnimationFrame(gameLoop);
+}
+
+function tickTime() {
+  if (!gameRunning) return;
+
+  timeLeft--;
+  timeEl.textContent = timeLeft;
+
+  if (timeLeft <= 0) {
+    finishGame();
+  }
 }
 
 function spawnItem() {
@@ -735,7 +1023,7 @@ function spawnItem() {
   item.classList.add("item");
 
   const img = document.createElement("img");
-  img.className = "fall-img";
+  img.classList.add("fall-img");
 
   const chance = Math.random();
 
@@ -743,17 +1031,21 @@ function spawnItem() {
     item.dataset.type = "dandelion";
     item.classList.add("dandelion-item");
     setCleanImage(img, "dandelion-new.png");
+    img.alt = "Dandelion wish";
     item.style.animationDuration = "5.6s";
   } else if (chance < 0.82) {
     item.dataset.type = "sheep";
     item.classList.add("sheep-item");
     setCleanImage(img, "sheep-new.png");
+    img.alt = "Fluffy sheep";
     item.style.animationDuration = "5.2s";
     playSound(sounds.sheep);
+    entranceSparkle();
   } else {
     item.dataset.type = "rock";
     item.classList.add("rock-item");
     setCleanImage(img, "rock-new.png");
+    img.alt = "Falling rock";
     item.style.animationDuration = "4.7s";
   }
 
@@ -769,19 +1061,32 @@ function spawnItem() {
 function gameLoop() {
   if (!gameRunning) return;
 
-  if (moveLeft) foxPercent -= 1.1;
-  if (moveRight) foxPercent += 1.1;
+  moveFoxWithKeys();
+  checkCollisions();
+
+  requestAnimationFrame(gameLoop);
+}
+
+function moveFoxWithKeys() {
+  if (moveLeft) {
+    foxPercent -= 1.1;
+    makeFoxTrail();
+  }
+
+  if (moveRight) {
+    foxPercent += 1.1;
+    makeFoxTrail();
+  }
 
   foxPercent = Math.max(8, Math.min(92, foxPercent));
   fox.style.left = foxPercent + "%";
-
-  checkCollisions();
-  requestAnimationFrame(gameLoop);
 }
 
 function checkCollisions() {
   const foxRect = fox.getBoundingClientRect();
-  document.querySelectorAll(".item").forEach(item => {
+  const items = document.querySelectorAll(".item");
+
+  items.forEach(item => {
     const itemRect = item.getBoundingClientRect();
 
     if (
@@ -796,33 +1101,45 @@ function checkCollisions() {
 }
 
 function catchItem(item) {
-  if (!item.parentElement) return;
+  if (!gameRunning || !item.parentElement) return;
 
   const type = item.dataset.type;
+  const rect = item.getBoundingClientRect();
+  const gameRect = game.getBoundingClientRect();
+  const x = rect.left - gameRect.left + rect.width / 2;
+  const y = rect.top - gameRect.top + rect.height / 2;
 
   if (type === "dandelion") {
     score += 10;
+    scoreEl.textContent = score;
+    foxSpeech.textContent = "A wish was caught! Beautiful work. ✨";
     playSound(sounds.catch);
-    foxSpeech.textContent = "A wish was caught! ✨";
+    showFloatingScore("+10", x, y);
+    sparkleBurst(x, y);
   }
 
   if (type === "sheep") {
     score += 50;
+    scoreEl.textContent = score;
+    foxSpeech.textContent = "You caught a fluffy sheep! 🐑";
     playSound(sounds.sheep);
     playSound(sounds.special);
-    foxSpeech.textContent = "You caught a fluffy sheep! 🐑";
+    showFloatingScore("+50", x, y);
+    sparkleBurst(x, y);
+    sparkleBurst(x + 20, y - 10);
   }
 
   if (type === "rock") {
     hearts--;
-    playSound(sounds.miss);
+    heartsEl.textContent = hearts;
     foxSpeech.textContent = "Careful, little fox! Dodge the rocks.";
+    playSound(sounds.miss);
+    showFloatingScore("-1 heart", x, y);
 
-    if (hearts <= 0) finishGame();
+    if (hearts <= 0) {
+      finishGame();
+    }
   }
-
-  scoreEl.textContent = score;
-  heartsEl.textContent = hearts;
 
   fox.classList.add("catch");
   setTimeout(() => fox.classList.remove("catch"), 360);
@@ -834,36 +1151,86 @@ function finishGame() {
   gameRunning = false;
   clearInterval(spawnTimer);
   clearInterval(countdownTimer);
+
   sounds.bg.pause();
 
   document.querySelectorAll(".item").forEach(el => el.remove());
+
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  rewardTitle.textContent = message.title;
+  rewardMessage.textContent = message.text;
 
   foxSpeech.textContent = "The forest is resting now. Press play to try again. 🌙";
   playOverlay.classList.remove("hidden");
   playOverlay.innerHTML = `<button class="big-play" onclick="startGame()">🌙 Play Again — Score ${score} 🌙</button>`;
 }
 
-function moveFox(clientX) {
-  const rect = game.getBoundingClientRect();
-  foxPercent = ((clientX - rect.left) / rect.width) * 100;
-  foxPercent = Math.max(8, Math.min(92, foxPercent));
-  fox.style.left = foxPercent + "%";
+function sparkleBurst(x, y) {
+  const burst = document.createElement("div");
+  burst.className = "sparkle-burst";
+  burst.style.left = x + "px";
+  burst.style.top = y + "px";
+  game.appendChild(burst);
+  setTimeout(() => burst.remove(), 700);
 }
 
-game.addEventListener("mousemove", e => moveFox(e.clientX));
+function showFloatingScore(text, x, y) {
+  const scorePop = document.createElement("div");
+  scorePop.className = "floating-score";
+  scorePop.textContent = text;
+  scorePop.style.left = x + "px";
+  scorePop.style.top = y + "px";
+  game.appendChild(scorePop);
+  setTimeout(() => scorePop.remove(), 950);
+}
 
-game.addEventListener("touchmove", e => {
-  if (e.touches.length > 0) moveFox(e.touches[0].clientX);
+function entranceSparkle() {
+  const x = Math.random() * game.clientWidth;
+  sparkleBurst(x, 45);
+}
+
+function makeFoxTrail() {
+  const now = Date.now();
+  if (now - lastTrailTime < 90 || !gameRunning) return;
+  lastTrailTime = now;
+
+  const foxRect = fox.getBoundingClientRect();
+  const gameRect = game.getBoundingClientRect();
+
+  const trail = document.createElement("div");
+  trail.className = "fox-trail";
+  trail.style.left = (foxRect.left - gameRect.left + foxRect.width / 2) + "px";
+  trail.style.top = (foxRect.top - gameRect.top + foxRect.height * 0.72) + "px";
+
+  game.appendChild(trail);
+  setTimeout(() => trail.remove(), 800);
+}
+
+function moveFox(clientX) {
+  const rect = game.getBoundingClientRect();
+  let percent = ((clientX - rect.left) / rect.width) * 100;
+  percent = Math.max(8, Math.min(92, percent));
+  foxPercent = percent;
+  fox.style.left = foxPercent + "%";
+  makeFoxTrail();
+}
+
+game.addEventListener("mousemove", event => moveFox(event.clientX));
+
+game.addEventListener("touchmove", event => {
+  if (event.touches.length > 0) {
+    moveFox(event.touches[0].clientX);
+  }
 }, { passive: true });
 
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") moveLeft = true;
-  if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") moveRight = true;
+document.addEventListener("keydown", event => {
+  if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") moveLeft = true;
+  if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") moveRight = true;
 });
 
-document.addEventListener("keyup", e => {
-  if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") moveLeft = false;
-  if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") moveRight = false;
+document.addEventListener("keyup", event => {
+  if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") moveLeft = false;
+  if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") moveRight = false;
 });
 </script>
 </body>
