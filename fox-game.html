@@ -1,602 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Foxfire Forest Game | Dolphintouch Oracle</title>
-  <style>
-    :root {
-      --gold: #f8d57a;
-      --soft-gold: #fff0b8;
-      --rose: #d88a72;
-      --forest: #0c1b13;
-      --moss: #233b29;
-      --cream: #fff8dc;
-      --shadow: rgba(0, 0, 0, 0.45);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foxfire Forest Game</title>
 
-    * { box-sizing: border-box; }
+<style>
+body{
+  margin:0;
+  font-family:Georgia, serif;
+  color:#f5e9c8;
+  text-align:center;
+  background:
+    linear-gradient(rgba(16,22,16,0.7), rgba(16,22,16,0.9)),
+    url("forest-bg.jpg");
+  background-size:cover;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Georgia, 'Times New Roman', serif;
-      color: var(--cream);
-      background:
-        radial-gradient(circle at top, rgba(255, 215, 130, 0.16), transparent 34%),
-        linear-gradient(rgba(4, 12, 8, 0.68), rgba(4, 12, 8, 0.86)),
-        url('forest-bg.jpg');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+/* Game area */
+#game{
+  position:relative;
+  width:100%;
+  height:80vh;
+  overflow:hidden;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(circle, rgba(255, 230, 150, 0.45) 0 2px, transparent 3px),
-        radial-gradient(circle, rgba(255, 190, 120, 0.28) 0 1.5px, transparent 3px);
-      background-size: 120px 140px, 180px 210px;
-      animation: fireflies 12s linear infinite;
-      opacity: 0.65;
-    }
+/* Fox */
+#fox{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:60px;
+}
 
-    @keyframes fireflies {
-      from { background-position: 0 0, 40px 80px; }
-      to { background-position: 120px -180px, 220px -140px; }
-    }
+/* Falling items */
+.item{
+  position:absolute;
+  top:-50px;
+  font-size:30px;
+  animation:fall linear forwards;
+}
 
-    .game-wrap {
-      width: min(920px, 100%);
-      border: 1px solid rgba(248, 213, 122, 0.5);
-      background: rgba(12, 27, 19, 0.82);
-      box-shadow: 0 18px 55px var(--shadow), inset 0 0 40px rgba(255, 218, 130, 0.08);
-      border-radius: 28px;
-      padding: 22px;
-      position: relative;
-      overflow: hidden;
-    }
+@keyframes fall{
+  to{ top:100%; }
+}
 
-    .game-wrap::after {
-      content: "";
-      position: absolute;
-      inset: -50px;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 20%, rgba(248, 213, 122, 0.15), transparent 35%);
-      animation: glow 5s ease-in-out infinite alternate;
-    }
+/* Score */
+#score{
+  margin:10px;
+  font-size:20px;
+}
 
-    @keyframes glow {
-      from { opacity: 0.35; }
-      to { opacity: 0.85; }
-    }
+/* Message */
+#messageBox{
+  display:none;
+  margin:20px auto;
+  max-width:500px;
+  padding:20px;
+  background:rgba(255,255,255,0.1);
+  border-radius:15px;
+  border:1px solid rgba(255,255,255,0.2);
+}
 
-    .header {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      font-size: clamp(2rem, 5vw, 3.8rem);
-      color: var(--gold);
-      text-shadow: 0 0 18px rgba(248, 213, 122, 0.45);
-      letter-spacing: 0.04em;
-    }
-
-    .subtitle {
-      margin: 0 auto;
-      max-width: 680px;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      color: rgba(255, 248, 220, 0.88);
-    }
-
-    .score-row {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 16px 0;
-    }
-
-    .pill {
-      border: 1px solid rgba(248, 213, 122, 0.45);
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 0.95rem;
-      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
-    }
-
-    .forest-board {
-      position: relative;
-      z-index: 2;
-      height: min(56vh, 430px);
-      min-height: 330px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid rgba(248, 213, 122, 0.35);
-      background:
-        linear-gradient(to top, rgba(20, 50, 28, 0.95), rgba(13, 32, 25, 0.75), rgba(12, 18, 24, 0.45)),
-        radial-gradient(circle at 20% 40%, rgba(248, 213, 122, 0.12), transparent 18%),
-        radial-gradient(circle at 80% 30%, rgba(216, 138, 114, 0.12), transparent 22%);
-      cursor: pointer;
-      box-shadow: inset 0 -35px 55px rgba(0, 0, 0, 0.35);
-    }
-
-    .moon {
-      position: absolute;
-      top: 24px;
-      right: 42px;
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff9d9, #f2d87d 68%, transparent 72%);
-      box-shadow: 0 0 45px rgba(255, 240, 184, 0.65);
-      opacity: 0.9;
-    }
-
-    .hill {
-      position: absolute;
-      bottom: -30px;
-      left: -5%;
-      width: 110%;
-      height: 120px;
-      background: #142718;
-      border-radius: 50% 50% 0 0;
-      box-shadow: 0 -18px 30px rgba(0, 0, 0, 0.28);
-    }
-
-    .tree {
-      position: absolute;
-      bottom: 45px;
-      width: 22px;
-      height: 120px;
-      background: linear-gradient(#3a2417, #1f120d);
-      border-radius: 12px 12px 0 0;
-      opacity: 0.75;
-    }
-
-    .tree::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 55px;
-      width: 95px;
-      height: 120px;
-      background: radial-gradient(circle at 50% 20%, #31533a, #142818 70%);
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      border-radius: 18px;
-    }
-
-    .tree.t1 { left: 7%; transform: scale(1.15); }
-    .tree.t2 { left: 23%; transform: scale(0.8); opacity: 0.48; }
-    .tree.t3 { right: 18%; transform: scale(1.05); }
-    .tree.t4 { right: 4%; transform: scale(0.85); opacity: 0.56; }
-
-    .fox {
-      position: absolute;
-      left: 50%;
-      bottom: 55px;
-      transform: translateX(-50%);
-      width: 110px;
-      height: 100px;
-      transition: left 0.16s ease;
-      filter: drop-shadow(0 12px 8px rgba(0,0,0,0.35));
-    }
-
-    .fox-body {
-      position: absolute;
-      bottom: 12px;
-      left: 26px;
-      width: 58px;
-      height: 42px;
-      background: linear-gradient(135deg, #c95d2d, #f09b45);
-      border-radius: 55% 55% 48% 48%;
-    }
-
-    .fox-head {
-      position: absolute;
-      bottom: 44px;
-      left: 38px;
-      width: 44px;
-      height: 42px;
-      background: linear-gradient(135deg, #d86932, #f0a354);
-      border-radius: 50% 50% 45% 45%;
-    }
-
-    .fox-head::before,
-    .fox-head::after {
-      content: "";
-      position: absolute;
-      top: -18px;
-      width: 18px;
-      height: 28px;
-      background: #c95d2d;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    }
-
-    .fox-head::before { left: 2px; transform: rotate(-14deg); }
-    .fox-head::after { right: 2px; transform: rotate(14deg); }
-
-    .face-white {
-      position: absolute;
-      bottom: 0;
-      left: 10px;
-      width: 25px;
-      height: 18px;
-      background: #fff2d4;
-      border-radius: 50% 50% 45% 45%;
-    }
-
-    .eye {
-      position: absolute;
-      top: 16px;
-      width: 5px;
-      height: 5px;
-      background: #1b0f0b;
-      border-radius: 50%;
-    }
-
-    .eye.left { left: 12px; }
-    .eye.right { right: 12px; }
-
-    .nose {
-      position: absolute;
-      bottom: 8px;
-      left: 20px;
-      width: 6px;
-      height: 5px;
-      background: #1b0f0b;
-      border-radius: 50%;
-    }
-
-    .tail {
-      position: absolute;
-      bottom: 24px;
-      left: 4px;
-      width: 54px;
-      height: 30px;
-      background: linear-gradient(90deg, #fff0d0 0 20%, #df7034 24%, #f5a34a 100%);
-      border-radius: 60% 20% 50% 60%;
-      transform: rotate(-18deg);
-      transform-origin: right center;
-      animation: tail 1.7s ease-in-out infinite;
-    }
-
-    @keyframes tail {
-      0%, 100% { transform: rotate(-18deg); }
-      50% { transform: rotate(-8deg); }
-    }
-
-    .legs {
-      position: absolute;
-      bottom: 0;
-      left: 40px;
-      width: 44px;
-      height: 18px;
-    }
-
-    .legs span {
-      position: absolute;
-      bottom: 0;
-      width: 9px;
-      height: 18px;
-      background: #3b1f14;
-      border-radius: 8px;
-    }
-
-    .legs span:nth-child(1) { left: 0; }
-    .legs span:nth-child(2) { left: 16px; }
-    .legs span:nth-child(3) { left: 31px; }
-
-    .star, .bramble {
-      position: absolute;
-      top: -40px;
-      transform: translateX(-50%);
-      user-select: none;
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-fill-mode: forwards;
-    }
-
-    .star {
-      width: 34px;
-      height: 34px;
-      color: var(--soft-gold);
-      text-shadow: 0 0 14px rgba(255, 235, 180, 0.95);
-      font-size: 32px;
-    }
-
-    .bramble {
-      width: 38px;
-      height: 38px;
-      color: #9a6046;
-      font-size: 30px;
-      filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
-    }
-
-    @keyframes fall {
-      to { top: calc(100% + 45px); transform: translateX(-50%) rotate(180deg); }
-    }
-
-    .oracle-card {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(0.88);
-      width: min(310px, 82%);
-      min-height: 190px;
-      border-radius: 22px;
-      border: 1px solid rgba(248, 213, 122, 0.68);
-      background:
-        linear-gradient(rgba(255, 248, 220, 0.08), rgba(255, 248, 220, 0.02)),
-        rgba(15, 31, 22, 0.96);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(248, 213, 122, 0.25);
-      padding: 24px 22px;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.45s ease;
-    }
-
-    .oracle-card.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-      pointer-events: auto;
-    }
-
-    .oracle-card h2 {
-      color: var(--gold);
-      margin: 0 0 10px;
-      font-size: 1.75rem;
-    }
-
-    .oracle-card p {
-      margin: 0 0 18px;
-      line-height: 1.5;
-      color: rgba(255, 248, 220, 0.92);
-    }
-
-    button {
-      position: relative;
-      z-index: 3;
-      border: 1px solid rgba(248, 213, 122, 0.75);
-      background: linear-gradient(135deg, #6d341c, #b86435);
-      color: #fff8dc;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-    }
-
-    button:hover { filter: brightness(1.1); }
-
-    .controls {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .instructions {
-      text-align: center;
-      color: rgba(255, 248, 220, 0.78);
-      font-size: 0.95rem;
-      margin: 14px 0 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    @media (max-width: 640px) {
-      .game-wrap { padding: 15px; border-radius: 20px; }
-      .forest-board { min-height: 360px; }
-      .fox { width: 92px; transform: translateX(-50%) scale(0.9); }
-      .tree.t1, .tree.t4 { opacity: 0.35; }
-    }
-  </style>
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:999px;
+  background:#c99278;
+  color:white;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-  <main class="game-wrap">
-    <section class="header">
-      <h1>Foxfire Forest</h1>
-      <p class="subtitle">Guide the little fox beneath the moon. Catch glowing oracle stars, avoid the brambles, and receive a forest message when your path is complete.</p>
-    </section>
 
-    <section class="score-row">
-      <div class="pill">Oracle Stars: <span id="score">0</span></div>
-      <div class="pill">Time: <span id="time">30</span>s</div>
-      <div class="pill">Best: <span id="best">0</span></div>
-    </section>
+<a href="index.html" style="position:absolute;left:20px;top:20px;color:#fff;">
+← Return to Forest
+</a>
 
-    <section class="forest-board" id="board" aria-label="Foxfire Forest game area">
-      <div class="moon"></div>
-      <div class="tree t1"></div>
-      <div class="tree t2"></div>
-      <div class="tree t3"></div>
-      <div class="tree t4"></div>
-      <div class="hill"></div>
+<h1>🦊 Foxfire Forest</h1>
+<div id="score">Score: 0</div>
 
-      <div class="fox" id="fox" aria-label="Little fox">
-        <div class="tail"></div>
-        <div class="fox-body"></div>
-        <div class="legs"><span></span><span></span><span></span></div>
-        <div class="fox-head">
-          <span class="eye left"></span>
-          <span class="eye right"></span>
-          <span class="face-white"></span>
-          <span class="nose"></span>
-        </div>
-      </div>
+<div id="game">
+  <div id="fox">🦊</div>
+</div>
 
-      <div class="oracle-card" id="messageCard">
-        <h2 id="oracleTitle">The Hidden Path</h2>
-        <p id="oracleText">A quiet path opens when you trust the small golden signs.</p>
-        <button onclick="restartGame()">Play Again</button>
-      </div>
-    </section>
+<div id="messageBox">
+  <h2 id="msgTitle"></h2>
+  <p id="msgText"></p>
+  <button onclick="restart()">Play Again</button>
+</div>
 
-    <div class="controls">
-      <button onclick="startGame()" id="startBtn">Start the Fox Path</button>
-      <button onclick="restartGame()">Restart</button>
-    </div>
+<script>
+let score = 0;
+let gameRunning = true;
 
-    <p class="instructions">Move your mouse or finger left and right. Catch ✦ stars. Avoid ✹ brambles.</p>
-  </main>
+const messages = [
+  {title:"The Gentle Path", text:"You do not need to rush. What is meant for you will not pass you by."},
+  {title:"Fox Wisdom", text:"Trust your instincts. You already know the way."},
+  {title:"Soft Courage", text:"Even the smallest steps forward are acts of bravery."},
+  {title:"Forest Whisper", text:"Something quiet is guiding you. Listen closely."},
+  {title:"Hidden Magic", text:"There is more unfolding than you can see right now."}
+];
 
-  <script>
-    const board = document.getElementById('board');
-    const fox = document.getElementById('fox');
-    const scoreEl = document.getElementById('score');
-    const timeEl = document.getElementById('time');
-    const bestEl = document.getElementById('best');
-    const startBtn = document.getElementById('startBtn');
-    const messageCard = document.getElementById('messageCard');
-    const oracleTitle = document.getElementById('oracleTitle');
-    const oracleText = document.getElementById('oracleText');
+// Move fox
+document.addEventListener("mousemove", e=>{
+  document.getElementById("fox").style.left = e.clientX + "px";
+});
 
-    let score = 0;
-    let timeLeft = 30;
-    let playing = false;
-    let spawnTimer;
-    let countdownTimer;
-    let best = Number(localStorage.getItem('foxfireBest') || 0);
-    bestEl.textContent = best;
+// Spawn items
+setInterval(()=>{
+  if(!gameRunning) return;
 
-    const messages = [
-      { title: 'The Moonlit Trail', text: 'Follow the small glow. You do not need the whole path revealed to begin.' },
-      { title: 'Foxfire Blessing', text: 'Your clever heart already knows how to slip through the shadows.' },
-      { title: 'The Listening Hollow', text: 'Pause. The forest is speaking softly, and one gentle answer is near.' },
-      { title: 'Hidden Shelter', text: 'Rest is not a delay. It is where your spirit gathers its warmth again.' },
-      { title: 'Ember Eyes', text: 'You are noticing more than you think. Trust what keeps sparkling in the corner of your vision.' },
-      { title: 'The Old Trail', text: 'Something familiar returns, but this time you carry wiser feet.' }
-    ];
+  let item = document.createElement("div");
+  item.classList.add("item");
 
-    function startGame() {
-      if (playing) return;
-      clearItems();
-      score = 0;
-      timeLeft = 30;
-      playing = true;
-      messageCard.classList.remove('show');
-      scoreEl.textContent = score;
-      timeEl.textContent = timeLeft;
-      startBtn.textContent = 'The fox is running...';
+  let rand = Math.random();
 
-      spawnTimer = setInterval(spawnItem, 650);
-      countdownTimer = setInterval(() => {
-        timeLeft--;
-        timeEl.textContent = timeLeft;
-        if (timeLeft <= 0) endGame();
-      }, 1000);
+  if(rand < 0.6){
+    item.innerHTML = "🌼"; // dandelion
+    item.dataset.type = "good";
+  } else if(rand < 0.85){
+    item.innerHTML = "🐑"; // sheep
+    item.dataset.type = "bonus";
+  } else {
+    item.innerHTML = "🪨"; // rock
+    item.dataset.type = "bad";
+  }
+
+  item.style.left = Math.random()*window.innerWidth + "px";
+  item.style.animationDuration = (3 + Math.random()*2) + "s";
+
+  document.getElementById("game").appendChild(item);
+
+  // Collision
+  let check = setInterval(()=>{
+    if(!gameRunning){ clearInterval(check); return; }
+
+    let fox = document.getElementById("fox").getBoundingClientRect();
+    let it = item.getBoundingClientRect();
+
+    if(!(it.right < fox.left || it.left > fox.right || it.bottom < fox.top || it.top > fox.bottom)){
+      if(item.dataset.type === "good") score += 1;
+      if(item.dataset.type === "bonus") score += 3;
+      if(item.dataset.type === "bad") score -= 2;
+
+      document.getElementById("score").innerText = "Score: " + score;
+
+      item.remove();
+      clearInterval(check);
     }
+  },50);
 
-    function restartGame() {
-      clearInterval(spawnTimer);
-      clearInterval(countdownTimer);
-      playing = false;
-      clearItems();
-      messageCard.classList.remove('show');
-      startBtn.textContent = 'Start the Fox Path';
-      startGame();
-    }
+  item.addEventListener("animationend", ()=> item.remove());
 
-    function endGame() {
-      playing = false;
-      clearInterval(spawnTimer);
-      clearInterval(countdownTimer);
-      clearItems();
-      startBtn.textContent = 'Start the Fox Path';
+},700);
 
-      if (score > best) {
-        best = score;
-        localStorage.setItem('foxfireBest', best);
-        bestEl.textContent = best;
-      }
+// End game
+setTimeout(()=>{
+  gameRunning = false;
 
-      const index = Math.min(messages.length - 1, Math.floor(score / 3));
-      oracleTitle.textContent = messages[index].title;
-      oracleText.textContent = score <= 0
-        ? 'Even when no stars are caught, the little fox still finds its way home. Begin again gently.'
-        : messages[index].text;
-      messageCard.classList.add('show');
-    }
+  let msg = messages[Math.floor(Math.random()*messages.length)];
 
-    function spawnItem() {
-      if (!playing) return;
-      const item = document.createElement('div');
-      const isStar = Math.random() > 0.28;
-      item.className = isStar ? 'star' : 'bramble';
-      item.textContent = isStar ? '✦' : '✹';
-      item.dataset.type = isStar ? 'star' : 'bramble';
-      item.style.left = `${8 + Math.random() * 84}%`;
-      item.style.animationDuration = `${2.7 + Math.random() * 1.2}s`;
-      board.appendChild(item);
+  document.getElementById("msgTitle").innerText = msg.title;
+  document.getElementById("msgText").innerText = msg.text;
 
-      const collision = setInterval(() => {
-        if (!playing || !document.body.contains(item)) {
-          clearInterval(collision);
-          return;
-        }
-        if (touching(item, fox)) {
-          if (item.dataset.type === 'star') score++;
-          else score = Math.max(0, score - 2);
-          scoreEl.textContent = score;
-          item.remove();
-          clearInterval(collision);
-        }
-      }, 40);
+  document.getElementById("messageBox").style.display = "block";
 
-      item.addEventListener('animationend', () => {
-        item.remove();
-        clearInterval(collision);
-      });
-    }
+},30000);
 
-    function touching(a, b) {
-      const ar = a.getBoundingClientRect();
-      const br = b.getBoundingClientRect();
-      return !(ar.right < br.left + 18 || ar.left > br.right - 18 || ar.bottom < br.top + 20 || ar.top > br.bottom - 5);
-    }
+function restart(){
+  location.reload();
+}
+</script>
 
-    function moveFox(clientX) {
-      const rect = board.getBoundingClientRect();
-      let percent = ((clientX - rect.left) / rect.width) * 100;
-      percent = Math.max(7, Math.min(93, percent));
-      fox.style.left = `${percent}%`;
-    }
-
-    board.addEventListener('mousemove', (event) => moveFox(event.clientX));
-    board.addEventListener('touchmove', (event) => {
-      event.preventDefault();
-      moveFox(event.touches[0].clientX);
-    }, { passive: false });
-
-    board.addEventListener('click', () => {
-      if (!playing) startGame();
-    });
-
-    function clearItems() {
-      document.querySelectorAll('.star, .bramble').forEach(item => item.remove());
-    }
-  </script>
 </body>
 </html>
