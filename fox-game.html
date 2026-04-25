@@ -2,166 +2,334 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Foxfire Forest Drop Game</title>
+<title>Foxfire Forest Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  overflow: hidden;
   font-family: Georgia, serif;
-  background: #102815;
-  color: white;
+  background: linear-gradient(135deg, #172714, #31532a);
+  color: #fff7dc;
 }
 
-#game {
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 18px;
+  padding: 18px;
+}
+
+.game-wrap {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  min-height: 720px;
+  border-radius: 28px;
   overflow: hidden;
   background:
-    radial-gradient(circle at top, rgba(255, 232, 145, 0.18), transparent 35%),
-    linear-gradient(#0b2013, #23441f 70%, #122d14);
+    radial-gradient(circle at top, rgba(255, 230, 150, 0.25), transparent 35%),
+    linear-gradient(#17381f, #315d2b 65%, #173018);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+  border: 3px solid rgba(255, 230, 150, 0.25);
 }
 
-#scoreBoard {
+.game-title {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 20;
-  font-size: 20px;
-  background: rgba(0,0,0,0.35);
-  padding: 10px 15px;
-  border-radius: 16px;
+  top: 15px;
+  left: 22px;
+  z-index: 5;
+  font-size: 32px;
+  text-shadow: 0 3px 8px #000;
 }
 
-#soundPanel {
+.score-bar {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 30;
-  background: rgba(0,0,0,0.35);
-  padding: 10px 14px;
-  border-radius: 16px;
+  top: 65px;
+  left: 22px;
+  z-index: 5;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.score-pill {
+  background: rgba(40, 25, 10, 0.58);
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 18px;
+}
+
+.sound-controls {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 8;
+  background: rgba(40, 25, 10, 0.55);
+  border-radius: 999px;
+  padding: 9px 13px;
+  display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.sound-controls button {
+  border: 0;
+  border-radius: 999px;
+  background: #ffd66d;
+  cursor: pointer;
+  padding: 6px 10px;
 }
 
 #volumeSlider {
-  width: 100px;
+  width: 95px;
 }
 
-button {
-  font-family: Georgia, serif;
-  font-size: 18px;
-  padding: 9px 18px;
-  border: none;
-  border-radius: 999px;
-  background: #ffd86b;
-  color: #3b2600;
-  cursor: pointer;
-  box-shadow: 0 0 18px rgba(255,216,107,0.55);
-}
-
-#startScreen {
+.sky-glow {
   position: absolute;
   inset: 0;
-  z-index: 50;
-  background: rgba(0,0,0,0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 25px;
+  background:
+    radial-gradient(circle at 35% 16%, rgba(255,255,210,0.25), transparent 18%),
+    radial-gradient(circle at 70% 20%, rgba(255,190,90,0.15), transparent 24%);
+  pointer-events: none;
 }
 
-#startBox {
-  max-width: 430px;
-  background: rgba(18, 43, 25, 0.96);
-  border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 26px;
-  padding: 30px;
-  box-shadow: 0 0 45px rgba(255, 225, 145, 0.24);
+.tree {
+  position: absolute;
+  bottom: 110px;
+  width: 90px;
+  height: 280px;
+  background: linear-gradient(#3b2616, #1d120b);
+  border-radius: 45px 45px 8px 8px;
+  opacity: 0.55;
+}
+
+.tree::before {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  background: radial-gradient(circle, #1f4d23, #123314);
+  border-radius: 50%;
+  top: -115px;
+  left: -60px;
+}
+
+.t1 { left: 8%; }
+.t2 { right: 10%; transform: scale(1.15); }
+.t3 { left: 45%; transform: scale(0.85); opacity: 0.35; }
+
+.hill {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: -60px;
+  height: 210px;
+  background: radial-gradient(ellipse at center, #315927 0%, #173316 70%);
+  border-radius: 50% 50% 0 0;
+}
+
+.flower {
+  position: absolute;
+  bottom: 120px;
+  font-size: 26px;
+  opacity: 0.85;
+  animation: sway 3s ease-in-out infinite alternate;
+}
+
+.f1 { left: 12%; }
+.f2 { left: 22%; bottom: 145px; }
+.f3 { right: 23%; }
+.f4 { right: 12%; bottom: 140px; }
+
+@keyframes sway {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
 }
 
 #fox {
   position: absolute;
-  bottom: 18px;
+  bottom: 68px;
   left: 50%;
-  width: 120px;
+  width: 135px;
   transform: translateX(-50%);
   z-index: 10;
+  filter: drop-shadow(0 0 18px rgba(255, 174, 73, 0.95));
   pointer-events: none;
-  filter: drop-shadow(0 0 16px rgba(255, 170, 70, 0.95));
 }
 
 .falling {
   position: absolute;
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  z-index: 5;
-  animation: itemGlow 1.4s infinite alternate;
-}
-
-.special {
-  width: 76px;
-  height: 76px;
-  filter: drop-shadow(0 0 20px gold);
-}
-
-.sheep {
+  z-index: 6;
   width: 78px;
   height: 78px;
-  filter: drop-shadow(0 0 16px white);
+  pointer-events: none;
 }
 
-@keyframes itemGlow {
-  from { filter: drop-shadow(0 0 5px rgba(255,255,180,0.5)); }
-  to { filter: drop-shadow(0 0 17px rgba(255,255,180,0.95)); }
+.falling img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255, 245, 165, 0.85));
+}
+
+.sheep-item {
+  width: 86px;
+  height: 86px;
+}
+
+.rock-item img {
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
 }
 
 .sparkle {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #fff3ad;
+  background: #fff1a8;
   border-radius: 50%;
+  box-shadow: 0 0 12px #fff1a8;
+  z-index: 20;
   pointer-events: none;
-  z-index: 15;
-  box-shadow: 0 0 12px #fff3ad;
-  animation: sparkleFade 700ms forwards;
+  animation: sparkleFade 750ms forwards;
 }
 
 @keyframes sparkleFade {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
   to {
     opacity: 0;
-    transform: scale(3.2) translateY(-25px);
+    transform: scale(3) translateY(-25px);
   }
 }
 
-.magicRing {
+.magic-ring {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255,240,160,0.9);
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 232, 132, 0.9);
   border-radius: 50%;
+  z-index: 19;
   pointer-events: none;
-  z-index: 14;
-  animation: ringFade 650ms forwards;
+  animation: ringFade 700ms forwards;
 }
 
 @keyframes ringFade {
   to {
     opacity: 0;
-    transform: scale(4);
+    transform: scale(5);
+  }
+}
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(8, 20, 10, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.big-play {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  padding: 18px 34px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffd66d;
+  color: #3a2100;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(255, 214, 109, 0.7);
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.helper-card,
+.wood-panel,
+.reward-card {
+  background:
+    linear-gradient(135deg, rgba(86, 55, 25, 0.94), rgba(44, 26, 13, 0.96));
+  border: 2px solid rgba(255, 221, 145, 0.28);
+  border-radius: 26px;
+  padding: 18px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+}
+
+.speech {
+  background: #fff2c8;
+  color: #4a2b08;
+  padding: 14px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.helper-fox-img {
+  width: 150px;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 12px rgba(255, 190, 90, 0.75));
+}
+
+.wood-panel h2,
+.reward-card h3 {
+  margin-top: 0;
+  color: #ffe7a4;
+}
+
+.how-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+.how-icon-img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.45));
+}
+
+.points {
+  display: block;
+  color: #ffd66d;
+  font-size: 14px;
+}
+
+.bad-points {
+  color: #ff9d8a;
+}
+
+.reward-card {
+  display: none;
+}
+
+.reward-card.show {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .game-wrap {
+    min-height: 620px;
+  }
+
+  .side-panel {
+    order: 2;
   }
 }
 </style>
@@ -169,50 +337,112 @@ button {
 
 <body>
 
-<div id="game">
+<div class="page">
 
-  <div id="scoreBoard">
-    Score: <span id="score">0</span> |
-    Missed: <span id="missed">0</span>
-  </div>
+  <main class="game-wrap" id="game">
+    <div class="sky-glow"></div>
 
-  <div id="soundPanel">
-    <button id="muteBtn">🔊</button>
-    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.6">
-  </div>
+    <h2 class="game-title">Foxfire Forest</h2>
 
-  <div id="startScreen">
-    <div id="startBox">
-      <h1>🦊 Foxfire Forest</h1>
-      <p>Catch the glowing dandelions and magical treasures.</p>
-      <p>Listen for sheep arriving in the enchanted forest.</p>
-      <button id="startBtn">Start Game</button>
+    <div class="score-bar">
+      <div class="score-pill">Score: <span id="score">0</span></div>
+      <div class="score-pill">Hearts: <span id="hearts">3</span> 💛</div>
+      <div class="score-pill">Level: <span id="level">1</span></div>
     </div>
-  </div>
 
-  <img id="fox" src="foxy-player-new.png" alt="fox">
+    <div class="sound-controls">
+      <button id="muteBtn" title="Mute sound">🔊</button>
+      <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.6">
+    </div>
+
+    <div class="tree t1"></div>
+    <div class="tree t2"></div>
+    <div class="tree t3"></div>
+
+    <div class="flower f1">✿</div>
+    <div class="flower f2">❁</div>
+    <div class="flower f3">✿</div>
+    <div class="flower f4">❀</div>
+
+    <div class="hill"></div>
+
+    <img id="fox" src="foxy-player-new.png" alt="Cute fox player">
+
+    <div id="playOverlay" class="play-overlay">
+      <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
+    </div>
+  </main>
+
+  <aside class="side-panel">
+    <div class="helper-card">
+      <div class="speech" id="foxSpeech">
+        You’re doing amazing! Catch the glowing wishes, little one. ✨
+      </div>
+      <img class="helper-fox-img" src="foxy-helper-new.png" alt="Friendly fox helper">
+    </div>
+
+    <div class="wood-panel">
+      <h2>How to Play</h2>
+
+      <div class="how-item">
+        <img class="how-icon-img" src="dandelion-new.png" alt="Dandelion wish">
+        <div>
+          <strong>Catch Dandelion Wishes</strong>
+          <span class="points">+10 points</span>
+        </div>
+      </div>
+
+      <div class="how-item">
+        <img class="how-icon-img" src="sheep-new.png" alt="Fluffy sheep">
+        <div>
+          <strong>Catch Fluffy Sheep</strong>
+          <span class="points">+50 points</span>
+        </div>
+      </div>
+
+      <div class="how-item">
+        <img class="how-icon-img" src="rock-new.png" alt="Falling rock">
+        <div>
+          <strong>Avoid the Rocks</strong>
+          <span class="points bad-points">-1 heart</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reward-card" id="rewardCard">
+      <h3 id="rewardTitle">Whisper of Courage</h3>
+      <p id="rewardText">The forest believes in you.</p>
+    </div>
+  </aside>
 
 </div>
 
 <script>
 const game = document.getElementById("game");
 const fox = document.getElementById("fox");
-const scoreText = document.getElementById("score");
-const missedText = document.getElementById("missed");
-const startScreen = document.getElementById("startScreen");
-const startBtn = document.getElementById("startBtn");
+const scoreEl = document.getElementById("score");
+const heartsEl = document.getElementById("hearts");
+const levelEl = document.getElementById("level");
+const foxSpeech = document.getElementById("foxSpeech");
+const playOverlay = document.getElementById("playOverlay");
+const rewardCard = document.getElementById("rewardCard");
+const rewardTitle = document.getElementById("rewardTitle");
+const rewardText = document.getElementById("rewardText");
 const muteBtn = document.getElementById("muteBtn");
 const volumeSlider = document.getElementById("volumeSlider");
 
 let score = 0;
-let missed = 0;
-let foxX = window.innerWidth / 2;
+let hearts = 3;
+let level = 1;
+let foxX = 50;
 let gameRunning = false;
-let dropInterval = null;
+let dropTimer = null;
 let moveLeft = false;
 let moveRight = false;
 let muted = false;
 let masterVolume = 0.6;
+let dropSpeed = 3.2;
+let dropDelay = 900;
 
 const sounds = {
   bg: new Audio("forest-ambience.mp3"),
@@ -225,11 +455,11 @@ const sounds = {
 sounds.bg.loop = true;
 
 const baseVolumes = {
-  bg: 0.35,
-  catch: 0.55,
-  miss: 0.45,
-  special: 0.7,
-  sheep: 0.65
+  bg: 0.32,
+  catch: 0.5,
+  miss: 0.42,
+  special: 0.66,
+  sheep: 0.62
 };
 
 function updateVolumes() {
@@ -238,6 +468,13 @@ function updateVolumes() {
   sounds.miss.volume = muted ? 0 : baseVolumes.miss * masterVolume;
   sounds.special.volume = muted ? 0 : baseVolumes.special * masterVolume;
   sounds.sheep.volume = muted ? 0 : baseVolumes.sheep * masterVolume;
+}
+
+function playSound(sound) {
+  if (muted) return;
+  const layered = sound.cloneNode();
+  layered.volume = sound.volume;
+  layered.play().catch(() => {});
 }
 
 updateVolumes();
@@ -259,63 +496,67 @@ muteBtn.addEventListener("click", () => {
   }
 });
 
-function playLayeredSound(originalSound) {
-  if (muted) return;
-
-  const layered = originalSound.cloneNode();
-  layered.volume = originalSound.volume;
-  layered.play().catch(() => {});
-}
-
 function startGame() {
   score = 0;
-  missed = 0;
-  scoreText.textContent = score;
-  missedText.textContent = missed;
-
-  document.querySelectorAll(".falling, .sparkle, .magicRing").forEach(el => el.remove());
-
-  startScreen.style.display = "none";
+  hearts = 3;
+  level = 1;
+  dropSpeed = 3.2;
+  dropDelay = 900;
+  foxX = 50;
   gameRunning = true;
+
+  scoreEl.textContent = score;
+  heartsEl.textContent = hearts;
+  levelEl.textContent = level;
+  foxSpeech.textContent = "Catch the glowing wishes, little one. The forest is cheering you on! ✨";
+  rewardCard.classList.remove("show");
+
+  document.querySelectorAll(".falling, .sparkle, .magic-ring").forEach(el => el.remove());
+
+  playOverlay.style.display = "none";
+  fox.style.left = foxX + "%";
 
   sounds.bg.currentTime = 0;
   sounds.bg.play().catch(() => {});
 
-  clearInterval(dropInterval);
-  dropInterval = setInterval(createFallingItem, 850);
+  clearInterval(dropTimer);
+  dropTimer = setInterval(createFallingItem, dropDelay);
 
   requestAnimationFrame(gameLoop);
 }
 
-startBtn.addEventListener("click", startGame);
-
 function createFallingItem() {
   if (!gameRunning) return;
 
-  const item = document.createElement("img");
-  item.classList.add("falling");
+  const item = document.createElement("div");
+  item.className = "falling";
 
+  const img = document.createElement("img");
   const chance = Math.random();
 
-  if (chance < 0.12) {
-    item.src = "sheep-new.png";
+  if (chance < 0.58) {
+    item.dataset.type = "dandelion";
+    item.classList.add("dandelion-item");
+    img.src = "dandelion-new.png";
+    img.alt = "Dandelion wish";
+  } else if (chance < 0.82) {
     item.dataset.type = "sheep";
-    item.classList.add("sheep");
+    item.classList.add("sheep-item");
+    img.src = "sheep-new.png";
+    img.alt = "Fluffy sheep";
 
-    playLayeredSound(sounds.sheep);
-    entranceSparkles(window.innerWidth * Math.random(), 30);
-
-  } else if (chance < 0.28) {
-    item.src = "dandelion-new.png";
-    item.dataset.type = "special";
-    item.classList.add("special");
+    playSound(sounds.sheep);
+    entranceSparkles(Math.random() * game.clientWidth, 45);
   } else {
-    item.src = "dandelion.png";
-    item.dataset.type = "normal";
+    item.dataset.type = "rock";
+    item.classList.add("rock-item");
+    img.src = "rock-new.png";
+    img.alt = "Falling rock";
   }
 
-  item.style.left = Math.random() * (window.innerWidth - 90) + "px";
-  item.style.top = "-90px";
+  item.appendChild(img);
+  item.style.left = Math.random() * (game.clientWidth - 90) + "px";
+  item.style.top = "-95px";
 
   game.appendChild(item);
 }
@@ -324,42 +565,50 @@ function gameLoop() {
   if (!gameRunning) return;
 
   moveFox();
-  moveItems();
+  moveFallingItems();
 
   requestAnimationFrame(gameLoop);
 }
 
 function moveFox() {
-  if (moveLeft) foxX -= 8;
-  if (moveRight) foxX += 8;
+  if (moveLeft) foxX -= 0.85;
+  if (moveRight) foxX += 0.85;
 
-  foxX = Math.max(55, Math.min(window.innerWidth - 55, foxX));
-  fox.style.left = foxX + "px";
+  foxX = Math.max(8, Math.min(92, foxX));
+  fox.style.left = foxX + "%";
 
   if (moveLeft || moveRight) {
-    createSparkle(foxX + random(-22, 22), window.innerHeight - 55 + random(-10, 10));
+    const rect = fox.getBoundingClientRect();
+    const gameRect = game.getBoundingClientRect();
+    createSparkle(
+      rect.left - gameRect.left + rect.width / 2 + random(-30, 30),
+      rect.top - gameRect.top + rect.height - 12
+    );
   }
 }
 
-function moveItems() {
+function moveFallingItems() {
   const items = document.querySelectorAll(".falling");
 
   items.forEach(item => {
     let y = parseFloat(item.style.top);
-    y += item.dataset.type === "sheep" ? 3.5 : 4.7;
+    const itemSpeed = item.dataset.type === "sheep" ? dropSpeed * 0.85 : dropSpeed;
+    y += itemSpeed;
     item.style.top = y + "px";
 
     const itemRect = item.getBoundingClientRect();
     const foxRect = fox.getBoundingClientRect();
 
     if (isColliding(itemRect, foxRect)) {
-      catchItem(item);
+      handleCatch(item);
       item.remove();
       return;
     }
 
-    if (y > window.innerHeight + 20) {
-      missItem(item);
+    if (y > game.clientHeight + 50) {
+      if (item.dataset.type !== "rock") {
+        playSound(sounds.miss);
+      }
       item.remove();
     }
   });
@@ -374,58 +623,88 @@ function isColliding(a, b) {
   );
 }
 
-function catchItem(item) {
+function handleCatch(item) {
+  const type = item.dataset.type;
   const rect = item.getBoundingClientRect();
-  const x = rect.left + rect.width / 2;
-  const y = rect.top + rect.height / 2;
+  const gameRect = game.getBoundingClientRect();
+  const x = rect.left - gameRect.left + rect.width / 2;
+  const y = rect.top - gameRect.top + rect.height / 2;
 
-  if (item.dataset.type === "special") {
-    score += 5;
-    playLayeredSound(sounds.special);
-    burstSparkles(x, y, 24);
-    magicRing(x, y);
-  } else if (item.dataset.type === "sheep") {
-    score += 2;
-    playLayeredSound(sounds.sheep);
-    burstSparkles(x, y, 18);
-    magicRing(x, y);
-  } else {
-    score += 1;
-    playLayeredSound(sounds.catch);
-    burstSparkles(x, y, 14);
+  if (type === "dandelion") {
+    score += 10;
+    playSound(sounds.catch);
+    burstSparkles(x, y, 15);
+    foxSpeech.textContent = "A glowing wish was caught! Beautiful work. ✨";
   }
 
-  scoreText.textContent = score;
-}
+  if (type === "sheep") {
+    score += 50;
+    playSound(sounds.sheep);
+    playSound(sounds.special);
+    burstSparkles(x, y, 25);
+    magicRing(x, y);
+    foxSpeech.textContent = "You caught a fluffy sheep! That was magical! 🐑";
+  }
 
-function missItem(item) {
-  missed += 1;
-  missedText.textContent = missed;
+  if (type === "rock") {
+    hearts -= 1;
+    playSound(sounds.miss);
+    burstSparkles(x, y, 8);
+    foxSpeech.textContent = "Careful, little fox! Dodge the rocks. 🪨";
+  }
 
-  playLayeredSound(sounds.miss);
+  scoreEl.textContent = score;
+  heartsEl.textContent = hearts;
 
-  const rect = item.getBoundingClientRect();
-  burstSparkles(rect.left + rect.width / 2, window.innerHeight - 30, 8);
+  checkLevelUp();
 
-  if (missed >= 10) {
+  if (hearts <= 0) {
     endGame();
   }
 }
 
+function checkLevelUp() {
+  const newLevel = Math.floor(score / 150) + 1;
+
+  if (newLevel > level) {
+    level = newLevel;
+    levelEl.textContent = level;
+
+    dropSpeed += 0.45;
+
+    clearInterval(dropTimer);
+    dropDelay = Math.max(430, dropDelay - 70);
+    dropTimer = setInterval(createFallingItem, dropDelay);
+
+    playSound(sounds.special);
+    showReward(
+      "Forest Level " + level,
+      "The foxfire grows brighter. You are moving with the magic now."
+    );
+  }
+}
+
+function showReward(title, text) {
+  rewardTitle.textContent = title;
+  rewardText.textContent = text;
+  rewardCard.classList.add("show");
+
+  setTimeout(() => {
+    rewardCard.classList.remove("show");
+  }, 4200);
+}
+
 function endGame() {
   gameRunning = false;
-  clearInterval(dropInterval);
-
+  clearInterval(dropTimer);
   sounds.bg.pause();
 
   document.querySelectorAll(".falling").forEach(el => el.remove());
 
-  startScreen.style.display = "flex";
-  document.getElementById("startBox").innerHTML = `
-    <h1>Game Over 🦊</h1>
-    <p>Your score was <strong>${score}</strong>.</p>
-    <p>The forest is glowing softly, waiting for you to try again.</p>
-    <button onclick="location.reload()">Play Again</button>
+  foxSpeech.textContent = "The forest is resting now. You can try again when you’re ready. 🌙";
+  playOverlay.style.display = "flex";
+  playOverlay.innerHTML = `
+    <button class="big-play" onclick="startGame()">🌙 Play Again — Score ${score} 🌙</button>
   `;
 }
 
@@ -436,35 +715,29 @@ function createSparkle(x, y) {
   sparkle.style.top = y + "px";
   game.appendChild(sparkle);
 
-  setTimeout(() => sparkle.remove(), 750);
+  setTimeout(() => sparkle.remove(), 800);
 }
 
 function burstSparkles(x, y, amount) {
   for (let i = 0; i < amount; i++) {
-    createSparkle(
-      x + random(-32, 32),
-      y + random(-32, 32)
-    );
+    createSparkle(x + random(-35, 35), y + random(-35, 35));
   }
 }
 
 function entranceSparkles(x, y) {
-  for (let i = 0; i < 12; i++) {
-    createSparkle(
-      x + random(-40, 40),
-      y + random(-20, 40)
-    );
+  for (let i = 0; i < 14; i++) {
+    createSparkle(x + random(-45, 45), y + random(-20, 45));
   }
 }
 
 function magicRing(x, y) {
   const ring = document.createElement("div");
-  ring.className = "magicRing";
-  ring.style.left = (x - 10) + "px";
-  ring.style.top = (y - 10) + "px";
+  ring.className = "magic-ring";
+  ring.style.left = (x - 11) + "px";
+  ring.style.top = (y - 11) + "px";
   game.appendChild(ring);
 
-  setTimeout(() => ring.remove(), 700);
+  setTimeout(() => ring.remove(), 750);
 }
 
 function random(min, max) {
@@ -482,11 +755,13 @@ document.addEventListener("keyup", e => {
 });
 
 game.addEventListener("mousemove", e => {
-  foxX = e.clientX;
+  const rect = game.getBoundingClientRect();
+  foxX = ((e.clientX - rect.left) / rect.width) * 100;
 });
 
 game.addEventListener("touchmove", e => {
-  foxX = e.touches[0].clientX;
+  const rect = game.getBoundingClientRect();
+  foxX = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
 });
 </script>
 
