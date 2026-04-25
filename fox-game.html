@@ -1,180 +1,811 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foxfire Forest Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foxfire Forest Game | Fox Wisdom Oracle</title>
 
-<style>
-body{
-  margin:0;
-  font-family:Georgia, serif;
-  color:#f5e9c8;
-  text-align:center;
-  background:
-    linear-gradient(rgba(16,22,16,0.7), rgba(16,22,16,0.9)),
-    url("forest-bg.jpg");
-  background-size:cover;
-}
-
-/* Game area */
-#game{
-  position:relative;
-  width:100%;
-  height:80vh;
-  overflow:hidden;
-}
-
-/* Fox */
-#fox{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:60px;
-}
-
-/* Falling items */
-.item{
-  position:absolute;
-  top:-50px;
-  font-size:30px;
-  animation:fall linear forwards;
-}
-
-@keyframes fall{
-  to{ top:100%; }
-}
-
-/* Score */
-#score{
-  margin:10px;
-  font-size:20px;
-}
-
-/* Message */
-#messageBox{
-  display:none;
-  margin:20px auto;
-  max-width:500px;
-  padding:20px;
-  background:rgba(255,255,255,0.1);
-  border-radius:15px;
-  border:1px solid rgba(255,255,255,0.2);
-}
-
-button{
-  padding:10px 20px;
-  border:none;
-  border-radius:999px;
-  background:#c99278;
-  color:white;
-  cursor:pointer;
-}
-</style>
-</head>
-
-<body>
-
-<a href="index.html" style="position:absolute;left:20px;top:20px;color:#fff;">
-← Return to Forest
-</a>
-
-<h1>🦊 Foxfire Forest</h1>
-<div id="score">Score: 0</div>
-
-<div id="game">
-  <div id="fox">🦊</div>
-</div>
-
-<div id="messageBox">
-  <h2 id="msgTitle"></h2>
-  <p id="msgText"></p>
-  <button onclick="restart()">Play Again</button>
-</div>
-
-<script>
-let score = 0;
-let gameRunning = true;
-
-const messages = [
-  {title:"The Gentle Path", text:"You do not need to rush. What is meant for you will not pass you by."},
-  {title:"Fox Wisdom", text:"Trust your instincts. You already know the way."},
-  {title:"Soft Courage", text:"Even the smallest steps forward are acts of bravery."},
-  {title:"Forest Whisper", text:"Something quiet is guiding you. Listen closely."},
-  {title:"Hidden Magic", text:"There is more unfolding than you can see right now."}
-];
-
-// Move fox
-document.addEventListener("mousemove", e=>{
-  document.getElementById("fox").style.left = e.clientX + "px";
-});
-
-// Spawn items
-setInterval(()=>{
-  if(!gameRunning) return;
-
-  let item = document.createElement("div");
-  item.classList.add("item");
-
-  let rand = Math.random();
-
-  if(rand < 0.6){
-    item.innerHTML = "🌼"; // dandelion
-    item.dataset.type = "good";
-  } else if(rand < 0.85){
-    item.innerHTML = "🐑"; // sheep
-    item.dataset.type = "bonus";
-  } else {
-    item.innerHTML = "🪨"; // rock
-    item.dataset.type = "bad";
-  }
-
-  item.style.left = Math.random()*window.innerWidth + "px";
-  item.style.animationDuration = (3 + Math.random()*2) + "s";
-
-  document.getElementById("game").appendChild(item);
-
-  // Collision
-  let check = setInterval(()=>{
-    if(!gameRunning){ clearInterval(check); return; }
-
-    let fox = document.getElementById("fox").getBoundingClientRect();
-    let it = item.getBoundingClientRect();
-
-    if(!(it.right < fox.left || it.left > fox.right || it.bottom < fox.top || it.top > fox.bottom)){
-      if(item.dataset.type === "good") score += 1;
-      if(item.dataset.type === "bonus") score += 3;
-      if(item.dataset.type === "bad") score -= 2;
-
-      document.getElementById("score").innerText = "Score: " + score;
-
-      item.remove();
-      clearInterval(check);
+  <style>
+    * {
+      box-sizing: border-box;
     }
-  },50);
 
-  item.addEventListener("animationend", ()=> item.remove());
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      color: #f5e9c8;
+      text-align: center;
+      background-image:
+        linear-gradient(rgba(16, 22, 16, 0.62), rgba(16, 22, 16, 0.88)),
+        url("forest-bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
 
-},700);
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 220, 140, 0.12), transparent 20%),
+        radial-gradient(circle at 82% 28%, rgba(255, 230, 170, 0.10), transparent 24%),
+        radial-gradient(circle at 50% 78%, rgba(255, 240, 190, 0.08), transparent 28%);
+      z-index: 0;
+    }
 
-// End game
-setTimeout(()=>{
-  gameRunning = false;
+    .page {
+      position: relative;
+      z-index: 2;
+      padding: 18px 12px 28px;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
 
-  let msg = messages[Math.floor(Math.random()*messages.length)];
+    .return-link {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 20;
+      color: #fff4df;
+      text-decoration: none;
+      background: rgba(20, 30, 20, 0.55);
+      border: 1px solid rgba(255, 231, 170, 0.35);
+      padding: 9px 13px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(4px);
+    }
 
-  document.getElementById("msgTitle").innerText = msg.title;
-  document.getElementById("msgText").innerText = msg.text;
+    h1 {
+      margin: 42px 0 8px;
+      font-size: clamp(2.3rem, 7vw, 4.4rem);
+      color: #f3dfbf;
+      text-shadow:
+        0 0 10px rgba(255, 216, 145, 0.28),
+        0 3px 8px rgba(0, 0, 0, 0.45);
+    }
 
-  document.getElementById("messageBox").style.display = "block";
+    .intro {
+      max-width: 760px;
+      margin: 0 auto 14px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.65;
+      color: #fff0d7;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    }
 
-},30000);
+    .stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px auto;
+    }
 
-function restart(){
-  location.reload();
-}
-</script>
+    .pill {
+      min-width: 120px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 231, 170, 0.32);
+      box-shadow: inset 0 0 14px rgba(255, 234, 180, 0.05), 0 5px 14px rgba(0, 0, 0, 0.18);
+      color: #fff2dc;
+    }
 
+    #game {
+      position: relative;
+      width: min(940px, 100%);
+      height: min(62vh, 520px);
+      min-height: 410px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 231, 170, 0.36);
+      background:
+        radial-gradient(circle at 50% 10%, rgba(255, 235, 180, 0.12), transparent 32%),
+        linear-gradient(to top, rgba(17, 43, 24, 0.98), rgba(16, 32, 27, 0.80), rgba(10, 16, 24, 0.48));
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.35),
+        inset 0 -40px 70px rgba(0, 0, 0, 0.38),
+        inset 0 0 40px rgba(255, 225, 150, 0.06);
+      cursor: none;
+      touch-action: none;
+    }
+
+    .moon {
+      position: absolute;
+      top: 28px;
+      right: 48px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff7d6 0%, #ecd17b 66%, transparent 70%);
+      box-shadow: 0 0 42px rgba(255, 239, 180, 0.65);
+      opacity: 0.88;
+    }
+
+    .hill {
+      position: absolute;
+      left: -8%;
+      bottom: -55px;
+      width: 116%;
+      height: 155px;
+      background: #142b19;
+      border-radius: 55% 55% 0 0;
+      box-shadow: 0 -18px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 65px;
+      width: 22px;
+      height: 125px;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(#4a2d1c, #1d110b);
+      opacity: 0.75;
+    }
+
+    .tree::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 58px;
+      transform: translateX(-50%);
+      width: 105px;
+      height: 130px;
+      background: radial-gradient(circle at 50% 18%, #3d6545, #142718 70%);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      border-radius: 18px;
+    }
+
+    .tree.t1 { left: 5%; transform: scale(1.12); }
+    .tree.t2 { left: 20%; transform: scale(0.78); opacity: 0.45; }
+    .tree.t3 { right: 18%; transform: scale(1.08); }
+    .tree.t4 { right: 4%; transform: scale(0.84); opacity: 0.48; }
+
+    .firefly {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 237, 178, 0.95);
+      box-shadow: 0 0 14px rgba(255, 237, 178, 0.9);
+      animation: fireflyFloat linear infinite;
+      opacity: 0.6;
+    }
+
+    .firefly:nth-child(1) { left: 12%; top: 72%; animation-duration: 9s; }
+    .firefly:nth-child(2) { left: 38%; top: 62%; animation-duration: 11s; animation-delay: 2s; }
+    .firefly:nth-child(3) { left: 66%; top: 70%; animation-duration: 10s; animation-delay: 1s; }
+    .firefly:nth-child(4) { left: 84%; top: 58%; animation-duration: 13s; animation-delay: 3s; }
+
+    @keyframes fireflyFloat {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      20% { opacity: 0.8; }
+      100% { transform: translateY(-260px) translateX(24px); opacity: 0; }
+    }
+
+    /* Cute chibi fox */
+    #fox {
+      position: absolute;
+      left: 50%;
+      bottom: 54px;
+      width: 120px;
+      height: 116px;
+      transform: translateX(-50%);
+      z-index: 8;
+      filter: drop-shadow(0 13px 10px rgba(0, 0, 0, 0.35));
+      transition: left 0.12s ease;
+    }
+
+    .fox-shadow {
+      position: absolute;
+      bottom: -4px;
+      left: 22px;
+      width: 82px;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.26);
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    .fox-tail {
+      position: absolute;
+      left: -4px;
+      bottom: 28px;
+      width: 70px;
+      height: 42px;
+      background: linear-gradient(90deg, #fff0d2 0 23%, #db7538 26%, #f2a34e 100%);
+      border-radius: 65% 28% 58% 70%;
+      transform: rotate(-20deg);
+      transform-origin: right center;
+      animation: wagTail 1.4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes wagTail {
+      0%, 100% { transform: rotate(-22deg); }
+      50% { transform: rotate(-6deg); }
+    }
+
+    .fox-body {
+      position: absolute;
+      left: 34px;
+      bottom: 16px;
+      width: 62px;
+      height: 55px;
+      background: linear-gradient(145deg, #de7134, #f5a24d);
+      border-radius: 50% 50% 45% 45%;
+      z-index: 3;
+    }
+
+    .fox-belly {
+      position: absolute;
+      left: 15px;
+      bottom: 5px;
+      width: 34px;
+      height: 29px;
+      background: #ffe5c0;
+      border-radius: 50%;
+      opacity: 0.95;
+    }
+
+    .fox-head {
+      position: absolute;
+      left: 34px;
+      bottom: 56px;
+      width: 66px;
+      height: 58px;
+      background: linear-gradient(145deg, #e36f32, #f5a24d);
+      border-radius: 48% 48% 45% 45%;
+      z-index: 5;
+      animation: foxBounce 1.7s ease-in-out infinite;
+    }
+
+    @keyframes foxBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .ear {
+      position: absolute;
+      top: -22px;
+      width: 28px;
+      height: 34px;
+      background: #d9632f;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      z-index: 4;
+    }
+
+    .ear.left {
+      left: 4px;
+      transform: rotate(-16deg);
+    }
+
+    .ear.right {
+      right: 4px;
+      transform: rotate(16deg);
+    }
+
+    .ear::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 12px;
+      width: 13px;
+      height: 17px;
+      background: #ffd2bd;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      opacity: 0.9;
+    }
+
+    .cheek {
+      position: absolute;
+      bottom: 4px;
+      width: 30px;
+      height: 24px;
+      background: #fff0d2;
+      border-radius: 50%;
+      z-index: 6;
+    }
+
+    .cheek.left { left: 8px; }
+    .cheek.right { right: 8px; }
+
+    .eye {
+      position: absolute;
+      top: 20px;
+      width: 13px;
+      height: 15px;
+      background: #2b160e;
+      border-radius: 50%;
+      z-index: 8;
+      animation: blink 4.2s infinite;
+    }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .eye.left { left: 16px; }
+    .eye.right { right: 16px; }
+
+    @keyframes blink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.12); }
+    }
+
+    .nose {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      width: 9px;
+      height: 7px;
+      background: #2b160e;
+      border-radius: 50%;
+      z-index: 9;
+    }
+
+    .smile {
+      position: absolute;
+      left: 50%;
+      bottom: 7px;
+      width: 18px;
+      height: 9px;
+      border-bottom: 2px solid rgba(43, 22, 14, 0.65);
+      border-radius: 0 0 18px 18px;
+      transform: translateX(-50%);
+      z-index: 9;
+    }
+
+    .paw {
+      position: absolute;
+      bottom: 0;
+      width: 13px;
+      height: 20px;
+      background: #4a2517;
+      border-radius: 999px;
+      z-index: 4;
+    }
+
+    .paw.p1 { left: 44px; }
+    .paw.p2 { left: 67px; }
+    .paw.p3 { left: 86px; height: 16px; opacity: 0.88; }
+
+    .item {
+      position: absolute;
+      top: -55px;
+      transform: translateX(-50%);
+      z-index: 7;
+      user-select: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      filter: drop-shadow(0 5px 6px rgba(0,0,0,0.28));
+    }
+
+    .dandelion {
+      font-size: 34px;
+      text-shadow: 0 0 12px rgba(255, 243, 210, 0.85);
+      animation-name: driftFall;
+    }
+
+    .sheep {
+      font-size: 40px;
+    }
+
+    .rock {
+      font-size: 36px;
+      filter: drop-shadow(0 5px 6px rgba(0,0,0,0.42));
+    }
+
+    @keyframes fall {
+      to { top: calc(100% + 60px); transform: translateX(-50%) rotate(120deg); }
+    }
+
+    @keyframes driftFall {
+      0% { transform: translateX(-50%) translateX(0) rotate(0deg); }
+      35% { transform: translateX(-50%) translateX(22px) rotate(16deg); }
+      70% { transform: translateX(-50%) translateX(-18px) rotate(-14deg); }
+      100% { top: calc(100% + 60px); transform: translateX(-50%) translateX(18px) rotate(28deg); }
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px auto 0;
+    }
+
+    button {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, #c99278, #b77d64);
+      color: #fff4eb;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 13px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 16px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+    }
+
+    #messageBox {
+      display: none;
+      max-width: 650px;
+      margin: 20px auto 0;
+      padding: 22px 24px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 231, 170, 0.38);
+      backdrop-filter: blur(5px);
+      box-shadow:
+        0 12px 28px rgba(0,0,0,0.25),
+        0 0 34px rgba(255, 224, 160, 0.13);
+      animation: messageRise 0.8s ease forwards;
+    }
+
+    @keyframes messageRise {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #messageBox h2 {
+      margin: 0 0 10px;
+      color: #f7dfb5;
+      font-size: 1.8rem;
+      text-shadow: 0 0 10px rgba(255, 223, 160, 0.25);
+    }
+
+    #messageBox p {
+      margin: 0 0 18px;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: #fff2df;
+    }
+
+    .instructions {
+      margin: 12px auto 0;
+      max-width: 720px;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: rgba(255, 242, 220, 0.85);
+    }
+
+    @media (max-width: 700px) {
+      .return-link {
+        position: static;
+        display: inline-block;
+        margin-top: 4px;
+      }
+
+      h1 {
+        margin-top: 18px;
+      }
+
+      #game {
+        min-height: 430px;
+        height: 64vh;
+        cursor: default;
+      }
+
+      #fox {
+        width: 106px;
+        height: 106px;
+        transform: translateX(-50%) scale(0.92);
+      }
+
+      .tree.t1,
+      .tree.t4 {
+        opacity: 0.32;
+      }
+
+      button {
+        width: 100%;
+        max-width: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="return-link" href="index.html">← Return to the Forest</a>
+
+  <main class="page">
+    <h1>Foxfire Forest</h1>
+    <p class="intro">
+      Guide the little fox through the moonlit forest. Catch drifting dandelion wishes and fluffy sheep, avoid the stones, and receive a soft oracle message when the path is complete.
+    </p>
+
+    <div class="stats">
+      <div class="pill">Wishes: <span id="score">0</span></div>
+      <div class="pill">Hearts: <span id="hearts">3</span></div>
+      <div class="pill">Time: <span id="time">35</span>s</div>
+    </div>
+
+    <section id="game" aria-label="Foxfire Forest Game">
+      <div class="moon"></div>
+      <div class="firefly"></div>
+      <div class="firefly"></div>
+      <div class="firefly"></div>
+      <div class="firefly"></div>
+      <div class="tree t1"></div>
+      <div class="tree t2"></div>
+      <div class="tree t3"></div>
+      <div class="tree t4"></div>
+      <div class="hill"></div>
+
+      <div id="fox" aria-label="Cute chibi fox">
+        <div class="fox-shadow"></div>
+        <div class="fox-tail"></div>
+        <div class="fox-body">
+          <div class="fox-belly"></div>
+        </div>
+        <div class="paw p1"></div>
+        <div class="paw p2"></div>
+        <div class="paw p3"></div>
+        <div class="fox-head">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="cheek left"></div>
+          <div class="cheek right"></div>
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="nose"></div>
+          <div class="smile"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="startBtn" onclick="startGame()">Begin the Fox Path</button>
+      <button onclick="restartGame()">Restart</button>
+    </div>
+
+    <p class="instructions">
+      Move your mouse or finger left and right. 🌼 Dandelion wishes give 1 point, 🐑 sheep give 3 points, and 🪨 stones take 1 heart.
+    </p>
+
+    <div id="messageBox">
+      <h2 id="msgTitle">Your Forest Message</h2>
+      <p id="msgText">A little fox message will appear here.</p>
+      <button onclick="restartGame()">Play Again</button>
+    </div>
+  </main>
+
+  <script>
+    const game = document.getElementById("game");
+    const fox = document.getElementById("fox");
+    const scoreEl = document.getElementById("score");
+    const heartsEl = document.getElementById("hearts");
+    const timeEl = document.getElementById("time");
+    const startBtn = document.getElementById("startBtn");
+    const messageBox = document.getElementById("messageBox");
+    const msgTitle = document.getElementById("msgTitle");
+    const msgText = document.getElementById("msgText");
+
+    let score = 0;
+    let hearts = 3;
+    let timeLeft = 35;
+    let gameRunning = false;
+    let spawnTimer = null;
+    let countdownTimer = null;
+
+    const messages = [
+      {
+        title: "The Dandelion Wish",
+        text: "A wish carried softly still has power. Let your hope float gently instead of forcing it to land. What is meant for you will find the right place to root."
+      },
+      {
+        title: "The Little Fox Knows",
+        text: "Your instinct is not loud, but it is loyal. Trust the small nudge, the quiet feeling, and the path that keeps glowing in your heart."
+      },
+      {
+        title: "The Gentle Gathering",
+        text: "You have gathered more than you realise. Even small moments of courage, kindness, and play become lanterns on the way forward."
+      },
+      {
+        title: "Soft Steps Through the Forest",
+        text: "You do not have to rush to prove you are moving. Slow steps still count. Gentle progress is still progress."
+      },
+      {
+        title: "The Hidden Meadow",
+        text: "A softer place is waiting beyond the worry. Keep following the signs that feel warm, kind, and true."
+      },
+      {
+        title: "Foxfire Blessing",
+        text: "A little spark is returning to you. Protect it, feed it, and let it become the light that guides your next chapter."
+      }
+    ];
+
+    function startGame() {
+      if (gameRunning) return;
+
+      clearItems();
+      score = 0;
+      hearts = 3;
+      timeLeft = 35;
+      gameRunning = true;
+
+      scoreEl.textContent = score;
+      heartsEl.textContent = hearts;
+      timeEl.textContent = timeLeft;
+      messageBox.style.display = "none";
+      startBtn.textContent = "The little fox is running...";
+
+      spawnTimer = setInterval(spawnItem, 620);
+      countdownTimer = setInterval(() => {
+        timeLeft -= 1;
+        timeEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function restartGame() {
+      clearInterval(spawnTimer);
+      clearInterval(countdownTimer);
+      gameRunning = false;
+      clearItems();
+      startBtn.textContent = "Begin the Fox Path";
+      startGame();
+    }
+
+    function endGame() {
+      if (!gameRunning) return;
+
+      gameRunning = false;
+      clearInterval(spawnTimer);
+      clearInterval(countdownTimer);
+      clearItems();
+      startBtn.textContent = "Begin the Fox Path";
+
+      let messageIndex = 0;
+      if (score >= 4) messageIndex = 1;
+      if (score >= 8) messageIndex = 2;
+      if (score >= 12) messageIndex = 3;
+      if (score >= 16) messageIndex = 4;
+      if (score >= 22) messageIndex = 5;
+
+      const chosen = messages[messageIndex];
+      msgTitle.textContent = chosen.title;
+
+      if (hearts <= 0) {
+        msgText.textContent = "The little fox has curled up to rest. Even when the path feels bumpy, you are allowed to pause, breathe, and begin again softly.";
+      } else {
+        msgText.textContent = chosen.text;
+      }
+
+      messageBox.style.display = "block";
+      messageBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function spawnItem() {
+      if (!gameRunning) return;
+
+      const item = document.createElement("div");
+      item.classList.add("item");
+
+      const chance = Math.random();
+
+      if (chance < 0.62) {
+        item.textContent = "🌼";
+        item.dataset.type = "dandelion";
+        item.classList.add("dandelion");
+      } else if (chance < 0.84) {
+        item.textContent = "🐑";
+        item.dataset.type = "sheep";
+        item.classList.add("sheep");
+      } else {
+        item.textContent = "🪨";
+        item.dataset.type = "rock";
+        item.classList.add("rock");
+      }
+
+      const leftPercent = 8 + Math.random() * 84;
+      item.style.left = leftPercent + "%";
+      item.style.animationDuration = (3.2 + Math.random() * 1.7) + "s";
+
+      game.appendChild(item);
+
+      const collisionCheck = setInterval(() => {
+        if (!gameRunning || !document.body.contains(item)) {
+          clearInterval(collisionCheck);
+          return;
+        }
+
+        if (isTouching(item, fox)) {
+          handleCatch(item);
+          item.remove();
+          clearInterval(collisionCheck);
+        }
+      }, 45);
+
+      item.addEventListener("animationend", () => {
+        item.remove();
+        clearInterval(collisionCheck);
+      });
+    }
+
+    function handleCatch(item) {
+      const type = item.dataset.type;
+
+      if (type === "dandelion") {
+        score += 1;
+      }
+
+      if (type === "sheep") {
+        score += 3;
+      }
+
+      if (type === "rock") {
+        hearts -= 1;
+        if (hearts <= 0) {
+          hearts = 0;
+          heartsEl.textContent = hearts;
+          endGame();
+          return;
+        }
+      }
+
+      scoreEl.textContent = score;
+      heartsEl.textContent = hearts;
+    }
+
+    function isTouching(a, b) {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+
+      return !(
+        ar.right < br.left + 20 ||
+        ar.left > br.right - 20 ||
+        ar.bottom < br.top + 18 ||
+        ar.top > br.bottom - 6
+      );
+    }
+
+    function moveFox(clientX) {
+      const rect = game.getBoundingClientRect();
+      let percent = ((clientX - rect.left) / rect.width) * 100;
+      percent = Math.max(8, Math.min(92, percent));
+      fox.style.left = percent + "%";
+    }
+
+    game.addEventListener("mousemove", (event) => {
+      moveFox(event.clientX);
+    });
+
+    game.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+      moveFox(event.touches[0].clientX);
+    }, { passive: false });
+
+    game.addEventListener("click", () => {
+      if (!gameRunning) startGame();
+    });
+
+    function clearItems() {
+      document.querySelectorAll(".item").forEach(item => item.remove());
+    }
+  </script>
 </body>
 </html>
