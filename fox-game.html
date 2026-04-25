@@ -439,7 +439,8 @@ h1 {
   opacity: 0.75;
   z-index: -1;
 }
-  @keyframes rockFall {
+
+@keyframes rockFall {
   0% { transform: translateX(-50%) rotate(0deg); }
   100% { top: calc(100% + 110px); transform: translateX(-50%) rotate(140deg); }
 }
@@ -484,8 +485,6 @@ h1 {
 .points { color: #bfff82; }
 .bad-points { color: #ff9a80; }
 
-#fox { bottom: 28px; }
-
 </style>
 </head>
 
@@ -505,6 +504,10 @@ h1 {
 
   <section class="game-layout">
     <section class="game-shell">
+      <div class="game-title-board">
+        <h2>Foxfire Forest</h2>
+        <p>Catch wishes and sheep, avoid rocks, and follow the glow.</p>
+      </div>
 
       <div class="stats">
         <div class="stat-pill">Score: <span id="score">0</span></div>
@@ -514,12 +517,22 @@ h1 {
 
       <div id="game">
         <div class="moon"></div>
+        <div class="lantern left"></div>
+        <div class="lantern right"></div>
+        <div class="tree t1"></div>
+        <div class="tree t2"></div>
+        <div class="tree t3"></div>
+        <div class="tree t4"></div>
+        <div class="flower f1">✿</div>
+        <div class="flower f2">❀</div>
+        <div class="flower f3">✿</div>
+        <div class="flower f4">❀</div>
         <div class="hill"></div>
 
-        <img id="fox">
+        <img id="fox" alt="Cute fox player">
 
         <div id="playOverlay" class="play-overlay">
-          <button class="big-play" onclick="startGame()">Play Game</button>
+          <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
         </div>
       </div>
     </section>
@@ -527,24 +540,24 @@ h1 {
     <aside class="side-panel">
       <div class="helper-card">
         <div class="speech" id="foxSpeech">Catch the wishes ✨</div>
-        <img class="helper-fox-img">
+        <img class="helper-fox-img" alt="Friendly fox helper">
       </div>
 
       <div class="wood-panel">
         <h2>How to Play</h2>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="dandelion-new.png">
+          <img class="how-icon-img" data-src="dandelion-new.png" alt="Dandelion wish">
           <div><strong>Dandelion</strong><span class="points">+10</span></div>
         </div>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="sheep-new.png">
+          <img class="how-icon-img" data-src="sheep-new.png" alt="Fluffy sheep">
           <div><strong>Sheep</strong><span class="points">+50</span></div>
         </div>
 
         <div class="how-item">
-          <img class="how-icon-img" data-src="rock-new.png">
+          <img class="how-icon-img" data-src="rock-new.png" alt="Falling rock">
           <div><strong>Rock</strong><span class="bad-points">-1</span></div>
         </div>
       </div>
@@ -556,88 +569,301 @@ h1 {
 const game = document.getElementById("game");
 const fox = document.getElementById("fox");
 const helperFox = document.querySelector(".helper-fox-img");
+const playOverlay = document.getElementById("playOverlay");
+const scoreEl = document.getElementById("score");
+const heartsEl = document.getElementById("hearts");
+const timeEl = document.getElementById("time");
+const foxSpeech = document.getElementById("foxSpeech");
+const muteBtn = document.getElementById("muteBtn");
+const volumeSlider = document.getElementById("volumeSlider");
 
 let score = 0;
 let hearts = 3;
 let timeLeft = 45;
+let foxPercent = 50;
 let gameRunning = false;
+let spawnTimer = null;
+let countdownTimer = null;
+let soundOn = true;
+let masterVolume = 0.6;
+let moveLeft = false;
+let moveRight = false;
 
-// 🔥 REMOVE WHITE BACKGROUND
+const cleanCache = {};
+
 function cleanImage(src, callback) {
+  if (cleanCache[src]) {
+    callback(cleanCache[src]);
+    return;
+  }
+
   const img = new Image();
   img.src = src;
 
   img.onload = () => {
-    const c = document.createElement("canvas");
-    c.width = img.width;
-    c.height = img.height;
-    const ctx = c.getContext("2d");
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
 
-    const data = ctx.getImageData(0, 0, c.width, c.height);
-    for (let i = 0; i < data.data.length; i += 4) {
-      if (data.data[i] > 200 && data.data[i+1] > 200 && data.data[i+2] > 200) {
-        data.data[i+3] = 0;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+
+      if (r > 205 && g > 205 && b > 205) {
+        data[i + 3] = 0;
       }
     }
-    ctx.putImageData(data, 0, 0);
-    callback(c.toDataURL());
+
+    ctx.putImageData(imageData, 0, 0);
+    const cleaned = canvas.toDataURL("image/png");
+    cleanCache[src] = cleaned;
+    callback(cleaned);
   };
+
+  img.onerror = () => callback(src);
 }
 
-// APPLY CLEAN IMAGES
-cleanImage("foxy-player-new.png", s => fox.src = s);
-cleanImage("foxy-helper-new.png", s => helperFox.src = s);
+function setCleanImage(el, src) {
+  cleanImage(src, cleaned => {
+    el.src = cleaned;
+  });
+}
 
-document.querySelectorAll(".how-icon-img").forEach(el=>{
-  cleanImage(el.dataset.src, s=>el.src = s);
+setCleanImage(fox, "foxy-player-new.png");
+setCleanImage(helperFox, "foxy-helper-new.png");
+
+document.querySelectorAll(".how-icon-img").forEach(icon => {
+  setCleanImage(icon, icon.dataset.src);
 });
 
-function startGame(){
-  gameRunning = true;
-  document.getElementById("playOverlay").style.display="none";
-  spawnLoop();
+const sounds = {
+  bg: new Audio("forest-ambience.mp3"),
+  catch: new Audio("sparkle-chime.mp3"),
+  miss: new Audio("soft-poof.mp3"),
+  special: new Audio("magical-shimmer.mp3"),
+  sheep: new Audio("sheep-baa.mp3")
+};
+
+sounds.bg.loop = true;
+
+const baseVolumes = {
+  bg: 0.28,
+  catch: 0.55,
+  miss: 0.45,
+  special: 0.7,
+  sheep: 0.65
+};
+
+function updateVolumes() {
+  sounds.bg.volume = soundOn ? baseVolumes.bg * masterVolume : 0;
+  sounds.catch.volume = soundOn ? baseVolumes.catch * masterVolume : 0;
+  sounds.miss.volume = soundOn ? baseVolumes.miss * masterVolume : 0;
+  sounds.special.volume = soundOn ? baseVolumes.special * masterVolume : 0;
+  sounds.sheep.volume = soundOn ? baseVolumes.sheep * masterVolume : 0;
 }
 
-function spawnLoop(){
-  if(!gameRunning) return;
+function playSound(sound) {
+  if (!soundOn) return;
+  const s = sound.cloneNode();
+  s.volume = sound.volume;
+  s.play().catch(() => {});
+}
+
+updateVolumes();
+
+muteBtn.addEventListener("click", () => {
+  soundOn = !soundOn;
+  muteBtn.textContent = soundOn ? "🔊" : "🔇";
+  updateVolumes();
+
+  if (!soundOn) {
+    sounds.bg.pause();
+  } else if (gameRunning) {
+    sounds.bg.play().catch(() => {});
+  }
+});
+
+volumeSlider.addEventListener("input", () => {
+  masterVolume = Number(volumeSlider.value);
+  updateVolumes();
+});
+
+function startGame() {
+  clearInterval(spawnTimer);
+  clearInterval(countdownTimer);
+  document.querySelectorAll(".item, .sparkle-burst, .floating-score").forEach(el => el.remove());
+
+  score = 0;
+  hearts = 3;
+  timeLeft = 45;
+  foxPercent = 50;
+  gameRunning = true;
+
+  scoreEl.textContent = score;
+  heartsEl.textContent = hearts;
+  timeEl.textContent = timeLeft;
+  fox.style.left = foxPercent + "%";
+  foxSpeech.textContent = "Catch the glowing wishes, little one. ✨";
+
+  playOverlay.classList.add("hidden");
+
+  sounds.bg.currentTime = 0;
+  sounds.bg.play().catch(() => {});
+
+  spawnTimer = setInterval(spawnItem, 850);
+  countdownTimer = setInterval(() => {
+    if (!gameRunning) return;
+    timeLeft--;
+    timeEl.textContent = timeLeft;
+    if (timeLeft <= 0) finishGame();
+  }, 1000);
+
+  requestAnimationFrame(gameLoop);
+}
+
+function spawnItem() {
+  if (!gameRunning) return;
 
   const item = document.createElement("div");
-  item.className = "item";
+  item.classList.add("item");
 
   const img = document.createElement("img");
   img.className = "fall-img";
 
-  const rand = Math.random();
+  const chance = Math.random();
 
-  if(rand < 0.6){
-    item.dataset.type="dandelion";
+  if (chance < 0.58) {
+    item.dataset.type = "dandelion";
     item.classList.add("dandelion-item");
-    cleanImage("dandelion-new.png", s=>img.src=s);
-  } else if(rand < 0.85){
-    item.dataset.type="sheep";
+    setCleanImage(img, "dandelion-new.png");
+    item.style.animationDuration = "5.6s";
+  } else if (chance < 0.82) {
+    item.dataset.type = "sheep";
     item.classList.add("sheep-item");
-    cleanImage("sheep-new.png", s=>img.src=s);
+    setCleanImage(img, "sheep-new.png");
+    item.style.animationDuration = "5.2s";
+    playSound(sounds.sheep);
   } else {
-    item.dataset.type="rock";
+    item.dataset.type = "rock";
     item.classList.add("rock-item");
-    cleanImage("rock-new.png", s=>img.src=s);
+    setCleanImage(img, "rock-new.png");
+    item.style.animationDuration = "4.7s";
   }
 
   item.appendChild(img);
-  item.style.left = Math.random()*90+"%";
-  item.style.animationDuration = "5s";
-
+  item.style.left = Math.random() * 86 + 7 + "%";
   game.appendChild(item);
 
-  setTimeout(()=>item.remove(),5000);
-
-  setTimeout(spawnLoop,900);
+  item.addEventListener("animationend", () => {
+    if (item.parentElement) item.remove();
+  });
 }
 
-game.addEventListener("mousemove", e=>{
+function gameLoop() {
+  if (!gameRunning) return;
+
+  if (moveLeft) foxPercent -= 1.1;
+  if (moveRight) foxPercent += 1.1;
+
+  foxPercent = Math.max(8, Math.min(92, foxPercent));
+  fox.style.left = foxPercent + "%";
+
+  checkCollisions();
+  requestAnimationFrame(gameLoop);
+}
+
+function checkCollisions() {
+  const foxRect = fox.getBoundingClientRect();
+  document.querySelectorAll(".item").forEach(item => {
+    const itemRect = item.getBoundingClientRect();
+
+    if (
+      itemRect.bottom > foxRect.top + 28 &&
+      itemRect.top < foxRect.bottom - 12 &&
+      itemRect.right > foxRect.left + 28 &&
+      itemRect.left < foxRect.right - 28
+    ) {
+      catchItem(item);
+    }
+  });
+}
+
+function catchItem(item) {
+  if (!item.parentElement) return;
+
+  const type = item.dataset.type;
+
+  if (type === "dandelion") {
+    score += 10;
+    playSound(sounds.catch);
+    foxSpeech.textContent = "A wish was caught! ✨";
+  }
+
+  if (type === "sheep") {
+    score += 50;
+    playSound(sounds.sheep);
+    playSound(sounds.special);
+    foxSpeech.textContent = "You caught a fluffy sheep! 🐑";
+  }
+
+  if (type === "rock") {
+    hearts--;
+    playSound(sounds.miss);
+    foxSpeech.textContent = "Careful, little fox! Dodge the rocks.";
+
+    if (hearts <= 0) finishGame();
+  }
+
+  scoreEl.textContent = score;
+  heartsEl.textContent = hearts;
+
+  fox.classList.add("catch");
+  setTimeout(() => fox.classList.remove("catch"), 360);
+
+  item.remove();
+}
+
+function finishGame() {
+  gameRunning = false;
+  clearInterval(spawnTimer);
+  clearInterval(countdownTimer);
+  sounds.bg.pause();
+
+  document.querySelectorAll(".item").forEach(el => el.remove());
+
+  foxSpeech.textContent = "The forest is resting now. Press play to try again. 🌙";
+  playOverlay.classList.remove("hidden");
+  playOverlay.innerHTML = `<button class="big-play" onclick="startGame()">🌙 Play Again — Score ${score} 🌙</button>`;
+}
+
+function moveFox(clientX) {
   const rect = game.getBoundingClientRect();
-  fox.style.left = ((e.clientX - rect.left)/rect.width)*100+"%";
+  foxPercent = ((clientX - rect.left) / rect.width) * 100;
+  foxPercent = Math.max(8, Math.min(92, foxPercent));
+  fox.style.left = foxPercent + "%";
+}
+
+game.addEventListener("mousemove", e => moveFox(e.clientX));
+
+game.addEventListener("touchmove", e => {
+  if (e.touches.length > 0) moveFox(e.touches[0].clientX);
+}, { passive: true });
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") moveLeft = true;
+  if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") moveRight = true;
+});
+
+document.addEventListener("keyup", e => {
+  if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") moveLeft = false;
+  if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") moveRight = false;
 });
 </script>
 </body>
