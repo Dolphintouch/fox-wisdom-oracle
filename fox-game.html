@@ -6,23 +6,21 @@
   <title>Foxfire Forest Game | Fox Wisdom Oracle</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
       font-family: Georgia, serif;
-      color: #f5e9c8;
-      text-align: center;
+      color: #f8e8c8;
       background-image:
-        linear-gradient(rgba(16, 22, 16, 0.62), rgba(16, 22, 16, 0.88)),
+        linear-gradient(rgba(7, 18, 12, 0.58), rgba(7, 18, 12, 0.88)),
         url("forest-bg.jpg");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       overflow-x: hidden;
+      text-align: center;
     }
 
     body::before {
@@ -31,122 +29,285 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(circle at 18% 22%, rgba(255, 220, 140, 0.12), transparent 20%),
-        radial-gradient(circle at 82% 28%, rgba(255, 230, 170, 0.10), transparent 24%),
-        radial-gradient(circle at 50% 78%, rgba(255, 240, 190, 0.08), transparent 28%);
+        radial-gradient(circle at 12% 20%, rgba(255,220,130,0.15), transparent 18%),
+        radial-gradient(circle at 80% 20%, rgba(255,230,170,0.12), transparent 20%),
+        radial-gradient(circle at 50% 80%, rgba(255,210,120,0.09), transparent 24%);
       z-index: 0;
+    }
+
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image:
+        radial-gradient(circle, rgba(255,231,155,0.9) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,245,190,0.55) 0 1.5px, transparent 3px);
+      background-size: 110px 130px, 170px 210px;
+      animation: sparkleFloat 12s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes sparkleFloat {
+      from { background-position: 0 0, 40px 80px; }
+      to { background-position: 120px -180px, 220px -140px; }
     }
 
     .page {
       position: relative;
       z-index: 2;
-      padding: 18px 12px 28px;
-      max-width: 1050px;
+      width: min(1200px, 100%);
       margin: 0 auto;
+      padding: 18px 14px 34px;
     }
 
-    .return-link {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 20;
-      color: #fff4df;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      color: #ffe4ad;
       text-decoration: none;
-      background: rgba(20, 30, 20, 0.55);
-      border: 1px solid rgba(255, 231, 170, 0.35);
-      padding: 9px 13px;
+      padding: 10px 16px;
       border-radius: 999px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(4px);
+      background: rgba(24, 38, 22, 0.75);
+      border: 1px solid rgba(255, 218, 130, 0.42);
+      box-shadow: 0 0 18px rgba(255, 205, 110, 0.12), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .brand {
+      color: #ffe8bd;
+      font-size: 0.98rem;
+      opacity: 0.95;
     }
 
     h1 {
-      margin: 42px 0 8px;
-      font-size: clamp(2.3rem, 7vw, 4.4rem);
-      color: #f3dfbf;
+      margin: 8px 0 4px;
+      font-size: clamp(2.5rem, 7vw, 5.2rem);
+      line-height: 1;
+      color: #f7dfb2;
       text-shadow:
-        0 0 10px rgba(255, 216, 145, 0.28),
-        0 3px 8px rgba(0, 0, 0, 0.45);
+        0 0 8px rgba(255,223,160,0.3),
+        0 4px 10px rgba(0,0,0,0.55);
+      letter-spacing: 0.03em;
     }
 
     .intro {
       max-width: 760px;
-      margin: 0 auto 14px;
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      line-height: 1.65;
+      margin: 0 auto 18px;
+      color: #fff0d8;
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      line-height: 1.5;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.45);
+    }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: 250px minmax(320px, 1fr) 280px;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 12px;
+    }
+
+    .wood-panel,
+    .reward-panel,
+    .game-frame {
+      border-radius: 28px;
+      border: 1px solid rgba(255, 211, 125, 0.42);
+      background:
+        linear-gradient(rgba(33, 25, 15, 0.86), rgba(20, 35, 20, 0.82)),
+        radial-gradient(circle at top, rgba(255,225,155,0.16), transparent 36%);
+      box-shadow:
+        0 18px 38px rgba(0,0,0,0.35),
+        inset 0 0 22px rgba(255,220,150,0.06);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .wood-panel::before,
+    .reward-panel::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 220, 150, 0.16);
+      pointer-events: none;
+    }
+
+    .wood-panel {
+      padding: 24px 18px;
+      text-align: left;
+    }
+
+    .wood-panel h2,
+    .reward-panel h2 {
+      margin: 0 0 18px;
+      color: #f8dc9e;
+      font-size: 1.75rem;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255,210,120,0.22);
+    }
+
+    .how-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin: 0 0 18px;
       color: #fff0d7;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+      line-height: 1.35;
+    }
+
+    .how-icon {
+      font-size: 2rem;
+      text-align: center;
+      filter: drop-shadow(0 0 7px rgba(255,220,150,0.4));
+    }
+
+    .how-item strong {
+      color: #ffe0a0;
+      font-size: 1.05rem;
+    }
+
+    .points {
+      display: block;
+      margin-top: 5px;
+      color: #ffd679;
+      font-weight: bold;
+    }
+
+    .bad-points { color: #ff9a80; }
+
+    .tip-box {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 236, 190, 0.12);
+      border: 1px solid rgba(255, 220, 150, 0.2);
+      color: #ffeccd;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .game-card-title {
+      margin: 0 auto 12px;
+      width: fit-content;
+      max-width: 100%;
+      padding: 14px 34px;
+      border-radius: 24px;
+      background:
+        linear-gradient(rgba(76, 55, 29, 0.92), rgba(43, 59, 29, 0.85));
+      border: 1px solid rgba(255,218,130,0.45);
+      box-shadow: 0 0 22px rgba(255,210,120,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .game-card-title h2 {
+      margin: 0;
+      color: #f8dfaf;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.42);
+    }
+
+    .game-card-title p {
+      margin: 8px 0 0;
+      color: #fff0d3;
+      font-size: 1.05rem;
+      line-height: 1.35;
+    }
+
+    .game-frame {
+      padding: 14px;
+      background: rgba(12, 28, 22, 0.78);
     }
 
     .stats {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 16px auto;
     }
 
-    .pill {
-      min-width: 120px;
-      padding: 9px 16px;
+    .stat-pill {
+      flex: 1;
+      min-width: 115px;
+      padding: 9px 12px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.11);
-      border: 1px solid rgba(255, 231, 170, 0.32);
-      box-shadow: inset 0 0 14px rgba(255, 234, 180, 0.05), 0 5px 14px rgba(0, 0, 0, 0.18);
-      color: #fff2dc;
+      background: rgba(15, 33, 24, 0.86);
+      border: 1px solid rgba(255, 218, 130, 0.38);
+      color: #ffe6b3;
+      font-size: 1rem;
+      box-shadow: inset 0 0 15px rgba(255,220,150,0.05);
     }
 
     #game {
       position: relative;
-      width: min(940px, 100%);
-      height: min(62vh, 520px);
-      min-height: 410px;
-      margin: 0 auto;
+      height: min(56vh, 530px);
+      min-height: 430px;
+      border-radius: 24px;
       overflow: hidden;
-      border-radius: 28px;
-      border: 1px solid rgba(255, 231, 170, 0.36);
+      border: 1px solid rgba(255, 218, 130, 0.35);
       background:
-        radial-gradient(circle at 50% 10%, rgba(255, 235, 180, 0.12), transparent 32%),
-        linear-gradient(to top, rgba(17, 43, 24, 0.98), rgba(16, 32, 27, 0.80), rgba(10, 16, 24, 0.48));
+        radial-gradient(circle at 50% 15%, rgba(70, 130, 120, 0.26), transparent 35%),
+        linear-gradient(to top, rgba(18, 45, 25, 0.98), rgba(12, 30, 28, 0.88), rgba(5, 12, 22, 0.58));
       box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.35),
-        inset 0 -40px 70px rgba(0, 0, 0, 0.38),
-        inset 0 0 40px rgba(255, 225, 150, 0.06);
+        inset 0 -40px 70px rgba(0,0,0,0.4),
+        inset 0 0 40px rgba(255,220,140,0.06);
       cursor: none;
       touch-action: none;
     }
 
     .moon {
       position: absolute;
-      top: 28px;
-      right: 48px;
-      width: 78px;
-      height: 78px;
+      top: 26px;
+      right: 38px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
-      background: radial-gradient(circle, #fff7d6 0%, #ecd17b 66%, transparent 70%);
-      box-shadow: 0 0 42px rgba(255, 239, 180, 0.65);
-      opacity: 0.88;
+      background: radial-gradient(circle, #fff8d8, #ecd276 66%, transparent 70%);
+      box-shadow: 0 0 44px rgba(255,240,190,0.6);
+      opacity: 0.75;
     }
+
+    .lantern {
+      position: absolute;
+      width: 20px;
+      height: 30px;
+      border-radius: 8px 8px 12px 12px;
+      background: radial-gradient(circle, #ffe391, #c87b32 60%, #48270f 70%);
+      box-shadow: 0 0 25px rgba(255,190,80,0.65);
+      top: 46%;
+      opacity: 0.85;
+    }
+
+    .lantern.left { left: 9%; }
+    .lantern.right { right: 9%; }
 
     .hill {
       position: absolute;
       left: -8%;
-      bottom: -55px;
+      bottom: -62px;
       width: 116%;
       height: 155px;
-      background: #142b19;
+      background: #142a18;
       border-radius: 55% 55% 0 0;
-      box-shadow: 0 -18px 36px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 -18px 36px rgba(0,0,0,0.26);
     }
 
     .tree {
       position: absolute;
-      bottom: 65px;
+      bottom: 75px;
       width: 22px;
-      height: 125px;
+      height: 140px;
       border-radius: 12px 12px 0 0;
-      background: linear-gradient(#4a2d1c, #1d110b);
-      opacity: 0.75;
+      background: linear-gradient(#52301e, #1d110b);
+      opacity: 0.74;
     }
 
     .tree::before {
@@ -155,439 +316,537 @@
       left: 50%;
       bottom: 58px;
       transform: translateX(-50%);
-      width: 105px;
-      height: 130px;
-      background: radial-gradient(circle at 50% 18%, #3d6545, #142718 70%);
+      width: 110px;
+      height: 135px;
+      background: radial-gradient(circle at 50% 18%, #426b48, #152818 70%);
       clip-path: polygon(50% 0, 100% 100%, 0 100%);
       border-radius: 18px;
     }
 
-    .tree.t1 { left: 5%; transform: scale(1.12); }
-    .tree.t2 { left: 20%; transform: scale(0.78); opacity: 0.45; }
-    .tree.t3 { right: 18%; transform: scale(1.08); }
-    .tree.t4 { right: 4%; transform: scale(0.84); opacity: 0.48; }
+    .tree.t1 { left: 4%; transform: scale(1.15); }
+    .tree.t2 { left: 20%; transform: scale(0.82); opacity: 0.48; }
+    .tree.t3 { right: 20%; transform: scale(1.08); }
+    .tree.t4 { right: 4%; transform: scale(0.86); opacity: 0.5; }
 
-    .firefly {
+    .flower {
       position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(255, 237, 178, 0.95);
-      box-shadow: 0 0 14px rgba(255, 237, 178, 0.9);
-      animation: fireflyFloat linear infinite;
-      opacity: 0.6;
+      bottom: 30px;
+      font-size: 1.4rem;
+      opacity: 0.8;
+      filter: drop-shadow(0 0 7px rgba(255,205,120,0.22));
+    }
+    .flower.f1 { left: 12%; }
+    .flower.f2 { left: 28%; bottom: 52px; }
+    .flower.f3 { right: 17%; }
+    .flower.f4 { right: 35%; bottom: 46px; }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5, 12, 8, 0.32);
+      backdrop-filter: blur(2px);
+      transition: opacity 0.4s ease;
     }
 
-    .firefly:nth-child(1) { left: 12%; top: 72%; animation-duration: 9s; }
-    .firefly:nth-child(2) { left: 38%; top: 62%; animation-duration: 11s; animation-delay: 2s; }
-    .firefly:nth-child(3) { left: 66%; top: 70%; animation-duration: 10s; animation-delay: 1s; }
-    .firefly:nth-child(4) { left: 84%; top: 58%; animation-duration: 13s; animation-delay: 3s; }
-
-    @keyframes fireflyFloat {
-      0% { transform: translateY(0) translateX(0); opacity: 0; }
-      20% { opacity: 0.8; }
-      100% { transform: translateY(-260px) translateX(24px); opacity: 0; }
+    .play-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
-    /* Cute chibi fox */
+    .big-play {
+      font-size: 1.7rem;
+      padding: 18px 36px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, #4d762e, #2e4d20);
+      border: 1px solid rgba(255,230,150,0.55);
+      color: #ffe8b7;
+      box-shadow: 0 0 28px rgba(255,215,130,0.3), inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+
+    /* Chibi fox seen from behind, like the mockup */
     #fox {
       position: absolute;
       left: 50%;
-      bottom: 54px;
-      width: 120px;
-      height: 116px;
+      bottom: 48px;
+      width: 126px;
+      height: 135px;
       transform: translateX(-50%);
-      z-index: 8;
-      filter: drop-shadow(0 13px 10px rgba(0, 0, 0, 0.35));
+      z-index: 10;
+      filter: drop-shadow(0 14px 10px rgba(0,0,0,0.38));
       transition: left 0.12s ease;
     }
 
     .fox-shadow {
       position: absolute;
-      bottom: -4px;
-      left: 22px;
-      width: 82px;
+      bottom: 0;
+      left: 20px;
+      width: 85px;
       height: 16px;
-      background: rgba(0, 0, 0, 0.26);
+      background: rgba(0,0,0,0.28);
       border-radius: 50%;
       filter: blur(2px);
     }
 
     .fox-tail {
       position: absolute;
-      left: -4px;
+      left: 0;
       bottom: 28px;
-      width: 70px;
-      height: 42px;
-      background: linear-gradient(90deg, #fff0d2 0 23%, #db7538 26%, #f2a34e 100%);
-      border-radius: 65% 28% 58% 70%;
-      transform: rotate(-20deg);
+      width: 78px;
+      height: 48px;
+      background: linear-gradient(135deg, #f2a14a 0 58%, #fff0d2 60% 100%);
+      border-radius: 70% 35% 70% 55%;
+      transform: rotate(-24deg);
       transform-origin: right center;
-      animation: wagTail 1.4s ease-in-out infinite;
-      z-index: 1;
+      animation: wagTail 1.35s ease-in-out infinite;
+      z-index: 2;
     }
 
     @keyframes wagTail {
-      0%, 100% { transform: rotate(-22deg); }
-      50% { transform: rotate(-6deg); }
+      0%,100% { transform: rotate(-24deg); }
+      50% { transform: rotate(-9deg); }
     }
 
     .fox-body {
       position: absolute;
-      left: 34px;
-      bottom: 16px;
-      width: 62px;
-      height: 55px;
-      background: linear-gradient(145deg, #de7134, #f5a24d);
-      border-radius: 50% 50% 45% 45%;
-      z-index: 3;
+      left: 38px;
+      bottom: 18px;
+      width: 65px;
+      height: 76px;
+      background: linear-gradient(160deg, #da7034, #f4a04d);
+      border-radius: 48% 48% 42% 42%;
+      z-index: 4;
     }
 
-    .fox-belly {
+    .fox-head-back {
       position: absolute;
-      left: 15px;
-      bottom: 5px;
-      width: 34px;
-      height: 29px;
-      background: #ffe5c0;
-      border-radius: 50%;
-      opacity: 0.95;
-    }
-
-    .fox-head {
-      position: absolute;
-      left: 34px;
-      bottom: 56px;
-      width: 66px;
+      left: 30px;
+      bottom: 78px;
+      width: 82px;
       height: 58px;
-      background: linear-gradient(145deg, #e36f32, #f5a24d);
-      border-radius: 48% 48% 45% 45%;
+      background: linear-gradient(160deg, #e27635, #f6a650);
+      border-radius: 48% 48% 42% 42%;
       z-index: 5;
-      animation: foxBounce 1.7s ease-in-out infinite;
+      animation: foxBounce 1.8s ease-in-out infinite;
     }
 
     @keyframes foxBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
 
     .ear {
       position: absolute;
-      top: -22px;
-      width: 28px;
-      height: 34px;
-      background: #d9632f;
+      top: -26px;
+      width: 32px;
+      height: 39px;
+      background: #d9602e;
       clip-path: polygon(50% 0, 100% 100%, 0 100%);
       z-index: 4;
     }
 
-    .ear.left {
-      left: 4px;
-      transform: rotate(-16deg);
-    }
-
-    .ear.right {
-      right: 4px;
-      transform: rotate(16deg);
-    }
+    .ear.left { left: 4px; transform: rotate(-16deg); }
+    .ear.right { right: 4px; transform: rotate(16deg); }
 
     .ear::after {
       content: "";
       position: absolute;
-      left: 8px;
+      left: 9px;
       top: 12px;
-      width: 13px;
-      height: 17px;
-      background: #ffd2bd;
+      width: 14px;
+      height: 19px;
+      background: #ffd1bb;
       clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      opacity: 0.9;
+      opacity: 0.78;
     }
 
-    .cheek {
+    .head-fluff {
       position: absolute;
-      bottom: 4px;
-      width: 30px;
-      height: 24px;
-      background: #fff0d2;
-      border-radius: 50%;
-      z-index: 6;
-    }
-
-    .cheek.left { left: 8px; }
-    .cheek.right { right: 8px; }
-
-    .eye {
-      position: absolute;
-      top: 20px;
-      width: 13px;
-      height: 15px;
-      background: #2b160e;
-      border-radius: 50%;
-      z-index: 8;
-      animation: blink 4.2s infinite;
-    }
-
-    .eye::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 4px;
-      height: 4px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .eye.left { left: 16px; }
-    .eye.right { right: 16px; }
-
-    @keyframes blink {
-      0%, 92%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.12); }
-    }
-
-    .nose {
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%);
-      width: 9px;
-      height: 7px;
-      background: #2b160e;
-      border-radius: 50%;
-      z-index: 9;
-    }
-
-    .smile {
-      position: absolute;
-      left: 50%;
-      bottom: 7px;
-      width: 18px;
-      height: 9px;
-      border-bottom: 2px solid rgba(43, 22, 14, 0.65);
-      border-radius: 0 0 18px 18px;
-      transform: translateX(-50%);
-      z-index: 9;
+      top: 7px;
+      left: 31px;
+      width: 20px;
+      height: 18px;
+      background: #ffba62;
+      clip-path: polygon(0 100%, 22% 15%, 45% 100%, 65% 8%, 100% 100%);
+      opacity: 0.85;
     }
 
     .paw {
       position: absolute;
-      bottom: 0;
-      width: 13px;
-      height: 20px;
-      background: #4a2517;
+      bottom: 6px;
+      width: 15px;
+      height: 24px;
+      background: #442315;
       border-radius: 999px;
-      z-index: 4;
+      z-index: 6;
     }
 
-    .paw.p1 { left: 44px; }
-    .paw.p2 { left: 67px; }
-    .paw.p3 { left: 86px; height: 16px; opacity: 0.88; }
+    .paw.p1 { left: 47px; }
+    .paw.p2 { left: 76px; }
 
     .item {
       position: absolute;
-      top: -55px;
+      top: -60px;
       transform: translateX(-50%);
-      z-index: 7;
+      z-index: 9;
       user-select: none;
-      animation-name: fall;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
-      filter: drop-shadow(0 5px 6px rgba(0,0,0,0.28));
+      filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));
     }
 
     .dandelion {
-      font-size: 34px;
-      text-shadow: 0 0 12px rgba(255, 243, 210, 0.85);
-      animation-name: driftFall;
+      font-size: 42px;
+      text-shadow: 0 0 16px rgba(255,248,215,0.9);
+      animation-name: dandelionFall;
     }
 
     .sheep {
-      font-size: 40px;
+      font-size: 44px;
+      animation-name: fall;
     }
 
     .rock {
-      font-size: 36px;
-      filter: drop-shadow(0 5px 6px rgba(0,0,0,0.42));
+      font-size: 40px;
+      animation-name: fall;
+      filter: drop-shadow(0 5px 8px rgba(0,0,0,0.45));
     }
 
     @keyframes fall {
-      to { top: calc(100% + 60px); transform: translateX(-50%) rotate(120deg); }
+      to { top: calc(100% + 70px); transform: translateX(-50%) rotate(110deg); }
     }
 
-    @keyframes driftFall {
+    @keyframes dandelionFall {
       0% { transform: translateX(-50%) translateX(0) rotate(0deg); }
-      35% { transform: translateX(-50%) translateX(22px) rotate(16deg); }
-      70% { transform: translateX(-50%) translateX(-18px) rotate(-14deg); }
-      100% { top: calc(100% + 60px); transform: translateX(-50%) translateX(18px) rotate(28deg); }
+      30% { transform: translateX(-50%) translateX(24px) rotate(14deg); }
+      65% { transform: translateX(-50%) translateX(-18px) rotate(-12deg); }
+      100% { top: calc(100% + 70px); transform: translateX(-50%) translateX(20px) rotate(24deg); }
     }
 
-    .controls {
+    .reward-panel {
+      padding: 24px 18px;
+    }
+
+    .reward-card {
+      margin: 16px auto;
+      width: 190px;
+      min-height: 270px;
+      border-radius: 22px;
+      border: 2px solid rgba(255, 218, 130, 0.65);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,218,130,0.22), transparent 34%),
+        linear-gradient(rgba(20, 36, 24, 0.96), rgba(11, 20, 17, 0.97));
+      box-shadow:
+        0 0 28px rgba(255,210,120,0.25),
+        inset 0 0 20px rgba(255,220,150,0.08);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .reward-card h3 {
+      margin: 0;
+      color: #f9d895;
+      font-size: 1.35rem;
+    }
+
+    .reward-fox {
+      margin: 12px auto;
+      width: 95px;
+      height: 95px;
+      position: relative;
+    }
+
+    .reward-fox .rf-tail {
+      position: absolute;
+      left: 4px;
+      bottom: 28px;
+      width: 52px;
+      height: 30px;
+      background: linear-gradient(90deg, #fff0d2 0 22%, #e37b36 26%, #f3a14c 100%);
+      border-radius: 70% 30% 60% 65%;
+      transform: rotate(-18deg);
+    }
+
+    .reward-fox .rf-body {
+      position: absolute;
+      left: 34px;
+      bottom: 12px;
+      width: 42px;
+      height: 42px;
+      background: #ef8c3f;
+      border-radius: 50%;
+    }
+
+    .reward-fox .rf-head {
+      position: absolute;
+      left: 31px;
+      bottom: 47px;
+      width: 48px;
+      height: 42px;
+      background: #f29a48;
+      border-radius: 50%;
+    }
+
+    .reward-fox .rf-head::before,
+    .reward-fox .rf-head::after {
+      content: "";
+      position: absolute;
+      top: -15px;
+      width: 20px;
+      height: 25px;
+      background: #df7134;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+
+    .reward-fox .rf-head::before { left: 3px; transform: rotate(-14deg); }
+    .reward-fox .rf-head::after { right: 3px; transform: rotate(14deg); }
+
+    .reward-fox .rf-eye {
+      position: absolute;
+      top: 16px;
+      width: 8px;
+      height: 10px;
+      background: #24130d;
+      border-radius: 50%;
+    }
+
+    .reward-fox .rf-eye::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .reward-fox .rf-eye.left { left: 12px; }
+    .reward-fox .rf-eye.right { right: 12px; }
+
+    .reward-fox .rf-nose {
+      position: absolute;
+      left: 50%;
+      bottom: 9px;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 5px;
+      background: #24130d;
+      border-radius: 50%;
+    }
+
+    #rewardMessage {
+      color: #fff0d7;
+      line-height: 1.55;
+      font-size: 1rem;
+      margin: 8px 0 0;
+    }
+
+    .bottom-controls {
+      margin: 18px auto 0;
       display: flex;
       justify-content: center;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 18px auto 0;
     }
 
     button {
       border: none;
-      padding: 12px 20px;
       border-radius: 999px;
-      background: linear-gradient(to bottom, #c99278, #b77d64);
-      color: #fff4eb;
+      padding: 13px 24px;
       font-family: Georgia, serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      color: #ffe9c1;
+      background: linear-gradient(to bottom, #47742a, #2e4b1f);
+      border: 1px solid rgba(255, 218, 130, 0.48);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
       cursor: pointer;
-      box-shadow: 0 5px 13px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 7px 16px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+      filter: brightness(1.08);
     }
 
-    #messageBox {
-      display: none;
-      max-width: 650px;
-      margin: 20px auto 0;
-      padding: 22px 24px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.11);
-      border: 1px solid rgba(255, 231, 170, 0.38);
-      backdrop-filter: blur(5px);
-      box-shadow:
-        0 12px 28px rgba(0,0,0,0.25),
-        0 0 34px rgba(255, 224, 160, 0.13);
-      animation: messageRise 0.8s ease forwards;
+    .soft-note {
+      margin: 18px auto 0;
+      color: #ffe9c1;
+      font-size: 1rem;
+      opacity: 0.92;
     }
 
-    @keyframes messageRise {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #messageBox h2 {
-      margin: 0 0 10px;
-      color: #f7dfb5;
-      font-size: 1.8rem;
-      text-shadow: 0 0 10px rgba(255, 223, 160, 0.25);
-    }
-
-    #messageBox p {
-      margin: 0 0 18px;
-      font-size: 1.08rem;
-      line-height: 1.7;
-      color: #fff2df;
-    }
-
-    .instructions {
-      margin: 12px auto 0;
-      max-width: 720px;
-      font-size: 0.98rem;
-      line-height: 1.55;
-      color: rgba(255, 242, 220, 0.85);
-    }
-
-    @media (max-width: 700px) {
-      .return-link {
-        position: static;
-        display: inline-block;
-        margin-top: 4px;
+    @media (max-width: 980px) {
+      .game-layout {
+        grid-template-columns: 1fr;
       }
 
-      h1 {
-        margin-top: 18px;
+      .wood-panel,
+      .reward-panel {
+        max-width: 720px;
+        margin: 0 auto;
+        width: 100%;
       }
 
+      .wood-panel {
+        text-align: center;
+      }
+
+      .how-item {
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .top-bar { justify-content: center; }
       #game {
         min-height: 430px;
-        height: 64vh;
         cursor: default;
       }
-
-      #fox {
-        width: 106px;
-        height: 106px;
-        transform: translateX(-50%) scale(0.92);
-      }
-
-      .tree.t1,
-      .tree.t4 {
-        opacity: 0.32;
-      }
-
-      button {
-        width: 100%;
-        max-width: 340px;
-      }
+      .game-frame { padding: 10px; }
+      .stat-pill { min-width: 95px; font-size: 0.92rem; }
+      #fox { transform: translateX(-50%) scale(0.88); }
+      .game-card-title { padding: 14px 18px; }
+      .tree.t1, .tree.t4 { opacity: 0.36; }
     }
   </style>
 </head>
 <body>
-  <a class="return-link" href="index.html">← Return to the Forest</a>
+  <div class="sparkles"></div>
 
   <main class="page">
-    <h1>Foxfire Forest</h1>
-    <p class="intro">
-      Guide the little fox through the moonlit forest. Catch drifting dandelion wishes and fluffy sheep, avoid the stones, and receive a soft oracle message when the path is complete.
-    </p>
-
-    <div class="stats">
-      <div class="pill">Wishes: <span id="score">0</span></div>
-      <div class="pill">Hearts: <span id="hearts">3</span></div>
-      <div class="pill">Time: <span id="time">35</span>s</div>
+    <div class="top-bar">
+      <a class="back-link" href="index.html">← Back to Oracle</a>
+      <div class="brand">Dolphintouch presents</div>
     </div>
 
-    <section id="game" aria-label="Foxfire Forest Game">
-      <div class="moon"></div>
-      <div class="firefly"></div>
-      <div class="firefly"></div>
-      <div class="firefly"></div>
-      <div class="firefly"></div>
-      <div class="tree t1"></div>
-      <div class="tree t2"></div>
-      <div class="tree t3"></div>
-      <div class="tree t4"></div>
-      <div class="hill"></div>
+    <h1>Foxfire Forest Game</h1>
+    <p class="intro">
+      Help little Foxy collect dandelion wishes and catch fluffy sheep as they float through the enchanted forest.
+      When the path is complete, receive a gentle oracle message.
+    </p>
 
-      <div id="fox" aria-label="Cute chibi fox">
-        <div class="fox-shadow"></div>
-        <div class="fox-tail"></div>
-        <div class="fox-body">
-          <div class="fox-belly"></div>
+    <section class="game-layout">
+      <aside class="wood-panel">
+        <h2>How to Play</h2>
+
+        <div class="how-item">
+          <div class="how-icon">🌼</div>
+          <div>
+            <strong>Catch Dandelion Wishes</strong><br>
+            Move left or right to catch the floating wishes.
+            <span class="points">+10 points</span>
+          </div>
         </div>
-        <div class="paw p1"></div>
-        <div class="paw p2"></div>
-        <div class="paw p3"></div>
-        <div class="fox-head">
-          <div class="ear left"></div>
-          <div class="ear right"></div>
-          <div class="cheek left"></div>
-          <div class="cheek right"></div>
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="nose"></div>
-          <div class="smile"></div>
+
+        <div class="how-item">
+          <div class="how-icon">🐑</div>
+          <div>
+            <strong>Catch Fluffy Sheep</strong><br>
+            Catch the sheep for a bigger blessing.
+            <span class="points">+50 points</span>
+          </div>
         </div>
-      </div>
+
+        <div class="how-item">
+          <div class="how-icon">🪨</div>
+          <div>
+            <strong>Avoid the Rocks</strong><br>
+            Don’t let the stones bump little Foxy.
+            <span class="points bad-points">-1 heart</span>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          🐾 Tip: Use your mouse, finger, or arrow keys to move.
+        </div>
+      </aside>
+
+      <section>
+        <div class="game-card-title">
+          <h2>Foxfire Forest</h2>
+          <p>Catch wishes, gather courage, and follow the glow.</p>
+        </div>
+
+        <div class="game-frame">
+          <div class="stats">
+            <div class="stat-pill">🌼 <span id="score">0</span></div>
+            <div class="stat-pill">🧡 <span id="hearts">3</span></div>
+            <div class="stat-pill">⭐ <span id="time">45</span>s</div>
+          </div>
+
+          <div id="game" aria-label="Foxfire Forest game area">
+            <div class="moon"></div>
+            <div class="lantern left"></div>
+            <div class="lantern right"></div>
+            <div class="tree t1"></div>
+            <div class="tree t2"></div>
+            <div class="tree t3"></div>
+            <div class="tree t4"></div>
+            <div class="flower f1">✿</div>
+            <div class="flower f2">❀</div>
+            <div class="flower f3">✿</div>
+            <div class="flower f4">❀</div>
+            <div class="hill"></div>
+
+            <div id="fox" aria-label="Cute fox">
+              <div class="fox-shadow"></div>
+              <div class="fox-tail"></div>
+              <div class="fox-body"></div>
+              <div class="paw p1"></div>
+              <div class="paw p2"></div>
+              <div class="fox-head-back">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head-fluff"></div>
+              </div>
+            </div>
+
+            <div id="playOverlay" class="play-overlay">
+              <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-controls">
+          <button onclick="startGame()">Play Game</button>
+          <button onclick="restartGame()">Play Again</button>
+        </div>
+      </section>
+
+      <aside class="reward-panel">
+        <h2>Your Reward</h2>
+        <p id="rewardIntro">Play the game to receive your forest message.</p>
+
+        <div class="reward-card">
+          <h3 id="rewardTitle">Whisper of Courage</h3>
+          <div class="reward-fox">
+            <div class="rf-tail"></div>
+            <div class="rf-body"></div>
+            <div class="rf-head">
+              <div class="rf-eye left"></div>
+              <div class="rf-eye right"></div>
+              <div class="rf-nose"></div>
+            </div>
+          </div>
+          <p id="rewardMessage">
+            You are braver than you believe. Trust your heart and take the next gentle step.
+          </p>
+        </div>
+
+        <button onclick="drawAnotherMessage()">↻ Draw Another Message</button>
+      </aside>
     </section>
 
-    <div class="controls">
-      <button id="startBtn" onclick="startGame()">Begin the Fox Path</button>
-      <button onclick="restartGame()">Restart</button>
-    </div>
-
-    <p class="instructions">
-      Move your mouse or finger left and right. 🌼 Dandelion wishes give 1 point, 🐑 sheep give 3 points, and 🪨 stones take 1 heart.
-    </p>
-
-    <div id="messageBox">
-      <h2 id="msgTitle">Your Forest Message</h2>
-      <p id="msgText">A little fox message will appear here.</p>
-      <button onclick="restartGame()">Play Again</button>
-    </div>
+    <p class="soft-note">Come back whenever you need a little foxfire glow. ♡</p>
   </main>
 
   <script>
@@ -596,42 +855,47 @@
     const scoreEl = document.getElementById("score");
     const heartsEl = document.getElementById("hearts");
     const timeEl = document.getElementById("time");
-    const startBtn = document.getElementById("startBtn");
-    const messageBox = document.getElementById("messageBox");
-    const msgTitle = document.getElementById("msgTitle");
-    const msgText = document.getElementById("msgText");
+    const playOverlay = document.getElementById("playOverlay");
+    const rewardIntro = document.getElementById("rewardIntro");
+    const rewardTitle = document.getElementById("rewardTitle");
+    const rewardMessage = document.getElementById("rewardMessage");
 
     let score = 0;
     let hearts = 3;
-    let timeLeft = 35;
+    let timeLeft = 45;
     let gameRunning = false;
     let spawnTimer = null;
     let countdownTimer = null;
+    let foxPercent = 50;
 
     const messages = [
       {
+        title: "Whisper of Courage",
+        text: "You are braver than you believe. Trust your heart and take the next gentle step. The forest walks with you."
+      },
+      {
         title: "The Dandelion Wish",
-        text: "A wish carried softly still has power. Let your hope float gently instead of forcing it to land. What is meant for you will find the right place to root."
+        text: "A soft wish still carries power. Let hope float gently from your hands and trust where it chooses to land."
       },
       {
-        title: "The Little Fox Knows",
-        text: "Your instinct is not loud, but it is loyal. Trust the small nudge, the quiet feeling, and the path that keeps glowing in your heart."
-      },
-      {
-        title: "The Gentle Gathering",
-        text: "You have gathered more than you realise. Even small moments of courage, kindness, and play become lanterns on the way forward."
-      },
-      {
-        title: "Soft Steps Through the Forest",
-        text: "You do not have to rush to prove you are moving. Slow steps still count. Gentle progress is still progress."
+        title: "Foxy’s Little Knowing",
+        text: "Your instinct is a lantern. It may be small, but it is honest. Follow the feeling that glows warmly within you."
       },
       {
         title: "The Hidden Meadow",
-        text: "A softer place is waiting beyond the worry. Keep following the signs that feel warm, kind, and true."
+        text: "A quieter blessing is waiting beyond the worry. Keep moving softly. You are closer than you think."
+      },
+      {
+        title: "The Gentle Gathering",
+        text: "Every small piece of courage you collect becomes part of your light. Nothing kind is ever wasted."
       },
       {
         title: "Foxfire Blessing",
-        text: "A little spark is returning to you. Protect it, feed it, and let it become the light that guides your next chapter."
+        text: "A spark is returning to your spirit. Protect it, feed it, and let it guide your next chapter."
+      },
+      {
+        title: "Soft Steps",
+        text: "You do not need to rush to prove you are moving. Slow steps still count. Gentle progress is still progress."
       }
     ];
 
@@ -641,23 +905,24 @@
       clearItems();
       score = 0;
       hearts = 3;
-      timeLeft = 35;
+      timeLeft = 45;
+      foxPercent = 50;
       gameRunning = true;
 
       scoreEl.textContent = score;
       heartsEl.textContent = hearts;
       timeEl.textContent = timeLeft;
-      messageBox.style.display = "none";
-      startBtn.textContent = "The little fox is running...";
+      fox.style.left = foxPercent + "%";
+      playOverlay.classList.add("hidden");
+      rewardIntro.textContent = "Foxy is gathering your message...";
+      rewardTitle.textContent = "The Forest is Listening";
+      rewardMessage.textContent = "Catch wishes, avoid stones, and let the path reveal your message.";
 
-      spawnTimer = setInterval(spawnItem, 620);
+      spawnTimer = setInterval(spawnItem, 650);
       countdownTimer = setInterval(() => {
-        timeLeft -= 1;
+        timeLeft--;
         timeEl.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-          endGame();
-        }
+        if (timeLeft <= 0) endGame();
       }, 1000);
     }
 
@@ -666,7 +931,7 @@
       clearInterval(countdownTimer);
       gameRunning = false;
       clearItems();
-      startBtn.textContent = "Begin the Fox Path";
+      playOverlay.classList.remove("hidden");
       startGame();
     }
 
@@ -677,26 +942,29 @@
       clearInterval(spawnTimer);
       clearInterval(countdownTimer);
       clearItems();
-      startBtn.textContent = "Begin the Fox Path";
+      playOverlay.classList.remove("hidden");
 
-      let messageIndex = 0;
-      if (score >= 4) messageIndex = 1;
-      if (score >= 8) messageIndex = 2;
-      if (score >= 12) messageIndex = 3;
-      if (score >= 16) messageIndex = 4;
-      if (score >= 22) messageIndex = 5;
+      let index = 0;
+      if (score >= 30) index = 1;
+      if (score >= 70) index = 2;
+      if (score >= 120) index = 3;
+      if (score >= 180) index = 4;
+      if (score >= 240) index = 5;
+      if (score >= 320) index = 6;
 
-      const chosen = messages[messageIndex];
-      msgTitle.textContent = chosen.title;
+      const chosen = messages[index];
+      rewardIntro.textContent = hearts <= 0 ? "Little Foxy needs a rest. Here is your gentle message." : "Amazing work, Foxy! Here is your oracle message.";
+      rewardTitle.textContent = hearts <= 0 ? "Rest Beneath the Ferns" : chosen.title;
+      rewardMessage.textContent = hearts <= 0
+        ? "Even brave little foxes need to curl up and breathe. Rest is not failure. Begin again when your spirit feels warm."
+        : chosen.text;
+    }
 
-      if (hearts <= 0) {
-        msgText.textContent = "The little fox has curled up to rest. Even when the path feels bumpy, you are allowed to pause, breathe, and begin again softly.";
-      } else {
-        msgText.textContent = chosen.text;
-      }
-
-      messageBox.style.display = "block";
-      messageBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    function drawAnotherMessage() {
+      const chosen = messages[Math.floor(Math.random() * messages.length)];
+      rewardIntro.textContent = "A fresh forest whisper has arrived.";
+      rewardTitle.textContent = chosen.title;
+      rewardMessage.textContent = chosen.text;
     }
 
     function spawnItem() {
@@ -706,12 +974,11 @@
       item.classList.add("item");
 
       const chance = Math.random();
-
-      if (chance < 0.62) {
+      if (chance < 0.58) {
         item.textContent = "🌼";
         item.dataset.type = "dandelion";
         item.classList.add("dandelion");
-      } else if (chance < 0.84) {
+      } else if (chance < 0.82) {
         item.textContent = "🐑";
         item.dataset.type = "sheep";
         item.classList.add("sheep");
@@ -721,65 +988,52 @@
         item.classList.add("rock");
       }
 
-      const leftPercent = 8 + Math.random() * 84;
-      item.style.left = leftPercent + "%";
-      item.style.animationDuration = (3.2 + Math.random() * 1.7) + "s";
-
+      item.style.left = (8 + Math.random() * 84) + "%";
+      item.style.animationDuration = (3.1 + Math.random() * 1.4) + "s";
       game.appendChild(item);
 
-      const collisionCheck = setInterval(() => {
+      const check = setInterval(() => {
         if (!gameRunning || !document.body.contains(item)) {
-          clearInterval(collisionCheck);
+          clearInterval(check);
           return;
         }
 
         if (isTouching(item, fox)) {
-          handleCatch(item);
+          catchItem(item);
           item.remove();
-          clearInterval(collisionCheck);
+          clearInterval(check);
         }
       }, 45);
 
       item.addEventListener("animationend", () => {
         item.remove();
-        clearInterval(collisionCheck);
+        clearInterval(check);
       });
     }
 
-    function handleCatch(item) {
+    function catchItem(item) {
       const type = item.dataset.type;
 
-      if (type === "dandelion") {
-        score += 1;
-      }
+      if (type === "dandelion") score += 10;
+      if (type === "sheep") score += 50;
+      if (type === "rock") hearts--;
 
-      if (type === "sheep") {
-        score += 3;
-      }
-
-      if (type === "rock") {
-        hearts -= 1;
-        if (hearts <= 0) {
-          hearts = 0;
-          heartsEl.textContent = hearts;
-          endGame();
-          return;
-        }
-      }
+      if (hearts < 0) hearts = 0;
 
       scoreEl.textContent = score;
       heartsEl.textContent = hearts;
+
+      if (hearts <= 0) endGame();
     }
 
     function isTouching(a, b) {
       const ar = a.getBoundingClientRect();
       const br = b.getBoundingClientRect();
-
       return !(
         ar.right < br.left + 20 ||
         ar.left > br.right - 20 ||
         ar.bottom < br.top + 18 ||
-        ar.top > br.bottom - 6
+        ar.top > br.bottom - 4
       );
     }
 
@@ -787,17 +1041,24 @@
       const rect = game.getBoundingClientRect();
       let percent = ((clientX - rect.left) / rect.width) * 100;
       percent = Math.max(8, Math.min(92, percent));
-      fox.style.left = percent + "%";
+      foxPercent = percent;
+      fox.style.left = foxPercent + "%";
     }
 
-    game.addEventListener("mousemove", (event) => {
-      moveFox(event.clientX);
-    });
+    game.addEventListener("mousemove", event => moveFox(event.clientX));
 
-    game.addEventListener("touchmove", (event) => {
+    game.addEventListener("touchmove", event => {
       event.preventDefault();
       moveFox(event.touches[0].clientX);
     }, { passive: false });
+
+    document.addEventListener("keydown", event => {
+      if (!gameRunning) return;
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") foxPercent -= 5;
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") foxPercent += 5;
+      foxPercent = Math.max(8, Math.min(92, foxPercent));
+      fox.style.left = foxPercent + "%";
+    });
 
     game.addEventListener("click", () => {
       if (!gameRunning) startGame();
