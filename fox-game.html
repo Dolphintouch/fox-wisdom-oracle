@@ -117,7 +117,8 @@
     .game-shell,
     .side-panel,
     .wood-panel,
-    .message-panel {
+    .message-panel,
+    .helper-card {
       border-radius: 28px;
       border: 1px solid rgba(255, 211, 125, 0.42);
       background:
@@ -133,7 +134,8 @@
     .game-shell::before,
     .side-panel::before,
     .wood-panel::before,
-    .message-panel::before {
+    .message-panel::before,
+    .helper-card::before {
       content: "";
       position: absolute;
       inset: 8px;
@@ -308,246 +310,68 @@
       font-size: 1.7rem;
       padding: 18px 36px;
       border-radius: 999px;
-      background: linear-gradient(to bottom, #4d762e, #2e4d20);
+      background: linear-gradient(to bottom, #4d762e, #2e4b1f);
       border: 1px solid rgba(255,230,150,0.55);
       color: #ffe8b7;
       box-shadow: 0 0 28px rgba(255,215,130,0.3), inset 0 1px 0 rgba(255,255,255,0.18);
     }
 
-    /* BACK VIEW FOXY PLAYER */
     #fox {
       position: absolute;
       left: 50%;
-      bottom: 48px;
-      width: 126px;
-      height: 135px;
-      transform: translateX(-50%);
-      z-index: 10;
-      filter: drop-shadow(0 14px 10px rgba(0,0,0,0.38));
-      transition: left 0.12s ease;
-    }
-
-    .fox-shadow {
-      position: absolute;
-      bottom: 0;
-      left: 20px;
-      width: 85px;
-      height: 16px;
-      background: rgba(0,0,0,0.28);
-      border-radius: 50%;
-      filter: blur(2px);
-    }
-
-    .fox-tail {
-      position: absolute;
-      left: 0;
       bottom: 28px;
-      width: 78px;
-      height: 48px;
-      background: linear-gradient(135deg, #f2a14a 0 58%, #fff0d2 60% 100%);
-      border-radius: 70% 35% 70% 55%;
-      transform: rotate(-24deg);
-      transform-origin: right center;
-      animation: wagTail 1.35s ease-in-out infinite;
-      z-index: 2;
+      width: 170px;
+      height: auto;
+      transform: translateX(-50%);
+      z-index: 12;
+      filter: drop-shadow(0 18px 14px rgba(0,0,0,0.42));
+      transition: left 0.12s ease;
+      pointer-events: none;
+      user-select: none;
     }
 
-    @keyframes wagTail {
-      0%,100% { transform: rotate(-24deg); }
-      50% { transform: rotate(-9deg); }
+    #fox.catch {
+      animation: foxCatch 0.36s ease;
     }
-
-    .fox-body {
-      position: absolute;
-      left: 38px;
-      bottom: 18px;
-      width: 65px;
-      height: 76px;
-      background: linear-gradient(160deg, #da7034, #f4a04d);
-      border-radius: 48% 48% 42% 42%;
-      z-index: 4;
-    }
-
-    .fox-head-back {
-      position: absolute;
-      left: 30px;
-      bottom: 78px;
-      width: 82px;
-      height: 58px;
-      background: linear-gradient(160deg, #e27635, #f6a650);
-      border-radius: 48% 48% 42% 42%;
-      z-index: 5;
-      animation: foxBounce 1.8s ease-in-out infinite;
-    }
-
-    #fox.catch { animation: foxCatch 0.36s ease; }
 
     @keyframes foxCatch {
       0% { transform: translateX(-50%) scale(1); }
-      45% { transform: translateX(-50%) translateY(-7px) scale(1.08); }
+      45% { transform: translateX(-50%) translateY(-8px) scale(1.08); }
       100% { transform: translateX(-50%) scale(1); }
     }
 
-    @keyframes foxBounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    .ear {
-      position: absolute;
-      top: -26px;
-      width: 32px;
-      height: 39px;
-      background: #d9602e;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      z-index: 4;
-    }
-
-    .ear.left { left: 4px; transform: rotate(-16deg); }
-    .ear.right { right: 4px; transform: rotate(16deg); }
-
-    .ear::after {
-      content: "";
-      position: absolute;
-      left: 9px;
-      top: 12px;
-      width: 14px;
-      height: 19px;
-      background: #ffd1bb;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      opacity: 0.78;
-    }
-
-    .head-fluff {
-      position: absolute;
-      top: 7px;
-      left: 31px;
-      width: 20px;
-      height: 18px;
-      background: #ffba62;
-      clip-path: polygon(0 100%, 22% 15%, 45% 100%, 65% 8%, 100% 100%);
-      opacity: 0.85;
-    }
-
-    .paw {
-      position: absolute;
-      bottom: 6px;
-      width: 15px;
-      height: 24px;
-      background: #442315;
-      border-radius: 999px;
-      z-index: 6;
-    }
-
-    .paw.p1 { left: 47px; }
-    .paw.p2 { left: 76px; }
-
-    /* FALLING CHARACTERS */
     .item {
       position: absolute;
-      top: -80px;
-      transform: translateX(-50%);
-      z-index: 9;
+      top: -90px;
+      z-index: 10;
       user-select: none;
+      pointer-events: none;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
     }
 
-    .dandelion-character {
-      width: 58px;
-      height: 88px;
-      animation: dandelionFloat linear forwards;
-      filter: drop-shadow(0 0 12px rgba(255,230,150,0.75));
+    .fall-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
     }
 
-    .dandy-face {
-      position: absolute;
-      left: 12px;
-      top: 8px;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fffbdc, #fff1a9 68%, #ffd46c 100%);
-      box-shadow: 0 0 22px rgba(255,245,190,0.95), inset 0 0 8px rgba(255,255,255,0.9);
+    .dandelion-item {
+      width: 78px;
+      filter: drop-shadow(0 0 18px rgba(255,230,150,0.9));
+      animation-name: dandelionFloat;
     }
 
-    .dandy-face::before {
-      content: "";
-      position: absolute;
-      inset: -13px;
-      border-radius: 50%;
-      background:
-        repeating-conic-gradient(from 0deg, rgba(255,245,205,0.95) 0 4deg, transparent 4deg 12deg);
-      filter: blur(0.4px);
-      opacity: 0.9;
-      z-index: -1;
-    }
-
-    .dandy-eye {
-      position: absolute;
-      top: 16px;
-      width: 6px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4a2818;
-    }
-
-    .dandy-eye::after {
-      content: "";
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      width: 2px;
-      height: 2px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .dandy-eye.left { left: 12px; }
-    .dandy-eye.right { right: 12px; }
-
-    .dandy-mouth {
-      position: absolute;
-      left: 50%;
-      bottom: 10px;
-      width: 10px;
-      height: 6px;
-      transform: translateX(-50%);
-      border-bottom: 2px solid #7e4324;
-      border-radius: 0 0 10px 10px;
-    }
-
-    .dandy-stem {
-      position: absolute;
-      left: 31px;
-      top: 48px;
-      width: 5px;
-      height: 32px;
-      background: linear-gradient(#eec36a, #a87a24);
-      border-radius: 999px;
-      transform: rotate(-15deg);
-      transform-origin: top;
-      box-shadow: 0 0 8px rgba(255,220,120,0.55);
-    }
-
-    .dandy-seed {
-      position: absolute;
-      left: 25px;
-      bottom: 0;
-      width: 15px;
-      height: 20px;
-      background: radial-gradient(circle, #ffe7a3, #c8841d);
-      border-radius: 60% 60% 70% 70%;
-      box-shadow: 0 0 8px rgba(255,210,110,0.8);
-    }
-
-    .dandelion-character::after {
+    .dandelion-item::after {
       content: "";
       position: absolute;
       left: 50%;
-      top: 45px;
+      top: 46px;
       width: 2px;
-      height: 58px;
+      height: 62px;
       transform: translateX(-50%);
       background: linear-gradient(to bottom, rgba(255,240,190,0.78), transparent);
       filter: blur(1px);
@@ -557,147 +381,51 @@
 
     @keyframes dandelionFloat {
       0% { transform: translateX(-50%) translateX(0) rotate(0deg) scale(1); }
-      25% { transform: translateX(-50%) translateX(28px) rotate(10deg) scale(1.04); }
-      50% { transform: translateX(-50%) translateX(-24px) rotate(-8deg) scale(1); }
+      25% { transform: translateX(-50%) translateX(28px) rotate(8deg) scale(1.04); }
+      50% { transform: translateX(-50%) translateX(-24px) rotate(-7deg) scale(1); }
       75% { transform: translateX(-50%) translateX(20px) rotate(6deg) scale(0.96); }
-      100% { top: calc(100% + 90px); transform: translateX(-50%) translateX(-10px) rotate(-5deg) scale(0.92); }
+      100% { top: calc(100% + 110px); transform: translateX(-50%) translateX(-10px) rotate(-5deg) scale(0.92); }
     }
 
-    .sheep-character {
-      width: 72px;
-      height: 70px;
-      animation: sheepTumble linear forwards;
-      filter: drop-shadow(0 0 12px rgba(255,245,220,0.5)) drop-shadow(0 5px 8px rgba(0,0,0,0.25));
+    .sheep-item {
+      width: 92px;
+      filter: drop-shadow(0 0 14px rgba(255,245,220,0.5)) drop-shadow(0 8px 10px rgba(0,0,0,0.28));
+      animation-name: sheepTumble;
     }
-
-    .sheep-wool {
-      position: absolute;
-      inset: 5px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 24% 25%, #fff8e6 0 11px, transparent 12px),
-        radial-gradient(circle at 48% 13%, #fff8e6 0 13px, transparent 14px),
-        radial-gradient(circle at 72% 28%, #fff4df 0 12px, transparent 13px),
-        radial-gradient(circle at 28% 62%, #fff1d8 0 13px, transparent 14px),
-        radial-gradient(circle at 70% 64%, #fff8e6 0 14px, transparent 15px),
-        radial-gradient(circle at 50% 48%, #fff4df 0 27px, transparent 28px);
-      box-shadow: inset 0 -6px 10px rgba(190,120,60,0.08), 0 0 18px rgba(255,240,200,0.5);
-    }
-
-    .sheep-face {
-      position: absolute;
-      left: 22px;
-      top: 21px;
-      width: 31px;
-      height: 29px;
-      border-radius: 50%;
-      background: #b7794e;
-      z-index: 2;
-    }
-
-    .sheep-ear {
-      position: absolute;
-      top: 23px;
-      width: 17px;
-      height: 12px;
-      background: #b7794e;
-      border-radius: 70% 40% 70% 40%;
-      z-index: 1;
-    }
-
-    .sheep-ear.left { left: 8px; transform: rotate(-25deg); }
-    .sheep-ear.right { right: 8px; transform: rotate(25deg) scaleX(-1); }
-
-    .sheep-eye {
-      position: absolute;
-      top: 9px;
-      width: 6px;
-      height: 8px;
-      background: #24130d;
-      border-radius: 50%;
-    }
-
-    .sheep-eye::after {
-      content: "";
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      background: white;
-    }
-
-    .sheep-eye.left { left: 8px; }
-    .sheep-eye.right { right: 8px; }
-
-    .sheep-mouth {
-      position: absolute;
-      left: 50%;
-      bottom: 7px;
-      width: 10px;
-      height: 6px;
-      transform: translateX(-50%);
-      border-bottom: 2px solid #3b1e12;
-      border-radius: 0 0 10px 10px;
-    }
-
-    .sheep-blush {
-      position: absolute;
-      top: 17px;
-      width: 6px;
-      height: 4px;
-      border-radius: 50%;
-      background: rgba(255,120,120,0.55);
-    }
-
-    .sheep-blush.left { left: 4px; }
-    .sheep-blush.right { right: 4px; }
 
     @keyframes sheepTumble {
       0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
-      20% { transform: translateX(-50%) translateY(10px) rotate(72deg) scale(1.07); }
+      20% { transform: translateX(-50%) translateY(10px) rotate(72deg) scale(1.06); }
       40% { transform: translateX(-50%) translateY(-4px) rotate(144deg) scale(1); }
-      60% { transform: translateX(-50%) translateY(12px) rotate(216deg) scale(1.07); }
+      60% { transform: translateX(-50%) translateY(12px) rotate(216deg) scale(1.06); }
       80% { transform: translateX(-50%) translateY(-2px) rotate(288deg) scale(1); }
-      100% { top: calc(100% + 90px); transform: translateX(-50%) translateY(8px) rotate(360deg) scale(1.05); }
+      100% { top: calc(100% + 110px); transform: translateX(-50%) translateY(8px) rotate(360deg) scale(1.04); }
     }
 
-    .rock-character {
-      width: 58px;
-      height: 52px;
-      animation: rockFall linear forwards;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.5));
+    .rock-item {
+      width: 86px;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.55));
+      animation-name: rockFall;
     }
 
-    .rock-body {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(145deg, #8b8172, #4f473e);
-      border-radius: 46% 54% 42% 58%;
-      clip-path: polygon(16% 22%, 42% 4%, 73% 11%, 95% 42%, 76% 90%, 30% 96%, 5% 68%);
-      box-shadow: inset -8px -8px 12px rgba(0,0,0,0.25), inset 8px 8px 10px rgba(255,255,255,0.14);
-    }
-
-    .rock-character::after,
-    .sheep-character::after,
-    .rock-character::before {
+    .rock-item::before,
+    .sheep-item::before {
       content: "";
       position: absolute;
       left: 50%;
-      top: -45px;
-      width: 3px;
-      height: 70px;
+      top: -48px;
+      width: 4px;
+      height: 78px;
       transform: translateX(-50%);
-      background: linear-gradient(to bottom, rgba(255,210,110,0.0), rgba(255,210,110,0.72), transparent);
-      filter: blur(1.3px);
+      background: linear-gradient(to bottom, rgba(255,210,110,0), rgba(255,210,110,0.72), transparent);
+      filter: blur(1.5px);
       opacity: 0.75;
       z-index: -1;
     }
 
     @keyframes rockFall {
       0% { transform: translateX(-50%) rotate(0deg); }
-      100% { top: calc(100% + 90px); transform: translateX(-50%) rotate(140deg); }
+      100% { top: calc(100% + 110px); transform: translateX(-50%) rotate(140deg); }
     }
 
     .side-panel {
@@ -708,12 +436,11 @@
     }
 
     .helper-card {
-      position: relative;
       padding: 18px 14px;
-      border-radius: 24px;
-      background: rgba(7, 18, 12, 0.35);
-      border: 1px solid rgba(255,220,150,0.22);
-      min-height: 260px;
+      min-height: 285px;
+      background:
+        linear-gradient(rgba(28, 21, 13, 0.78), rgba(16, 31, 20, 0.76)),
+        radial-gradient(circle at top, rgba(255,225,155,0.12), transparent 38%);
     }
 
     .speech {
@@ -740,158 +467,14 @@
       transform: rotate(-18deg);
     }
 
-    /* FRONT VIEW SMALL FOXY HELPER */
-    .front-fox {
-      position: relative;
+    .helper-fox-img {
+      display: block;
+      width: 190px;
+      max-width: 100%;
       margin: 0 auto;
-      width: 154px;
-      height: 170px;
+      border-radius: 26px;
       filter: drop-shadow(0 0 18px rgba(255,165,70,0.25)) drop-shadow(0 10px 10px rgba(0,0,0,0.28));
     }
-
-    .front-tail {
-      position: absolute;
-      right: 2px;
-      bottom: 35px;
-      width: 72px;
-      height: 54px;
-      background: linear-gradient(135deg, #e78234 0 58%, #fff1d2 60% 100%);
-      border-radius: 65% 35% 65% 50%;
-      transform: rotate(22deg);
-      animation: frontTailWag 1.7s ease-in-out infinite;
-    }
-
-    @keyframes frontTailWag {
-      0%,100% { transform: rotate(22deg); }
-      50% { transform: rotate(34deg); }
-    }
-
-    .front-body {
-      position: absolute;
-      left: 45px;
-      bottom: 16px;
-      width: 70px;
-      height: 72px;
-      background: linear-gradient(150deg, #e17332, #f4a24f);
-      border-radius: 50% 50% 43% 43%;
-    }
-
-    .front-belly {
-      position: absolute;
-      left: 18px;
-      bottom: 7px;
-      width: 36px;
-      height: 46px;
-      background: #fff0d2;
-      border-radius: 50%;
-    }
-
-    .front-head {
-      position: absolute;
-      left: 30px;
-      top: 14px;
-      width: 96px;
-      height: 86px;
-      background: linear-gradient(145deg, #e57232, #f7a650);
-      border-radius: 48% 48% 45% 45%;
-      animation: helperNod 2.2s ease-in-out infinite;
-    }
-
-    @keyframes helperNod {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    .front-ear {
-      position: absolute;
-      top: -31px;
-      width: 39px;
-      height: 49px;
-      background: #d9602e;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    }
-
-    .front-ear.left { left: 6px; transform: rotate(-16deg); }
-    .front-ear.right { right: 6px; transform: rotate(16deg); }
-
-    .front-ear::after {
-      content: "";
-      position: absolute;
-      left: 11px;
-      top: 15px;
-      width: 17px;
-      height: 23px;
-      background: #ffd1bb;
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    }
-
-    .front-cheek {
-      position: absolute;
-      bottom: 10px;
-      width: 42px;
-      height: 35px;
-      background: #fff0d2;
-      border-radius: 50%;
-    }
-
-    .front-cheek.left { left: 12px; }
-    .front-cheek.right { right: 12px; }
-
-    .front-eye {
-      position: absolute;
-      top: 35px;
-      width: 16px;
-      height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 25%, white 0 3px, #6b3b19 4px, #24130d 70%);
-      z-index: 4;
-      animation: helperBlink 4s infinite;
-    }
-
-    .front-eye.left { left: 24px; }
-    .front-eye.right { right: 24px; }
-
-    @keyframes helperBlink {
-      0%, 92%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.12); }
-    }
-
-    .front-nose {
-      position: absolute;
-      left: 50%;
-      bottom: 25px;
-      width: 10px;
-      height: 8px;
-      transform: translateX(-50%);
-      background: #24130d;
-      border-radius: 50%;
-      z-index: 5;
-    }
-
-    .front-smile {
-      position: absolute;
-      left: 50%;
-      bottom: 14px;
-      width: 23px;
-      height: 13px;
-      transform: translateX(-50%);
-      border-bottom: 3px solid #552611;
-      border-radius: 0 0 20px 20px;
-      z-index: 5;
-    }
-
-    .front-paw {
-      position: absolute;
-      bottom: 35px;
-      width: 18px;
-      height: 26px;
-      background: #4b2517;
-      border-radius: 999px;
-      z-index: 5;
-    }
-
-    .front-paw.left { left: 48px; transform: rotate(-10deg); }
-    .front-paw.right { right: 48px; transform: rotate(10deg); }
 
     .wood-panel,
     .message-panel {
@@ -910,7 +493,7 @@
 
     .how-item {
       display: grid;
-      grid-template-columns: 54px 1fr;
+      grid-template-columns: 58px 1fr;
       gap: 10px;
       align-items: center;
       margin: 0 0 14px;
@@ -918,14 +501,11 @@
       line-height: 1.35;
     }
 
-    .mini-dandy,
-    .mini-sheep,
-    .mini-rock {
-      transform: scale(0.56);
-      transform-origin: center;
-      width: 74px;
-      height: 74px;
-      margin-left: -12px;
+    .how-icon-img {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255,220,150,0.38));
     }
 
     .how-item strong {
@@ -1054,10 +634,13 @@
       #game { min-height: 460px; cursor: default; }
       .game-shell { padding: 10px; }
       .stat-pill { min-width: 95px; font-size: 0.92rem; }
-      #fox { transform: translateX(-50%) scale(0.82); }
+      #fox { width: 132px; }
       .game-title-board { padding: 14px 18px; }
       .tree.t1, .tree.t4 { opacity: 0.36; }
-      .front-fox { transform: scale(0.9); }
+      .helper-fox-img { width: 170px; }
+      .dandelion-item { width: 64px; }
+      .sheep-item { width: 78px; }
+      .rock-item { width: 72px; }
     }
   </style>
 </head>
@@ -1102,18 +685,7 @@
           <div class="flower f4">❀</div>
           <div class="hill"></div>
 
-          <div id="fox" aria-label="Cute fox player">
-            <div class="fox-shadow"></div>
-            <div class="fox-tail"></div>
-            <div class="fox-body"></div>
-            <div class="paw p1"></div>
-            <div class="paw p2"></div>
-            <div class="fox-head-back">
-              <div class="ear left"></div>
-              <div class="ear right"></div>
-              <div class="head-fluff"></div>
-            </div>
-          </div>
+          <img id="fox" src="foxy-player.png" alt="Cute fox player">
 
           <div id="playOverlay" class="play-overlay">
             <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
@@ -1129,38 +701,14 @@
       <aside class="side-panel">
         <div class="helper-card">
           <div class="speech" id="foxSpeech">You’re doing amazing! Catch the glowing wishes, little one. ✨</div>
-
-          <div class="front-fox" aria-label="Friendly fox helper">
-            <div class="front-tail"></div>
-            <div class="front-body"><div class="front-belly"></div></div>
-            <div class="front-head">
-              <div class="front-ear left"></div>
-              <div class="front-ear right"></div>
-              <div class="front-cheek left"></div>
-              <div class="front-cheek right"></div>
-              <div class="front-eye left"></div>
-              <div class="front-eye right"></div>
-              <div class="front-nose"></div>
-              <div class="front-smile"></div>
-            </div>
-            <div class="front-paw left"></div>
-            <div class="front-paw right"></div>
-          </div>
+          <img class="helper-fox-img" src="foxy-helper.png" alt="Friendly fox helper">
         </div>
 
         <div class="wood-panel">
           <h2>How to Play</h2>
 
           <div class="how-item">
-            <div class="mini-dandy dandelion-character">
-              <div class="dandy-face">
-                <div class="dandy-eye left"></div>
-                <div class="dandy-eye right"></div>
-                <div class="dandy-mouth"></div>
-              </div>
-              <div class="dandy-stem"></div>
-              <div class="dandy-seed"></div>
-            </div>
+            <img class="how-icon-img" src="dandelion.png" alt="Dandelion wish">
             <div>
               <strong>Catch Dandelion Wishes</strong>
               <span class="points">+10 points</span>
@@ -1168,18 +716,7 @@
           </div>
 
           <div class="how-item">
-            <div class="mini-sheep sheep-character">
-              <div class="sheep-ear left"></div>
-              <div class="sheep-ear right"></div>
-              <div class="sheep-wool"></div>
-              <div class="sheep-face">
-                <div class="sheep-eye left"></div>
-                <div class="sheep-eye right"></div>
-                <div class="sheep-blush left"></div>
-                <div class="sheep-blush right"></div>
-                <div class="sheep-mouth"></div>
-              </div>
-            </div>
+            <img class="how-icon-img" src="sheep.png" alt="Fluffy sheep">
             <div>
               <strong>Catch Fluffy Sheep</strong>
               <span class="points">+50 points</span>
@@ -1187,7 +724,7 @@
           </div>
 
           <div class="how-item">
-            <div class="mini-rock rock-character"><div class="rock-body"></div></div>
+            <img class="how-icon-img" src="rock.png" alt="Falling rock">
             <div>
               <strong>Avoid the Rocks</strong>
               <span class="points bad-points">-1 heart</span>
@@ -1258,14 +795,6 @@
         title: "Soft Steps",
         text: "You do not need to rush to prove you are moving. Slow steps still count. Gentle progress is still progress."
       }
-    ];
-
-    const helperLines = [
-      "You’re doing amazing! Keep catching those wishes. ✨",
-      "Watch out for the stones, little one! 🪨",
-      "That sheep is full of blessings! Catch it! 🐑",
-      "Follow the glowing dandelions. They know the way. 🌼",
-      "Soft paws, brave heart. You’ve got this. ♡"
     ];
 
     function startGame() {
@@ -1345,40 +874,28 @@
       const item = document.createElement("div");
       item.classList.add("item");
 
+      const img = document.createElement("img");
+      img.classList.add("fall-img");
+
       const chance = Math.random();
       if (chance < 0.58) {
         item.dataset.type = "dandelion";
-        item.classList.add("dandelion-character");
-        item.innerHTML = `
-          <div class="dandy-face">
-            <div class="dandy-eye left"></div>
-            <div class="dandy-eye right"></div>
-            <div class="dandy-mouth"></div>
-          </div>
-          <div class="dandy-stem"></div>
-          <div class="dandy-seed"></div>
-        `;
+        item.classList.add("dandelion-item");
+        img.src = "dandelion.png";
+        img.alt = "Dandelion wish";
       } else if (chance < 0.82) {
         item.dataset.type = "sheep";
-        item.classList.add("sheep-character");
-        item.innerHTML = `
-          <div class="sheep-ear left"></div>
-          <div class="sheep-ear right"></div>
-          <div class="sheep-wool"></div>
-          <div class="sheep-face">
-            <div class="sheep-eye left"></div>
-            <div class="sheep-eye right"></div>
-            <div class="sheep-blush left"></div>
-            <div class="sheep-blush right"></div>
-            <div class="sheep-mouth"></div>
-          </div>
-        `;
+        item.classList.add("sheep-item");
+        img.src = "sheep.png";
+        img.alt = "Fluffy sheep";
       } else {
         item.dataset.type = "rock";
-        item.classList.add("rock-character");
-        item.innerHTML = `<div class="rock-body"></div>`;
+        item.classList.add("rock-item");
+        img.src = "rock.png";
+        img.alt = "Falling rock";
       }
 
+      item.appendChild(img);
       item.style.left = (8 + Math.random() * 84) + "%";
       item.style.animationDuration = (3.2 + Math.random() * 1.55) + "s";
       game.appendChild(item);
