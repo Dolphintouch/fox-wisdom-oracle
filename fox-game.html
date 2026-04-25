@@ -325,6 +325,7 @@ h1 {
   box-shadow: 0 0 28px rgba(255,215,130,0.3), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
+/* FOXES: bright, no crop, no multiply */
 #fox {
   position: absolute;
   left: 50%;
@@ -335,15 +336,13 @@ h1 {
   z-index: 12;
   filter:
     drop-shadow(0 18px 14px rgba(0,0,0,0.42))
-    drop-shadow(0 0 18px rgba(255,195,95,0.45))
-    brightness(1.14)
+    drop-shadow(0 0 18px rgba(255,195,95,0.48))
+    brightness(1.16)
     contrast(1.12)
-    saturate(1.12);
+    saturate(1.16);
   transition: left 0.12s ease;
   pointer-events: none;
   user-select: none;
-  border-radius: 42%;
-  clip-path: ellipse(46% 48% at 50% 52%);
 }
 
 #fox.catch {
@@ -366,6 +365,7 @@ h1 {
   animation-fill-mode: forwards;
 }
 
+/* FALLING ITEMS: hides white square behind dandelion / rock / sheep */
 .fall-img {
   display: block;
   width: 100%;
@@ -373,12 +373,12 @@ h1 {
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  mix-blend-mode: multiply;
   filter:
-    brightness(1.16)
-    contrast(1.14)
-    saturate(1.12);
-  border-radius: 20%;
-  clip-path: inset(2px);
+    brightness(1.38)
+    contrast(1.38)
+    saturate(1.45)
+    drop-shadow(0 0 12px rgba(255,220,130,0.45));
 }
 
 .dandelion-item {
@@ -495,13 +495,11 @@ h1 {
   max-width: 100%;
   margin: 0 auto;
   filter:
-    drop-shadow(0 0 18px rgba(255,165,70,0.25))
+    drop-shadow(0 0 18px rgba(255,165,70,0.28))
     drop-shadow(0 10px 10px rgba(0,0,0,0.28))
-    brightness(1.14)
+    brightness(1.16)
     contrast(1.12)
-    saturate(1.12);
-  border-radius: 38%;
-  clip-path: ellipse(46% 48% at 50% 52%);
+    saturate(1.16);
 }
 
 .wood-panel,
@@ -529,17 +527,17 @@ h1 {
   line-height: 1.35;
 }
 
+/* HOW TO PLAY ICONS: white square hidden */
 .how-icon-img {
   width: 58px;
   height: 58px;
   object-fit: contain;
+  mix-blend-mode: multiply;
   filter:
-    brightness(1.16)
-    contrast(1.14)
-    saturate(1.12)
+    brightness(1.38)
+    contrast(1.38)
+    saturate(1.45)
     drop-shadow(0 0 10px rgba(255,220,150,0.38));
-  border-radius: 20%;
-  clip-path: inset(2px);
 }
 
 .how-item strong {
