@@ -690,7 +690,7 @@
           <div class="flower f4">❀</div>
           <div class="hill"></div>
 
-          <img id="fox" src="foxy-player.png" alt="Cute fox player">
+          <img id="fox" src="foxy-player-new.png" alt="Cute fox player">
 
           <div id="playOverlay" class="play-overlay">
             <button class="big-play" onclick="startGame()">🐾 Play Game 🐾</button>
@@ -706,14 +706,14 @@
       <aside class="side-panel">
         <div class="helper-card">
           <div class="speech" id="foxSpeech">You’re doing amazing! Catch the glowing wishes, little one. ✨</div>
-          <img class="helper-fox-img" src="foxy-helper.png" alt="Friendly fox helper">
+          <img class="helper-fox-img" src="foxy-helper-new.png" alt="Friendly fox helper">
         </div>
 
         <div class="wood-panel">
           <h2>How to Play</h2>
 
           <div class="how-item">
-            <img class="how-icon-img" src="dandelion.png" alt="Dandelion wish">
+            <img class="how-icon-img" src="dandelion-new.png" alt="Dandelion wish">
             <div>
               <strong>Catch Dandelion Wishes</strong>
               <span class="points">+10 points</span>
@@ -721,7 +721,7 @@
           </div>
 
           <div class="how-item">
-            <img class="how-icon-img" src="sheep.png" alt="Fluffy sheep">
+            <img class="how-icon-img" src="sheep-new.png" alt="Fluffy sheep">
             <div>
               <strong>Catch Fluffy Sheep</strong>
               <span class="points">+50 points</span>
@@ -729,7 +729,7 @@
           </div>
 
           <div class="how-item">
-            <img class="how-icon-img" src="rock.png" alt="Falling rock">
+            <img class="how-icon-img" src="rock-new.png" alt="Falling rock">
             <div>
               <strong>Avoid the Rocks</strong>
               <span class="points bad-points">-1 heart</span>
@@ -886,17 +886,17 @@
       if (chance < 0.58) {
         item.dataset.type = "dandelion";
         item.classList.add("dandelion-item");
-        img.src = "dandelion.png";
+        img.src = "dandelion-new.png";
         img.alt = "Dandelion wish";
       } else if (chance < 0.82) {
         item.dataset.type = "sheep";
         item.classList.add("sheep-item");
-        img.src = "sheep.png";
+        img.src = "sheep-new.png";
         img.alt = "Fluffy sheep";
       } else {
         item.dataset.type = "rock";
         item.classList.add("rock-item");
-        img.src = "rock.png";
+        img.src = "rock-new.png";
         img.alt = "Falling rock";
       }
 
