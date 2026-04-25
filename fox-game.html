@@ -11,10 +11,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Georgia, serif;
+      font-family: Georgia, 'Times New Roman', serif;
       color: #f8e8c8;
       background-image:
-        linear-gradient(rgba(7, 18, 12, 0.58), rgba(7, 18, 12, 0.9)),
+        linear-gradient(rgba(7, 18, 12, 0.55), rgba(7, 18, 12, 0.88)),
         url("forest-bg.jpg");
       background-size: cover;
       background-position: center;
@@ -53,6 +53,25 @@
       to { background-position: 120px -180px, 220px -140px; }
     }
 
+    .mist {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(circle at 30% 70%, rgba(255,230,170,0.08), transparent 22%),
+        radial-gradient(circle at 70% 55%, rgba(180,230,190,0.08), transparent 24%),
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.045), transparent);
+      filter: blur(12px);
+      opacity: 0.75;
+      animation: mistMove 11s ease-in-out infinite alternate;
+    }
+
+    @keyframes mistMove {
+      from { transform: translateX(-18px); }
+      to { transform: translateX(18px); }
+    }
+
     .page {
       position: relative;
       z-index: 2;
@@ -70,7 +89,8 @@
       flex-wrap: wrap;
     }
 
-    .back-link {
+    .back-link,
+    .sound-button {
       color: #ffe4ad;
       text-decoration: none;
       padding: 10px 16px;
@@ -78,6 +98,8 @@
       background: rgba(24, 38, 22, 0.75);
       border: 1px solid rgba(255, 218, 130, 0.42);
       box-shadow: 0 0 18px rgba(255, 205, 110, 0.12), inset 0 1px 0 rgba(255,255,255,0.12);
+      font-family: Georgia, serif;
+      cursor: pointer;
     }
 
     .brand {
@@ -98,7 +120,7 @@
     }
 
     .intro {
-      max-width: 820px;
+      max-width: 850px;
       margin: 0 auto 18px;
       color: #fff0d8;
       font-size: clamp(1rem, 2vw, 1.18rem);
@@ -108,7 +130,7 @@
 
     .game-layout {
       display: grid;
-      grid-template-columns: minmax(320px, 1fr) 300px;
+      grid-template-columns: minmax(320px, 1fr) 310px;
       gap: 18px;
       align-items: stretch;
       margin-top: 12px;
@@ -144,9 +166,7 @@
       pointer-events: none;
     }
 
-    .game-shell {
-      padding: 16px;
-    }
+    .game-shell { padding: 16px; }
 
     .game-title-board {
       margin: 0 auto 12px;
@@ -154,8 +174,7 @@
       max-width: 100%;
       padding: 14px 34px;
       border-radius: 24px;
-      background:
-        linear-gradient(rgba(76, 55, 29, 0.92), rgba(43, 59, 29, 0.85));
+      background: linear-gradient(rgba(76, 55, 29, 0.92), rgba(43, 59, 29, 0.85));
       border: 1px solid rgba(255,218,130,0.45);
       box-shadow: 0 0 22px rgba(255,210,120,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
     }
@@ -212,6 +231,23 @@
       touch-action: none;
     }
 
+    .game-mist {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 40% 68%, rgba(255, 230, 170, 0.10), transparent 22%),
+        radial-gradient(circle at 70% 28%, rgba(255, 250, 210, 0.07), transparent 18%);
+      filter: blur(8px);
+      animation: innerMist 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes innerMist {
+      from { opacity: 0.42; transform: translateX(-8px); }
+      to { opacity: 0.8; transform: translateX(8px); }
+    }
+
     .moon {
       position: absolute;
       top: 26px;
@@ -222,6 +258,7 @@
       background: radial-gradient(circle, #fff8d8, #ecd276 66%, transparent 70%);
       box-shadow: 0 0 44px rgba(255,240,190,0.6);
       opacity: 0.75;
+      z-index: 3;
     }
 
     .lantern {
@@ -233,6 +270,7 @@
       box-shadow: 0 0 25px rgba(255,190,80,0.65);
       top: 46%;
       opacity: 0.85;
+      z-index: 3;
     }
 
     .lantern.left { left: 7%; }
@@ -247,6 +285,7 @@
       background: #142a18;
       border-radius: 55% 55% 0 0;
       box-shadow: 0 -18px 36px rgba(0,0,0,0.26);
+      z-index: 2;
     }
 
     .tree {
@@ -257,6 +296,7 @@
       border-radius: 12px 12px 0 0;
       background: linear-gradient(#52301e, #1d110b);
       opacity: 0.74;
+      z-index: 2;
     }
 
     .tree::before {
@@ -283,6 +323,7 @@
       font-size: 1.4rem;
       opacity: 0.8;
       filter: drop-shadow(0 0 7px rgba(255,205,120,0.22));
+      z-index: 5;
     }
     .flower.f1 { left: 12%; }
     .flower.f2 { left: 28%; bottom: 52px; }
@@ -292,7 +333,7 @@
     .play-overlay {
       position: absolute;
       inset: 0;
-      z-index: 30;
+      z-index: 40;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -301,10 +342,7 @@
       transition: opacity 0.4s ease;
     }
 
-    .play-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
+    .play-overlay.hidden { opacity: 0; pointer-events: none; }
 
     .big-play {
       font-size: 1.7rem;
@@ -323,17 +361,14 @@
       width: 170px;
       height: auto;
       transform: translateX(-50%);
-      z-index: 12;
-      filter: drop-shadow(0 18px 14px rgba(0,0,0,0.42)) brightness(1.12) contrast(1.12);
+      z-index: 18;
+      filter: drop-shadow(0 18px 14px rgba(0,0,0,0.42));
       transition: left 0.12s ease;
       pointer-events: none;
       user-select: none;
-      mix-blend-mode: multiply;
     }
 
-    #fox.catch {
-      animation: foxCatch 0.36s ease;
-    }
+    #fox.catch { animation: foxCatch 0.36s ease; }
 
     @keyframes foxCatch {
       0% { transform: translateX(-50%) scale(1); }
@@ -344,11 +379,12 @@
     .item {
       position: absolute;
       top: -90px;
-      z-index: 10;
+      z-index: 16;
       user-select: none;
       pointer-events: none;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
+      background: transparent;
     }
 
     .fall-img {
@@ -358,14 +394,68 @@
       object-fit: contain;
       pointer-events: none;
       user-select: none;
-      mix-blend-mode: multiply;
-      filter: brightness(1.18) contrast(1.15) saturate(1.08);
+      background: transparent;
     }
 
+    /* CSS Dandelion — no image, so no white square */
     .dandelion-item {
       width: 78px;
+      height: 96px;
       filter: drop-shadow(0 0 18px rgba(255,230,150,0.9));
       animation-name: dandelionFloat;
+    }
+
+    .dandelion-css {
+      position: relative;
+      width: 78px;
+      height: 96px;
+    }
+
+    .dandelion-css .seed-head {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 0deg, rgba(255,248,220,0.95) 0 3deg, transparent 3deg 9deg),
+        radial-gradient(circle, rgba(255,245,180,0.95), rgba(255,215,95,0.12) 58%, transparent 62%);
+      box-shadow: 0 0 18px rgba(255,235,150,0.95), 0 0 35px rgba(255,215,90,0.35);
+    }
+
+    .dandelion-css .seed-core {
+      position: absolute;
+      top: 22px;
+      left: 32px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffe084;
+      box-shadow: 0 0 15px #ffe084;
+    }
+
+    .dandelion-css .seed-stem {
+      position: absolute;
+      top: 50px;
+      left: 39px;
+      width: 5px;
+      height: 43px;
+      border-radius: 999px;
+      background: linear-gradient(#ffdd79, #b97919);
+      transform: rotate(18deg);
+      transform-origin: top;
+    }
+
+    .dandelion-css .seed-base {
+      position: absolute;
+      bottom: 0;
+      left: 38px;
+      width: 14px;
+      height: 22px;
+      border-radius: 60% 60% 70% 70%;
+      background: linear-gradient(#dca139, #8e5516);
+      transform: rotate(18deg);
     }
 
     .dandelion-item::after {
@@ -405,10 +495,34 @@
       100% { top: calc(100% + 110px); transform: translateX(-50%) translateY(8px) rotate(360deg) scale(1.04); }
     }
 
+    /* CSS Rock — no image, so no white square */
     .rock-item {
-      width: 86px;
+      width: 78px;
+      height: 62px;
       filter: drop-shadow(0 8px 12px rgba(0,0,0,0.55));
       animation-name: rockFall;
+    }
+
+    .rock-css {
+      position: relative;
+      width: 78px;
+      height: 62px;
+      background: linear-gradient(145deg, #a18c70, #4c463d 62%, #2d2b27);
+      border-radius: 48% 52% 43% 57%;
+      clip-path: polygon(14% 28%, 33% 8%, 62% 4%, 88% 22%, 96% 58%, 76% 90%, 34% 96%, 7% 72%);
+      box-shadow: inset 8px 8px 12px rgba(255,255,255,0.16), inset -10px -10px 14px rgba(0,0,0,0.32);
+    }
+
+    .rock-css::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 18px;
+      width: 38px;
+      height: 2px;
+      background: rgba(30, 25, 20, 0.55);
+      transform: rotate(-18deg);
+      box-shadow: 14px 13px 0 rgba(30, 25, 20, 0.35), -8px 18px 0 rgba(255,255,255,0.12);
     }
 
     .rock-item::before,
@@ -476,8 +590,7 @@
       max-width: 100%;
       margin: 0 auto;
       border-radius: 26px;
-      filter: drop-shadow(0 0 18px rgba(255,165,70,0.25)) drop-shadow(0 10px 10px rgba(0,0,0,0.28)) brightness(1.12) contrast(1.12);
-      mix-blend-mode: multiply;
+      filter: drop-shadow(0 0 18px rgba(255,165,70,0.25)) drop-shadow(0 10px 10px rgba(0,0,0,0.28));
     }
 
     .wood-panel,
@@ -505,26 +618,27 @@
       line-height: 1.35;
     }
 
-    .how-icon-img {
+    .how-icon-img,
+    .how-icon-css {
       width: 58px;
       height: 58px;
       object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(255,220,150,0.38)) brightness(1.12) contrast(1.12);
-      mix-blend-mode: multiply;
+      filter: drop-shadow(0 0 10px rgba(255,220,150,0.38));
     }
 
-    .how-item strong {
-      color: #ffe0a0;
-      font-size: 1.02rem;
+    .how-icon-css .dandelion-css {
+      transform: scale(0.62);
+      transform-origin: top left;
     }
 
-    .points {
-      display: block;
-      margin-top: 4px;
-      color: #bfff82;
-      font-weight: bold;
+    .how-icon-css .rock-css {
+      transform: scale(0.75);
+      transform-origin: center;
+      margin-top: 6px;
     }
 
+    .how-item strong { color: #ffe0a0; font-size: 1.02rem; }
+    .points { display: block; margin-top: 4px; color: #bfff82; font-weight: bold; }
     .bad-points { color: #ff9a80; }
 
     .move-box {
@@ -539,10 +653,7 @@
       font-size: 1rem;
     }
 
-    .message-panel {
-      text-align: center;
-      color: #fff0d7;
-    }
+    .message-panel { text-align: center; color: #fff0d7; }
 
     #rewardTitle {
       color: #f9d895;
@@ -556,7 +667,64 @@
       margin: 0;
     }
 
-    .bottom-controls {
+    .reward-card {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(4, 12, 8, 0.78);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .reward-card.show { display: flex; }
+
+    .reward-inner {
+      width: min(520px, 94vw);
+      border-radius: 30px;
+      padding: 28px 24px;
+      border: 1px solid rgba(255, 218, 130, 0.55);
+      background:
+        radial-gradient(circle at top, rgba(255,224,150,0.18), transparent 34%),
+        linear-gradient(rgba(31, 25, 15, 0.94), rgba(13, 28, 20, 0.96));
+      box-shadow: 0 0 45px rgba(255,210,120,0.22), 0 20px 50px rgba(0,0,0,0.5);
+      animation: rewardRise 0.55s ease forwards;
+    }
+
+    @keyframes rewardRise {
+      from { opacity: 0; transform: translateY(18px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .reward-inner h2 {
+      margin: 0 0 8px;
+      color: #f8dfaf;
+      font-size: 2.2rem;
+    }
+
+    .reward-inner h3 {
+      margin: 10px 0;
+      color: #f9d895;
+      font-size: 1.55rem;
+    }
+
+    .reward-inner p {
+      color: #fff0d7;
+      font-size: 1.08rem;
+      line-height: 1.65;
+    }
+
+    .reward-fox-small {
+      width: 145px;
+      max-width: 50vw;
+      border-radius: 24px;
+      filter: drop-shadow(0 0 18px rgba(255,165,70,0.25));
+    }
+
+    .bottom-controls,
+    .mobile-controls {
       margin: 18px auto 0;
       display: flex;
       justify-content: center;
@@ -565,7 +733,6 @@
     }
 
     button {
-      border: none;
       border-radius: 999px;
       padding: 13px 24px;
       font-family: Georgia, serif;
@@ -578,10 +745,10 @@
       transition: transform 0.2s ease, filter 0.2s ease;
     }
 
-    button:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.08);
-    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+    .mobile-controls { display: none; }
+    .mobile-controls button { width: 96px; font-size: 1.5rem; padding: 12px; }
 
     .soft-note {
       margin: 18px auto 0;
@@ -601,20 +768,22 @@
         18px -8px 0 -2px rgba(255,231,161,0.9),
         -16px -10px 0 -3px rgba(255,231,161,0.8),
         12px 16px 0 -3px rgba(255,231,161,0.75),
-        -14px 13px 0 -3px rgba(255,231,161,0.75);
+        -14px 13px 0 -3px rgba(255,231,161,0.75),
+        28px 8px 0 -4px rgba(255,231,161,0.65),
+        -26px 4px 0 -4px rgba(255,231,161,0.65);
       pointer-events: none;
-      z-index: 25;
+      z-index: 50;
       animation: burstPop 0.65s ease forwards;
     }
 
     @keyframes burstPop {
       0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5) rotate(0deg); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6) rotate(45deg); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8) rotate(45deg); }
     }
 
     .floating-score {
       position: absolute;
-      z-index: 26;
+      z-index: 55;
       color: #ffe6a3;
       font-size: 1.15rem;
       font-weight: bold;
@@ -632,18 +801,22 @@
       .game-layout { grid-template-columns: 1fr; }
       .side-panel { max-width: 720px; margin: 0 auto; width: 100%; }
       #game { min-height: 520px; }
+      .mobile-controls { display: flex; }
     }
 
     @media (max-width: 650px) {
+      body { background-attachment: scroll; }
       .top-bar { justify-content: center; }
-      #game { min-height: 460px; cursor: default; }
+      h1 { font-size: 2.45rem; }
+      .intro { font-size: 0.98rem; }
+      #game { min-height: 430px; cursor: default; height: 60vh; }
       .game-shell { padding: 10px; }
       .stat-pill { min-width: 95px; font-size: 0.92rem; }
-      #fox { width: 132px; }
+      #fox { width: 132px; bottom: 20px; }
       .game-title-board { padding: 14px 18px; }
       .tree.t1, .tree.t4 { opacity: 0.36; }
       .helper-fox-img { width: 170px; }
-      .dandelion-item { width: 64px; }
+      .dandelion-item { width: 64px; height: 82px; }
       .sheep-item { width: 78px; }
       .rock-item { width: 72px; }
     }
@@ -651,16 +824,18 @@
 </head>
 <body>
   <div class="sparkles"></div>
+  <div class="mist"></div>
 
   <main class="page">
     <div class="top-bar">
       <a class="back-link" href="index.html">← Back to Oracle</a>
       <div class="brand">Dolphintouch presents</div>
+      <button class="sound-button" onclick="toggleSound()" id="soundButton">Sound: Off</button>
     </div>
 
     <h1>Foxfire Forest Game</h1>
     <p class="intro">
-      Help little Foxy catch glowing dandelion wishes and fluffy sheep as they tumble through the enchanted forest. Avoid the falling rocks and receive a gentle fox message.
+      Help little Foxy catch glowing dandelion wishes and fluffy sheep as they tumble through the enchanted forest. Avoid the falling rocks and receive a gentle oracle message.
     </p>
 
     <section class="game-layout">
@@ -689,6 +864,7 @@
           <div class="flower f3">✿</div>
           <div class="flower f4">❀</div>
           <div class="hill"></div>
+          <div class="game-mist"></div>
 
           <img id="fox" src="foxy-player-new.png" alt="Cute fox player">
 
@@ -700,6 +876,11 @@
         <div class="bottom-controls">
           <button onclick="startGame()">Play Game</button>
           <button onclick="restartGame()">Play Again</button>
+        </div>
+
+        <div class="mobile-controls">
+          <button onpointerdown="holdMove(-1)" onpointerup="stopHold()" onpointerleave="stopHold()">←</button>
+          <button onpointerdown="holdMove(1)" onpointerup="stopHold()" onpointerleave="stopHold()">→</button>
         </div>
       </section>
 
@@ -713,7 +894,14 @@
           <h2>How to Play</h2>
 
           <div class="how-item">
-            <img class="how-icon-img" src="dandelion-new.png" alt="Dandelion wish">
+            <div class="how-icon-css">
+              <div class="dandelion-css">
+                <div class="seed-head"></div>
+                <div class="seed-core"></div>
+                <div class="seed-stem"></div>
+                <div class="seed-base"></div>
+              </div>
+            </div>
             <div>
               <strong>Catch Dandelion Wishes</strong>
               <span class="points">+10 points</span>
@@ -729,14 +917,14 @@
           </div>
 
           <div class="how-item">
-            <img class="how-icon-img" src="rock-new.png" alt="Falling rock">
+            <div class="how-icon-css"><div class="rock-css"></div></div>
             <div>
               <strong>Avoid the Rocks</strong>
               <span class="points bad-points">-1 heart</span>
             </div>
           </div>
 
-          <div class="move-box">Move with your mouse, finger, arrow keys, or A / D.</div>
+          <div class="move-box">Move with your mouse, finger, arrow keys, A / D, or mobile arrows.</div>
         </div>
 
         <div class="message-panel">
@@ -752,6 +940,21 @@
     <p class="soft-note">Come back whenever you need a little foxfire glow. ♡</p>
   </main>
 
+  <div id="rewardCard" class="reward-card">
+    <div class="reward-inner">
+      <h2>Oracle Reward</h2>
+      <img class="reward-fox-small" src="foxy-helper-new.png" alt="Foxy helper">
+      <h3 id="rewardPopTitle">Whisper of Courage</h3>
+      <p id="rewardPopText">You are braver than you believe. Trust your heart and take the next gentle step.</p>
+      <button onclick="closeReward()">Return to the Forest</button>
+      <button onclick="restartGame()">Play Again</button>
+    </div>
+  </div>
+
+  <audio id="forestAudio" loop>
+    <source src="forest.mp3.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     const game = document.getElementById("game");
     const fox = document.getElementById("fox");
@@ -761,7 +964,12 @@
     const playOverlay = document.getElementById("playOverlay");
     const rewardTitle = document.getElementById("rewardTitle");
     const rewardMessage = document.getElementById("rewardMessage");
+    const rewardPopTitle = document.getElementById("rewardPopTitle");
+    const rewardPopText = document.getElementById("rewardPopText");
+    const rewardCard = document.getElementById("rewardCard");
     const foxSpeech = document.getElementById("foxSpeech");
+    const forestAudio = document.getElementById("forestAudio");
+    const soundButton = document.getElementById("soundButton");
 
     let score = 0;
     let hearts = 3;
@@ -770,41 +978,22 @@
     let spawnTimer = null;
     let countdownTimer = null;
     let foxPercent = 50;
+    let holdTimer = null;
+    let soundOn = false;
 
     const messages = [
-      {
-        title: "Whisper of Courage",
-        text: "You are braver than you believe. Trust your heart and take the next gentle step. The forest walks with you."
-      },
-      {
-        title: "The Dandelion Wish",
-        text: "A soft wish still carries power. Let hope float gently from your hands and trust where it chooses to land."
-      },
-      {
-        title: "Foxy’s Little Knowing",
-        text: "Your instinct is a lantern. It may be small, but it is honest. Follow the feeling that glows warmly within you."
-      },
-      {
-        title: "The Hidden Meadow",
-        text: "A quieter blessing is waiting beyond the worry. Keep moving softly. You are closer than you think."
-      },
-      {
-        title: "The Gentle Gathering",
-        text: "Every small piece of courage you collect becomes part of your light. Nothing kind is ever wasted."
-      },
-      {
-        title: "Foxfire Blessing",
-        text: "A spark is returning to your spirit. Protect it, feed it, and let it guide your next chapter."
-      },
-      {
-        title: "Soft Steps",
-        text: "You do not need to rush to prove you are moving. Slow steps still count. Gentle progress is still progress."
-      }
+      { title: "Whisper of Courage", text: "You are braver than you believe. Trust your heart and take the next gentle step. The forest walks with you." },
+      { title: "The Dandelion Wish", text: "A soft wish still carries power. Let hope float gently from your hands and trust where it chooses to land." },
+      { title: "Foxy’s Little Knowing", text: "Your instinct is a lantern. It may be small, but it is honest. Follow the feeling that glows warmly within you." },
+      { title: "The Hidden Meadow", text: "A quieter blessing is waiting beyond the worry. Keep moving softly. You are closer than you think." },
+      { title: "The Gentle Gathering", text: "Every small piece of courage you collect becomes part of your light. Nothing kind is ever wasted." },
+      { title: "Foxfire Blessing", text: "A spark is returning to your spirit. Protect it, feed it, and let it guide your next chapter." },
+      { title: "Soft Steps", text: "You do not need to rush to prove you are moving. Slow steps still count. Gentle progress is still progress." }
     ];
 
     function startGame() {
       if (gameRunning) return;
-
+      closeReward();
       clearItems();
       score = 0;
       hearts = 3;
@@ -832,6 +1021,7 @@
     function restartGame() {
       clearInterval(spawnTimer);
       clearInterval(countdownTimer);
+      stopHold();
       gameRunning = false;
       clearItems();
       playOverlay.classList.remove("hidden");
@@ -840,10 +1030,10 @@
 
     function endGame() {
       if (!gameRunning) return;
-
       gameRunning = false;
       clearInterval(spawnTimer);
       clearInterval(countdownTimer);
+      stopHold();
       clearItems();
       playOverlay.classList.remove("hidden");
 
@@ -856,21 +1046,47 @@
       if (score >= 320) index = 6;
 
       const chosen = messages[index];
-      rewardTitle.textContent = hearts <= 0 ? "Rest Beneath the Ferns" : chosen.title;
-      rewardMessage.textContent = hearts <= 0
+      const finalTitle = hearts <= 0 ? "Rest Beneath the Ferns" : chosen.title;
+      const finalText = hearts <= 0
         ? "Even brave little foxes need to curl up and breathe. Rest is not failure. Begin again when your spirit feels warm."
         : chosen.text;
+
+      rewardTitle.textContent = finalTitle;
+      rewardMessage.textContent = finalText;
+      rewardPopTitle.textContent = finalTitle;
+      rewardPopText.textContent = finalText;
 
       foxSpeech.textContent = hearts <= 0
         ? "Rest for a moment, little one. The forest will wait for you. ♡"
         : "Beautifully done! Your forest message is ready. ✨";
+
+      setTimeout(() => rewardCard.classList.add("show"), 350);
+    }
+
+    function closeReward() {
+      rewardCard.classList.remove("show");
     }
 
     function drawAnotherMessage() {
       const chosen = messages[Math.floor(Math.random() * messages.length)];
       rewardTitle.textContent = chosen.title;
       rewardMessage.textContent = chosen.text;
+      rewardPopTitle.textContent = chosen.title;
+      rewardPopText.textContent = chosen.text;
       foxSpeech.textContent = "A fresh whisper has floated in for you. ♡";
+    }
+
+    function createDandelion() {
+      const wrap = document.createElement("div");
+      wrap.className = "dandelion-css";
+      wrap.innerHTML = '<div class="seed-head"></div><div class="seed-core"></div><div class="seed-stem"></div><div class="seed-base"></div>';
+      return wrap;
+    }
+
+    function createRock() {
+      const rock = document.createElement("div");
+      rock.className = "rock-css";
+      return rock;
     }
 
     function spawnItem() {
@@ -879,28 +1095,25 @@
       const item = document.createElement("div");
       item.classList.add("item");
 
-      const img = document.createElement("img");
-      img.classList.add("fall-img");
-
       const chance = Math.random();
       if (chance < 0.58) {
         item.dataset.type = "dandelion";
         item.classList.add("dandelion-item");
-        img.src = "dandelion-new.png";
-        img.alt = "Dandelion wish";
+        item.appendChild(createDandelion());
       } else if (chance < 0.82) {
         item.dataset.type = "sheep";
         item.classList.add("sheep-item");
+        const img = document.createElement("img");
+        img.classList.add("fall-img");
         img.src = "sheep-new.png";
         img.alt = "Fluffy sheep";
+        item.appendChild(img);
       } else {
         item.dataset.type = "rock";
         item.classList.add("rock-item");
-        img.src = "rock-new.png";
-        img.alt = "Falling rock";
+        item.appendChild(createRock());
       }
 
-      item.appendChild(img);
       item.style.left = (8 + Math.random() * 84) + "%";
       item.style.animationDuration = (3.2 + Math.random() * 1.55) + "s";
       game.appendChild(item);
@@ -956,7 +1169,6 @@
       }
 
       if (hearts < 0) hearts = 0;
-
       scoreEl.textContent = score;
       heartsEl.textContent = hearts;
 
@@ -1010,11 +1222,26 @@
 
     document.addEventListener("keydown", event => {
       if (!gameRunning) return;
-      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") foxPercent -= 5;
-      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") foxPercent += 5;
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") moveByStep(-5);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") moveByStep(5);
+    });
+
+    function moveByStep(step) {
+      foxPercent += step;
       foxPercent = Math.max(8, Math.min(92, foxPercent));
       fox.style.left = foxPercent + "%";
-    });
+    }
+
+    function holdMove(direction) {
+      if (!gameRunning) return;
+      stopHold();
+      holdTimer = setInterval(() => moveByStep(direction * 3), 35);
+    }
+
+    function stopHold() {
+      clearInterval(holdTimer);
+      holdTimer = null;
+    }
 
     game.addEventListener("click", () => {
       if (!gameRunning) startGame();
@@ -1022,6 +1249,21 @@
 
     function clearItems() {
       document.querySelectorAll(".item").forEach(item => item.remove());
+    }
+
+    function toggleSound() {
+      if (!soundOn) {
+        forestAudio.play().then(() => {
+          soundOn = true;
+          soundButton.textContent = "Sound: On";
+        }).catch(() => {
+          foxSpeech.textContent = "Tap again if the forest sound does not start. Some browsers block sound at first. ♡";
+        });
+      } else {
+        forestAudio.pause();
+        soundOn = false;
+        soundButton.textContent = "Sound: Off";
+      }
     }
   </script>
 </body>
