@@ -27,7 +27,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:80;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}
 .top-ui{position:absolute;top:12px;left:12px;z-index:100;display:flex;gap:8px;flex-wrap:wrap;max-width:445px}
 .pill,.top-ui a,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);text-decoration:none;font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12)}
-.top-ui button{cursor:pointer}
+.top-ui button{cursor:pointer}.volumeBox{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:999px;background:rgba(5,18,10,.86);border:1px solid rgba(255,225,150,.42);box-shadow:0 0 12px rgba(255,220,120,.12)}.volumeBox input{width:82px;accent-color:#ffe08a}
 
 #sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:100;display:flex;flex-direction:column;gap:12px}
 .card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}
@@ -60,11 +60,11 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .hitbox{position:absolute;z-index:12;pointer-events:none;opacity:0}
 .hazardBox{position:absolute;z-index:13;pointer-events:none;opacity:0}
 .item,.sheep,.mushroom,.npc,.goal,.rock{position:absolute;z-index:40;object-fit:contain;user-select:none;pointer-events:none;background:transparent!important}
-.item{width:58px;filter:drop-shadow(0 0 12px rgba(255,245,190,1)) drop-shadow(0 0 34px rgba(255,220,100,.9));animation:wishFloat 3.2s ease-in-out infinite alternate}
+.item{width:74px;filter:drop-shadow(0 0 12px rgba(255,245,190,1)) drop-shadow(0 0 34px rgba(255,220,100,.9));animation:wishFloat 3.2s ease-in-out infinite alternate}
 @keyframes wishFloat{from{transform:translateY(0) translateX(-6px) rotate(-6deg)}to{transform:translateY(-22px) translateX(12px) rotate(8deg)}}
 .sheep{width:82px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
-.mushroom{width:64px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
-.npc{width:105px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
+.mushroom{width:92px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
+.npc{width:125px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
 .rock{width:70px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.55))}
 @keyframes npcBob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
 @keyframes mushroomPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
@@ -84,10 +84,6 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .sparkle-pop{position:absolute;width:10px;height:10px;z-index:200;border-radius:50%;background:#ffe7a1;box-shadow:0 0 12px #ffe7a1,18px -8px 0 -2px rgba(255,231,161,.9),-16px -10px 0 -3px rgba(255,231,161,.8),12px 16px 0 -3px rgba(255,231,161,.75),-20px 13px 0 -4px rgba(255,231,161,.7);pointer-events:none;animation:pop .75s ease forwards}
 @keyframes pop{from{opacity:1;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(-50%,-50%) scale(3)}}
 
-
-.showHitboxes .hitbox{opacity:.28;background:rgba(255,230,120,.55);border:2px dashed rgba(255,255,210,.8);border-radius:12px}
-.showHitboxes .hazardBox{opacity:.35;background:rgba(255,70,70,.55);border:2px dashed rgba(255,220,220,.8);border-radius:12px}
-
 @media(max-width:950px){#sidePanel{display:none}.title,.subtitle,.message{width:100vw}}
 </style>
 </head>
@@ -102,7 +98,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
     <div class="pill">🌼 <span id="wishCount">0</span>/<span id="wishTotal">0</span></div>
     <div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepTotal">0</span></div>
     <div class="pill">Level <span id="levelNum">1</span></div>
-    <button onclick="resetSave()">Reset Save</button>
+    <button onclick="resetSave()">Reset Save</button><label class="volumeBox">🔊 <input id="volumeControl" type="range" min="0" max="100" value="35"></label>
   </div>
 
   <div id="world"></div>
@@ -185,6 +181,18 @@ function startAmbient(){
   sounds.ambient.play().catch(()=>{});
 }
 
+const volumeControl=document.getElementById("volumeControl");
+function setGameVolume(v){
+  const vol=Math.max(0,Math.min(1,v/100));
+  Object.values(sounds).forEach(s=>{ if(s) s.volume=vol; });
+  if(sounds.ambient) sounds.ambient.volume=vol*0.75;
+  localStorage.setItem("foxfire_volume",String(v));
+}
+const savedVolume=Number(localStorage.getItem("foxfire_volume")||35);
+if(volumeControl){volumeControl.value=savedVolume;volumeControl.addEventListener("input",e=>setGameVolume(Number(e.target.value)));}
+setGameVolume(savedVolume);
+
+
 const SAVE_KEY="foxfire_enchanted_save_v2";
 const WORLD_WIDTH=1792;
 
@@ -210,37 +218,36 @@ const oracleMessages=[
 
 const levels=[
   {
-    name:"Misty Meadows",image:"level-misty-meadows.png",start:[130,210],wishesNeeded:10,sheepNeeded:1,
-    platforms:[[0,92,455,88],[310,250,210,52],[455,380,280,58],[675,500,260,58],[885,330,305,58],[1120,435,285,58],[1325,245,250,56],[1465,515,300,66],[1640,640,145,58]],
-    hazards:[[555,92,90,62],[1220,92,90,62]],
-    wishes:[[420,520],[535,535],[680,610],[950,455],[1085,465],[1235,545],[1430,340],[1550,630],[1640,635],[1730,620]],
-    sheep:[[1240,510,"sheep-fluffy-glow.png",1190,1435]],
-    mushrooms:[[980,410,"mushroom-baby.png","dizzy"],[1460,300,"mushroom-elder.png","oracle"]],
-    npc:[[1550,590,"mushroom-man.png"]],
-    goal:[1670,630]
+    name:"Misty Meadows",image:"level-misty-meadows.png",start:[120,190],wishesNeeded:10,sheepNeeded:1,
+    platforms:[[0,95,445,92],[285,250,230,55],[450,385,300,58],[675,505,265,58],[890,335,305,58],[1110,440,300,58],[1325,250,260,58],[1460,520,300,66],[1640,640,145,58]],
+    hazards:[[575,95,90,62],[1235,95,90,62]],
+    wishes:[[2,65],[2,165],[3,55],[3,185],[4,95],[5,85],[6,70],[7,80],[7,190],[8,35]],
+    sheep:[[7,105,"sheep-fluffy-glow.png",65,245]],
+    mushrooms:[[3,110,"mushroom-baby.png","dizzy"],[6,110,"mushroom-elder.png","oracle"]],
+    npc:[[7,180,"mushroom-man.png","npc"]],
+    goal:[8,40]
   },
   {
-    name:"Twilight Hollow",image:"level-twilight-hollow.png",start:[130,220],wishesNeeded:9,sheepNeeded:2,
-    platforms:[[0,95,390,88],[315,275,210,54],[430,500,260,58],[645,365,270,58],[875,525,260,58],[1085,315,285,58],[1305,465,280,58],[1500,600,275,66],[1650,700,120,58]],
-    hazards:[[545,95,85,62],[1185,95,85,62]],
-    wishes:[[420,590],[535,600],[710,460],[965,605],[1135,410],[1260,420],[1430,570],[1600,700],[1700,700]],
-    sheep:[[720,425,"sheep-fluffy-glow.png",660,880],[1410,535,"sheep-fluffy-glow.png",1360,1560]],
-    mushrooms:[[500,550,"mushroom-young.png","dizzy"],[930,565,"mushroom-female.png","helper"],[1160,370,"mushroom-elder.png","oracle"]],
-    npc:[[1610,655,"mushroom-man.png"]],
-    goal:[1680,700]
+    name:"Twilight Hollow",image:"level-twilight-hollow.png",start:[120,205],wishesNeeded:9,sheepNeeded:2,
+    platforms:[[0,95,390,88],[300,275,225,56],[430,500,270,58],[645,365,275,58],[875,525,270,58],[880,705,300,58],[1085,315,300,58],[1305,465,285,58],[1500,600,275,66],[1650,700,120,58]],
+    hazards:[[555,95,85,62],[1185,95,85,62]],
+    wishes:[[1,70],[2,100],[2,220],[3,70],[4,100],[5,85],[6,70],[7,95],[9,25]],
+    sheep:[[3,110,"sheep-fluffy-glow.png",55,230],[7,115,"sheep-fluffy-glow.png",55,235]],
+    mushrooms:[[1,120,"mushroom-young.png","dizzy"],[4,120,"mushroom-female.png","helper"],[5,130,"mushroom-elder.png","oracle"]],
+    npc:[[9,20,"mushroom-man.png","npc"]],
+    goal:[9,55]
   },
   {
-    name:"Moonlit Canopy",image:"level-moonlit-canopy.png",start:[130,240],wishesNeeded:9,sheepNeeded:2,
-    platforms:[[0,115,395,88],[295,285,220,54],[420,455,280,58],[650,615,270,58],[875,425,285,58],[1085,300,300,58],[1320,505,275,58],[1505,650,275,66],[1660,760,120,58]],
+    name:"Moonlit Canopy",image:"level-moonlit-canopy.png",start:[120,225],wishesNeeded:9,sheepNeeded:2,
+    platforms:[[0,115,395,88],[295,285,230,56],[420,455,285,58],[650,615,280,58],[875,425,295,58],[1085,300,305,58],[1320,505,285,58],[1505,650,275,66],[1660,760,120,58]],
     hazards:[[530,115,80,62],[1010,115,85,62]],
-    wishes:[[430,555],[560,565],[700,715],[830,720],[970,525],[1170,405],[1320,410],[1500,615],[1660,760]],
-    sheep:[[730,675,"sheep-fluffy-glow.png",650,880],[1430,570,"sheep-fluffy-glow.png",1375,1570]],
-    mushrooms:[[470,520,"mushroom-baby.png","dizzy"],[910,490,"mushroom-young.png","dizzy"],[1190,365,"mushroom-elder.png","oracle"]],
-    npc:[[1480,570,"mushroom-man.png"]],
-    goal:[1660,760]
+    wishes:[[1,85],[2,105],[3,70],[3,220],[4,105],[5,95],[6,85],[7,90],[8,35]],
+    sheep:[[3,115,"sheep-fluffy-glow.png",60,230],[6,115,"sheep-fluffy-glow.png",60,235]],
+    mushrooms:[[1,120,"mushroom-baby.png","dizzy"],[4,120,"mushroom-young.png","dizzy"],[5,125,"mushroom-elder.png","oracle"]],
+    npc:[[7,150,"mushroom-man.png","npc"]],
+    goal:[8,45]
   }
-];
-
+]
 function cleanImage(src,callback){
   if(cleanCache[src]){callback(cleanCache[src]);return}
   const img=new Image();
@@ -273,6 +280,19 @@ function cleanImage(src,callback){
 function setClean(el,src){cleanImage(src,out=>el.src=out)}
 document.querySelectorAll("[data-clean]").forEach(img=>setClean(img,img.getAttribute("src")));
 
+
+function platformByIndex(idx){
+  const L=levels[currentLevel];
+  if(!L || !L.platforms[idx]) return null;
+  const p=L.platforms[idx];
+  return {x:p[0],y:p[1],w:p[2],h:p[3],top:p[1]+p[3]};
+}
+function snapToPlatform(px, platformIndex, offsetX, lift=8){
+  const p=platformByIndex(platformIndex);
+  if(!p) return {x:px,y:200};
+  return {x:p.x+offsetX, y:p.top+lift};
+}
+
 function create(tag,cls,src,clean=true){
   const el=document.createElement(tag); if(cls)el.className=cls;
   if(src){clean?setClean(el,src):el.src=src}
@@ -297,16 +317,19 @@ function loadLevel(i,clicked=false){
   L.platforms.forEach(p=>addHitbox(...p));
   L.hazards.forEach(p=>addHitbox(...p,"hazardBox"));
   L.wishes.forEach(p=>{
-    const el=addImg("item wish","dandelion-magical.png",p[0],p[1]);
-    floatingWishes.push({el,baseX:p[0],baseY:p[1],t:Math.random()*100,drift:10+Math.random()*16,lift:12+Math.random()*18});
+    const pos=snapToPlatform(0,p[0],p[1],34);
+    const el=addImg("item wish","dandelion-magical.png",pos.x,pos.y);
+    floatingWishes.push({el,baseX:pos.x,baseY:pos.y,t:Math.random()*100,drift:28+Math.random()*34,lift:24+Math.random()*34});
   });
   L.sheep.forEach((p,n)=>{
-    const el=addImg("sheep rescue",p[2],p[0],p[1]);
-    movingSheep.push({el,x:p[0],y:p[1],minX:p[3],maxX:p[4],dir:n%2? -1:1,hop:Math.random()*100,speed:.7+Math.random()*.55});
+    const plat=platformByIndex(p[0]);
+    const pos=snapToPlatform(0,p[0],p[1],8);
+    const el=addImg("sheep rescue",p[2],pos.x,pos.y);
+    movingSheep.push({el,x:pos.x,y:pos.y,minX:plat.x+p[3],maxX:plat.x+p[4],dir:n%2? -1:1,hop:Math.random()*100,speed:.7+Math.random()*.55});
   });
-  L.mushrooms.forEach(p=>{const el=addImg("mushroom mushroomPerson",p[2],p[0],p[1]);el.dataset.effect=p[3]});
-  L.npc.forEach(p=>{const el=addImg("npc mushroomNpc",p[2],p[0],p[1]);el.dataset.effect="npc"});
-  addImg("goal","glow-orb.png",L.goal[0],L.goal[1]);
+  L.mushrooms.forEach(p=>{const pos=snapToPlatform(0,p[0],p[1],10);const el=addImg("mushroom mushroomPerson",p[2],pos.x,pos.y);el.dataset.effect=p[3]});
+  L.npc.forEach(p=>{const pos=snapToPlatform(0,p[0],p[1],10);const el=addImg("npc mushroomNpc",p[2],pos.x,pos.y);el.dataset.effect="npc"});
+  const g=snapToPlatform(0,L.goal[0],L.goal[1],18);addImg("goal","glow-orb.png",g.x,g.y);
   wishTotalEl.textContent=L.wishesNeeded;sheepTotalEl.textContent=L.sheepNeeded;
   wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;levelNumEl.textContent=currentLevel+1;heartsEl.textContent=hearts;
   document.querySelectorAll(".levelCard").forEach(c=>c.classList.remove("active"));
@@ -366,7 +389,6 @@ function finishLevel(){
 }
 document.addEventListener("keydown",e=>{
   keys[e.key]=true;
-  if(e.key.toLowerCase()==="h"){world.classList.toggle("showHitboxes");}
   if((e.key===" "||e.key==="ArrowUp")&&gameStarted){
     e.preventDefault();
     if(onGround){vy=16;playSound("jump");onGround=false;doubleJumpReady=true;setFoxImage("jump")}
@@ -381,7 +403,7 @@ function updateCamera(){
   world.style.transform=`translateX(${-cameraX}px)`;fox.style.left=(x-cameraX)+"px";
 }
 function updateFloatingWishes(){
-  floatingWishes.forEach(w=>{if(w.el.dataset.done)return;w.t+=.025;w.el.style.left=(w.baseX+Math.sin(w.t*1.4)*w.drift)+"px";w.el.style.bottom=(w.baseY+Math.cos(w.t*1.8)*w.lift)+"px"});
+  floatingWishes.forEach(w=>{if(w.el.dataset.done)return;w.t+=.038;w.el.style.left=(w.baseX+Math.sin(w.t*1.4)*w.drift)+"px";w.el.style.bottom=(w.baseY+Math.cos(w.t*1.8)*w.lift)+"px"});
 }
 function updateMovingSheep(){
   movingSheep.forEach(s=>{if(s.el.dataset.done)return;s.x+=s.dir*s.speed;if(s.x<s.minX||s.x>s.maxX){s.dir*=-1;s.el.style.transform=s.dir<0?"scaleX(-1)":"scaleX(1)"}s.hop+=.08;s.el.style.left=s.x+"px";s.el.style.bottom=(s.y+Math.abs(Math.sin(s.hop))*18)+"px"});
