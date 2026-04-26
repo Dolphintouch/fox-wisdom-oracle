@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foxfire Forest Drop Game</title>
+<title>Foxfire Forest</title>
 
 <style>
 * { box-sizing: border-box; }
@@ -30,7 +30,6 @@ body {
   background: #07120c;
 }
 
-/* BACKGROUND */
 .forest-layer {
   position: absolute;
   inset: 0;
@@ -42,75 +41,40 @@ body {
 
 .forest-back { z-index: 1; }
 .forest-mid { z-index: 2; opacity: 0.96; }
-.forest-front { z-index: 8; }
+.forest-front { z-index: 8; pointer-events: none; }
 
 #levelTint {
   position: absolute;
   inset: 0;
   z-index: 9;
   pointer-events: none;
-  transition: background 1.5s ease;
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255,230,150,0.12), transparent 35%),
-    linear-gradient(to top, rgba(0,0,0,0.25), transparent 45%);
+  transition: background 1.4s ease;
 }
 
 #levelTint.day {
   background:
-    radial-gradient(circle at 50% 15%, rgba(255,230,150,0.12), transparent 35%),
+    radial-gradient(circle at 50% 18%, rgba(255,230,150,0.12), transparent 35%),
     linear-gradient(to top, rgba(0,0,0,0.22), transparent 45%);
 }
 
 #levelTint.dusk {
   background:
     radial-gradient(circle at 60% 22%, rgba(255,150,90,0.20), transparent 35%),
-    linear-gradient(to top, rgba(55,15,40,0.42), rgba(70,30,80,0.18), transparent 55%);
+    linear-gradient(to top, rgba(70,25,45,0.48), rgba(90,45,90,0.18), transparent 55%);
 }
 
 #levelTint.spirit {
   background:
-    radial-gradient(circle at 50% 25%, rgba(160,230,255,0.22), transparent 38%),
-    linear-gradient(to top, rgba(20,10,60,0.55), rgba(40,15,90,0.22), transparent 55%);
+    radial-gradient(circle at 50% 25%, rgba(160,230,255,0.24), transparent 38%),
+    linear-gradient(to top, rgba(20,10,60,0.58), rgba(40,15,90,0.24), transparent 55%);
 }
 
-/* LANTERNS */
-.lantern-img {
-  position: absolute;
-  width: 165px;
-  z-index: 12;
-  pointer-events: none;
-  filter:
-    drop-shadow(0 0 22px rgba(255,190,80,0.9))
-    drop-shadow(0 0 48px rgba(255,190,80,0.35));
-}
-
-.lantern-img.left { left: 45px; top: 110px; }
-.lantern-img.right { right: 50px; top: 135px; }
-
-/* FIREFLIES */
-.firefly {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: #ffe7a1;
-  border-radius: 50%;
-  box-shadow: 0 0 12px #ffe7a1, 0 0 22px rgba(255,220,130,0.7);
-  z-index: 10;
-  animation: firefly 5s ease-in-out infinite alternate;
-}
-
-@keyframes firefly {
-  from { transform: translateY(0) translateX(0); opacity: 0.35; }
-  to { transform: translateY(-38px) translateX(24px); opacity: 1; }
-}
-
-/* UI */
 .score-box {
   position: absolute;
   top: 14px;
   left: 14px;
-  z-index: 30;
-  background: rgba(23, 11, 4, 0.62);
+  z-index: 40;
+  background: rgba(23, 11, 4, 0.65);
   border: 2px solid rgba(255, 219, 120, 0.45);
   border-radius: 18px;
   padding: 10px 16px;
@@ -122,19 +86,18 @@ body {
   letter-spacing: 3px;
 }
 
-/* FOX */
 #fox {
   position: absolute;
   width: 120px;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 25;
+  z-index: 30;
   pointer-events: none;
   animation: foxIdle 2.4s ease-in-out infinite;
   filter:
     drop-shadow(0 12px 12px rgba(0,0,0,0.55))
-    drop-shadow(0 0 18px rgba(255,190,90,0.75))
+    drop-shadow(0 0 18px rgba(255,190,90,0.8))
     brightness(1.08);
 }
 
@@ -143,17 +106,76 @@ body {
   50% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
 }
 
-/* FALLING ITEMS */
+.lantern-img {
+  position: absolute;
+  width: 155px;
+  z-index: 12;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 0 22px rgba(255,190,80,0.9))
+    drop-shadow(0 0 48px rgba(255,190,80,0.35));
+}
+
+.lantern-img.left { left: 38px; top: 105px; }
+.lantern-img.right { right: 42px; top: 130px; }
+
+.firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #ffe7a1;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffe7a1, 0 0 22px rgba(255,220,130,0.7);
+  z-index: 13;
+  animation: firefly 5s ease-in-out infinite alternate;
+}
+
+@keyframes firefly {
+  from { transform: translateY(0) translateX(0); opacity: 0.35; }
+  to { transform: translateY(-38px) translateX(24px); opacity: 1; }
+}
+
+.mushroom {
+  position: absolute;
+  z-index: 11;
+  width: 38px;
+  height: 34px;
+  pointer-events: none;
+}
+
+.mushroom::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 36px;
+  height: 21px;
+  border-radius: 24px 24px 9px 9px;
+  background: radial-gradient(circle at 35% 30%, #fff2c4 0 10%, transparent 12%), #d88445;
+  box-shadow: 0 0 18px rgba(255,190,100,0.45);
+}
+
+.mushroom::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 16px;
+  width: 11px;
+  height: 19px;
+  border-radius: 8px;
+  background: #f2d6a3;
+}
+
 .falling {
   position: absolute;
-  z-index: 22;
+  z-index: 25;
   pointer-events: none;
   object-fit: contain;
 }
 
 .dandelion-item {
   width: 78px;
-  filter: drop-shadow(0 0 22px rgba(255,220,90,0.95));
+  filter: drop-shadow(0 0 24px rgba(255,220,90,0.95));
   animation: dandelionTwinkle 1.7s ease-in-out infinite alternate;
 }
 
@@ -168,7 +190,7 @@ body {
 }
 
 .sheep-rare {
-  width: 100px;
+  width: 102px;
   filter:
     drop-shadow(0 0 20px rgba(255,235,130,1))
     drop-shadow(0 0 45px rgba(255,210,80,0.85));
@@ -179,7 +201,7 @@ body {
 }
 
 @keyframes sheepRun {
-  to { transform: translateX(260px) scale(0.92); opacity: 0; }
+  to { transform: translateX(280px) scale(0.9); opacity: 0; }
 }
 
 .rock-item {
@@ -187,19 +209,25 @@ body {
   filter: drop-shadow(0 0 14px rgba(255,150,70,0.5));
 }
 
-/* OVERLAY */
+.spirit-wish {
+  width: 84px;
+  filter:
+    drop-shadow(0 0 24px rgba(170,240,255,0.9))
+    drop-shadow(0 0 44px rgba(180,120,255,0.8));
+}
+
 .overlay {
   position: absolute;
   inset: 0;
-  z-index: 60;
-  background: rgba(0,0,0,0.48);
+  z-index: 70;
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .overlay-card {
-  width: 430px;
+  width: 450px;
   max-width: 90%;
   background: rgba(32, 18, 8, 0.92);
   border: 2px solid rgba(255, 221, 145, 0.55);
@@ -228,9 +256,8 @@ button, .link-btn {
   text-align: center;
 }
 
-/* SIDE PANEL */
 .side-panel {
-  width: 340px;
+  width: 350px;
   height: 100vh;
   background: linear-gradient(rgba(36,18,7,0.95), rgba(17,37,18,0.96));
   border-left: 3px solid rgba(255,217,124,0.35);
@@ -310,7 +337,7 @@ button, .link-btn {
   color: #ff9d9d;
 }
 
-.sound-box, .save-box {
+.sound-box, .save-box, .forest-box {
   margin-top: 16px;
   padding: 12px;
   background: rgba(0,0,0,0.24);
@@ -325,13 +352,12 @@ button, .link-btn {
 
 #volumeSlider { width: 100%; }
 
-/* MAGIC EFFECTS */
 .sparkle, .trail, .pop-sparkle {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 70;
-  animation: sparkleFade 800ms forwards;
+  z-index: 80;
+  animation: sparkleFade 850ms forwards;
 }
 
 .sparkle {
@@ -366,9 +392,9 @@ button, .link-btn {
   border-radius: 50%;
   width: 24px;
   height: 24px;
-  z-index: 69;
+  z-index: 79;
   pointer-events: none;
-  animation: ringFade 700ms forwards;
+  animation: ringFade 750ms forwards;
 }
 
 @keyframes ringFade {
@@ -396,6 +422,10 @@ button, .link-btn {
     <div class="firefly" style="left:76%; top:58%; animation-delay:2.3s;"></div>
     <div class="firefly" style="left:90%; top:36%; animation-delay:.9s;"></div>
 
+    <div class="mushroom" style="left:12%; bottom:42px;"></div>
+    <div class="mushroom" style="left:56%; bottom:62px;"></div>
+    <div class="mushroom" style="left:83%; bottom:45px;"></div>
+
     <div class="score-box">
       Level: <span id="levelName">Day Forest</span><br>
       Score: <span id="score">0</span><br>
@@ -409,8 +439,8 @@ button, .link-btn {
       <div class="overlay-card">
         <h1>Foxfire Forest</h1>
         <p>Catch the drifting dandelion wishes.</p>
-        <p>Watch for sheep — they bounce, then run away!</p>
-        <p>Avoid the enchanted rocks.</p>
+        <p>Sheep bounce 2–3 times, then run away.</p>
+        <p>The forest deepens as your score grows.</p>
         <button onclick="startGame()">🐾 Play Game 🐾</button>
       </div>
     </div>
@@ -420,10 +450,16 @@ button, .link-btn {
     <h2>Foxfire Forest</h2>
 
     <div class="helper-card">
-      <div class="oracle-title">Oracle Message</div>
+      <div class="oracle-title">Fox Praise</div>
       <div class="speech" id="foxSpeech">
-        The forest is waiting. Move gently, trust your paws, and catch the little wishes as they float. ✨
+        You’ve got this, little fox. ✨
       </div>
+
+      <div class="oracle-title" style="margin-top:12px;">Oracle Message</div>
+      <div class="speech" id="gameOracle">
+        Your message will appear when the game begins.
+      </div>
+
       <img class="helper-fox-img clean-img" data-src="foxy-helper-new.png" alt="Friendly fox helper">
     </div>
 
@@ -455,6 +491,11 @@ button, .link-btn {
       </div>
     </div>
 
+    <div class="forest-box">
+      <strong>Forest Path</strong>
+      <p id="forestPathText">Day Forest awaits.</p>
+    </div>
+
     <div class="save-box">
       <a class="link-btn" href="platform-game.html">🌿 Platform Adventure</a>
       <br><br>
@@ -482,6 +523,8 @@ const levelNameEl = document.getElementById("levelName");
 const levelTint = document.getElementById("levelTint");
 const startOverlay = document.getElementById("startOverlay");
 const foxSpeech = document.getElementById("foxSpeech");
+const gameOracle = document.getElementById("gameOracle");
+const forestPathText = document.getElementById("forestPathText");
 const muteBtn = document.getElementById("muteBtn");
 const volumeSlider = document.getElementById("volumeSlider");
 
@@ -489,6 +532,7 @@ let score = 0;
 let bestScore = Number(localStorage.getItem("foxfireBestScore") || 0);
 let hearts = 3;
 let level = 1;
+let lastLevel = 1;
 let foxX = 50;
 let gameRunning = false;
 let dropTimer = null;
@@ -497,8 +541,8 @@ let moveRight = false;
 let muted = false;
 let masterVolume = 0.6;
 
-const MAX_ITEMS_ON_SCREEN = 4;
-const DROP_EVERY_MS = 1700;
+const BASE_DROP_MS = 1900;
+const BASE_MAX_ITEMS = 3;
 
 bestScoreEl.textContent = bestScore;
 
@@ -607,19 +651,39 @@ document.querySelectorAll(".clean-img").forEach(img => {
 
 setCleanImg(fox, "foxy-player-new.png");
 
+/* DIFFICULTY */
+function getDifficulty() {
+  return Math.min(1 + score / 350, 2.2);
+}
+
+function getMaxItems() {
+  return Math.min(BASE_MAX_ITEMS + Math.floor(score / 250), 6);
+}
+
+function getDropSpeed() {
+  return Math.max(900, BASE_DROP_MS - score * 1.5);
+}
+
+function startDropTimer() {
+  clearInterval(dropTimer);
+  dropTimer = setInterval(createFallingItem, getDropSpeed());
+}
+
 /* START */
 function startGame() {
   score = 0;
   hearts = 3;
   level = 1;
+  lastLevel = 1;
   foxX = 50;
   gameRunning = true;
 
+  chooseGameOracle();
   updateScore();
   updateHearts();
-  updateLevel();
+  updateLevel(true);
 
-  foxSpeech.textContent = "The forest wakes. Catch the floating wishes before they drift away. ✨";
+  foxSpeech.textContent = "The forest wakes. I’m right here with you. ✨";
 
   document.querySelectorAll(".falling, .sparkle, .magic-ring, .trail, .pop-sparkle").forEach(el => el.remove());
 
@@ -628,33 +692,47 @@ function startGame() {
   sounds.bg.currentTime = 0;
   sounds.bg.play().catch(() => {});
 
-  clearInterval(dropTimer);
-  dropTimer = setInterval(createFallingItem, DROP_EVERY_MS);
-
+  startDropTimer();
   requestAnimationFrame(gameLoop);
 }
 
 /* LEVELS */
-function updateLevel() {
-  if (score >= 450) {
-    level = 3;
-    levelNameEl.textContent = "Spirit Forest";
-    levelTint.className = "spirit";
-  } else if (score >= 200) {
-    level = 2;
-    levelNameEl.textContent = "Dusk Forest";
-    levelTint.className = "dusk";
-  } else {
-    level = 1;
-    levelNameEl.textContent = "Day Forest";
-    levelTint.className = "day";
+function updateLevel(force = false) {
+  if (score >= 500) level = 3;
+  else if (score >= 220) level = 2;
+  else level = 1;
+
+  if (force || level !== lastLevel) {
+    if (level === 1) {
+      levelNameEl.textContent = "Day Forest";
+      levelTint.className = "day";
+      forestPathText.textContent = "Day Forest: soft wishes and gentle light.";
+    }
+
+    if (level === 2) {
+      levelNameEl.textContent = "Dusk Forest";
+      levelTint.className = "dusk";
+      forestPathText.textContent = "Dusk Forest: the path grows warmer and quicker.";
+      foxSpeech.textContent = "The forest deepens… stay close to the light.";
+      playSound(sounds.special);
+    }
+
+    if (level === 3) {
+      levelNameEl.textContent = "Spirit Forest";
+      levelTint.className = "spirit";
+      forestPathText.textContent = "Spirit Forest: glowing wishes drift between worlds.";
+      foxSpeech.textContent = "You’ve reached the spirit paths now. Trust your paws.";
+      playSound(sounds.special);
+    }
+
+    lastLevel = level;
   }
 }
 
 /* CREATE ITEMS */
 function createFallingItem() {
   if (!gameRunning) return;
-  if (document.querySelectorAll(".falling").length >= MAX_ITEMS_ON_SCREEN) return;
+  if (document.querySelectorAll(".falling").length >= getMaxItems()) return;
 
   const item = document.createElement("img");
   item.classList.add("falling");
@@ -662,15 +740,15 @@ function createFallingItem() {
   const chance = Math.random();
 
   if (chance < 0.62) {
-    item.dataset.type = "dandelion";
-    item.classList.add("dandelion-item");
+    item.dataset.type = level === 3 && Math.random() < 0.25 ? "spiritWish" : "dandelion";
+    item.classList.add(item.dataset.type === "spiritWish" ? "spirit-wish" : "dandelion-item");
     item.alt = "Magical dandelion";
     setCleanImg(item, "dandelion-magical.png");
 
-    const startX = random(60, gameArea.clientWidth - 120);
+    const startX = random(70, gameArea.clientWidth - 130);
     item.dataset.startX = startX;
-    item.dataset.drift = random(60, 150);
-    item.dataset.wave = random(0.018, 0.035);
+    item.dataset.drift = random(70, 170);
+    item.dataset.wave = random(0.014, 0.030);
     item.dataset.offset = random(0, 1000);
 
     item.style.left = startX + "px";
@@ -688,13 +766,13 @@ function createFallingItem() {
     item.dataset.vy = "0";
     item.dataset.state = "falling";
 
-    item.style.left = random(45, gameArea.clientWidth - 125) + "px";
+    item.style.left = random(55, gameArea.clientWidth - 135) + "px";
     item.style.top = "-130px";
 
     playSound(sounds.sheep);
     foxSpeech.textContent = rare
       ? "A rare golden sheep has appeared! Catch that little light! 🌟"
-      : "A golden sheep has wandered in. It will bounce, then run! 🐑";
+      : "A golden sheep has wandered in. It will bounce, then run. 🐑";
 
   } else {
     item.dataset.type = "rock";
@@ -702,7 +780,7 @@ function createFallingItem() {
     item.alt = "Enchanted rock";
     setCleanImg(item, "enchanted-rock.png");
 
-    item.style.left = random(45, gameArea.clientWidth - 115) + "px";
+    item.style.left = random(55, gameArea.clientWidth - 125) + "px";
     item.style.top = "-130px";
   }
 
@@ -743,12 +821,12 @@ function moveItems() {
     const type = item.dataset.type;
     let y = parseFloat(item.style.top);
 
-    if (type === "dandelion") {
+    if (type === "dandelion" || type === "spiritWish") {
       moveDandelion(item, y);
     } else if (type === "sheep" || type === "rareSheep") {
       moveSheep(item, y);
     } else {
-      y += level === 3 ? 4.7 : level === 2 ? 4.3 : 3.9;
+      y += 3.7 * getDifficulty();
       item.style.top = y + "px";
     }
 
@@ -762,7 +840,7 @@ function moveItems() {
     }
 
     if (parseFloat(item.style.top) > gameArea.clientHeight + 90) {
-      if (type === "dandelion") {
+      if (type === "dandelion" || type === "spiritWish") {
         dandelionGroundPop(item);
         playSound(sounds.miss);
         foxSpeech.textContent = "A little wish touched the earth and became sparkles. 🌙";
@@ -774,7 +852,7 @@ function moveItems() {
 
 /* DANDELION FLOATING */
 function moveDandelion(item, y) {
-  y += level === 3 ? 1.75 : level === 2 ? 1.55 : 1.35;
+  y += (item.dataset.type === "spiritWish" ? 1.15 : 1.25) * getDifficulty();
 
   const startX = Number(item.dataset.startX);
   const drift = Number(item.dataset.drift);
@@ -788,7 +866,7 @@ function moveDandelion(item, y) {
   item.style.left = newX + "px";
   item.style.top = y + "px";
 
-  if (Math.random() < 0.10) {
+  if (Math.random() < 0.12) {
     createSparkle(newX + random(25, 55), y + random(25, 55));
   }
 }
@@ -802,7 +880,7 @@ function moveSheep(item, y) {
   const target = Number(item.dataset.bounceTarget);
 
   if (state === "falling") {
-    vy += 0.32;
+    vy += 0.22 * getDifficulty();
     y += vy;
 
     if (y >= groundY) {
@@ -818,13 +896,9 @@ function moveSheep(item, y) {
         foxSpeech.textContent = "The sheep bounced away into the ferns! 🐑";
         setTimeout(() => item.remove(), 1200);
       } else {
-        vy = -8.8;
+        vy = -7.2 * (0.9 + getDifficulty() * 0.15);
       }
     }
-  }
-
-  if (state === "running") {
-    y += 0;
   }
 
   item.dataset.vy = String(vy);
@@ -841,9 +915,17 @@ function handleCatch(item) {
 
   if (type === "dandelion") {
     score += 10;
-    foxSpeech.textContent = randomOracleMessage();
+    foxSpeech.textContent = randomPraiseMessage();
     playSound(sounds.catch);
     burstSparkles(x, y, 20);
+  }
+
+  if (type === "spiritWish") {
+    score += 25;
+    foxSpeech.textContent = "A spirit wish chose you. Beautifully done. ✨";
+    playSound(sounds.special);
+    burstSparkles(x, y, 34);
+    magicRing(x, y);
   }
 
   if (type === "sheep") {
@@ -879,15 +961,16 @@ function handleCatch(item) {
 
   updateScore();
   updateLevel();
+  startDropTimer();
 }
 
 /* EFFECTS */
 function dandelionGroundPop(item) {
   const x = parseFloat(item.style.left) + 40;
-  const y = gameArea.clientHeight - 35;
+  const y = gameArea.clientHeight - 88;
 
-  for (let i = 0; i < 22; i++) {
-    createPopSparkle(x + random(-35, 35), y + random(-20, 20));
+  for (let i = 0; i < 32; i++) {
+    createPopSparkle(x + random(-55, 55), y + random(-35, 35));
   }
 
   magicRing(x, y);
@@ -979,16 +1062,34 @@ function resetSave() {
   foxSpeech.textContent = "The old score has been released back into the forest. 🌿";
 }
 
-/* ORACLE */
-function randomOracleMessage() {
+/* ORACLE + PRAISE */
+function chooseGameOracle() {
   const messages = [
-    "A wish was caught. Something gentle is coming closer. ✨",
-    "Your paws found the light before it faded.",
-    "The forest whispers: keep going, little one.",
-    "A golden seed of courage has landed in your heart.",
-    "You are quicker than doubt and softer than fear.",
-    "The path glows brighter each time you try."
+    "Follow the softest glow. It knows the way.",
+    "You do not have to catch everything to be doing well.",
+    "The forest rewards gentle courage.",
+    "A small wish can still carry great magic.",
+    "Trust the path beneath your paws.",
+    "What is meant for you will drift close enough to catch.",
+    "Even when something falls away, light remains.",
+    "The quietest magic often arrives first."
   ];
+
+  gameOracle.textContent = messages[Math.floor(Math.random() * messages.length)];
+}
+
+function randomPraiseMessage() {
+  const messages = [
+    "Beautiful catch!",
+    "That was magical!",
+    "You’re doing amazing!",
+    "Quick paws, brave heart!",
+    "The forest saw that one!",
+    "Wonderful, little fox!",
+    "Softly done, beautifully caught.",
+    "You followed the glow perfectly."
+  ];
+
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
@@ -1003,10 +1104,10 @@ setInterval(() => {
     "The path listens as much as it speaks."
   ];
 
-  if (Math.random() < 0.35) {
+  if (Math.random() < 0.25) {
     foxSpeech.textContent = idleMessages[Math.floor(Math.random() * idleMessages.length)];
   }
-}, 4500);
+}, 5500);
 
 /* COLLISION + HELPERS */
 function isColliding(a, b) {
