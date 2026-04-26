@@ -62,7 +62,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .item,.sheep,.mushroom,.npc,.goal,.rock{position:absolute;z-index:40;object-fit:contain;user-select:none;pointer-events:none;background:transparent!important}
 .item{width:74px;filter:drop-shadow(0 0 12px rgba(255,245,190,1)) drop-shadow(0 0 34px rgba(255,220,100,.9));animation:wishFloat 3.2s ease-in-out infinite alternate}
 @keyframes wishFloat{from{transform:translateY(0) translateX(-6px) rotate(-6deg)}to{transform:translateY(-22px) translateX(12px) rotate(8deg)}}
-.sheep{width:82px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
+.sheep{width:112px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
 .mushroom{width:92px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
 .npc{width:125px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
 .rock{width:70px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.55))}
@@ -83,6 +83,31 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 
 .sparkle-pop{position:absolute;width:10px;height:10px;z-index:200;border-radius:50%;background:#ffe7a1;box-shadow:0 0 12px #ffe7a1,18px -8px 0 -2px rgba(255,231,161,.9),-16px -10px 0 -3px rgba(255,231,161,.8),12px 16px 0 -3px rgba(255,231,161,.75),-20px 13px 0 -4px rgba(255,231,161,.7);pointer-events:none;animation:pop .75s ease forwards}
 @keyframes pop{from{opacity:1;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+
+
+.skyWish{
+  position:absolute;
+  width:68px;
+  z-index:38;
+  pointer-events:none;
+  object-fit:contain;
+  background:transparent!important;
+  filter:drop-shadow(0 0 14px rgba(255,245,190,1)) drop-shadow(0 0 36px rgba(255,220,100,.9));
+}
+.mushroom.walkingMushroom{
+  z-index:62;
+  width:86px;
+  filter:drop-shadow(0 10px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,120,.45));
+}
+.mushroomFamilyLabel{
+  position:absolute;
+  z-index:63;
+  transform:translate(-50%,-130%);
+  color:#ffe8a8;
+  font:700 13px Georgia,serif;
+  text-shadow:0 2px 6px #000,0 0 10px rgba(255,220,120,.7);
+  pointer-events:none;
+}
 
 @media(max-width:950px){#sidePanel{display:none}.title,.subtitle,.message{width:100vw}}
 </style>
@@ -105,7 +130,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
   <img id="fox" src="foxy-player-idle.png" alt="Fox player">
 
   <aside id="sidePanel">
-    <div class="card"><h2>Collect & Explore</h2><p>Collect glowing dandelion wishes, rescue bouncing sheep, and meet mushroom folk.</p></div>
+    <div class="card"><h2>Collect & Explore</h2><p>Collect glowing wishes, rescue bigger bouncing sheep, and meet the walking mushroom family.</p></div>
     <div class="card"><h2>How to Play</h2><p>Arrow keys move. Space jumps. Shift makes a small foxfire dash.</p></div>
     <div class="card"><h2>Mushroom Folk</h2><p>Some mushrooms slow you down. Elders give oracle wisdom.</p></div>
     <div class="card"><h2>Foxfire Oracle</h2><p id="oracleText">Believe in your light. You can go anywhere.</p></div>
@@ -199,7 +224,7 @@ const WORLD_WIDTH=1792;
 let keys={},gameStarted=false,currentLevel=0,cameraX=0,foxType="male";
 let x=120,y=210,vx=0,vy=0,facing="right",onGround=false,wasOnGround=false,doubleJumpReady=true;
 let hearts=3,wishes=0,sheep=0,dizzyTimer=0,lastSafeX=120,lastSafeY=210;
-let movingSheep=[],floatingWishes=[];
+let movingSheep=[],floatingWishes=[],skyWishes=[],walkingMushrooms=[];
 
 const cleanCache={};
 const foxImages={
@@ -307,12 +332,38 @@ function addImg(cls,src,px,py,clean=true){
   const el=create("img",cls,src,clean);
   el.style.left=px+"px";el.style.bottom=py+"px";return el;
 }
+
+function addMushroomLabel(text,x,y){
+  const label=document.createElement("div");
+  label.className="mushroomFamilyLabel";
+  label.textContent=text;
+  label.style.left=x+"px";
+  label.style.bottom=y+"px";
+  world.appendChild(label);
+  return label;
+}
+function spawnSkyWishes(count=22){
+  for(let i=0;i<count;i++){
+    const el=addImg("skyWish","dandelion-magical.png",Math.random()*WORLD_WIDTH,window.innerHeight+Math.random()*420);
+    skyWishes.push({
+      el,
+      x:Math.random()*WORLD_WIDTH,
+      y:window.innerHeight+Math.random()*420,
+      speed:.35+Math.random()*.65,
+      drift:.5+Math.random()*1.4,
+      phase:Math.random()*100,
+      size:52+Math.random()*38
+    });
+    el.style.width=skyWishes[skyWishes.length-1].size+"px";
+  }
+}
+
 function loadLevel(i,clicked=false){
   const unlocked=Number(localStorage.getItem("foxfire_unlocked_level")||0);
   if(clicked&&i>unlocked){setMessage("This forest path is still locked.");return}
   currentLevel=i;const L=levels[i];
   world.innerHTML="";world.style.backgroundImage=`url("${L.image}")`;
-  movingSheep=[];floatingWishes=[];
+  movingSheep=[];floatingWishes=[];skyWishes=[];walkingMushrooms=[];
   x=L.start[0];y=L.start[1];vx=0;vy=0;wishes=0;sheep=0;dizzyTimer=0;lastSafeX=x;lastSafeY=y;
   L.platforms.forEach(p=>addHitbox(...p));
   L.hazards.forEach(p=>addHitbox(...p,"hazardBox"));
@@ -325,11 +376,25 @@ function loadLevel(i,clicked=false){
     const plat=platformByIndex(p[0]);
     const pos=snapToPlatform(0,p[0],p[1],8);
     const el=addImg("sheep rescue",p[2],pos.x,pos.y);
-    movingSheep.push({el,x:pos.x,y:pos.y,minX:plat.x+p[3],maxX:plat.x+p[4],dir:n%2? -1:1,hop:Math.random()*100,speed:.7+Math.random()*.55});
+    movingSheep.push({el,x:pos.x,y:pos.y,minX:plat.x+p[3],maxX:plat.x+p[4],dir:n%2? -1:1,hop:Math.random()*100,speed:.45+Math.random()*.3});
   });
-  L.mushrooms.forEach(p=>{const pos=snapToPlatform(0,p[0],p[1],10);const el=addImg("mushroom mushroomPerson",p[2],pos.x,pos.y);el.dataset.effect=p[3]});
-  L.npc.forEach(p=>{const pos=snapToPlatform(0,p[0],p[1],10);const el=addImg("npc mushroomNpc",p[2],pos.x,pos.y);el.dataset.effect="npc"});
-  const g=snapToPlatform(0,L.goal[0],L.goal[1],18);addImg("goal","glow-orb.png",g.x,g.y);
+  L.mushrooms.forEach((p,n)=>{
+    const plat=platformByIndex(p[0]);
+    const pos=snapToPlatform(0,p[0],p[1],10);
+    const el=addImg("mushroom mushroomPerson walkingMushroom",p[2],pos.x,pos.y);
+    el.dataset.effect=p[3];
+    const label=addMushroomLabel(p[4]||"Mushroom",pos.x+35,pos.y+95);
+    walkingMushrooms.push({el,label,x:pos.x,y:pos.y,minX:plat.x+25,maxX:plat.x+plat.w-85,dir:n%2? -1:1,step:Math.random()*100,speed:.28+Math.random()*.42});
+  });
+  L.npc.forEach((p,n)=>{
+    const plat=platformByIndex(p[0]);
+    const pos=snapToPlatform(0,p[0],p[1],10);
+    const el=addImg("npc mushroomNpc walkingMushroom",p[2],pos.x,pos.y);
+    el.dataset.effect="npc";
+    const label=addMushroomLabel(p[4]||"Mushroom Man",pos.x+45,pos.y+120);
+    walkingMushrooms.push({el,label,x:pos.x,y:pos.y,minX:plat.x+20,maxX:plat.x+plat.w-120,dir:1,step:Math.random()*100,speed:.2+Math.random()*.3});
+  });
+  const g=snapToPlatform(0,L.goal[0],L.goal[1],18);addImg("goal","glow-orb.png",g.x,g.y);spawnSkyWishes(24);
   wishTotalEl.textContent=L.wishesNeeded;sheepTotalEl.textContent=L.sheepNeeded;
   wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;levelNumEl.textContent=currentLevel+1;heartsEl.textContent=hearts;
   document.querySelectorAll(".levelCard").forEach(c=>c.classList.remove("active"));
@@ -408,8 +473,42 @@ function updateFloatingWishes(){
 function updateMovingSheep(){
   movingSheep.forEach(s=>{if(s.el.dataset.done)return;s.x+=s.dir*s.speed;if(s.x<s.minX||s.x>s.maxX){s.dir*=-1;s.el.style.transform=s.dir<0?"scaleX(-1)":"scaleX(1)"}s.hop+=.08;s.el.style.left=s.x+"px";s.el.style.bottom=(s.y+Math.abs(Math.sin(s.hop))*18)+"px"});
 }
+
+function updateSkyWishes(){
+  skyWishes.forEach(w=>{
+    w.phase+=.025;
+    w.y-=w.speed;
+    w.x+=Math.sin(w.phase)*w.drift;
+    if(w.y<-120){
+      w.y=window.innerHeight+80+Math.random()*320;
+      w.x=Math.random()*WORLD_WIDTH;
+    }
+    w.el.style.left=w.x+"px";
+    w.el.style.bottom=w.y+"px";
+    w.el.style.transform=`rotate(${Math.sin(w.phase)*18}deg)`;
+  });
+}
+function updateWalkingMushrooms(){
+  walkingMushrooms.forEach(m=>{
+    if(m.el.dataset.done)return;
+    m.x+=m.dir*m.speed;
+    if(m.x<m.minX||m.x>m.maxX){
+      m.dir*=-1;
+      m.el.style.transform=m.dir<0?"scaleX(-1)":"scaleX(1)";
+    }
+    m.step+=.08;
+    const bob=Math.abs(Math.sin(m.step))*8;
+    m.el.style.left=m.x+"px";
+    m.el.style.bottom=(m.y+bob)+"px";
+    if(m.label){
+      m.label.style.left=(m.x+42)+"px";
+      m.label.style.bottom=(m.y+bob+105)+"px";
+    }
+  });
+}
+
 function gameLoop(){
-  updateFloatingWishes();updateMovingSheep();
+  updateFloatingWishes();updateSkyWishes();updateMovingSheep();updateWalkingMushrooms();
   if(gameStarted){
     const speed=dizzyTimer>0?2.4:5.3;
     if(keys["ArrowLeft"]){vx=-speed;facing="left";if(onGround)setFoxImage("run")}
