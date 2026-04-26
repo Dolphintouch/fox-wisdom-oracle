@@ -37,7 +37,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}
 .thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}
 
-#fox{position:absolute;left:90px;bottom:180px;width:112px;height:112px;z-index:50;object-fit:contain;pointer-events:none;user-select:none;transform-origin:50% 90%;transition:filter .16s ease, transform .16s ease;animation:foxIdleBreath 1.8s ease-in-out infinite;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55))}
+#fox{position:absolute;left:90px;bottom:180px;width:145px;height:145px;z-index:50;object-fit:contain;pointer-events:none;user-select:none;transform-origin:50% 90%;transition:filter .16s ease, transform .16s ease;animation:foxIdleBreath 1.8s ease-in-out infinite;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55))}
 
 #fox.running{animation:foxRunBounce .34s ease-in-out infinite}
 #fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}
@@ -62,9 +62,9 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .item,.sheep,.mushroom,.npc,.goal,.rock{position:absolute;z-index:40;object-fit:contain;user-select:none;pointer-events:none;background:transparent!important}
 .item{width:74px;filter:drop-shadow(0 0 12px rgba(255,245,190,1)) drop-shadow(0 0 34px rgba(255,220,100,.9));animation:wishFloat 3.2s ease-in-out infinite alternate}
 @keyframes wishFloat{from{transform:translateY(0) translateX(-6px) rotate(-6deg)}to{transform:translateY(-22px) translateX(12px) rotate(8deg)}}
-.sheep{width:112px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
-.mushroom{width:92px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
-.npc{width:125px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
+.sheep{width:140px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
+.mushroom{width:118px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
+.npc{width:150px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
 .rock{width:70px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.55))}
 @keyframes npcBob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
 @keyframes mushroomPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
@@ -96,7 +96,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 }
 .mushroom.walkingMushroom{
   z-index:62;
-  width:86px;
+  width:118px;
   filter:drop-shadow(0 10px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,120,.45));
 }
 .mushroomFamilyLabel{
@@ -107,6 +107,102 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
   font:700 13px Georgia,serif;
   text-shadow:0 2px 6px #000,0 0 10px rgba(255,220,120,.7);
   pointer-events:none;
+}
+
+.showHitboxes .hitbox{opacity:.85;background:rgba(255,230,120,.14);border-top:3px solid rgba(255,245,180,.95);border-left:1px dashed rgba(255,245,180,.35);border-right:1px dashed rgba(255,245,180,.35);border-bottom:1px dashed rgba(255,245,180,.2);border-radius:8px}
+.showHitboxes .hazardBox{opacity:.55;background:rgba(255,70,70,.35);border-top:3px solid rgba(255,170,170,.95);border-radius:8px}
+
+
+.dogEnemy{
+  position:absolute;
+  z-index:66;
+  width:78px;
+  height:78px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:62px;
+  pointer-events:none;
+  filter:drop-shadow(0 10px 10px rgba(0,0,0,.6)) drop-shadow(0 0 14px rgba(255,210,120,.5));
+}
+.dogEnemy::before{content:"🐕";}
+.dogEnemy.bark::after{
+  content:"BARK!";
+  position:absolute;
+  left:58px;
+  top:-18px;
+  color:#ffe8a8;
+  font:700 18px Georgia,serif;
+  text-shadow:0 2px 6px #000,0 0 10px rgba(255,220,120,.9);
+  animation:barkText .55s ease-out forwards;
+}
+@keyframes barkText{from{opacity:1;transform:scale(.8)}to{opacity:0;transform:scale(1.6) translateX(18px)}}
+.barkWave{
+  position:absolute;
+  z-index:65;
+  width:20px;
+  height:20px;
+  border:3px solid rgba(255,230,150,.85);
+  border-radius:50%;
+  pointer-events:none;
+  animation:barkWave .75s ease-out forwards;
+}
+@keyframes barkWave{from{opacity:.9;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(-50%,-50%) scale(5.5)}}
+.eggCollect{
+  position:absolute;
+  z-index:42;
+  width:38px;
+  height:50px;
+  border-radius:50% 50% 45% 45%;
+  background:radial-gradient(circle at 35% 25%,#fffef2 0 18%,#ffe9a8 45%,#d8a24a 100%);
+  box-shadow:0 0 14px rgba(255,236,170,.95),0 0 34px rgba(255,210,90,.55),0 8px 10px rgba(0,0,0,.35);
+  pointer-events:none;
+  animation:eggBob 2s ease-in-out infinite alternate;
+}
+@keyframes eggBob{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-12px) rotate(4deg)}}
+.rollingRock{
+  position:absolute;
+  z-index:64;
+  width:76px;
+  height:76px;
+  object-fit:contain;
+  pointer-events:none;
+  filter:drop-shadow(0 12px 12px rgba(0,0,0,.7));
+}
+.damageFlash{
+  animation:damageFlash .45s ease-out;
+}
+@keyframes damageFlash{0%,100%{filter:none}25%,75%{filter:sepia(1) saturate(3) hue-rotate(-35deg) brightness(1.4)}}
+
+
+.puppyCompanion{
+  position:absolute;
+  z-index:68;
+  width:112px;
+  height:112px;
+  object-fit:contain;
+  pointer-events:none;
+  transform-origin:50% 90%;
+  filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,220,140,.55));
+  animation:puppyIdle 1.8s ease-in-out infinite alternate;
+}
+.puppyCompanion.run{animation:puppyRun .38s ease-in-out infinite}
+.puppyCompanion.sleep{animation:puppySleep 2.4s ease-in-out infinite alternate}
+@keyframes puppyIdle{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-4px) rotate(1deg)}}
+@keyframes puppyRun{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes puppySleep{from{transform:translateY(0) scale(.98)}to{transform:translateY(-2px) scale(1)}}
+.puppyHint{
+  position:absolute;
+  z-index:69;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#ffe8a8;
+  background:rgba(5,18,10,.78);
+  border:1px solid rgba(255,225,150,.36);
+  font:700 13px Georgia,serif;
+  text-shadow:0 2px 5px #000;
+  pointer-events:none;
+  opacity:.92;
 }
 
 @media(max-width:950px){#sidePanel{display:none}.title,.subtitle,.message{width:100vw}}
@@ -121,7 +217,7 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
     <a href="fox-game.html">← Fox Drop Game</a>
     <div class="pill">❤️ <span id="hearts">3</span></div>
     <div class="pill">🌼 <span id="wishCount">0</span>/<span id="wishTotal">0</span></div>
-    <div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepTotal">0</span></div>
+    <div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepTotal">0</span></div><div class="pill">🥚 <span id="eggCount">0</span>/<span id="eggTotal">0</span></div>
     <div class="pill">Level <span id="levelNum">1</span></div>
     <button onclick="resetSave()">Reset Save</button><label class="volumeBox">🔊 <input id="volumeControl" type="range" min="0" max="100" value="35"></label>
   </div>
@@ -130,9 +226,9 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
   <img id="fox" src="foxy-player-idle.png" alt="Fox player">
 
   <aside id="sidePanel">
-    <div class="card"><h2>Collect & Explore</h2><p>Collect glowing wishes, rescue bigger bouncing sheep, and meet the walking mushroom family.</p></div>
+    <div class="card"><h2>Collect & Explore</h2><p>Collect dandelion wishes and eggs. Your puppy companion helps warn you about danger.</p></div>
     <div class="card"><h2>How to Play</h2><p>Arrow keys move. Space jumps. Shift makes a small foxfire dash.</p></div>
-    <div class="card"><h2>Mushroom Folk</h2><p>Some mushrooms slow you down. Elders give oracle wisdom.</p></div>
+    <div class="card"><h2>Mushroom Folk</h2><p>The mushroom family wanders the ledges. Your puppy follows, rests, and barks warnings.</p></div>
     <div class="card"><h2>Foxfire Oracle</h2><p id="oracleText">Believe in your light. You can go anywhere.</p></div>
 
     <div class="card levelCard active" id="levelCard0" onclick="loadLevel(0,true)">
@@ -180,6 +276,8 @@ const wishCountEl=document.getElementById("wishCount");
 const wishTotalEl=document.getElementById("wishTotal");
 const sheepCountEl=document.getElementById("sheepCount");
 const sheepTotalEl=document.getElementById("sheepTotal");
+const eggCountEl=document.getElementById("eggCount");
+const eggTotalEl=document.getElementById("eggTotal");
 const levelNumEl=document.getElementById("levelNum");
 const oracleText=document.getElementById("oracleText");
 
@@ -223,10 +321,11 @@ const WORLD_WIDTH=1792;
 
 let keys={},gameStarted=false,currentLevel=0,cameraX=0,foxType="male";
 let x=120,y=210,vx=0,vy=0,facing="right",onGround=false,wasOnGround=false,doubleJumpReady=true;
-let hearts=3,wishes=0,sheep=0,dizzyTimer=0,lastSafeX=120,lastSafeY=210;
-let movingSheep=[],floatingWishes=[],skyWishes=[],walkingMushrooms=[];
+let hearts=3,wishes=0,sheep=0,eggs=0,dizzyTimer=0,lastSafeX=120,lastSafeY=210;
+let movingSheep=[],floatingWishes=[],skyWishes=[],walkingMushrooms=[],dogs=[],rollingRocks=[],puppy=null;
 
 const cleanCache={};
+const puppyImages={idle:"puppy-sit.png",run:"puppy-run.png",sleep:"puppy-sleep.png",forest:"puppy-forest.png"};
 const foxImages={
   male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"},
   female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-female.png"}
@@ -243,68 +342,48 @@ const oracleMessages=[
 
 const levels=[
   {
-    name:"Misty Meadows",image:"level-misty-meadows.png",start:[120,190],wishesNeeded:10,sheepNeeded:1,
-    platforms:[[0,95,445,92],[285,250,230,55],[450,385,300,58],[675,505,265,58],[890,335,305,58],[1110,440,300,58],[1325,250,260,58],[1460,520,300,66],[1640,640,145,58]],
-    hazards:[[575,95,90,62],[1235,95,90,62]],
-    wishes:[[2,65],[2,165],[3,55],[3,185],[4,95],[5,85],[6,70],[7,80],[7,190],[8,35]],
-    sheep:[[7,105,"sheep-fluffy-glow.png",65,245]],
-    mushrooms:[[3,110,"mushroom-baby.png","dizzy"],[6,110,"mushroom-elder.png","oracle"]],
-    npc:[[7,180,"mushroom-man.png","npc"]],
-    goal:[8,40]
+    name:"Misty Meadows",image:"level-misty-meadows.png",start:[120,175],wishesNeeded:14,sheepNeeded:1,eggsNeeded:4,
+    platforms:[[0,118,650,24],[330,382,335,24],[645,510,285,24],[870,355,300,24],[1085,455,310,24],[1305,268,275,24],[1450,545,315,24],[1640,655,145,24]],
+    hazards:[[575,118,95,48],[1235,118,95,48]],
+    wishes:[[1,65],[1,165],[2,55],[2,185],[3,95],[4,85],[5,70],[6,80],[6,190],[7,35],[0,500],[3,210],[4,180],[5,190]],
+    eggs:[[0,210],[1,105],[3,130],[6,135]],
+    sheep:[[6,110,"sheep-fluffy-glow.png",55,250]],
+    mushrooms:[[1,80,"mushroom-baby.png","dizzy","Baby"],[2,100,"mushroom-young.png","dizzy","Young"],[4,120,"mushroom-female.png","helper","Mother"],[5,110,"mushroom-elder.png","oracle","Elder"]],
+    npc:[[6,190,"mushroom-man.png","npc","Mushroom Man"]],
+    dogs:[[0,420,80,560]],
+    rocks:[[4,210,35,270]],
+    puppy:[0,180],
+    goal:[7,40]
   },
   {
-    name:"Twilight Hollow",image:"level-twilight-hollow.png",start:[120,205],wishesNeeded:9,sheepNeeded:2,
-    platforms:[[0,95,390,88],[300,275,225,56],[430,500,270,58],[645,365,275,58],[875,525,270,58],[880,705,300,58],[1085,315,300,58],[1305,465,285,58],[1500,600,275,66],[1650,700,120,58]],
-    hazards:[[555,95,85,62],[1185,95,85,62]],
-    wishes:[[1,70],[2,100],[2,220],[3,70],[4,100],[5,85],[6,70],[7,95],[9,25]],
-    sheep:[[3,110,"sheep-fluffy-glow.png",55,230],[7,115,"sheep-fluffy-glow.png",55,235]],
-    mushrooms:[[1,120,"mushroom-young.png","dizzy"],[4,120,"mushroom-female.png","helper"],[5,130,"mushroom-elder.png","oracle"]],
-    npc:[[9,20,"mushroom-man.png","npc"]],
-    goal:[9,55]
+    name:"Twilight Hollow",image:"level-twilight-hollow.png",start:[120,185],wishesNeeded:13,sheepNeeded:2,eggsNeeded:5,
+    platforms:[[0,118,365,24],[285,285,240,24],[410,502,295,24],[640,378,290,24],[870,526,275,24],[875,735,315,24],[1085,328,305,24],[1295,478,315,24],[1490,610,285,24],[1640,715,130,24]],
+    hazards:[[550,118,90,48],[1180,118,90,48]],
+    wishes:[[1,70],[2,100],[2,220],[3,70],[4,100],[5,85],[6,70],[7,95],[9,25],[0,210],[3,200],[5,230],[8,130]],
+    eggs:[[0,220],[2,135],[4,155],[5,165],[7,160]],
+    sheep:[[3,110,"sheep-fluffy-glow.png",50,235],[7,120,"sheep-fluffy-glow.png",55,245]],
+    mushrooms:[[1,125,"mushroom-young.png","dizzy","Young"],[2,120,"mushroom-baby.png","dizzy","Baby"],[4,125,"mushroom-female.png","helper","Mother"],[5,135,"mushroom-elder.png","oracle","Elder"],[6,145,"mushroom-baby.png","dizzy","Baby"]],
+    npc:[[9,25,"mushroom-man.png","npc","Mushroom Man"]],
+    dogs:[[2,160,30,240],[7,160,40,260]],
+    rocks:[[3,240,20,250],[8,100,30,240]],
+    puppy:[0,170],
+    goal:[9,65]
   },
   {
-    name:"Moonlit Canopy",image:"level-moonlit-canopy.png",start:[120,225],wishesNeeded:9,sheepNeeded:2,
-    platforms:[[0,115,395,88],[295,285,230,56],[420,455,285,58],[650,615,280,58],[875,425,295,58],[1085,300,305,58],[1320,505,285,58],[1505,650,275,66],[1660,760,120,58]],
-    hazards:[[530,115,80,62],[1010,115,85,62]],
-    wishes:[[1,85],[2,105],[3,70],[3,220],[4,105],[5,95],[6,85],[7,90],[8,35]],
-    sheep:[[3,115,"sheep-fluffy-glow.png",60,230],[6,115,"sheep-fluffy-glow.png",60,235]],
-    mushrooms:[[1,120,"mushroom-baby.png","dizzy"],[4,120,"mushroom-young.png","dizzy"],[5,125,"mushroom-elder.png","oracle"]],
-    npc:[[7,150,"mushroom-man.png","npc"]],
-    goal:[8,45]
+    name:"Moonlit Canopy",image:"level-moonlit-canopy.png",start:[120,205],wishesNeeded:13,sheepNeeded:2,eggsNeeded:5,
+    platforms:[[0,140,385,24],[285,315,240,24],[395,480,310,24],[635,650,300,24],[860,455,315,24],[1080,330,320,24],[1300,535,320,24],[1490,675,300,24],[1645,782,135,24]],
+    hazards:[[520,140,90,48],[1000,140,90,48]],
+    wishes:[[1,85],[2,105],[3,70],[3,220],[4,105],[5,95],[6,85],[7,90],[8,35],[0,220],[2,220],[5,230],[6,210]],
+    eggs:[[0,235],[2,145],[3,145],[5,160],[7,150]],
+    sheep:[[3,115,"sheep-fluffy-glow.png",55,240],[6,120,"sheep-fluffy-glow.png",55,255]],
+    mushrooms:[[1,125,"mushroom-baby.png","dizzy","Baby"],[2,145,"mushroom-female.png","helper","Mother"],[4,125,"mushroom-young.png","dizzy","Young"],[5,130,"mushroom-elder.png","oracle","Elder"],[6,135,"mushroom-baby.png","dizzy","Baby"]],
+    npc:[[7,155,"mushroom-man.png","npc","Mushroom Man"]],
+    dogs:[[1,160,25,230],[6,170,50,260]],
+    rocks:[[4,260,20,280],[7,240,35,260]],
+    puppy:[0,170],
+    goal:[8,50]
   }
-]
-function cleanImage(src,callback){
-  if(cleanCache[src]){callback(cleanCache[src]);return}
-  const img=new Image();
-  img.src=src;
-  img.onload=()=>{
-    const c=document.createElement("canvas"),ctx=c.getContext("2d",{willReadFrequently:true});
-    c.width=img.naturalWidth;c.height=img.naturalHeight;ctx.drawImage(img,0,0);
-    const id=ctx.getImageData(0,0,c.width,c.height),d=id.data,w=c.width,h=c.height,vis=new Uint8Array(w*h),q=[];
-    function bg(i){
-      const r=d[i],g=d[i+1],b=d[i+2],a=d[i+3]; if(a<20)return true;
-      const max=Math.max(r,g,b),min=Math.min(r,g,b),avg=(r+g+b)/3;
-      return (r>225&&g>225&&b>225)||(avg>170&&max-min<34)||(avg>205&&max-min<55);
-    }
-    function add(px,py){
-      if(px<0||py<0||px>=w||py>=h)return;
-      const n=py*w+px;if(vis[n])return;vis[n]=1;
-      if(bg(n*4))q.push([px,py]);
-    }
-    for(let px=0;px<w;px++){add(px,0);add(px,h-1)}
-    for(let py=0;py<h;py++){add(0,py);add(w-1,py)}
-    while(q.length){
-      const [px,py]=q.pop(),i=(py*w+px)*4;d[i+3]=0;
-      add(px+1,py);add(px-1,py);add(px,py+1);add(px,py-1);
-    }
-    ctx.putImageData(id,0,0);
-    const out=c.toDataURL("image/png");cleanCache[src]=out;callback(out);
-  };
-  img.onerror=()=>callback(src);
-}
-function setClean(el,src){cleanImage(src,out=>el.src=out)}
-document.querySelectorAll("[data-clean]").forEach(img=>setClean(img,img.getAttribute("src")));
-
+];
 
 function platformByIndex(idx){
   const L=levels[currentLevel];
@@ -331,6 +410,119 @@ function addHitbox(px,py,w,h,cls="hitbox"){
 function addImg(cls,src,px,py,clean=true){
   const el=create("img",cls,src,clean);
   el.style.left=px+"px";el.style.bottom=py+"px";return el;
+}
+
+
+
+function createPuppy(platformIndex, offsetX){
+  const pos=snapToPlatform(0,platformIndex,offsetX,8);
+  const el=addImg("puppyCompanion",puppyImages.idle,pos.x,pos.y);
+  const hint=document.createElement("div");
+  hint.className="puppyHint";
+  hint.textContent="Puppy helper";
+  world.appendChild(hint);
+  puppy={
+    el,hint,
+    x:pos.x,y:pos.y,
+    targetX:pos.x,
+    dir:1,
+    state:"idle",
+    timer:0,
+    helpCooldown:0,
+    sleepTimer:0
+  };
+}
+function setPuppyImage(state){
+  if(!puppy)return;
+  puppy.state=state;
+  puppy.el.classList.toggle("run",state==="run");
+  puppy.el.classList.toggle("sleep",state==="sleep");
+  puppy.el.src=puppyImages[state]||puppyImages.idle;
+}
+function puppySpeak(text){
+  if(!puppy)return;
+  puppy.hint.textContent=text;
+  puppy.hint.style.opacity=".95";
+  clearTimeout(puppy.speechTimer);
+  puppy.speechTimer=setTimeout(()=>{if(puppy)puppy.hint.style.opacity=".35";},1800);
+}
+function updatePuppy(){
+  if(!puppy||!gameStarted)return;
+  puppy.timer++;
+  if(puppy.helpCooldown>0)puppy.helpCooldown--;
+  const desiredX=x-95;
+  puppy.targetX=Math.max(40,Math.min(WORLD_WIDTH-90,desiredX));
+  const dx=puppy.targetX-puppy.x;
+  const dist=Math.abs(dx);
+  let nearDanger=false;
+  dogs.forEach(d=>{if(Math.abs(d.x-x)<210)nearDanger=true;});
+  rollingRocks.forEach(r=>{if(Math.abs(r.x-x)<180)nearDanger=true;});
+  if(nearDanger && puppy.helpCooldown<=0){
+    puppySpeak("Woof! Danger!");
+    puppy.helpCooldown=140;
+    try{playSound("sheep");}catch(e){}
+  }
+  if(dist>26){
+    puppy.x+=Math.sign(dx)*Math.min(3.3,dist*.055);
+    puppy.dir=dx<0?-1:1;
+    if(puppy.state!=="run")setPuppyImage("run");
+  }else{
+    if(puppy.timer%360>285){
+      if(puppy.state!=="sleep")setPuppyImage("sleep");
+    }else{
+      if(puppy.state!=="idle")setPuppyImage("idle");
+    }
+  }
+  // find the nearest platform top below puppy to keep him sitting neatly on ledges
+  let bestY=puppy.y;
+  let bestDist=9999;
+  const L=levels[currentLevel];
+  L.platforms.forEach(p=>{
+    const left=p[0],right=p[0]+p[2],top=p[1]+p[3];
+    if(puppy.x>left-30&&puppy.x<right+30){
+      const dd=Math.abs(top-puppy.y);
+      if(dd<bestDist){bestDist=dd;bestY=top+8;}
+    }
+  });
+  puppy.y+=(bestY-puppy.y)*.12;
+  puppy.el.style.left=puppy.x+"px";
+  puppy.el.style.bottom=puppy.y+"px";
+  puppy.el.style.transform=puppy.dir<0?"scaleX(-1)":"scaleX(1)";
+  puppy.hint.style.left=(puppy.x-cameraX+35)+"px";
+  puppy.hint.style.top=(window.innerHeight-puppy.y-150)+"px";
+}
+
+function addEgg(x,y){
+  const e=document.createElement("div");
+  e.className="eggCollect";
+  e.style.left=x+"px";
+  e.style.bottom=y+"px";
+  world.appendChild(e);
+  return e;
+}
+function addDog(platformIndex,offsetX,minOffset,maxOffset){
+  const plat=platformByIndex(platformIndex);
+  const pos=snapToPlatform(0,platformIndex,offsetX,8);
+  const el=document.createElement("div");
+  el.className="dogEnemy";
+  el.style.left=pos.x+"px";
+  el.style.bottom=pos.y+"px";
+  world.appendChild(el);
+  dogs.push({el,x:pos.x,y:pos.y,minX:plat.x+minOffset,maxX:plat.x+maxOffset,dir:1,speed:.55,bark:60+Math.random()*120,cooldown:0});
+}
+function addRollingRock(platformIndex,offsetX,minOffset,maxOffset){
+  const plat=platformByIndex(platformIndex);
+  const pos=snapToPlatform(0,platformIndex,offsetX,0);
+  const el=addImg("rollingRock","rock-magical.png",pos.x,pos.y);
+  rollingRocks.push({el,x:pos.x,y:pos.y,minX:plat.x+minOffset,maxX:plat.x+maxOffset,dir:1,speed:1.15,rot:0});
+}
+function barkWave(x,y){
+  const b=document.createElement("div");
+  b.className="barkWave";
+  b.style.left=(x-cameraX+38)+"px";
+  b.style.top=(window.innerHeight-y-38)+"px";
+  game.appendChild(b);
+  setTimeout(()=>b.remove(),800);
 }
 
 function addMushroomLabel(text,x,y){
@@ -363,8 +555,8 @@ function loadLevel(i,clicked=false){
   if(clicked&&i>unlocked){setMessage("This forest path is still locked.");return}
   currentLevel=i;const L=levels[i];
   world.innerHTML="";world.style.backgroundImage=`url("${L.image}")`;
-  movingSheep=[];floatingWishes=[];skyWishes=[];walkingMushrooms=[];
-  x=L.start[0];y=L.start[1];vx=0;vy=0;wishes=0;sheep=0;dizzyTimer=0;lastSafeX=x;lastSafeY=y;
+  movingSheep=[];floatingWishes=[];skyWishes=[];walkingMushrooms=[];dogs=[];rollingRocks=[];puppy=null;dogs=[];rollingRocks=[];
+  x=L.start[0];y=L.start[1];vx=0;vy=0;wishes=0;sheep=0;eggs=0;dizzyTimer=0;lastSafeX=x;lastSafeY=y;
   L.platforms.forEach(p=>addHitbox(...p));
   L.hazards.forEach(p=>addHitbox(...p,"hazardBox"));
   L.wishes.forEach(p=>{
@@ -372,6 +564,14 @@ function loadLevel(i,clicked=false){
     const el=addImg("item wish","dandelion-magical.png",pos.x,pos.y);
     floatingWishes.push({el,baseX:pos.x,baseY:pos.y,t:Math.random()*100,drift:28+Math.random()*34,lift:24+Math.random()*34});
   });
+  L.eggs.forEach(p=>{
+    const pos=snapToPlatform(0,p[0],p[1],28);
+    addEgg(pos.x,pos.y);
+  });
+  if(L.dogs){L.dogs.forEach(p=>addDog(p[0],p[1],p[2],p[3]));}
+  if(L.rocks){L.rocks.forEach(p=>addRollingRock(p[0],p[1],p[2],p[3]));}
+  if(L.puppy){createPuppy(L.puppy[0],L.puppy[1]);}
+
   L.sheep.forEach((p,n)=>{
     const plat=platformByIndex(p[0]);
     const pos=snapToPlatform(0,p[0],p[1],8);
@@ -396,7 +596,7 @@ function loadLevel(i,clicked=false){
   });
   const g=snapToPlatform(0,L.goal[0],L.goal[1],18);addImg("goal","glow-orb.png",g.x,g.y);spawnSkyWishes(24);
   wishTotalEl.textContent=L.wishesNeeded;sheepTotalEl.textContent=L.sheepNeeded;
-  wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;levelNumEl.textContent=currentLevel+1;heartsEl.textContent=hearts;
+  wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;eggCountEl.textContent=eggs;eggTotalEl.textContent=L.eggsNeeded||0;levelNumEl.textContent=currentLevel+1;heartsEl.textContent=hearts;
   document.querySelectorAll(".levelCard").forEach(c=>c.classList.remove("active"));
   document.getElementById("levelCard"+currentLevel).classList.add("active");
   randomOracle();setMessage(L.name+" begins. Follow the painted platforms and gather the foxfire wishes.");
@@ -447,7 +647,7 @@ function hurtFox(){
 }
 function finishLevel(){
   const L=levels[currentLevel];
-  if(wishes<L.wishesNeeded||sheep<L.sheepNeeded){setMessage("The moon gate needs more wishes and rescued sheep first.");return}
+  if(wishes<L.wishesNeeded||sheep<L.sheepNeeded||eggs<(L.eggsNeeded||0)){setMessage("The moon gate needs more wishes, eggs, and rescued sheep first.");return}
   playSound("level");sparkle(window.innerWidth/2,window.innerHeight/2);setMessage("Level complete! The next forest path is opening.");oracleText.textContent="A new path opens because you kept going.";
   const next=currentLevel+1;localStorage.setItem("foxfire_unlocked_level",String(next));
   setTimeout(()=>{if(next<levels.length)loadLevel(next);else{setMessage("You completed Foxfire Forest! The forest remembers your light.");oracleText.textContent="You carried your glow all the way home."}},900);
@@ -507,8 +707,44 @@ function updateWalkingMushrooms(){
   });
 }
 
+
+function updateDogs(){
+  dogs.forEach(d=>{
+    d.x+=d.dir*d.speed;
+    if(d.x<d.minX||d.x>d.maxX){d.dir*=-1;d.el.style.transform=d.dir<0?"scaleX(-1)":"scaleX(1)";}
+    d.el.style.left=d.x+"px";
+    d.el.style.bottom=d.y+"px";
+    d.bark--;
+    if(d.bark<=0){
+      d.el.classList.add("bark");
+      barkWave(d.x,d.y);
+      d.bark=100+Math.random()*170;
+      setTimeout(()=>d.el.classList.remove("bark"),600);
+    }
+    if(d.cooldown>0)d.cooldown--;
+  });
+}
+function updateRollingRocks(){
+  rollingRocks.forEach(r=>{
+    r.x+=r.dir*r.speed;
+    r.rot+=r.dir*6;
+    if(r.x<r.minX||r.x>r.maxX)r.dir*=-1;
+    r.el.style.left=r.x+"px";
+    r.el.style.bottom=r.y+"px";
+    r.el.style.transform=`rotate(${r.rot}deg)`;
+  });
+}
+function damageFox(reason="Ouch!"){
+  if(fox.dataset.invincible==="yes")return;
+  fox.dataset.invincible="yes";
+  fox.classList.add("damageFlash");
+  setMessage(reason);
+  hurtFox();
+  setTimeout(()=>{fox.dataset.invincible="";fox.classList.remove("damageFlash");},1100);
+}
+
 function gameLoop(){
-  updateFloatingWishes();updateSkyWishes();updateMovingSheep();updateWalkingMushrooms();
+  updateFloatingWishes();updateSkyWishes();updateMovingSheep();updateWalkingMushrooms();updateDogs();updateRollingRocks();updatePuppy();
   if(gameStarted){
     const speed=dizzyTimer>0?2.4:5.3;
     if(keys["ArrowLeft"]){vx=-speed;facing="left";if(onGround)setFoxImage("run")}
@@ -518,7 +754,7 @@ function gameLoop(){
     const fw=108;
     document.querySelectorAll(".hitbox").forEach(p=>{
       const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
-      if(x+fw-22>px+15&&x+22<px+pw-15&&y<=top+18&&y>=top-28&&vy<=0){y=top;vy=0;onGround=true;doubleJumpReady=true;lastSafeX=x;lastSafeY=y}
+      if(x+fw-22>px+15&&x+22<px+pw-15&&y<=top+22&&y>=top-34&&vy<=0){y=top;vy=0;onGround=true;doubleJumpReady=true;lastSafeX=x;lastSafeY=y}
     });
     
 if(onGround && !wasOnGround){landingDust();}
@@ -529,9 +765,38 @@ fox.classList.toggle("running",onGround && Math.abs(vx)>.35);
 fox.classList.toggle("jumping",!onGround);
 if(dizzyTimer>0)dizzyTimer--;
     const f=rect(fox);
-    document.querySelectorAll(".hazardBox").forEach(h=>{if(overlap(f,rect(h)))hurtFox()});
+    document.querySelectorAll(".hazardBox").forEach(h=>{if(overlap(f,rect(h)))damageFox("Sharp spikes! The fox jumps back.")});
     document.querySelectorAll(".wish").forEach(item=>{if(item.dataset.done)return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";wishes++;playSound("collect");wishCountEl.textContent=wishes;const r=rect(item);sparkle(r.left+30,r.top+30);setMessage("A glowing dandelion wish was gathered.");randomOracle();saveGame()}});
     document.querySelectorAll(".rescue").forEach(item=>{if(item.dataset.done)return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";sheep++;playSound("sheep");sheepCountEl.textContent=sheep;const r=rect(item);sparkle(r.left+42,r.top+38);setMessage("You rescued a bouncing sheep.");oracleText.textContent="Kindness is one of the oldest kinds of magic.";saveGame()}});
+    
+    document.querySelectorAll(".eggCollect").forEach(item=>{
+      if(item.dataset.done)return;
+      if(overlap(f,rect(item))){
+        item.dataset.done="yes";
+        item.style.display="none";
+        eggs++;
+        eggCountEl.textContent=eggs;
+        playSound("collect");
+        const r=rect(item);
+        sparkle(r.left+20,r.top+22);
+        setMessage("A warm golden egg was found.");
+        oracleText.textContent="Even the smallest treasure carries a little sun.";
+        saveGame();
+      }
+    });
+    dogs.forEach(d=>{
+      if(d.cooldown>0)return;
+      if(overlap(f,rect(d.el))){
+        d.cooldown=90;
+        damageFox("The farmer dog barked! Careful, little fox.");
+      }
+    });
+    rollingRocks.forEach(r=>{
+      if(overlap(f,rect(r.el))){
+        damageFox("A rolling rock knocked the fox back!");
+      }
+    });
+
     document.querySelectorAll(".mushroomPerson,.mushroomNpc").forEach(m=>{if(m.dataset.done)return;if(overlap(f,rect(m))){const e=m.dataset.effect,r=rect(m);sparkle(r.left+r.width/2,r.top+r.height/2);
       if(e==="dizzy"){dizzyTimer=190;setMessage("Oh no — mushroom magic! The fox is dizzy and slow.");oracleText.textContent="Move gently. Strange feelings pass."}
       if(e==="helper"){setMessage("The mushroom woman whispers: the safest path is not always the straightest.");oracleText.textContent="Look for the glowing ledges. They remember your steps."}
@@ -539,6 +804,30 @@ if(dizzyTimer>0)dizzyTimer--;
       if(e==="npc"){setMessage("The mushroom man raises his lantern and shows you the way.");oracleText.textContent="A guide appears when the path feels strange."}
       m.dataset.done="yes";
     }});
+    
+    if(puppy){
+      document.querySelectorAll(".wish,.eggCollect").forEach(item=>{
+        if(item.dataset.done)return;
+        const ir=rect(item);
+        const px=puppy.x-cameraX+55;
+        const py=window.innerHeight-puppy.y-55;
+        const cx=ir.left+ir.width/2;
+        const cy=ir.top+ir.height/2;
+        if(Math.hypot(cx-px,cy-py)<38){
+          item.dataset.done="yes";
+          item.style.display="none";
+          if(item.classList.contains("wish")){
+            wishes++;wishCountEl.textContent=wishes;setMessage("Puppy nudged a dandelion wish to you!");
+          }else{
+            eggs++;eggCountEl.textContent=eggs;setMessage("Puppy found a golden egg!");
+          }
+          playSound("collect");
+          sparkle(cx,cy);
+          saveGame();
+        }
+      });
+    }
+
     const goal=document.querySelector(".goal");if(goal&&overlap(f,rect(goal)))finishLevel();
     if(y<-170)hurtFox();
     x=Math.max(0,Math.min(x,WORLD_WIDTH-115));updateCamera();
