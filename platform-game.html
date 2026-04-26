@@ -1,386 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Foxfire Forest Platform Adventure</title>
-
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #06110b;
-  font-family: Georgia, serif;
-  color: #ffe8a8;
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color:#ffe8a8}
+#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}
+#world{
+  position:absolute;left:0;bottom:0;width:1792px;height:100vh;z-index:5;
+  background:url("level-misty-meadows.png") no-repeat left bottom;
+  background-size:1792px 100vh;
 }
-
-#game {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: #06110b;
-}
-
-#world {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 1792px;
-  height: 100vh;
-  z-index: 5;
-  background-size: 1792px 100vh;
-  background-repeat: no-repeat;
-  background-position: left bottom;
-}
-
-#world::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+#world::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
   background:
-    radial-gradient(circle, rgba(255,231,150,.65) 0 2px, transparent 3px),
-    radial-gradient(circle, rgba(255,255,220,.35) 0 1px, transparent 3px);
-  background-size: 150px 170px, 240px 260px;
-  opacity: .38;
-  animation: fireflies 20s linear infinite;
+    radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),
+    radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);
+  background-size:150px 170px,240px 260px;opacity:.42;
+  animation:fireflies 20s linear infinite;
 }
+@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}
 
-@keyframes fireflies {
-  from { background-position: 0 0, 80px 50px; }
-  to { background-position: 160px -220px, 280px -180px; }
-}
+.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:80;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}
+.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:80;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}
+.top-ui{position:absolute;top:12px;left:12px;z-index:100;display:flex;gap:8px;flex-wrap:wrap;max-width:445px}
+.pill,.top-ui a,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);text-decoration:none;font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12)}
+.top-ui button{cursor:pointer}
 
-.title {
-  position: absolute;
-  top: 16px;
-  left: 0;
-  width: calc(100vw - 390px);
-  z-index: 80;
-  text-align: center;
-  font-size: clamp(2.4rem, 5vw, 5rem);
-  color: #ffe7a6;
-  text-shadow: 0 0 18px rgba(255,220,120,.7), 0 6px 18px #000;
-  pointer-events: none;
-}
+#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:100;display:flex;flex-direction:column;gap:12px}
+.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}
+.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.35rem}
+.card p{margin:0;color:#fff0cc;line-height:1.35}
+.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}
+.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}
+.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}
 
-.subtitle {
-  position: absolute;
-  top: 94px;
-  left: 0;
-  width: calc(100vw - 390px);
-  z-index: 80;
-  text-align: center;
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
-  color: #cfeea2;
-  text-shadow: 0 4px 12px #000;
-  pointer-events: none;
-}
+#fox{position:absolute;left:90px;bottom:180px;width:108px;z-index:50;object-fit:contain;pointer-events:none;user-select:none;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55))}
+#fox.left{transform:scaleX(-1)}
+#fox.dizzy{animation:dizzy .38s ease-in-out infinite alternate;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 26px rgba(180,130,255,.8)) hue-rotate(25deg)}
+#fox.left.dizzy{animation:dizzyLeft .38s ease-in-out infinite alternate}
+@keyframes dizzy{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+@keyframes dizzyLeft{from{transform:scaleX(-1) rotate(-4deg)}to{transform:scaleX(-1) rotate(4deg)}}
 
-.top-ui {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 100;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  max-width: 440px;
-}
+.hitbox{position:absolute;z-index:12;pointer-events:none;opacity:0}
+.hazardBox{position:absolute;z-index:13;pointer-events:none;opacity:0}
+.item,.sheep,.mushroom,.npc,.goal,.rock{position:absolute;z-index:40;object-fit:contain;user-select:none;pointer-events:none;background:transparent!important}
+.item{width:58px;filter:drop-shadow(0 0 12px rgba(255,245,190,1)) drop-shadow(0 0 34px rgba(255,220,100,.9));animation:wishFloat 3.2s ease-in-out infinite alternate}
+@keyframes wishFloat{from{transform:translateY(0) translateX(-6px) rotate(-6deg)}to{transform:translateY(-22px) translateX(12px) rotate(8deg)}}
+.sheep{width:82px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4)) drop-shadow(0 0 22px rgba(255,245,200,.78)) drop-shadow(0 0 40px rgba(255,220,120,.35))}
+.mushroom{width:64px;animation:mushroomPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 16px rgba(180,120,255,.58)) drop-shadow(0 10px 12px rgba(0,0,0,.55))}
+.npc{width:105px;animation:npcBob 2s ease-in-out infinite alternate;filter:drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,200,100,.38))}
+.rock{width:70px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.55))}
+@keyframes npcBob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+@keyframes mushroomPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+.goal{width:72px;animation:goalPulse 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(170,235,255,.9)) drop-shadow(0 0 45px rgba(150,210,255,.55))}
+@keyframes goalPulse{from{transform:scale(1)}to{transform:scale(1.15)}}
 
-.pill, .top-ui a, .top-ui button {
-  padding: 8px 13px;
-  border-radius: 999px;
-  background: rgba(5,18,10,.86);
-  color: #ffe8a8;
-  border: 1px solid rgba(255,225,150,.42);
-  text-decoration: none;
-  font-family: Georgia, serif;
-  font-size: .95rem;
-  box-shadow: 0 0 12px rgba(255,220,120,.12);
-}
+.message{position:absolute;left:18px;bottom:16px;width:calc(100vw - 420px);z-index:110;padding:13px 20px;border-radius:999px;background:rgba(5,18,10,.88);border:1px solid rgba(255,225,150,.38);color:#ffe8a8;text-align:center;box-shadow:0 0 18px rgba(255,220,120,.12)}
+.choice-screen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(255,220,120,.16),transparent 34%),rgba(3,10,6,.92);padding:20px}
+.choice-box{width:min(980px,94vw);padding:28px;border-radius:28px;background:linear-gradient(rgba(13,29,18,.96),rgba(4,13,8,.96));border:1px solid rgba(255,225,150,.45);text-align:center;box-shadow:0 0 38px rgba(255,220,120,.2)}
+.choice-box h1{margin:0 0 8px;font-size:clamp(2.4rem,5vw,4rem)}
+.choice-box p{margin:0 0 22px;color:#fff0cc}
+.foxChoices{display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+.foxCard{width:280px;padding:18px;border-radius:22px;border:1px solid rgba(255,225,150,.34);background:rgba(255,240,190,.07);color:#ffe8a8;cursor:pointer;transition:.25s ease}
+.foxCard:hover{transform:translateY(-5px);box-shadow:0 0 26px rgba(255,220,120,.22)}
+.foxCard img{width:220px;height:170px;object-fit:contain;background:transparent!important}
 
-.top-ui button { cursor: pointer; }
+.sparkle-pop{position:absolute;width:10px;height:10px;z-index:200;border-radius:50%;background:#ffe7a1;box-shadow:0 0 12px #ffe7a1,18px -8px 0 -2px rgba(255,231,161,.9),-16px -10px 0 -3px rgba(255,231,161,.8),12px 16px 0 -3px rgba(255,231,161,.75),-20px 13px 0 -4px rgba(255,231,161,.7);pointer-events:none;animation:pop .75s ease forwards}
+@keyframes pop{from{opacity:1;transform:translate(-50%,-50%) scale(.4)}to{opacity:0;transform:translate(-50%,-50%) scale(3)}}
 
-#sidePanel {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 370px;
-  height: calc(100vh - 24px);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.card {
-  border-radius: 20px;
-  border: 1px solid rgba(255,225,150,.36);
-  background: linear-gradient(rgba(10,27,16,.91), rgba(3,12,8,.9));
-  box-shadow: inset 0 0 22px rgba(255,220,120,.06), 0 0 24px rgba(0,0,0,.35);
-  padding: 15px;
-}
-
-.card h2 {
-  margin: 0 0 6px;
-  color: #ffe7a6;
-  font-size: 1.45rem;
-}
-
-.card p {
-  margin: 0;
-  color: #fff0cc;
-  line-height: 1.35;
-}
-
-.levelCard {
-  display: grid;
-  grid-template-columns: 86px 1fr;
-  gap: 12px;
-  align-items: center;
-  cursor: pointer;
-}
-
-.levelCard.active {
-  border-color: rgba(255,230,130,.9);
-  box-shadow: 0 0 22px rgba(255,220,120,.18);
-}
-
-.thumb {
-  height: 68px;
-  border-radius: 12px;
-  background-size: cover;
-  background-position: center;
-  border: 1px solid rgba(255,255,255,.16);
-}
-
-#fox {
-  position: absolute;
-  left: 90px;
-  bottom: 180px;
-  width: 118px;
-  z-index: 50;
-  object-fit: contain;
-  pointer-events: none;
-  user-select: none;
-  background: transparent !important;
-  filter:
-    drop-shadow(0 14px 12px rgba(0,0,0,.55))
-    drop-shadow(0 0 18px rgba(255,205,90,.55));
-}
-
-#fox.left { transform: scaleX(-1); }
-
-#fox.dizzy {
-  animation: dizzy .38s ease-in-out infinite alternate;
-  filter:
-    drop-shadow(0 14px 12px rgba(0,0,0,.55))
-    drop-shadow(0 0 26px rgba(180,130,255,.8))
-    hue-rotate(25deg);
-}
-
-#fox.left.dizzy {
-  animation: dizzyLeft .38s ease-in-out infinite alternate;
-}
-
-@keyframes dizzy {
-  from { transform: rotate(-4deg); }
-  to { transform: rotate(4deg); }
-}
-
-@keyframes dizzyLeft {
-  from { transform: scaleX(-1) rotate(-4deg); }
-  to { transform: scaleX(-1) rotate(4deg); }
-}
-
-.hitbox {
-  position: absolute;
-  z-index: 12;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.item, .sheep, .mushroom, .npc, .goal {
-  position: absolute;
-  z-index: 40;
-  object-fit: contain;
-  user-select: none;
-  pointer-events: none;
-  background: transparent !important;
-}
-
-.item {
-  width: 88px;
-  animation: wishFloat 3.4s ease-in-out infinite alternate;
-  filter:
-    drop-shadow(0 0 14px rgba(255,245,190,1))
-    drop-shadow(0 0 32px rgba(255,220,100,.9))
-    drop-shadow(0 0 60px rgba(255,200,80,.55));
-}
-
-@keyframes wishFloat {
-  from { transform: translateY(0) translateX(-8px) rotate(-7deg); }
-  to { transform: translateY(-24px) translateX(14px) rotate(8deg); }
-}
-
-.sheep {
-  width: 92px;
-  filter:
-    drop-shadow(0 10px 12px rgba(0,0,0,.42))
-    drop-shadow(0 0 22px rgba(255,245,200,.85))
-    drop-shadow(0 0 42px rgba(255,220,120,.45));
-}
-
-.mushroom {
-  width: 72px;
-  animation: mushroomPulse 1.8s ease-in-out infinite alternate;
-  filter:
-    drop-shadow(0 0 16px rgba(180,120,255,.58))
-    drop-shadow(0 10px 12px rgba(0,0,0,.55));
-}
-
-.npc {
-  width: 118px;
-  animation: npcBob 2s ease-in-out infinite alternate;
-  filter:
-    drop-shadow(0 12px 12px rgba(0,0,0,.55))
-    drop-shadow(0 0 18px rgba(255,200,100,.38));
-}
-
-@keyframes npcBob {
-  from { transform: translateY(0); }
-  to { transform: translateY(-7px); }
-}
-
-@keyframes mushroomPulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.08); }
-}
-
-.goal {
-  width: 76px;
-  animation: goalPulse 1.8s ease-in-out infinite alternate;
-  filter:
-    drop-shadow(0 0 20px rgba(170,235,255,.9))
-    drop-shadow(0 0 45px rgba(150,210,255,.55));
-}
-
-@keyframes goalPulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.15); }
-}
-
-.message {
-  position: absolute;
-  left: 18px;
-  bottom: 16px;
-  width: calc(100vw - 420px);
-  z-index: 110;
-  padding: 13px 20px;
-  border-radius: 999px;
-  background: rgba(5,18,10,.88);
-  border: 1px solid rgba(255,225,150,.38);
-  color: #ffe8a8;
-  text-align: center;
-  box-shadow: 0 0 18px rgba(255,220,120,.12);
-}
-
-.choice-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(circle at center, rgba(255,220,120,.16), transparent 34%),
-    rgba(3,10,6,.92);
-  padding: 20px;
-}
-
-.choice-box {
-  width: min(980px, 94vw);
-  padding: 28px;
-  border-radius: 28px;
-  background: linear-gradient(rgba(13,29,18,.96), rgba(4,13,8,.96));
-  border: 1px solid rgba(255,225,150,.45);
-  text-align: center;
-  box-shadow: 0 0 38px rgba(255,220,120,.2);
-}
-
-.choice-box h1 {
-  margin: 0 0 8px;
-  font-size: clamp(2.4rem, 5vw, 4rem);
-}
-
-.choice-box p {
-  margin: 0 0 22px;
-  color: #fff0cc;
-}
-
-.foxChoices {
-  display: flex;
-  justify-content: center;
-  gap: 22px;
-  flex-wrap: wrap;
-}
-
-.foxCard {
-  width: 280px;
-  padding: 18px;
-  border-radius: 22px;
-  border: 1px solid rgba(255,225,150,.34);
-  background: rgba(255,240,190,.07);
-  color: #ffe8a8;
-  cursor: pointer;
-  transition: .25s ease;
-}
-
-.foxCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 26px rgba(255,220,120,.22);
-}
-
-.foxCard img {
-  width: 220px;
-  height: 170px;
-  object-fit: contain;
-  background: transparent !important;
-}
-
-.sparkle-pop {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  z-index: 200;
-  border-radius: 50%;
-  background: #ffe7a1;
-  box-shadow:
-    0 0 12px #ffe7a1,
-    18px -8px 0 -2px rgba(255,231,161,.9),
-    -16px -10px 0 -3px rgba(255,231,161,.8),
-    12px 16px 0 -3px rgba(255,231,161,.75),
-    -20px 13px 0 -4px rgba(255,231,161,.7);
-  pointer-events: none;
-  animation: pop .75s ease forwards;
-}
-
-@keyframes pop {
-  from { opacity: 1; transform: translate(-50%, -50%) scale(.4); }
-  to { opacity: 0; transform: translate(-50%, -50%) scale(3); }
-}
-
-@media (max-width: 950px) {
-  #sidePanel { display: none; }
-  .title, .subtitle, .message { width: 100vw; }
-}
+@media(max-width:950px){#sidePanel{display:none}.title,.subtitle,.message{width:100vw}}
 </style>
 </head>
-
 <body>
 <div id="game">
   <div class="title">Foxfire Forest</div>
@@ -399,34 +92,20 @@ body {
   <img id="fox" src="foxy-player-idle.png" alt="Fox player">
 
   <aside id="sidePanel">
-    <div class="card">
-      <h2>Collect & Explore</h2>
-      <p>Collect floating dandelion wishes, rescue sheep, and meet mushroom folk.</p>
-    </div>
-    <div class="card">
-      <h2>Avoid Obstacles</h2>
-      <p>Use the painted platforms. Gaps and spikes will send you back.</p>
-    </div>
-    <div class="card">
-      <h2>Mushroom Folk</h2>
-      <p>Some mushrooms slow you down. The elder mushroom gives oracle wisdom.</p>
-    </div>
-    <div class="card">
-      <h2>Foxfire Oracle</h2>
-      <p id="oracleText">Believe in your light. You can go anywhere.</p>
-    </div>
+    <div class="card"><h2>Collect & Explore</h2><p>Collect glowing dandelion wishes, rescue bouncing sheep, and meet mushroom folk.</p></div>
+    <div class="card"><h2>How to Play</h2><p>Arrow keys move. Space jumps. Shift makes a small foxfire dash.</p></div>
+    <div class="card"><h2>Mushroom Folk</h2><p>Some mushrooms slow you down. Elders give oracle wisdom.</p></div>
+    <div class="card"><h2>Foxfire Oracle</h2><p id="oracleText">Believe in your light. You can go anywhere.</p></div>
 
-    <div class="card levelCard active" id="levelCard0" onclick="loadLevel(0, true)">
+    <div class="card levelCard active" id="levelCard0" onclick="loadLevel(0,true)">
       <div class="thumb" style="background-image:url('level-misty-meadows.png')"></div>
       <div><h2>Misty Meadows</h2><p>Gentle forest beginning.</p></div>
     </div>
-
-    <div class="card levelCard" id="levelCard1" onclick="loadLevel(1, true)">
+    <div class="card levelCard" id="levelCard1" onclick="loadLevel(1,true)">
       <div class="thumb" style="background-image:url('level-twilight-hollow.png')"></div>
       <div><h2>Twilight Hollow</h2><p>More gaps and mushrooms.</p></div>
     </div>
-
-    <div class="card levelCard" id="levelCard2" onclick="loadLevel(2, true)">
+    <div class="card levelCard" id="levelCard2" onclick="loadLevel(2,true)">
       <div class="thumb" style="background-image:url('level-moonlit-canopy.png')"></div>
       <div><h2>Moonlit Canopy</h2><p>Spirit forest challenge.</p></div>
     </div>
@@ -438,4 +117,254 @@ body {
 <div class="choice-screen" id="choiceScreen">
   <div class="choice-box">
     <h1>Choose Your Fox</h1>
-    <p>Who will follow the
+    <p>Who will follow the glowing forest path?</p>
+    <div class="foxChoices">
+      <div class="foxCard" onclick="chooseFox('male')">
+        <img src="foxy-player-idle.png" alt="Boy fox" data-clean>
+        <h2>Boy Fox ♂</h2>
+      </div>
+      <div class="foxCard" onclick="chooseFox('female')">
+        <img src="female-foxy-player-idle.png" alt="Female fox" data-clean>
+        <h2>Female Fox ♀</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const game=document.getElementById("game");
+const world=document.getElementById("world");
+const fox=document.getElementById("fox");
+const message=document.getElementById("message");
+const choiceScreen=document.getElementById("choiceScreen");
+const heartsEl=document.getElementById("hearts");
+const wishCountEl=document.getElementById("wishCount");
+const wishTotalEl=document.getElementById("wishTotal");
+const sheepCountEl=document.getElementById("sheepCount");
+const sheepTotalEl=document.getElementById("sheepTotal");
+const levelNumEl=document.getElementById("levelNum");
+const oracleText=document.getElementById("oracleText");
+
+const SAVE_KEY="foxfire_enchanted_save_v2";
+const WORLD_WIDTH=1792;
+
+let keys={},gameStarted=false,currentLevel=0,cameraX=0,foxType="male";
+let x=120,y=210,vx=0,vy=0,facing="right",onGround=false,doubleJumpReady=true;
+let hearts=3,wishes=0,sheep=0,dizzyTimer=0,lastSafeX=120,lastSafeY=210;
+let movingSheep=[],floatingWishes=[];
+
+const cleanCache={};
+const foxImages={
+  male:{idle:"foxy-player-idle.png",run:"foxy-player-enchanted.png",jump:"foxy-player-jump.png"},
+  female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-female.png"}
+};
+const oracleMessages=[
+  "Believe in your light. You can go anywhere.",
+  "Small paws can cross great forests.",
+  "Trust the next platform. The path appears as you move.",
+  "Slow steps still count as magic.",
+  "Even dizzy moments pass. Breathe and begin again.",
+  "The forest opens for those who keep going.",
+  "A rescued heart always leaves a glow behind."
+];
+
+const levels=[
+  {
+    name:"Misty Meadows",image:"level-misty-meadows.png",start:[130,210],wishesNeeded:10,sheepNeeded:1,
+    platforms:[[0,110,430,90],[390,420,310,65],[675,510,255,60],[910,350,285,60],[1190,445,260,60],[1390,240,260,60],[1530,520,220,70]],
+    hazards:[[720,100,70,60]],
+    wishes:[[420,520],[535,535],[680,610],[950,455],[1085,465],[1235,545],[1430,340],[1550,630],[1640,635],[1730,620]],
+    sheep:[[1240,510,"sheep-fluffy-glow.png",1190,1435]],
+    mushrooms:[[980,410,"mushroom-baby.png","dizzy"],[1460,300,"mushroom-elder.png","oracle"]],
+    npc:[[1550,590,"mushroom-man.png"]],
+    goal:[1670,630]
+  },
+  {
+    name:"Twilight Hollow",image:"level-twilight-hollow.png",start:[130,220],wishesNeeded:9,sheepNeeded:2,
+    platforms:[[0,120,380,90],[380,485,275,65],[650,360,250,60],[900,505,235,60],[1130,310,250,60],[1360,470,230,60],[1560,590,210,70]],
+    hazards:[[740,105,70,60],[1260,105,70,60]],
+    wishes:[[420,590],[535,600],[710,460],[965,605],[1135,410],[1260,420],[1430,570],[1600,700],[1700,700]],
+    sheep:[[720,425,"sheep-fluffy-glow.png",660,880],[1410,535,"sheep-fluffy-glow.png",1360,1560]],
+    mushrooms:[[500,550,"mushroom-young.png","dizzy"],[930,565,"mushroom-female.png","helper"],[1160,370,"mushroom-elder.png","oracle"]],
+    npc:[[1610,655,"mushroom-man.png"]],
+    goal:[1680,700]
+  },
+  {
+    name:"Moonlit Canopy",image:"level-moonlit-canopy.png",start:[130,240],wishesNeeded:9,sheepNeeded:2,
+    platforms:[[0,135,380,90],[360,455,275,65],[635,610,250,60],[880,420,250,60],[1135,300,255,60],[1375,505,230,60],[1560,650,220,70]],
+    hazards:[[530,115,70,60],[1050,115,70,60]],
+    wishes:[[430,555],[560,565],[700,715],[830,720],[970,525],[1170,405],[1320,410],[1500,615],[1660,760]],
+    sheep:[[730,675,"sheep-fluffy-glow.png",650,880],[1430,570,"sheep-fluffy-glow.png",1375,1570]],
+    mushrooms:[[470,520,"mushroom-baby.png","dizzy"],[910,490,"mushroom-young.png","dizzy"],[1190,365,"mushroom-elder.png","oracle"]],
+    npc:[[1480,570,"mushroom-man.png"]],
+    goal:[1660,760]
+  }
+];
+
+function cleanImage(src,callback){
+  if(cleanCache[src]){callback(cleanCache[src]);return}
+  const img=new Image();
+  img.src=src;
+  img.onload=()=>{
+    const c=document.createElement("canvas"),ctx=c.getContext("2d",{willReadFrequently:true});
+    c.width=img.naturalWidth;c.height=img.naturalHeight;ctx.drawImage(img,0,0);
+    const id=ctx.getImageData(0,0,c.width,c.height),d=id.data,w=c.width,h=c.height,vis=new Uint8Array(w*h),q=[];
+    function bg(i){
+      const r=d[i],g=d[i+1],b=d[i+2],a=d[i+3]; if(a<20)return true;
+      const max=Math.max(r,g,b),min=Math.min(r,g,b),avg=(r+g+b)/3;
+      return (r>225&&g>225&&b>225)||(avg>170&&max-min<34)||(avg>205&&max-min<55);
+    }
+    function add(px,py){
+      if(px<0||py<0||px>=w||py>=h)return;
+      const n=py*w+px;if(vis[n])return;vis[n]=1;
+      if(bg(n*4))q.push([px,py]);
+    }
+    for(let px=0;px<w;px++){add(px,0);add(px,h-1)}
+    for(let py=0;py<h;py++){add(0,py);add(w-1,py)}
+    while(q.length){
+      const [px,py]=q.pop(),i=(py*w+px)*4;d[i+3]=0;
+      add(px+1,py);add(px-1,py);add(px,py+1);add(px,py-1);
+    }
+    ctx.putImageData(id,0,0);
+    const out=c.toDataURL("image/png");cleanCache[src]=out;callback(out);
+  };
+  img.onerror=()=>callback(src);
+}
+function setClean(el,src){cleanImage(src,out=>el.src=out)}
+document.querySelectorAll("[data-clean]").forEach(img=>setClean(img,img.getAttribute("src")));
+
+function create(tag,cls,src,clean=true){
+  const el=document.createElement(tag); if(cls)el.className=cls;
+  if(src){clean?setClean(el,src):el.src=src}
+  world.appendChild(el); return el;
+}
+function addHitbox(px,py,w,h,cls="hitbox"){
+  const el=create("div",cls,null,false);
+  el.style.left=px+"px";el.style.bottom=py+"px";el.style.width=w+"px";el.style.height=h+"px";
+  el.dataset.x=px;el.dataset.y=py;el.dataset.w=w;el.dataset.h=h;return el;
+}
+function addImg(cls,src,px,py,clean=true){
+  const el=create("img",cls,src,clean);
+  el.style.left=px+"px";el.style.bottom=py+"px";return el;
+}
+function loadLevel(i,clicked=false){
+  const unlocked=Number(localStorage.getItem("foxfire_unlocked_level")||0);
+  if(clicked&&i>unlocked){setMessage("This forest path is still locked.");return}
+  currentLevel=i;const L=levels[i];
+  world.innerHTML="";world.style.backgroundImage=`url("${L.image}")`;
+  movingSheep=[];floatingWishes=[];
+  x=L.start[0];y=L.start[1];vx=0;vy=0;wishes=0;sheep=0;dizzyTimer=0;lastSafeX=x;lastSafeY=y;
+  L.platforms.forEach(p=>addHitbox(...p));
+  L.hazards.forEach(p=>addHitbox(...p,"hazardBox"));
+  L.wishes.forEach(p=>{
+    const el=addImg("item wish","glowing-dandelion-wish.png",p[0],p[1]);
+    floatingWishes.push({el,baseX:p[0],baseY:p[1],t:Math.random()*100,drift:10+Math.random()*16,lift:12+Math.random()*18});
+  });
+  L.sheep.forEach((p,n)=>{
+    const el=addImg("sheep rescue",p[2],p[0],p[1]);
+    movingSheep.push({el,x:p[0],y:p[1],minX:p[3],maxX:p[4],dir:n%2? -1:1,hop:Math.random()*100,speed:.7+Math.random()*.55});
+  });
+  L.mushrooms.forEach(p=>{const el=addImg("mushroom mushroomPerson",p[2],p[0],p[1]);el.dataset.effect=p[3]});
+  L.npc.forEach(p=>{const el=addImg("npc mushroomNpc",p[2],p[0],p[1]);el.dataset.effect="npc"});
+  addImg("goal","glow-orb.png",L.goal[0],L.goal[1]);
+  wishTotalEl.textContent=L.wishesNeeded;sheepTotalEl.textContent=L.sheepNeeded;
+  wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;levelNumEl.textContent=currentLevel+1;heartsEl.textContent=hearts;
+  document.querySelectorAll(".levelCard").forEach(c=>c.classList.remove("active"));
+  document.getElementById("levelCard"+currentLevel).classList.add("active");
+  randomOracle();setMessage(L.name+" begins. Follow the painted platforms and gather the foxfire wishes.");
+  setFoxImage("idle");saveGame();updateCamera();
+}
+function chooseFox(type){foxType=type;choiceScreen.style.display="none";gameStarted=true;setFoxImage("idle");setMessage("Use arrow keys to run, space to jump, and Shift to dash.");saveGame()}
+function setFoxImage(state){setClean(fox,foxImages[foxType][state])}
+function setMessage(t){message.textContent=t}
+function randomOracle(){oracleText.textContent=oracleMessages[Math.floor(Math.random()*oracleMessages.length)]}
+function saveGame(){
+  localStorage.setItem(SAVE_KEY,JSON.stringify({level:currentLevel,hearts,foxType,chosen:gameStarted,unlocked:Math.max(Number(localStorage.getItem("foxfire_unlocked_level")||0),currentLevel)}));
+  localStorage.setItem("foxfire_unlocked_level",String(Math.max(Number(localStorage.getItem("foxfire_unlocked_level")||0),currentLevel)));
+}
+function loadSave(){
+  try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
+    if(typeof d.level==="number")currentLevel=Math.min(d.level,levels.length-1);
+    if(typeof d.hearts==="number")hearts=d.hearts;
+    if(d.foxType)foxType=d.foxType;
+    if(d.chosen){choiceScreen.style.display="none";gameStarted=true}
+  }catch(e){}
+}
+function resetSave(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem("foxfire_unlocked_level");location.reload()}
+function rect(el){return el.getBoundingClientRect()}
+function overlap(a,b){return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top}
+function sparkle(px,py){
+  const s=document.createElement("div");s.className="sparkle-pop";s.style.left=px+"px";s.style.top=py+"px";game.appendChild(s);
+  setTimeout(()=>s.remove(),800);
+}
+function hurtFox(){
+  hearts--;heartsEl.textContent=hearts;
+  if(hearts<=0){hearts=3;heartsEl.textContent=hearts;x=levels[currentLevel].start[0];y=levels[currentLevel].start[1];setMessage("The foxfire brings you back to the start.")}
+  else{x=lastSafeX;y=lastSafeY+20;setMessage("Careful, little fox. Try again.")}
+  vx=0;vy=0;saveGame();
+}
+function finishLevel(){
+  const L=levels[currentLevel];
+  if(wishes<L.wishesNeeded||sheep<L.sheepNeeded){setMessage("The moon gate needs more wishes and rescued sheep first.");return}
+  sparkle(window.innerWidth/2,window.innerHeight/2);setMessage("Level complete! The next forest path is opening.");oracleText.textContent="A new path opens because you kept going.";
+  const next=currentLevel+1;localStorage.setItem("foxfire_unlocked_level",String(next));
+  setTimeout(()=>{if(next<levels.length)loadLevel(next);else{setMessage("You completed Foxfire Forest! The forest remembers your light.");oracleText.textContent="You carried your glow all the way home."}},900);
+}
+document.addEventListener("keydown",e=>{
+  keys[e.key]=true;
+  if((e.key===" "||e.key==="ArrowUp")&&gameStarted){
+    e.preventDefault();
+    if(onGround){vy=16;onGround=false;doubleJumpReady=true;setFoxImage("jump")}
+    else if(doubleJumpReady){vy=14;doubleJumpReady=false;setFoxImage("jump");sparkle(fox.getBoundingClientRect().left+55,fox.getBoundingClientRect().top+70)}
+  }
+  if(e.key==="Shift"&&gameStarted){x+=facing==="right"?60:-60;sparkle(fox.getBoundingClientRect().left+55,fox.getBoundingClientRect().top+70)}
+});
+document.addEventListener("keyup",e=>keys[e.key]=false);
+function updateCamera(){
+  const panel=window.innerWidth>950?390:0,view=window.innerWidth-panel;
+  cameraX=Math.max(0,Math.min(x-view*.38,WORLD_WIDTH-view));
+  world.style.transform=`translateX(${-cameraX}px)`;fox.style.left=(x-cameraX)+"px";
+}
+function updateFloatingWishes(){
+  floatingWishes.forEach(w=>{if(w.el.dataset.done)return;w.t+=.025;w.el.style.left=(w.baseX+Math.sin(w.t*1.4)*w.drift)+"px";w.el.style.bottom=(w.baseY+Math.cos(w.t*1.8)*w.lift)+"px"});
+}
+function updateMovingSheep(){
+  movingSheep.forEach(s=>{if(s.el.dataset.done)return;s.x+=s.dir*s.speed;if(s.x<s.minX||s.x>s.maxX){s.dir*=-1;s.el.style.transform=s.dir<0?"scaleX(-1)":"scaleX(1)"}s.hop+=.08;s.el.style.left=s.x+"px";s.el.style.bottom=(s.y+Math.abs(Math.sin(s.hop))*18)+"px"});
+}
+function gameLoop(){
+  updateFloatingWishes();updateMovingSheep();
+  if(gameStarted){
+    const speed=dizzyTimer>0?2.4:5.3;
+    if(keys["ArrowLeft"]){vx=-speed;facing="left";if(onGround)setFoxImage("run")}
+    else if(keys["ArrowRight"]){vx=speed;facing="right";if(onGround)setFoxImage("run")}
+    else{vx*=.78;if(Math.abs(vx)<.08)vx=0;if(onGround)setFoxImage("idle")}
+    x+=vx;vy-=.72;y+=vy;onGround=false;
+    const fw=108;
+    document.querySelectorAll(".hitbox").forEach(p=>{
+      const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
+      if(x+fw-22>px+15&&x+22<px+pw-15&&y<=top+18&&y>=top-28&&vy<=0){y=top;vy=0;onGround=true;doubleJumpReady=true;lastSafeX=x;lastSafeY=y}
+    });
+    fox.style.bottom=y+"px";fox.classList.toggle("left",facing==="left");fox.classList.toggle("dizzy",dizzyTimer>0);if(dizzyTimer>0)dizzyTimer--;
+    const f=rect(fox);
+    document.querySelectorAll(".hazardBox").forEach(h=>{if(overlap(f,rect(h)))hurtFox()});
+    document.querySelectorAll(".wish").forEach(item=>{if(item.dataset.done)return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";wishes++;wishCountEl.textContent=wishes;const r=rect(item);sparkle(r.left+30,r.top+30);setMessage("A glowing dandelion wish was gathered.");randomOracle();saveGame()}});
+    document.querySelectorAll(".rescue").forEach(item=>{if(item.dataset.done)return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";sheep++;sheepCountEl.textContent=sheep;const r=rect(item);sparkle(r.left+42,r.top+38);setMessage("You rescued a bouncing sheep.");oracleText.textContent="Kindness is one of the oldest kinds of magic.";saveGame()}});
+    document.querySelectorAll(".mushroomPerson,.mushroomNpc").forEach(m=>{if(m.dataset.done)return;if(overlap(f,rect(m))){const e=m.dataset.effect,r=rect(m);sparkle(r.left+r.width/2,r.top+r.height/2);
+      if(e==="dizzy"){dizzyTimer=190;setMessage("Oh no — mushroom magic! The fox is dizzy and slow.");oracleText.textContent="Move gently. Strange feelings pass."}
+      if(e==="helper"){setMessage("The mushroom woman whispers: the safest path is not always the straightest.");oracleText.textContent="Look for the glowing ledges. They remember your steps."}
+      if(e==="oracle"){setMessage("The elder mushroom shares a forest blessing.");oracleText.textContent="You do not need to rush. Even slow magic reaches the moon gate."}
+      if(e==="npc"){setMessage("The mushroom man raises his lantern and shows you the way.");oracleText.textContent="A guide appears when the path feels strange."}
+      m.dataset.done="yes";
+    }});
+    const goal=document.querySelector(".goal");if(goal&&overlap(f,rect(goal)))finishLevel();
+    if(y<-170)hurtFox();
+    x=Math.max(0,Math.min(x,WORLD_WIDTH-115));updateCamera();
+  }
+  requestAnimationFrame(gameLoop);
+}
+loadSave();heartsEl.textContent=hearts;loadLevel(currentLevel);
+if(gameStarted)setMessage("Saved game loaded. Keep following the foxfire path.");else choiceScreen.style.display="flex";
+gameLoop();
+</script>
+</body>
+</html>
