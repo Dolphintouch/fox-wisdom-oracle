@@ -217,7 +217,7 @@ body {
   to { transform: scaleX(-1) rotate(4deg); }
 }
 
-/* CSS moss platforms — no white PNG backgrounds */
+/* CSS mossy platforms — no white image backgrounds */
 .platform {
   position: absolute;
   z-index: 20;
@@ -546,7 +546,7 @@ body {
       </div>
 
       <div class="foxCard" onclick="chooseFox('female')">
-        <img src="female-foxy-player-idle.png" alt="Female fox">
+        <img src="female-foxy-player-idle-transparent.png" alt="Female fox">
         <h2>Female Fox ♀</h2>
       </div>
     </div>
@@ -568,7 +568,7 @@ const sheepTotalEl = document.getElementById("sheepTotal");
 const levelNumEl = document.getElementById("levelNum");
 const oracleText = document.getElementById("oracleText");
 
-const SAVE_KEY = "foxfire_platform_game_save_v5";
+const SAVE_KEY = "foxfire_platform_game_save_v6";
 
 let keys = {};
 let gameStarted = false;
@@ -597,9 +597,9 @@ const foxImages = {
     jump: "foxy-player-jump.png"
   },
   female: {
-    idle: "female-foxy-player-idle.png",
-    run: "female-foxy-player-run.png",
-    jump: "foxy-player-female.png"
+    idle: "female-foxy-player-idle-transparent.png",
+    run: "female-foxy-player-run-transparent.png",
+    jump: "female-foxy-player-jump-transparent.png"
   }
 };
 
@@ -630,8 +630,8 @@ const levels = [
       [3030, 380, 290, 80]
     ],
     wishes: [[210,225],[315,245],[735,320],[860,330],[1220,225],[1340,245],[1710,365],[1835,365],[2185,270],[2325,270],[2680,405],[3120,500]],
-    sheep: [[1710,325,"sheep-new.png",1610,1860]],
-    rocks: [[1015,100,"rock-chibi.png"],[1980,90,"rock-magical.png"]],
+    sheep: [[1710,325,"fluffy-foxfire-sheep.png",1610,1860]],
+    rocks: [[1015,100],[1980,90]],
     spikes: [[535,90],[1480,90]],
     mushrooms: [[740,275]],
     lanterns: [[145,280],[1620,355],[2580,398]],
@@ -654,8 +654,8 @@ const levels = [
       [2970, 245, 320, 80]
     ],
     wishes: [[210,225],[710,365],[830,365],[1150,275],[1630,435],[2090,305],[2240,305],[2570,460],[2690,460],[3080,365]],
-    sheep: [[1160,235,"sheep-baby.png",1070,1360],[2600,420,"sheep-new.png",2470,2760]],
-    rocks: [[970,90,"rock-new.png"],[1860,90,"rock-chibi.png"],[2820,90,"rock-magical.png"]],
+    sheep: [[1160,235,"fluffy-foxfire-sheep.png",1070,1360],[2600,420,"fluffy-foxfire-sheep.png",2470,2760]],
+    rocks: [[970,90],[1860,90],[2820,90]],
     spikes: [[470,90],[1400,90],[2330,90]],
     mushrooms: [[645,310],[1560,380],[2500,410]],
     lanterns: [[140,275],[1545,425],[2980,355]],
@@ -678,8 +678,8 @@ const levels = [
       [2920, 440, 310, 80]
     ],
     wishes: [[180,235],[640,390],[760,390],[1090,525],[1190,525],[1545,385],[2030,250],[2510,430],[2620,430],[3025,560]],
-    sheep: [[1100,485,"luma-sheep.png",1030,1250],[2520,390,"sheep-golden.png",2410,2670]],
-    rocks: [[890,90,"rock-new.png"],[1790,90,"rock-magical.png"],[2760,90,"rock-chibi.png"]],
+    sheep: [[1100,485,"fluffy-foxfire-sheep.png",1030,1250],[2520,390,"fluffy-foxfire-sheep.png",2410,2670]],
+    rocks: [[890,90],[1790,90],[2760,90]],
     spikes: [[440,100],[1300,100],[2280,100]],
     mushrooms: [[595,335],[1495,330],[1930,195]],
     lanterns: [[120,285],[1040,515],[2410,420]],
@@ -767,8 +767,8 @@ function loadLevel(index, clicked = false) {
 
   level.platforms.forEach(p => addPlatform(...p));
 
-  level.wishes.forEach((p, i) => {
-    const el = addImg("item wish", "dandelion-magical.png", p[0], p[1]);
+  level.wishes.forEach(p => {
+    const el = addImg("item wish", "glowing-dandelion-wish-transparent.png", p[0], p[1]);
     floatingWishes.push({
       el,
       baseX: p[0],
@@ -793,9 +793,9 @@ function loadLevel(index, clicked = false) {
     });
   });
 
-  level.rocks.forEach(p => addImg("rock hazard", p[2], p[0], p[1]));
+  level.rocks.forEach(p => addImg("rock hazard", "foxfire-rock-transparent.png", p[0], p[1]));
   level.spikes.forEach(p => addSpikes(p[0], p[1]));
-  level.mushrooms.forEach(p => addImg("mushroom dizzyItem", "mushroom-gatekeeper.jpg", p[0], p[1]));
+  level.mushrooms.forEach(p => addImg("mushroom dizzyItem", "mushroom-gatekeeper-transparent.png", p[0], p[1]));
   level.lanterns.forEach(p => addImg("lantern", "lantern.png", p[0], p[1]));
   level.signs.forEach(p => addSign(p[0], p[1], p[2]));
   addImg("goal", "glow-orb.png", level.goal[0], level.goal[1]);
@@ -1020,7 +1020,6 @@ function gameLoop() {
     onGround = false;
 
     const fw = 118;
-    const fh = 112;
 
     document.querySelectorAll(".platform").forEach(p => {
       const px = Number(p.dataset.x);
