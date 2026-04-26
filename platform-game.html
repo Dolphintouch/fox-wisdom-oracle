@@ -335,12 +335,12 @@ body {
 
     <div class="fox-choice-wrap">
       <div class="fox-card" onclick="chooseFox('boy-fox.png')">
-        <img src="boy-fox.png" alt="Boy fox">
+        <img id="boyPreview" src="boy-fox.png" alt="Boy fox">
         <h2>Boy Fox</h2>
       </div>
 
       <div class="fox-card" onclick="chooseFox('girl-fox.png')">
-        <img src="girl-fox.png" alt="Girl fox">
+        <img id="girlPreview" src="girl-fox.png" alt="Girl fox">
         <h2>Girl Fox</h2>
       </div>
     </div>
@@ -357,6 +357,8 @@ const goal = document.getElementById("goal");
 const wishCount = document.getElementById("wishCount");
 const message = document.getElementById("message");
 const choiceScreen = document.getElementById("choiceScreen");
+const boyPreview = document.getElementById("boyPreview");
+const girlPreview = document.getElementById("girlPreview");
 
 let x = 90;
 let y = 80;
@@ -467,7 +469,12 @@ function chooseFox(src) {
   gameStarted = true;
 }
 
+cleanImage("boy-fox.png", cleaned => {
+  boyPreview.src = cleaned;
+});
+
 cleanImage("girl-fox.png", cleaned => {
+  girlPreview.src = cleaned;
   fox.src = cleaned;
 });
 
