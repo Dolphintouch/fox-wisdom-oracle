@@ -990,7 +990,7 @@ let masterVolume = 0.6;
 let moveLeft = false;
 let moveRight = false;
 let lastTrailTime = 0;
-let platformUnlocked = false;
+let platformUnlocked = localStorage.getItem("platformUnlocked") === "true";
 const platformUnlockScore = 100;
 
 const cleanedImages = {};
@@ -1151,6 +1151,7 @@ volumeSlider.addEventListener("input", () => {
 function updatePlatformUnlock() {
   if (score >= platformUnlockScore) {
     platformUnlocked = true;
+    localStorage.setItem("platformUnlocked", "true");
   }
 
   const currentBtn = document.getElementById("platformBtn");
