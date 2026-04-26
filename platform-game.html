@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Foxfire Forest Platform Adventure</title>
 
 <style>
@@ -10,17 +10,14 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   font-family: Georgia, serif;
+  background: #07120d;
   color: #ffe9bd;
-  background:
-    radial-gradient(circle at 70% 20%, rgba(255,220,120,0.14), transparent 35%),
-    linear-gradient(rgba(7,18,12,0.58), rgba(7,18,12,0.95)),
-    url("forest-bg.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 #game {
@@ -28,209 +25,183 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-}
-
-#game.day {
   background:
-    radial-gradient(circle at 70% 20%, rgba(255,220,120,0.17), transparent 35%),
-    linear-gradient(rgba(9,35,18,0.35), rgba(5,20,12,0.9)),
+    radial-gradient(circle at 50% 20%, rgba(255,220,120,0.16), transparent 35%),
+    linear-gradient(to bottom, rgba(5,18,16,0.15), rgba(3,8,6,0.78)),
     url("forest-bg.jpg");
   background-size: cover;
   background-position: center;
 }
 
-#game.dusk {
-  background:
-    radial-gradient(circle at 65% 25%, rgba(255,150,80,0.2), transparent 35%),
-    linear-gradient(rgba(70,28,40,0.48), rgba(6,13,22,0.95)),
-    url("forest-bg.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#game.spirit {
-  background:
-    radial-gradient(circle at 60% 20%, rgba(190,255,230,0.2), transparent 35%),
-    linear-gradient(rgba(12,20,40,0.45), rgba(3,8,20,0.96)),
-    url("forest-bg.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#game::before {
-  content: "";
+/* Background layers */
+.bg-layer {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 15% 80%, rgba(255,220,120,0.08), transparent 28%),
-    radial-gradient(circle at 75% 45%, rgba(180,255,190,0.09), transparent 28%),
-    linear-gradient(to top, rgba(0,0,0,0.35), transparent 35%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   pointer-events: none;
-  z-index: 1;
+  user-select: none;
 }
 
-#game::after {
-  content: "";
+#forestBack { z-index: 1; opacity: 0.9; }
+#forestMid { z-index: 2; opacity: 0.75; }
+#forestFront { z-index: 6; opacity: 0.9; }
+
+#mist {
   position: absolute;
   inset: 0;
+  z-index: 3;
+  pointer-events: none;
   background:
-    radial-gradient(circle, rgba(255,232,160,0.7) 0 2px, transparent 3px),
-    radial-gradient(circle, rgba(255,245,190,0.4) 0 1.5px, transparent 3px);
-  background-size: 140px 160px, 210px 230px;
-  animation: sparkleDrift 16s linear infinite;
+    radial-gradient(circle at 50% 35%, rgba(180,255,220,0.14), transparent 38%),
+    linear-gradient(to top, rgba(0,0,0,0.58), transparent 42%);
+}
+
+#sparkleLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255,236,156,0.9) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(255,255,220,0.45) 0 1px, transparent 3px);
+  background-size: 150px 170px, 230px 260px;
+  animation: sparkleMove 18s linear infinite;
   opacity: 0.45;
-  pointer-events: none;
-  z-index: 2;
 }
 
-@keyframes sparkleDrift {
+@keyframes sparkleMove {
   from { background-position: 0 0, 80px 40px; }
-  to { background-position: 140px -180px, 260px -160px; }
+  to { background-position: 160px -200px, 260px -220px; }
 }
 
-.title {
+/* Game world */
+#world {
   position: absolute;
-  top: 16px;
-  width: 100%;
-  text-align: center;
-  z-index: 30;
-  font-size: clamp(2.3rem, 5vw, 4.5rem);
-  color: #f8dfaa;
-  text-shadow:
-    0 0 18px rgba(255,220,130,0.42),
-    0 5px 16px rgba(0,0,0,0.75);
-  pointer-events: none;
+  left: 0;
+  bottom: 0;
+  width: 3200px;
+  height: 100vh;
+  z-index: 10;
 }
 
-.subtitle {
-  position: absolute;
-  top: 88px;
-  width: 100%;
-  text-align: center;
-  z-index: 30;
-  color: #cde9a6;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  text-shadow: 0 3px 10px rgba(0,0,0,0.7);
-  pointer-events: none;
-}
-
-.top-ui {
+/* UI */
+#hud {
   position: absolute;
   top: 18px;
   left: 18px;
-  z-index: 45;
+  right: 18px;
+  z-index: 80;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.hud-left, .hud-right {
   display: flex;
   gap: 10px;
-  align-items: center;
   flex-wrap: wrap;
-  max-width: 62vw;
+  pointer-events: auto;
 }
 
-.back-btn,
-.ui-pill,
-button.ui-pill {
-  padding: 9px 14px;
+.pill, .back-btn {
+  padding: 10px 15px;
   border-radius: 999px;
-  background: rgba(15,35,22,0.86);
-  border: 1px solid rgba(255,220,140,0.45);
+  background: rgba(10, 25, 16, 0.82);
+  border: 1px solid rgba(255,220,140,0.42);
   color: #ffe9bd;
   text-decoration: none;
-  box-shadow: 0 0 16px rgba(255,210,120,0.16);
-  font-family: Georgia, serif;
-  font-size: 15px;
+  box-shadow: 0 0 18px rgba(255,220,120,0.16);
+  font-size: 16px;
 }
 
-button.ui-pill {
-  cursor: pointer;
-}
-
-button.ui-pill:hover,
 .back-btn:hover {
-  background: rgba(40,65,34,0.92);
+  background: rgba(32, 63, 38, 0.88);
 }
 
-.side-oracle {
+#titleBox {
   position: absolute;
-  top: 118px;
-  right: 18px;
-  width: 285px;
-  max-width: 31vw;
-  z-index: 44;
-  padding: 18px;
-  border-radius: 24px;
-  background:
-    radial-gradient(circle at top, rgba(255,224,150,0.16), transparent 45%),
-    rgba(10,25,17,0.88);
-  border: 1px solid rgba(255,220,140,0.38);
-  box-shadow:
-    0 0 26px rgba(255,210,120,0.18),
-    inset 0 0 18px rgba(255,255,255,0.04);
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 75;
+  text-align: center;
+  pointer-events: none;
 }
 
-.side-oracle h2 {
-  margin: 0 0 8px;
-  color: #ffe3a3;
-  font-size: 1.25rem;
-}
-
-.side-oracle .praise {
-  margin: 0 0 12px;
-  color: #d8f2b8;
-  font-size: 1rem;
-  line-height: 1.35;
-}
-
-.side-oracle .oracle-card {
-  padding: 14px;
-  border-radius: 18px;
-  background: rgba(255,240,190,0.08);
-  border: 1px solid rgba(255,220,140,0.2);
-}
-
-.side-oracle .oracle-title {
-  margin: 0 0 6px;
-  color: #fff0c7;
-  font-weight: bold;
-}
-
-.side-oracle .oracle-message {
+#titleBox h1 {
   margin: 0;
-  color: #f7deb1;
-  line-height: 1.4;
-  font-size: 0.98rem;
+  font-size: clamp(2.1rem, 5vw, 4.6rem);
+  color: #ffe7ad;
+  text-shadow: 0 0 18px rgba(255,220,130,0.75), 0 6px 18px rgba(0,0,0,0.8);
 }
 
-.level-name {
+#titleBox p {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: #cfeea6;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.85);
+}
+
+/* Side oracle panel */
+#oraclePanel {
   position: absolute;
-  top: 145px;
-  left: 18px;
-  z-index: 42;
-  padding: 10px 16px;
-  border-radius: 18px;
-  background: rgba(10,25,17,0.82);
-  border: 1px solid rgba(255,220,140,0.28);
-  box-shadow: 0 0 16px rgba(255,210,120,0.11);
+  right: 18px;
+  top: 108px;
+  width: 310px;
+  z-index: 78;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(8, 21, 14, 0.82);
+  border: 1px solid rgba(255,220,140,0.38);
+  box-shadow: 0 0 28px rgba(255,220,120,0.14);
+  backdrop-filter: blur(4px);
 }
 
+#oraclePanel h2 {
+  margin: 0 0 10px;
+  color: #ffe7ad;
+  font-size: 1.55rem;
+}
+
+#oraclePanel p {
+  margin: 0;
+  color: #fff0ce;
+  line-height: 1.45;
+  font-size: 1rem;
+}
+
+#bottomMessage {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 85;
+  width: min(760px, 92vw);
+  padding: 12px 20px;
+  border-radius: 999px;
+  text-align: center;
+  background: rgba(8, 21, 14, 0.86);
+  border: 1px solid rgba(255,220,140,0.35);
+  box-shadow: 0 0 18px rgba(255,220,120,0.12);
+}
+
+/* Player */
 #fox {
   position: absolute;
-  width: 132px;
+  width: 118px;
   left: 90px;
-  bottom: 80px;
-  z-index: 20;
-  transform: scaleX(1);
-  filter:
-    drop-shadow(0 12px 12px rgba(0,0,0,0.55))
-    drop-shadow(0 0 18px rgba(255,190,90,0.5))
-    brightness(1.08);
-  user-select: none;
+  bottom: 120px;
+  z-index: 35;
+  object-fit: contain;
   pointer-events: none;
-  animation: foxIdle 1.8s ease-in-out infinite alternate;
-}
-
-@keyframes foxIdle {
-  from { translate: 0 0; }
-  to { translate: 0 -4px; }
+  user-select: none;
+  filter:
+    drop-shadow(0 14px 12px rgba(0,0,0,0.6))
+    drop-shadow(0 0 18px rgba(255,190,90,0.45))
+    brightness(1.08);
 }
 
 #fox.left {
@@ -239,46 +210,108 @@ button.ui-pill:hover,
 
 #fox.jump {
   filter:
-    drop-shadow(0 12px 12px rgba(0,0,0,0.55))
-    drop-shadow(0 0 26px rgba(255,220,120,0.72))
+    drop-shadow(0 14px 12px rgba(0,0,0,0.6))
+    drop-shadow(0 0 30px rgba(255,230,130,0.8))
     brightness(1.14);
 }
 
-.sparkle-trail {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ffe7a1;
-  box-shadow: 0 0 12px #ffe7a1;
-  z-index: 17;
-  pointer-events: none;
-  animation: trailFade 0.8s ease forwards;
-}
-
-@keyframes trailFade {
-  from { opacity: 0.95; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.2) translateY(12px); }
-}
-
+/* Platforms */
 .platform {
   position: absolute;
-  height: 34px;
-  border-radius: 22px;
-  background:
-    linear-gradient(#4f7f3d 0 28%, #5b3a20 30%, #2b180d 100%);
-  box-shadow:
-    0 12px 18px rgba(0,0,0,0.65),
-    0 0 24px rgba(170,255,120,0.16),
-    inset 0 4px 4px rgba(255,230,160,0.18);
-  z-index: 8;
+  z-index: 20;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter:
+    drop-shadow(0 16px 12px rgba(0,0,0,0.55))
+    drop-shadow(0 0 16px rgba(170,255,120,0.12));
 }
 
-.platform::before {
-  content: "";
+.platform.big {
+  width: 430px;
+  height: 120px;
+  background-image: url("platform-1.png");
+}
+
+.platform.medium {
+  width: 330px;
+  height: 100px;
+  background-image: url("platform-2.png");
+}
+
+.platform.small {
+  width: 210px;
+  height: 82px;
+  background-image: url("platform-small.png");
+}
+
+/* Items */
+.item, .hazard, .sheep, .chicken, .portal {
   position: absolute;
-  left: -10px;
-  right: -10px;
-  top: -19px;
-  height: 30px;
-  border-radius: 55% 55% 18px 18px;
+  z-index: 32;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.wish {
+  width: 56px;
+  animation: wishFloat 2.4s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 0 12px rgba(255,240,180,0.95))
+    drop-shadow(0 0 30px rgba(255,220,120,0.65));
+}
+
+@keyframes wishFloat {
+  from { transform: translateY(0) rotate(-5deg); }
+  to { transform: translateY(-15px) rotate(6deg); }
+}
+
+.sheep {
+  width: 82px;
+  animation: sheepBounce 1.9s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 10px 10px rgba(0,0,0,0.42))
+    drop-shadow(0 0 14px rgba(255,245,220,0.45));
+}
+
+@keyframes sheepBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-9px); }
+}
+
+.chicken {
+  width: 62px;
+  animation: chickenPeck 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes chickenPeck {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(4deg) translateY(-4px); }
+}
+
+.hazard {
+  width: 76px;
+  filter:
+    drop-shadow(0 12px 12px rgba(0,0,0,0.65))
+    brightness(0.95);
+}
+
+.spikes {
+  position: absolute;
+  z-index: 31;
+  width: 260px;
+  height: 44px;
+  background:
+    repeating-linear-gradient(
+      60deg,
+      transparent 0 18px,
+      #d9d3b6 19px 32px,
+      #594934 33px 42px
+    );
+  clip-path: polygon(0 100%, 6% 0, 12% 100%, 18% 0, 24% 100%, 30% 0, 36% 100%, 42% 0, 48% 100%, 54% 0, 60% 100%, 66% 0, 72% 100%, 78% 0, 84% 100%, 90% 0, 96% 100%, 100% 100%);
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
+}
+
+.dog {
+  position: absolute;
