@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fox Platform Adventure</title>
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: url("forest-bg.jpg") center/cover no-repeat;
+  font-family: Georgia, serif;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* FOX */
+#fox {
+  position: absolute;
+  width: 100px;
+  bottom: 100px;
+  left: 100px;
+}
+
+/* PLATFORMS */
+.platform {
+  position: absolute;
+  height: 20px;
+  background: #2f4f2f;
+  border-radius: 10px;
+}
+
+/* EXIT */
+#goal {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: gold;
+  border-radius: 50%;
+  box-shadow: 0 0 20px gold;
+}
+
+/* UI */
+#ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+  <div id="ui">Level 1</div>
+
+  <img id="fox" src="foxy-player-new.png">
+
+  <!-- Platforms -->
+  <div class="platform" style="left:0; bottom:0; width:100%; height:40px;"></div>
+  <div class="platform" style="left:200px; bottom:150px; width:200px;"></div>
+  <div class="platform" style="left:450px; bottom:250px; width:200px;"></div>
+  <div class="platform" style="left:700px; bottom:180px; width:200px;"></div>
+
+  <!-- Goal -->
+  <div id="goal" style="left:900px; bottom:260px;"></div>
+</div>
+
+<script>
+const fox = document.getElementById("fox");
+const platforms = document.querySelectorAll(".platform");
+const goal = document.getElementById("goal");
+
+let x = 100;
+let y = 100;
+let velocityY = 0;
+let onGround = false;
+
+let keys = {};
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+function gameLoop() {
+
+  // LEFT / RIGHT
+  if (keys["ArrowLeft"]) x -= 5;
+  if (keys["ArrowRight"]) x += 5;
+
+  // JUMP
+  if (keys[" "] && onGround) {
+    velocityY = 12;
+    onGround = false;
+  }
+
+  // GRAVITY
+  velocityY -= 0.5;
+  y += velocityY;
+
+  onGround = false;
+
+  platforms.forEach(p => {
+    const rect = p.getBoundingClientRect();
+    const foxRect = fox.getBoundingClientRect();
+
+    if (
+      foxRect.bottom <= rect.top + 10 &&
+      foxRect.bottom >= rect.top - 10 &&
+      foxRect.right > rect.left &&
+      foxRect.left < rect.right &&
+      velocityY <= 0
+    ) {
+      y = window.innerHeight - rect.top;
+      velocityY = 0;
+      onGround = true;
+    }
+  });
+
+  // FALL OFF SCREEN
+  if (y < 0) {
+    x = 100;
+    y = 300;
+  }
+
+  // GOAL CHECK
+  const foxRect = fox.getBoundingClientRect();
+  const goalRect = goal.getBoundingClientRect();
+
+  if (
+    foxRect.left < goalRect.right &&
+    foxRect.right > goalRect.left &&
+    foxRect.top < goalRect.bottom &&
+    foxRect.bottom > goalRect.top
+  ) {
+    alert("✨ You reached the forest clearing!");
+    location.reload();
+  }
+
+  fox.style.left = x + "px";
+  fox.style.bottom = y + "px";
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+
+</body>
+</html>
