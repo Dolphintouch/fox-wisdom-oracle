@@ -37,8 +37,21 @@ body{margin:0;overflow:hidden;background:#06110b;font-family:Georgia,serif;color
 .levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}
 .thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}
 
-#fox{position:absolute;left:90px;bottom:180px;width:108px;z-index:50;object-fit:contain;pointer-events:none;user-select:none;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55))}
+#fox{position:absolute;left:90px;bottom:180px;width:112px;height:112px;z-index:50;object-fit:contain;pointer-events:none;user-select:none;transform-origin:50% 90%;transition:filter .16s ease, transform .16s ease;animation:foxIdleBreath 1.8s ease-in-out infinite;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55))}
+
+#fox.running{animation:foxRunBounce .34s ease-in-out infinite}
+#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}
+@keyframes foxIdleBreath{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-3px) rotate(.5deg)}}
+@keyframes foxRunBounce{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(1deg)}}
+@keyframes foxJumpFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
 #fox.left{transform:scaleX(-1)}
+#fox.left.running{animation:foxRunBounceLeft .34s ease-in-out infinite}
+#fox.left.jumping{animation:foxJumpFloatLeft .55s ease-in-out infinite}
+@keyframes foxRunBounceLeft{0%,100%{transform:scaleX(-1) translateY(0) rotate(-1deg)}50%{transform:scaleX(-1) translateY(-5px) rotate(1deg)}}
+@keyframes foxJumpFloatLeft{0%,100%{transform:scaleX(-1) translateY(0) rotate(-2deg)}50%{transform:scaleX(-1) translateY(-4px) rotate(2deg)}}
+.dust{position:absolute;width:9px;height:9px;border-radius:50%;z-index:45;background:rgba(255,226,156,.85);box-shadow:0 0 12px rgba(255,226,156,.6);pointer-events:none;animation:dustPoof .7s ease-out forwards}
+@keyframes dustPoof{from{opacity:.9;transform:translate(-50%,-50%) scale(.35)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
+
 #fox.dizzy{animation:dizzy .38s ease-in-out infinite alternate;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 26px rgba(180,130,255,.8)) hue-rotate(25deg)}
 #fox.left.dizzy{animation:dizzyLeft .38s ease-in-out infinite alternate}
 @keyframes dizzy{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
@@ -147,7 +160,7 @@ const oracleText=document.getElementById("oracleText");
 
 
 const sounds = {
-  ambient: new Audio("foxglow-glade.mp3"),
+  ambient: new Audio("foxglow-glade (2).mp3"),
   collect: new Audio("sparkle-chime.mp3"),
   sheep: new Audio("sheep-baa.mp3"),
   jump: new Audio("soft-poof.mp3"),
@@ -172,7 +185,7 @@ const SAVE_KEY="foxfire_enchanted_save_v2";
 const WORLD_WIDTH=1792;
 
 let keys={},gameStarted=false,currentLevel=0,cameraX=0,foxType="male";
-let x=120,y=210,vx=0,vy=0,facing="right",onGround=false,doubleJumpReady=true;
+let x=120,y=210,vx=0,vy=0,facing="right",onGround=false,wasOnGround=false,doubleJumpReady=true;
 let hearts=3,wishes=0,sheep=0,dizzyTimer=0,lastSafeX=120,lastSafeY=210;
 let movingSheep=[],floatingWishes=[];
 
@@ -295,7 +308,7 @@ function loadLevel(i,clicked=false){
   document.querySelectorAll(".levelCard").forEach(c=>c.classList.remove("active"));
   document.getElementById("levelCard"+currentLevel).classList.add("active");
   randomOracle();setMessage(L.name+" begins. Follow the painted platforms and gather the foxfire wishes.");
-  setFoxImage("idle");saveGame();updateCamera();
+  fox.classList.remove("running","jumping","dizzy");setFoxImage("idle");saveGame();updateCamera();
 }
 function chooseFox(type){startAmbient();foxType=type;choiceScreen.style.display="none";gameStarted=true;setFoxImage("idle");setMessage("Use arrow keys to run, space to jump, and Shift to dash.");saveGame()}
 function setFoxImage(state){setClean(fox,foxImages[foxType][state])}
@@ -316,6 +329,19 @@ function loadSave(){
 function resetSave(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem("foxfire_unlocked_level");location.reload()}
 function rect(el){return el.getBoundingClientRect()}
 function overlap(a,b){return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top}
+
+function landingDust(){
+  for(let i=0;i<7;i++){
+    const d=document.createElement("div");
+    d.className="dust";
+    d.style.left=(x-cameraX+54)+"px";
+    d.style.top=(window.innerHeight-y+92)+"px";
+    d.style.setProperty("--dx", ((Math.random()*70)-35)+"px");
+    game.appendChild(d);
+    setTimeout(()=>d.remove(),720);
+  }
+}
+
 function sparkle(px,py){
   const s=document.createElement("div");s.className="sparkle-pop";s.style.left=px+"px";s.style.top=py+"px";game.appendChild(s);
   setTimeout(()=>s.remove(),800);
@@ -362,13 +388,20 @@ function gameLoop(){
     if(keys["ArrowLeft"]){vx=-speed;facing="left";if(onGround)setFoxImage("run")}
     else if(keys["ArrowRight"]){vx=speed;facing="right";if(onGround)setFoxImage("run")}
     else{vx*=.78;if(Math.abs(vx)<.08)vx=0;if(onGround)setFoxImage("idle")}
-    x+=vx;vy-=.72;y+=vy;onGround=false;
+    x+=vx;vy-=.72;y+=vy;wasOnGround=onGround;onGround=false;
     const fw=108;
     document.querySelectorAll(".hitbox").forEach(p=>{
       const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
       if(x+fw-22>px+15&&x+22<px+pw-15&&y<=top+18&&y>=top-28&&vy<=0){y=top;vy=0;onGround=true;doubleJumpReady=true;lastSafeX=x;lastSafeY=y}
     });
-    fox.style.bottom=y+"px";fox.classList.toggle("left",facing==="left");fox.classList.toggle("dizzy",dizzyTimer>0);if(dizzyTimer>0)dizzyTimer--;
+    
+if(onGround && !wasOnGround){landingDust();}
+fox.style.bottom=y+"px";
+fox.classList.toggle("left",facing==="left");
+fox.classList.toggle("dizzy",dizzyTimer>0);
+fox.classList.toggle("running",onGround && Math.abs(vx)>.35);
+fox.classList.toggle("jumping",!onGround);
+if(dizzyTimer>0)dizzyTimer--;
     const f=rect(fox);
     document.querySelectorAll(".hazardBox").forEach(h=>{if(overlap(f,rect(h)))hurtFox()});
     document.querySelectorAll(".wish").forEach(item=>{if(item.dataset.done)return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";wishes++;playSound("collect");wishCountEl.textContent=wishes;const r=rect(item);sparkle(r.left+30,r.top+30);setMessage("A glowing dandelion wish was gathered.");randomOracle();saveGame()}});
@@ -386,6 +419,14 @@ function gameLoop(){
   }
   requestAnimationFrame(gameLoop);
 }
+
+
+document.addEventListener("click",()=>{
+  if(typeof sounds !== "undefined" && sounds.ambient){
+    sounds.ambient.volume = 0.35;
+    sounds.ambient.play().catch(err=>console.log("Music blocked or missing:", err));
+  }
+},{once:true});
 
 document.querySelectorAll(".foxCard").forEach(card=>{
   card.addEventListener("click",()=>{
