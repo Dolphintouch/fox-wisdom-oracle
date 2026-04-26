@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Foxfire Forest Platform Adventure</title>
 
 <style>
@@ -22,8 +22,8 @@ body {
   height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 10%, rgba(255,230,150,.22), transparent 35%),
-    linear-gradient(rgba(4,12,8,.2), rgba(4,12,8,.82)),
+    radial-gradient(circle at 50% 8%, rgba(255,230,150,.22), transparent 34%),
+    linear-gradient(rgba(4,12,8,.18), rgba(4,12,8,.85)),
     url("forest-bg.jpg");
   background-size: cover;
   background-position: center;
@@ -31,8 +31,8 @@ body {
 
 #game.dusk {
   background:
-    radial-gradient(circle at 50% 10%, rgba(255,150,120,.22), transparent 35%),
-    linear-gradient(rgba(20,8,30,.25), rgba(4,8,18,.88)),
+    radial-gradient(circle at 50% 8%, rgba(255,150,120,.22), transparent 34%),
+    linear-gradient(rgba(28,8,34,.28), rgba(4,8,18,.9)),
     url("forest-bg-new.jpg");
   background-size: cover;
   background-position: center;
@@ -40,8 +40,8 @@ body {
 
 #game.spirit {
   background:
-    radial-gradient(circle at 50% 10%, rgba(130,210,255,.22), transparent 35%),
-    linear-gradient(rgba(5,8,26,.25), rgba(2,4,18,.9)),
+    radial-gradient(circle at 50% 8%, rgba(130,210,255,.22), transparent 34%),
+    linear-gradient(rgba(5,8,26,.22), rgba(2,4,18,.92)),
     url("fractal-forest.jpg");
   background-size: cover;
   background-position: center;
@@ -77,7 +77,7 @@ body {
 
 .title {
   position: absolute;
-  top: 16px;
+  top: 14px;
   left: 0;
   width: calc(100vw - 390px);
   z-index: 80;
@@ -90,7 +90,7 @@ body {
 
 .subtitle {
   position: absolute;
-  top: 95px;
+  top: 92px;
   left: 0;
   width: calc(100vw - 390px);
   z-index: 80;
@@ -109,13 +109,13 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  max-width: 430px;
+  max-width: 440px;
 }
 
 .pill, .top-ui a, .top-ui button {
   padding: 8px 13px;
   border-radius: 999px;
-  background: rgba(5,18,10,.82);
+  background: rgba(5,18,10,.86);
   color: #ffe8a8;
   border: 1px solid rgba(255,225,150,.4);
   text-decoration: none;
@@ -150,7 +150,6 @@ body {
   margin: 0 0 6px;
   color: #ffe7a6;
   font-size: 1.45rem;
-  text-shadow: 0 0 10px rgba(255,220,120,.25);
 }
 
 .card p {
@@ -218,20 +217,61 @@ body {
   to { transform: scaleX(-1) rotate(4deg); }
 }
 
+/* CSS moss platforms — no white PNG backgrounds */
 .platform {
   position: absolute;
   z-index: 20;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  filter:
-    drop-shadow(0 18px 18px rgba(0,0,0,.65))
-    drop-shadow(0 0 20px rgba(180,255,120,.15));
+  border-radius: 48% 48% 28px 28px;
+  background:
+    radial-gradient(circle at 14% 8%, #d8ff93 0 5%, transparent 7%),
+    radial-gradient(circle at 34% 5%, #b6ef76 0 6%, transparent 8%),
+    radial-gradient(circle at 62% 8%, #e5ff9f 0 4%, transparent 6%),
+    radial-gradient(circle at 82% 4%, #96d65d 0 7%, transparent 9%),
+    linear-gradient(#6fad45 0 22%, #345f2d 25%, #5a351b 39%, #2a170d 100%);
+  box-shadow:
+    0 18px 20px rgba(0,0,0,.65),
+    inset 0 5px 4px rgba(255,255,200,.16),
+    0 0 24px rgba(180,255,120,.12);
 }
 
-.platform.large { background-image: url("platform-1.png"); }
-.platform.medium { background-image: url("platform-2.png"); }
-.platform.small { background-image: url("platform-small.png"); }
+.platform::before {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: -16px;
+  height: 32px;
+  border-radius: 55% 55% 18px 18px;
+  background:
+    radial-gradient(circle at 18% 42%, #dfff8e 0 5%, transparent 7%),
+    radial-gradient(circle at 38% 35%, #8bd45d 0 9%, transparent 11%),
+    radial-gradient(circle at 68% 43%, #c7ff83 0 7%, transparent 9%),
+    linear-gradient(#69a946, #24451f);
+  box-shadow: 0 0 18px rgba(180,255,120,.16);
+}
+
+.platform::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -18px;
+  height: 28px;
+  background:
+    linear-gradient(90deg, transparent, rgba(61,35,18,.95), transparent);
+  filter: blur(2px);
+  opacity: .95;
+}
+
+.vineDrop {
+  position: absolute;
+  top: 22px;
+  width: 4px;
+  height: 38px;
+  border-radius: 8px;
+  background: linear-gradient(#7db45a, transparent);
+  opacity: .8;
+}
 
 .glowLine {
   position: absolute;
@@ -253,28 +293,22 @@ body {
 
 .item {
   width: 62px;
-  animation: dandelionFloat 2.6s ease-in-out infinite alternate;
+  animation: dandelionFloat 3.2s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 0 12px rgba(255,245,190,1))
     drop-shadow(0 0 34px rgba(255,220,100,.8));
 }
 
 @keyframes dandelionFloat {
-  from { transform: translateY(0) rotate(-5deg); }
-  to { transform: translateY(-16px) rotate(7deg); }
+  from { transform: translateY(0) translateX(-6px) rotate(-6deg); }
+  to { transform: translateY(-22px) translateX(12px) rotate(8deg); }
 }
 
 .sheep {
   width: 86px;
-  animation: sheepBob 1.6s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 10px 12px rgba(0,0,0,.4))
     drop-shadow(0 0 14px rgba(255,245,220,.45));
-}
-
-@keyframes sheepBob {
-  from { transform: translateY(0); }
-  to { transform: translateY(-8px); }
 }
 
 .rock {
@@ -362,7 +396,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(3,10,6,.92);
+  background:
+    radial-gradient(circle at center, rgba(255,220,120,.16), transparent 34%),
+    rgba(3,10,6,.92);
   padding: 20px;
 }
 
@@ -370,7 +406,7 @@ body {
   width: min(980px, 94vw);
   padding: 28px;
   border-radius: 28px;
-  background: linear-gradient(rgba(13,29,18,.95), rgba(4,13,8,.95));
+  background: linear-gradient(rgba(13,29,18,.96), rgba(4,13,8,.96));
   border: 1px solid rgba(255,225,150,.45);
   text-align: center;
   box-shadow: 0 0 38px rgba(255,220,120,.2);
@@ -464,11 +500,11 @@ body {
   <aside id="sidePanel">
     <div class="card">
       <h2>Collect & Explore</h2>
-      <p>Collect glowing dandelion wishes and rescue fluffy sheep.</p>
+      <p>Collect floating dandelion wishes and rescue bouncing sheep.</p>
     </div>
     <div class="card">
       <h2>Avoid Obstacles</h2>
-      <p>Watch out for rocks, spikes, tricky gaps, and mushroom magic.</p>
+      <p>Watch out for rocks, spikes, gaps, and mushroom magic.</p>
     </div>
     <div class="card">
       <h2>Mushroom Magic</h2>
@@ -505,12 +541,12 @@ body {
 
     <div class="foxChoices">
       <div class="foxCard" onclick="chooseFox('male')">
-        <img src="foxy-player-idle.png">
+        <img src="foxy-player-idle.png" alt="Boy fox">
         <h2>Boy Fox ♂</h2>
       </div>
 
       <div class="foxCard" onclick="chooseFox('female')">
-        <img src="female-foxy-player-idle.png">
+        <img src="female-foxy-player-idle.png" alt="Female fox">
         <h2>Female Fox ♀</h2>
       </div>
     </div>
@@ -532,18 +568,15 @@ const sheepTotalEl = document.getElementById("sheepTotal");
 const levelNumEl = document.getElementById("levelNum");
 const oracleText = document.getElementById("oracleText");
 
-const SAVE_KEY = "foxfire_platform_game_save_v4";
+const SAVE_KEY = "foxfire_platform_game_save_v5";
 
 let keys = {};
 let gameStarted = false;
 let currentLevel = 0;
 let cameraX = 0;
-
 let foxType = "male";
-let x = 80;
-let y = 250;
-let vx = 0;
-let vy = 0;
+
+let x = 80, y = 250, vx = 0, vy = 0;
 let facing = "right";
 let onGround = false;
 let doubleJumpReady = true;
@@ -553,6 +586,9 @@ let sheep = 0;
 let dizzyTimer = 0;
 let lastSafeX = 80;
 let lastSafeY = 250;
+
+let movingSheep = [];
+let floatingWishes = [];
 
 const foxImages = {
   male: {
@@ -585,16 +621,16 @@ const levels = [
     wishesNeeded: 12,
     sheepNeeded: 1,
     platforms: [
-      [0, 90, 520, 95, "large"],
-      [650, 205, 360, 82, "medium"],
-      [1130, 105, 340, 82, "medium"],
-      [1610, 245, 330, 82, "medium"],
-      [2050, 145, 390, 82, "medium"],
-      [2560, 285, 360, 82, "medium"],
-      [3030, 380, 290, 80, "small"]
+      [0, 90, 520, 95],
+      [650, 205, 360, 82],
+      [1130, 105, 340, 82],
+      [1610, 245, 330, 82],
+      [2050, 145, 390, 82],
+      [2560, 285, 360, 82],
+      [3030, 380, 290, 80]
     ],
     wishes: [[210,225],[315,245],[735,320],[860,330],[1220,225],[1340,245],[1710,365],[1835,365],[2185,270],[2325,270],[2680,405],[3120,500]],
-    sheep: [[1710,325,"sheep-new.png"]],
+    sheep: [[1710,325,"sheep-new.png",1610,1860]],
     rocks: [[1015,100,"rock-chibi.png"],[1980,90,"rock-magical.png"]],
     spikes: [[535,90],[1480,90]],
     mushrooms: [[740,275]],
@@ -609,16 +645,16 @@ const levels = [
     wishesNeeded: 10,
     sheepNeeded: 2,
     platforms: [
-      [0, 90, 460, 95, "large"],
-      [620, 245, 310, 80, "small"],
-      [1070, 155, 320, 80, "medium"],
-      [1540, 315, 290, 80, "small"],
-      [1980, 185, 340, 80, "medium"],
-      [2470, 340, 320, 80, "medium"],
-      [2970, 245, 320, 80, "small"]
+      [0, 90, 460, 95],
+      [620, 245, 310, 80],
+      [1070, 155, 320, 80],
+      [1540, 315, 290, 80],
+      [1980, 185, 340, 80],
+      [2470, 340, 320, 80],
+      [2970, 245, 320, 80]
     ],
     wishes: [[210,225],[710,365],[830,365],[1150,275],[1630,435],[2090,305],[2240,305],[2570,460],[2690,460],[3080,365]],
-    sheep: [[1160,235,"sheep-baby.png"],[2600,420,"sheep-new.png"]],
+    sheep: [[1160,235,"sheep-baby.png",1070,1360],[2600,420,"sheep-new.png",2470,2760]],
     rocks: [[970,90,"rock-new.png"],[1860,90,"rock-chibi.png"],[2820,90,"rock-magical.png"]],
     spikes: [[470,90],[1400,90],[2330,90]],
     mushrooms: [[645,310],[1560,380],[2500,410]],
@@ -633,16 +669,16 @@ const levels = [
     wishesNeeded: 10,
     sheepNeeded: 2,
     platforms: [
-      [0, 100, 420, 95, "large"],
-      [580, 270, 280, 80, "small"],
-      [1030, 405, 260, 80, "small"],
-      [1480, 265, 280, 80, "small"],
-      [1920, 130, 340, 80, "medium"],
-      [2410, 310, 320, 80, "medium"],
-      [2920, 440, 310, 80, "small"]
+      [0, 100, 420, 95],
+      [580, 270, 280, 80],
+      [1030, 405, 260, 80],
+      [1480, 265, 280, 80],
+      [1920, 130, 340, 80],
+      [2410, 310, 320, 80],
+      [2920, 440, 310, 80]
     ],
     wishes: [[180,235],[640,390],[760,390],[1090,525],[1190,525],[1545,385],[2030,250],[2510,430],[2620,430],[3025,560]],
-    sheep: [[1100,485,"luma-sheep.png"],[2520,390,"sheep-golden.png"]],
+    sheep: [[1100,485,"luma-sheep.png",1030,1250],[2520,390,"sheep-golden.png",2410,2670]],
     rocks: [[890,90,"rock-new.png"],[1790,90,"rock-magical.png"],[2760,90,"rock-chibi.png"]],
     spikes: [[440,100],[1300,100],[2280,100]],
     mushrooms: [[595,335],[1495,330],[1930,195]],
@@ -652,68 +688,6 @@ const levels = [
   }
 ];
 
-function cleanImage(src, callback) {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = src;
-
-  img.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0);
-
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const px = data.data;
-    const w = canvas.width;
-    const h = canvas.height;
-    const visited = new Uint8Array(w * h);
-    const queue = [];
-
-    function isWhiteish(i) {
-      const r = px[i], g = px[i+1], b = px[i+2];
-      const max = Math.max(r,g,b);
-      const min = Math.min(r,g,b);
-      const avg = (r+g+b)/3;
-      return (r > 238 && g > 238 && b > 238) || (avg > 185 && max - min < 35);
-    }
-
-    function add(x, y) {
-      if (x < 0 || y < 0 || x >= w || y >= h) return;
-      const id = y * w + x;
-      if (visited[id]) return;
-      visited[id] = 1;
-      const i = id * 4;
-      if (isWhiteish(i)) queue.push([x,y]);
-    }
-
-    for (let i = 0; i < w; i++) { add(i,0); add(i,h-1); }
-    for (let i = 0; i < h; i++) { add(0,i); add(w-1,i); }
-
-    while (queue.length) {
-      const [cx, cy] = queue.pop();
-      const id = cy * w + cx;
-      const i = id * 4;
-      px[i+3] = 0;
-      add(cx+1,cy); add(cx-1,cy); add(cx,cy+1); add(cx,cy-1);
-    }
-
-    ctx.putImageData(data, 0, 0);
-    callback(canvas.toDataURL("image/png"));
-  };
-
-  img.onerror = () => callback(src);
-}
-
-function cleanAllImages() {
-  document.querySelectorAll("img").forEach(img => {
-    const original = img.getAttribute("src");
-    if (!original || original.startsWith("data:")) return;
-    cleanImage(original, cleaned => img.src = cleaned);
-  });
-}
-
 function create(tag, cls, src) {
   const el = document.createElement(tag);
   if (cls) el.className = cls;
@@ -722,8 +696,8 @@ function create(tag, cls, src) {
   return el;
 }
 
-function addPlatform(px, py, w, h, type) {
-  const el = create("div", "platform " + type);
+function addPlatform(px, py, w, h) {
+  const el = create("div", "platform");
   el.style.left = px + "px";
   el.style.bottom = py + "px";
   el.style.width = w + "px";
@@ -732,6 +706,14 @@ function addPlatform(px, py, w, h, type) {
   el.dataset.y = py;
   el.dataset.w = w;
   el.dataset.h = h;
+
+  for (let i = 0; i < 4; i++) {
+    const vine = document.createElement("div");
+    vine.className = "vineDrop";
+    vine.style.left = (40 + i * (w / 5)) + "px";
+    vine.style.height = (26 + Math.random() * 34) + "px";
+    el.appendChild(vine);
+  }
 
   const glow = create("div", "glowLine");
   glow.style.left = (px + 35) + "px";
@@ -770,6 +752,8 @@ function loadLevel(index, clicked = false) {
   const level = levels[index];
   game.className = level.className;
   world.innerHTML = "";
+  movingSheep = [];
+  floatingWishes = [];
 
   x = level.start[0];
   y = level.start[1];
@@ -782,8 +766,33 @@ function loadLevel(index, clicked = false) {
   lastSafeY = y;
 
   level.platforms.forEach(p => addPlatform(...p));
-  level.wishes.forEach(p => addImg("item wish", "dandelion-magical.png", p[0], p[1]));
-  level.sheep.forEach(p => addImg("sheep rescue", p[2], p[0], p[1]));
+
+  level.wishes.forEach((p, i) => {
+    const el = addImg("item wish", "dandelion-magical.png", p[0], p[1]);
+    floatingWishes.push({
+      el,
+      baseX: p[0],
+      baseY: p[1],
+      t: Math.random() * 100,
+      drift: 10 + Math.random() * 16,
+      lift: 12 + Math.random() * 18
+    });
+  });
+
+  level.sheep.forEach((p, i) => {
+    const el = addImg("sheep rescue", p[2], p[0], p[1]);
+    movingSheep.push({
+      el,
+      x: p[0],
+      y: p[1],
+      minX: p[3],
+      maxX: p[4],
+      dir: i % 2 === 0 ? 1 : -1,
+      hop: Math.random() * 100,
+      speed: 0.75 + Math.random() * 0.55
+    });
+  });
+
   level.rocks.forEach(p => addImg("rock hazard", p[2], p[0], p[1]));
   level.spikes.forEach(p => addSpikes(p[0], p[1]));
   level.mushrooms.forEach(p => addImg("mushroom dizzyItem", "mushroom-gatekeeper.jpg", p[0], p[1]));
@@ -791,11 +800,12 @@ function loadLevel(index, clicked = false) {
   level.signs.forEach(p => addSign(p[0], p[1], p[2]));
   addImg("goal", "glow-orb.png", level.goal[0], level.goal[1]);
 
-  wishTotal.textContent = level.wishesNeeded;
-  sheepTotal.textContent = level.sheepNeeded;
-  wishCount.textContent = wishes;
-  sheepCount.textContent = sheep;
-  levelNum.textContent = currentLevel + 1;
+  wishTotalEl.textContent = level.wishesNeeded;
+  sheepTotalEl.textContent = level.sheepNeeded;
+  wishCountEl.textContent = wishes;
+  sheepCountEl.textContent = sheep;
+  levelNumEl.textContent = currentLevel + 1;
+  heartsEl.textContent = hearts;
 
   document.querySelectorAll(".levelCard").forEach(c => c.classList.remove("active"));
   document.getElementById("levelCard" + currentLevel).classList.add("active");
@@ -804,8 +814,6 @@ function loadLevel(index, clicked = false) {
   setMessage(level.name + " begins. Collect wishes, rescue sheep, and find the moon gate.");
   setFoxImage("idle");
   saveGame();
-
-  setTimeout(cleanAllImages, 200);
 }
 
 function chooseFox(type) {
@@ -834,6 +842,7 @@ function saveGame() {
     level: currentLevel,
     hearts,
     foxType,
+    chosen: gameStarted,
     unlocked: Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)
   }));
   localStorage.setItem("foxfire_unlocked_level", String(Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)));
@@ -845,6 +854,10 @@ function loadSave() {
     if (typeof data.level === "number") currentLevel = Math.min(data.level, levels.length - 1);
     if (typeof data.hearts === "number") hearts = data.hearts;
     if (data.foxType) foxType = data.foxType;
+    if (data.chosen) {
+      choiceScreen.style.display = "none";
+      gameStarted = true;
+    }
   } catch(e) {}
 }
 
@@ -951,7 +964,39 @@ function updateCamera() {
   fox.style.left = (x - cameraX) + "px";
 }
 
+function updateFloatingWishes() {
+  floatingWishes.forEach(w => {
+    if (w.el.dataset.done) return;
+    w.t += 0.025;
+    const dx = Math.sin(w.t * 1.4) * w.drift;
+    const dy = Math.cos(w.t * 1.8) * w.lift;
+    w.el.style.left = (w.baseX + dx) + "px";
+    w.el.style.bottom = (w.baseY + dy) + "px";
+  });
+}
+
+function updateMovingSheep() {
+  movingSheep.forEach(s => {
+    if (s.el.dataset.done) return;
+
+    s.x += s.dir * s.speed;
+    if (s.x < s.minX || s.x > s.maxX) {
+      s.dir *= -1;
+      s.el.style.transform = s.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+    }
+
+    s.hop += 0.08;
+    const hopY = Math.abs(Math.sin(s.hop)) * 18;
+
+    s.el.style.left = s.x + "px";
+    s.el.style.bottom = (s.y + hopY) + "px";
+  });
+}
+
 function gameLoop() {
+  updateFloatingWishes();
+  updateMovingSheep();
+
   if (gameStarted) {
     const speed = dizzyTimer > 0 ? 2.4 : 5.3;
 
@@ -1013,7 +1058,7 @@ function gameLoop() {
         item.dataset.done = "yes";
         item.style.display = "none";
         wishes++;
-        wishCount.textContent = wishes;
+        wishCountEl.textContent = wishes;
         const r = rect(item);
         sparkle(r.left + 30, r.top + 30);
         setMessage("A glowing dandelion wish was gathered.");
@@ -1028,10 +1073,10 @@ function gameLoop() {
         item.dataset.done = "yes";
         item.style.display = "none";
         sheep++;
-        sheepCount.textContent = sheep;
+        sheepCountEl.textContent = sheep;
         const r = rect(item);
         sparkle(r.left + 42, r.top + 38);
-        setMessage("You rescued a fluffy sheep.");
+        setMessage("You rescued a bouncing sheep.");
         oracleText.textContent = "Kindness is one of the oldest kinds of magic.";
         saveGame();
       }
@@ -1069,13 +1114,12 @@ loadSave();
 heartsEl.textContent = hearts;
 loadLevel(currentLevel);
 
-if (localStorage.getItem(SAVE_KEY)) {
-  choiceScreen.style.display = "none";
-  gameStarted = true;
+if (gameStarted) {
   setMessage("Saved game loaded. Keep following the foxfire path.");
+} else {
+  choiceScreen.style.display = "flex";
 }
 
-setTimeout(cleanAllImages, 500);
 gameLoop();
 </script>
 </body>
