@@ -11,8 +11,8 @@
 body {
   margin: 0;
   overflow: hidden;
-  font-family: Georgia, serif;
   background: #06110b;
+  font-family: Georgia, serif;
   color: #ffe8a8;
 }
 
@@ -21,49 +21,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255,230,150,.2), transparent 34%),
-    linear-gradient(rgba(4,12,8,.16), rgba(4,12,8,.84)),
-    url("forest-bg.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#game.dusk {
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255,150,120,.2), transparent 34%),
-    linear-gradient(rgba(28,8,34,.25), rgba(4,8,18,.9)),
-    url("forest-bg-new.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#game.spirit {
-  background:
-    radial-gradient(circle at 50% 8%, rgba(130,210,255,.22), transparent 34%),
-    linear-gradient(rgba(5,8,26,.25), rgba(2,4,18,.92)),
-    url("fractal-forest.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#game::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(circle, rgba(255,231,150,.75) 0 2px, transparent 3px),
-    radial-gradient(circle, rgba(255,255,220,.45) 0 1px, transparent 3px);
-  background-size: 150px 170px, 240px 260px;
-  animation: fireflies 20s linear infinite;
-  opacity: .55;
-}
-
-@keyframes fireflies {
-  from { background-position: 0 0, 80px 50px; }
-  to { background-position: 160px -220px, 280px -180px; }
+  background: #06110b;
 }
 
 #world {
@@ -72,25 +30,47 @@ body {
   bottom: 0;
   width: 3500px;
   height: 100vh;
-  z-index: 10;
+  z-index: 5;
+  background-size: 3500px 100vh;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: background-image .4s ease;
+}
+
+#world::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255,231,150,.65) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(255,255,220,.35) 0 1px, transparent 3px);
+  background-size: 150px 170px, 240px 260px;
+  opacity: .45;
+  animation: fireflies 20s linear infinite;
+}
+
+@keyframes fireflies {
+  from { background-position: 0 0, 80px 50px; }
+  to { background-position: 160px -220px, 280px -180px; }
 }
 
 .title {
   position: absolute;
-  top: 14px;
+  top: 16px;
   left: 0;
   width: calc(100vw - 390px);
   z-index: 80;
   text-align: center;
   font-size: clamp(2.4rem, 5vw, 5rem);
   color: #ffe7a6;
-  text-shadow: 0 0 18px rgba(255,220,120,.65), 0 6px 18px #000;
+  text-shadow: 0 0 18px rgba(255,220,120,.7), 0 6px 18px #000;
   pointer-events: none;
 }
 
 .subtitle {
   position: absolute;
-  top: 92px;
+  top: 94px;
   left: 0;
   width: calc(100vw - 390px);
   z-index: 80;
@@ -117,7 +97,7 @@ body {
   border-radius: 999px;
   background: rgba(5,18,10,.86);
   color: #ffe8a8;
-  border: 1px solid rgba(255,225,150,.4);
+  border: 1px solid rgba(255,225,150,.42);
   text-decoration: none;
   font-family: Georgia, serif;
   font-size: .95rem;
@@ -141,7 +121,7 @@ body {
 .card {
   border-radius: 20px;
   border: 1px solid rgba(255,225,150,.36);
-  background: linear-gradient(rgba(10,27,16,.9), rgba(3,12,8,.88));
+  background: linear-gradient(rgba(10,27,16,.91), rgba(3,12,8,.9));
   box-shadow: inset 0 0 22px rgba(255,220,120,.06), 0 0 24px rgba(0,0,0,.35);
   padding: 15px;
 }
@@ -182,9 +162,9 @@ body {
 #fox {
   position: absolute;
   left: 90px;
-  bottom: 170px;
+  bottom: 180px;
   width: 118px;
-  z-index: 45;
+  z-index: 50;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
@@ -217,48 +197,30 @@ body {
   to { transform: scaleX(-1) rotate(4deg); }
 }
 
-.platform {
+.hitbox {
   position: absolute;
-  z-index: 20;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  filter:
-    drop-shadow(0 18px 18px rgba(0,0,0,.65))
-    drop-shadow(0 0 22px rgba(180,255,120,.14));
-}
-
-.platform.large { background-image: url("platform-1.png"); }
-.platform.medium { background-image: url("platform-2.png"); }
-.platform.small { background-image: url("platform-small.png"); }
-
-.glowLine {
-  position: absolute;
-  z-index: 21;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(255,230,130,.7);
-  box-shadow: 0 0 18px rgba(255,220,120,.85);
+  z-index: 12;
   pointer-events: none;
+  opacity: 0;
 }
 
-.item, .sheep, .rock, .mushroom, .npc, .lantern, .goal {
+.item, .sheep, .mushroom, .npc, .goal {
   position: absolute;
-  z-index: 35;
+  z-index: 40;
   object-fit: contain;
   user-select: none;
   pointer-events: none;
 }
 
 .item {
-  width: 62px;
-  animation: dandelionFloat 3.2s ease-in-out infinite alternate;
+  width: 58px;
+  animation: wishFloat 3.2s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 0 12px rgba(255,245,190,1))
     drop-shadow(0 0 34px rgba(255,220,100,.8));
 }
 
-@keyframes dandelionFloat {
+@keyframes wishFloat {
   from { transform: translateY(0) translateX(-6px) rotate(-6deg); }
   to { transform: translateY(-22px) translateX(12px) rotate(8deg); }
 }
@@ -268,11 +230,6 @@ body {
   filter:
     drop-shadow(0 10px 12px rgba(0,0,0,.4))
     drop-shadow(0 0 14px rgba(255,245,220,.45));
-}
-
-.rock {
-  width: 78px;
-  filter: drop-shadow(0 12px 13px rgba(0,0,0,.65));
 }
 
 .mushroom {
@@ -285,15 +242,15 @@ body {
 
 .npc {
   width: 110px;
+  animation: npcBob 2s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 12px 12px rgba(0,0,0,.55))
     drop-shadow(0 0 18px rgba(255,200,100,.38));
-  animation: npcGlow 2s ease-in-out infinite alternate;
 }
 
-@keyframes npcGlow {
-  from { transform: translateY(0); filter: drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(255,200,100,.35)); }
-  to { transform: translateY(-6px); filter: drop-shadow(0 12px 12px rgba(0,0,0,.55)) drop-shadow(0 0 25px rgba(255,220,120,.65)); }
+@keyframes npcBob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-7px); }
 }
 
 @keyframes mushroomPulse {
@@ -301,15 +258,8 @@ body {
   to { transform: scale(1.08); }
 }
 
-.lantern {
-  width: 45px;
-  filter:
-    drop-shadow(0 0 18px rgba(255,190,90,.9))
-    drop-shadow(0 0 38px rgba(255,190,90,.45));
-}
-
 .goal {
-  width: 70px;
+  width: 76px;
   animation: goalPulse 1.8s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 0 20px rgba(170,235,255,.9))
@@ -319,31 +269,6 @@ body {
 @keyframes goalPulse {
   from { transform: scale(1); }
   to { transform: scale(1.15); }
-}
-
-.spikes {
-  position: absolute;
-  z-index: 32;
-  width: 190px;
-  height: 45px;
-  clip-path: polygon(0 100%, 7% 12%, 14% 100%, 21% 12%, 28% 100%, 35% 12%, 42% 100%, 49% 12%, 56% 100%, 63% 12%, 70% 100%, 77% 12%, 84% 100%, 91% 12%, 100% 100%);
-  background: linear-gradient(#f1ead5, #9a927f);
-  filter: drop-shadow(0 8px 8px rgba(0,0,0,.65));
-}
-
-.sign {
-  position: absolute;
-  z-index: 34;
-  width: 170px;
-  padding: 17px 14px;
-  border-radius: 12px;
-  text-align: center;
-  color: #fff0cc;
-  font-size: 1.08rem;
-  line-height: 1.25;
-  background: linear-gradient(90deg, rgba(95,54,25,.95), rgba(138,84,38,.95));
-  border: 2px solid rgba(54,32,14,.85);
-  box-shadow: 0 12px 16px rgba(0,0,0,.45);
 }
 
 .message {
@@ -476,7 +401,7 @@ body {
     </div>
     <div class="card">
       <h2>Avoid Obstacles</h2>
-      <p>Watch out for rocks, spikes, gaps, and dizzy mushroom magic.</p>
+      <p>Use the painted platforms. Gaps and spikes will send you back.</p>
     </div>
     <div class="card">
       <h2>Mushroom Folk</h2>
@@ -488,17 +413,17 @@ body {
     </div>
 
     <div class="card levelCard active" id="levelCard0" onclick="loadLevel(0, true)">
-      <div class="thumb" style="background-image:url('forest-bg.jpg')"></div>
+      <div class="thumb" style="background-image:url('level-misty-meadows.png')"></div>
       <div><h2>Misty Meadows</h2><p>Gentle forest beginning.</p></div>
     </div>
 
     <div class="card levelCard" id="levelCard1" onclick="loadLevel(1, true)">
-      <div class="thumb" style="background-image:url('forest-bg-new.jpg')"></div>
+      <div class="thumb" style="background-image:url('level-twilight-hollow.png')"></div>
       <div><h2>Twilight Hollow</h2><p>More gaps and mushrooms.</p></div>
     </div>
 
     <div class="card levelCard" id="levelCard2" onclick="loadLevel(2, true)">
-      <div class="thumb" style="background-image:url('fractal-forest.jpg')"></div>
+      <div class="thumb" style="background-image:url('level-moonlit-canopy.png')"></div>
       <div><h2>Moonlit Canopy</h2><p>Spirit forest challenge.</p></div>
     </div>
   </aside>
@@ -513,12 +438,12 @@ body {
 
     <div class="foxChoices">
       <div class="foxCard" onclick="chooseFox('male')">
-        <img src="foxy-player-idle.png" data-clean="true" alt="Boy fox">
+        <img src="foxy-player-idle.png" alt="Boy fox">
         <h2>Boy Fox ♂</h2>
       </div>
 
       <div class="foxCard" onclick="chooseFox('female')">
-        <img src="female-foxy-player-idle.png" data-clean="true" alt="Female fox">
+        <img src="female-foxy-player-idle.png" alt="Female fox">
         <h2>Female Fox ♀</h2>
       </div>
     </div>
@@ -540,7 +465,8 @@ const sheepTotalEl = document.getElementById("sheepTotal");
 const levelNumEl = document.getElementById("levelNum");
 const oracleText = document.getElementById("oracleText");
 
-const SAVE_KEY = "foxfire_platform_game_save_v7";
+const SAVE_KEY = "foxfire_painted_platform_save_v1";
+const WORLD_WIDTH = 3500;
 
 let keys = {};
 let gameStarted = false;
@@ -548,7 +474,7 @@ let currentLevel = 0;
 let cameraX = 0;
 let foxType = "male";
 
-let x = 80, y = 250, vx = 0, vy = 0;
+let x = 120, y = 210, vx = 0, vy = 0;
 let facing = "right";
 let onGround = false;
 let doubleJumpReady = true;
@@ -556,13 +482,11 @@ let hearts = 3;
 let wishes = 0;
 let sheep = 0;
 let dizzyTimer = 0;
-let lastSafeX = 80;
-let lastSafeY = 250;
+let lastSafeX = 120;
+let lastSafeY = 210;
 
 let movingSheep = [];
 let floatingWishes = [];
-
-const cleanCache = {};
 
 const foxImages = {
   male: {
@@ -584,188 +508,85 @@ const oracleMessages = [
   "Slow steps still count as magic.",
   "Even dizzy moments pass. Breathe and begin again.",
   "The forest opens for those who keep going.",
-  "A rescued heart always leaves a glow behind.",
-  "The mushroom elder says: pause, breathe, and choose the gentle path."
+  "A rescued heart always leaves a glow behind."
 ];
 
 const levels = [
   {
     name: "Misty Meadows",
-    className: "",
-    start: [80, 250],
+    image: "level-misty-meadows.png",
+    start: [130, 210],
     wishesNeeded: 12,
     sheepNeeded: 1,
     platforms: [
-      [0, 90, 520, 95, "large"],
-      [650, 205, 360, 82, "medium"],
-      [1130, 105, 340, 82, "medium"],
-      [1610, 245, 330, 82, "medium"],
-      [2050, 145, 390, 82, "medium"],
-      [2560, 285, 360, 82, "medium"],
-      [3030, 380, 290, 80, "small"]
+      [0, 110, 980, 95],
+      [420, 450, 650, 70],
+      [1120, 300, 480, 70],
+      [1600, 445, 430, 70],
+      [2100, 245, 520, 70],
+      [2540, 425, 410, 70],
+      [2890, 520, 480, 80]
     ],
-    wishes: [[210,225],[315,245],[735,320],[860,330],[1220,225],[1340,245],[1710,365],[1835,365],[2185,270],[2325,270],[2680,405],[3120,500]],
-    sheep: [[1710,325,"sheep-new.png",1610,1860]],
-    rocks: [[1015,100,"rock-chibi.png"],[1980,90,"rock-magical.png"]],
-    spikes: [[535,90],[1480,90]],
-    mushrooms: [[740,275,"mushroom-baby.png","dizzy"],[2220,215,"mushroom-elder.png","oracle"]],
-    npc: [[2680,365,"mushroom-man.png"]],
-    lanterns: [[145,280],[1620,355],[2580,398]],
-    signs: [[170,190,"Believe in<br>your light.<br>You can go<br>anywhere."]],
-    goal: [3180,490]
+    wishes: [[650,560],[790,590],[930,620],[1210,410],[1410,415],[1720,560],[1890,570],[2260,355],[2400,370],[2670,540],[3030,640],[3190,650]],
+    sheep: [[1750,510,"sheep-new.png",1620,1980]],
+    mushrooms: [[1510,370,"mushroom-baby.png","dizzy"],[2300,320,"mushroom-elder.png","oracle"]],
+    npc: [[2700,500,"mushroom-man.png"]],
+    goal: [3130,640]
   },
   {
     name: "Twilight Hollow",
-    className: "dusk",
-    start: [80, 260],
+    image: "level-twilight-hollow.png",
+    start: [130, 230],
     wishesNeeded: 10,
     sheepNeeded: 2,
     platforms: [
-      [0, 90, 460, 95, "large"],
-      [620, 245, 310, 80, "small"],
-      [1070, 155, 320, 80, "medium"],
-      [1540, 315, 290, 80, "small"],
-      [1980, 185, 340, 80, "medium"],
-      [2470, 340, 320, 80, "medium"],
-      [2970, 245, 320, 80, "small"]
+      [0, 115, 850, 95],
+      [470, 505, 560, 70],
+      [1080, 360, 420, 70],
+      [1490, 505, 360, 70],
+      [1840, 310, 430, 70],
+      [2250, 465, 430, 70],
+      [2680, 575, 620, 80]
     ],
-    wishes: [[210,225],[710,365],[830,365],[1150,275],[1630,435],[2090,305],[2240,305],[2570,460],[2690,460],[3080,365]],
-    sheep: [[1160,235,"sheep-baby.png",1070,1360],[2600,420,"sheep-new.png",2470,2760]],
-    rocks: [[970,90,"rock-new.png"],[1860,90,"rock-chibi.png"],[2820,90,"rock-magical.png"]],
-    spikes: [[470,90],[1400,90],[2330,90]],
-    mushrooms: [[645,310,"mushroom-young.png","dizzy"],[1560,380,"mushroom-female.png","helper"],[2500,410,"mushroom-elder.png","oracle"]],
-    npc: [[3000,325,"mushroom-man.png"]],
-    lanterns: [[140,275],[1545,425],[2980,355]],
-    signs: [[160,190,"Twilight asks<br>for courage,<br>not speed."]],
-    goal: [3120,345]
+    wishes: [[630,625],[790,630],[970,610],[1170,470],[1600,620],[1980,420],[2140,425],[2400,585],[2800,690],[3070,690]],
+    sheep: [[1180,420,"sheep-baby.png",1090,1470],[2390,530,"sheep-new.png",2260,2640]],
+    mushrooms: [[620,205,"mushroom-young.png","dizzy"],[1600,565,"mushroom-female.png","helper"],[2150,375,"mushroom-elder.png","oracle"]],
+    npc: [[2920,655,"mushroom-man.png"]],
+    goal: [3000,675]
   },
   {
     name: "Moonlit Canopy",
-    className: "spirit",
-    start: [80, 280],
+    image: "level-moonlit-canopy.png",
+    start: [130, 250],
     wishesNeeded: 10,
     sheepNeeded: 2,
     platforms: [
-      [0, 100, 420, 95, "large"],
-      [580, 270, 280, 80, "small"],
-      [1030, 405, 260, 80, "small"],
-      [1480, 265, 280, 80, "small"],
-      [1920, 130, 340, 80, "medium"],
-      [2410, 310, 320, 80, "medium"],
-      [2920, 440, 310, 80, "small"]
+      [0, 135, 850, 95],
+      [430, 465, 550, 70],
+      [1000, 620, 420, 70],
+      [1420, 430, 470, 70],
+      [1900, 300, 470, 70],
+      [2380, 510, 450, 70],
+      [2820, 640, 520, 80]
     ],
-    wishes: [[180,235],[640,390],[760,390],[1090,525],[1190,525],[1545,385],[2030,250],[2510,430],[2620,430],[3025,560]],
-    sheep: [[1100,485,"luma-sheep.png",1030,1250],[2520,390,"sheep-golden.png",2410,2670]],
-    rocks: [[890,90,"rock-new.png"],[1790,90,"rock-magical.png"],[2760,90,"rock-chibi.png"]],
-    spikes: [[440,100],[1300,100],[2280,100]],
-    mushrooms: [[595,335,"mushroom-baby.png","dizzy"],[1495,330,"mushroom-young.png","dizzy"],[1930,195,"mushroom-elder.png","oracle"]],
-    npc: [[2450,390,"mushroom-man.png"]],
-    lanterns: [[120,285],[1040,515],[2410,420]],
-    signs: [[160,210,"The moonlit<br>path rewards<br>steady paws."]],
-    goal: [3070,545]
+    wishes: [[560,585],[720,590],[910,580],[1110,735],[1290,735],[1580,545],[2030,420],[2490,625],[2660,625],[3050,755]],
+    sheep: [[1130,680,"luma-sheep.png",1020,1380],[2540,575,"sheep-golden.png",2400,2780]],
+    mushrooms: [[560,200,"mushroom-baby.png","dizzy"],[1480,500,"mushroom-young.png","dizzy"],[1990,370,"mushroom-elder.png","oracle"]],
+    npc: [[2480,580,"mushroom-man.png"]],
+    goal: [3050,755]
   }
 ];
 
-function cleanImage(src, callback) {
-  if (cleanCache[src]) {
-    callback(cleanCache[src]);
-    return;
-  }
-
-  const img = new Image();
-  img.src = src;
-
-  img.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0);
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const w = canvas.width;
-    const h = canvas.height;
-    const visited = new Uint8Array(w * h);
-    const queue = [];
-
-    function isBackground(i) {
-      const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
-      if (a < 20) return true;
-
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      const avg = (r + g + b) / 3;
-
-      const white = r > 225 && g > 225 && b > 225;
-      const greyChecker = avg > 170 && max - min < 32;
-      const paleEdge = avg > 205 && max - min < 50;
-
-      return white || greyChecker || paleEdge;
-    }
-
-    function add(px, py) {
-      if (px < 0 || py < 0 || px >= w || py >= h) return;
-      const id = py * w + px;
-      if (visited[id]) return;
-      visited[id] = 1;
-      const i = id * 4;
-      if (isBackground(i)) queue.push([px, py]);
-    }
-
-    for (let px = 0; px < w; px++) {
-      add(px, 0);
-      add(px, h - 1);
-    }
-
-    for (let py = 0; py < h; py++) {
-      add(0, py);
-      add(w - 1, py);
-    }
-
-    while (queue.length) {
-      const [px, py] = queue.pop();
-      const i = (py * w + px) * 4;
-      data[i + 3] = 0;
-
-      add(px + 1, py);
-      add(px - 1, py);
-      add(px, py + 1);
-      add(px, py - 1);
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-    const cleaned = canvas.toDataURL("image/png");
-    cleanCache[src] = cleaned;
-    callback(cleaned);
-  };
-
-  img.onerror = () => callback(src);
-}
-
-function setCleanSrc(el, src) {
-  cleanImage(src, cleaned => {
-    el.src = cleaned;
-  });
-}
-
-function create(tag, cls, src, clean = true) {
+function create(tag, cls, src) {
   const el = document.createElement(tag);
   if (cls) el.className = cls;
-
-  if (src) {
-    if (clean) setCleanSrc(el, src);
-    else el.src = src;
-  }
-
+  if (src) el.src = src;
   world.appendChild(el);
   return el;
 }
 
-function addPlatform(px, py, w, h, type) {
-  const el = document.createElement("div");
-  el.className = "platform " + type;
+function addHitbox(px, py, w, h) {
+  const el = create("div", "hitbox");
   el.style.left = px + "px";
   el.style.bottom = py + "px";
   el.style.width = w + "px";
@@ -774,47 +595,13 @@ function addPlatform(px, py, w, h, type) {
   el.dataset.y = py;
   el.dataset.w = w;
   el.dataset.h = h;
-  world.appendChild(el);
-
-  const bgFile =
-    type === "large" ? "platform-1.png" :
-    type === "medium" ? "platform-2.png" :
-    "platform-small.png";
-
-  cleanImage(bgFile, cleaned => {
-    el.style.backgroundImage = `url("${cleaned}")`;
-  });
-
-  const glow = document.createElement("div");
-  glow.className = "glowLine";
-  glow.style.left = (px + 35) + "px";
-  glow.style.bottom = (py + h - 9) + "px";
-  glow.style.width = (w - 70) + "px";
-  world.appendChild(glow);
 }
 
-function addImg(cls, src, px, py, clean = true) {
-  const el = create("img", cls, src, clean);
+function addImg(cls, src, px, py) {
+  const el = create("img", cls, src);
   el.style.left = px + "px";
   el.style.bottom = py + "px";
   return el;
-}
-
-function addSign(px, py, html) {
-  const el = document.createElement("div");
-  el.className = "sign";
-  el.style.left = px + "px";
-  el.style.bottom = py + "px";
-  el.innerHTML = html;
-  world.appendChild(el);
-}
-
-function addSpikes(px, py) {
-  const el = document.createElement("div");
-  el.className = "spikes hazard";
-  el.style.left = px + "px";
-  el.style.bottom = py + "px";
-  world.appendChild(el);
 }
 
 function loadLevel(index, clicked = false) {
@@ -826,8 +613,10 @@ function loadLevel(index, clicked = false) {
 
   currentLevel = index;
   const level = levels[index];
-  game.className = level.className;
+
   world.innerHTML = "";
+  world.style.backgroundImage = `url("${level.image}")`;
+
   movingSheep = [];
   floatingWishes = [];
 
@@ -841,7 +630,7 @@ function loadLevel(index, clicked = false) {
   lastSafeX = x;
   lastSafeY = y;
 
-  level.platforms.forEach(p => addPlatform(...p));
+  level.platforms.forEach(p => addHitbox(...p));
 
   level.wishes.forEach(p => {
     const el = addImg("item wish", "dandelion-magical.png", p[0], p[1]);
@@ -865,12 +654,9 @@ function loadLevel(index, clicked = false) {
       maxX: p[4],
       dir: i % 2 === 0 ? 1 : -1,
       hop: Math.random() * 100,
-      speed: 0.75 + Math.random() * 0.55
+      speed: 0.7 + Math.random() * 0.55
     });
   });
-
-  level.rocks.forEach(p => addImg("rock hazard", p[2], p[0], p[1]));
-  level.spikes.forEach(p => addSpikes(p[0], p[1]));
 
   level.mushrooms.forEach(p => {
     const el = addImg("mushroom mushroomPerson", p[2], p[0], p[1]);
@@ -882,8 +668,6 @@ function loadLevel(index, clicked = false) {
     el.dataset.effect = "npc";
   });
 
-  level.lanterns.forEach(p => addImg("lantern", "lantern.png", p[0], p[1]));
-  level.signs.forEach(p => addSign(p[0], p[1], p[2]));
   addImg("goal", "glow-orb.png", level.goal[0], level.goal[1]);
 
   wishTotalEl.textContent = level.wishesNeeded;
@@ -897,7 +681,7 @@ function loadLevel(index, clicked = false) {
   document.getElementById("levelCard" + currentLevel).classList.add("active");
 
   randomOracle();
-  setMessage(level.name + " begins. Collect wishes, rescue sheep, and meet the mushroom folk.");
+  setMessage(level.name + " begins. Follow the painted platforms and gather the foxfire wishes.");
   setFoxImage("idle");
   saveGame();
 }
@@ -912,9 +696,7 @@ function chooseFox(type) {
 }
 
 function setFoxImage(state) {
-  cleanImage(foxImages[foxType][state], cleaned => {
-    fox.src = cleaned;
-  });
+  fox.src = foxImages[foxType][state];
 }
 
 function setMessage(text) {
@@ -933,6 +715,7 @@ function saveGame() {
     chosen: gameStarted,
     unlocked: Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)
   }));
+
   localStorage.setItem("foxfire_unlocked_level", String(Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)));
 }
 
@@ -1047,7 +830,7 @@ document.addEventListener("keyup", e => keys[e.key] = false);
 function updateCamera() {
   const panelSpace = window.innerWidth > 950 ? 390 : 0;
   const viewWidth = window.innerWidth - panelSpace;
-  cameraX = Math.max(0, Math.min(x - viewWidth * .38, 3500 - viewWidth));
+  cameraX = Math.max(0, Math.min(x - viewWidth * .38, WORLD_WIDTH - viewWidth));
   world.style.transform = `translateX(${-cameraX}px)`;
   fox.style.left = (x - cameraX) + "px";
 }
@@ -1109,18 +892,18 @@ function gameLoop() {
 
     const fw = 118;
 
-    document.querySelectorAll(".platform").forEach(p => {
+    document.querySelectorAll(".hitbox").forEach(p => {
       const px = Number(p.dataset.x);
       const py = Number(p.dataset.y);
       const pw = Number(p.dataset.w);
       const ph = Number(p.dataset.h);
-      const platformTop = py + ph - 18;
+      const platformTop = py + ph;
 
       if (
         x + fw - 22 > px + 20 &&
         x + 22 < px + pw - 20 &&
         y <= platformTop + 18 &&
-        y >= platformTop - 25 &&
+        y >= platformTop - 28 &&
         vy <= 0
       ) {
         y = platformTop;
@@ -1169,10 +952,6 @@ function gameLoop() {
       }
     });
 
-    document.querySelectorAll(".hazard").forEach(h => {
-      if (overlap(foxRect, rect(h))) hurtFox();
-    });
-
     document.querySelectorAll(".mushroomPerson, .mushroomNpc").forEach(m => {
       if (m.dataset.done) return;
       if (overlap(foxRect, rect(m))) {
@@ -1210,17 +989,12 @@ function gameLoop() {
 
     if (y < -170) hurtFox();
 
-    x = Math.max(0, Math.min(x, 3380));
+    x = Math.max(0, Math.min(x, WORLD_WIDTH - 120));
     updateCamera();
   }
 
   requestAnimationFrame(gameLoop);
 }
-
-document.querySelectorAll("[data-clean='true']").forEach(img => {
-  const src = img.getAttribute("src");
-  cleanImage(src, cleaned => img.src = cleaned);
-});
 
 loadSave();
 heartsEl.textContent = hearts;
