@@ -28,13 +28,12 @@ body {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 3500px;
+  width: 1792px;
   height: 100vh;
   z-index: 5;
-  background-size: 3500px 100vh;
+  background-size: 1792px 100vh;
   background-repeat: no-repeat;
   background-position: left bottom;
-  transition: background-image .4s ease;
 }
 
 #world::after {
@@ -46,7 +45,7 @@ body {
     radial-gradient(circle, rgba(255,231,150,.65) 0 2px, transparent 3px),
     radial-gradient(circle, rgba(255,255,220,.35) 0 1px, transparent 3px);
   background-size: 150px 170px, 240px 260px;
-  opacity: .45;
+  opacity: .38;
   animation: fireflies 20s linear infinite;
 }
 
@@ -168,6 +167,7 @@ body {
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  background: transparent !important;
   filter:
     drop-shadow(0 14px 12px rgba(0,0,0,.55))
     drop-shadow(0 0 18px rgba(255,205,90,.55));
@@ -210,30 +210,33 @@ body {
   object-fit: contain;
   user-select: none;
   pointer-events: none;
+  background: transparent !important;
 }
 
 .item {
-  width: 58px;
-  animation: wishFloat 3.2s ease-in-out infinite alternate;
+  width: 88px;
+  animation: wishFloat 3.4s ease-in-out infinite alternate;
   filter:
-    drop-shadow(0 0 12px rgba(255,245,190,1))
-    drop-shadow(0 0 34px rgba(255,220,100,.8));
+    drop-shadow(0 0 14px rgba(255,245,190,1))
+    drop-shadow(0 0 32px rgba(255,220,100,.9))
+    drop-shadow(0 0 60px rgba(255,200,80,.55));
 }
 
 @keyframes wishFloat {
-  from { transform: translateY(0) translateX(-6px) rotate(-6deg); }
-  to { transform: translateY(-22px) translateX(12px) rotate(8deg); }
+  from { transform: translateY(0) translateX(-8px) rotate(-7deg); }
+  to { transform: translateY(-24px) translateX(14px) rotate(8deg); }
 }
 
 .sheep {
-  width: 86px;
+  width: 92px;
   filter:
-    drop-shadow(0 10px 12px rgba(0,0,0,.4))
-    drop-shadow(0 0 14px rgba(255,245,220,.45));
+    drop-shadow(0 10px 12px rgba(0,0,0,.42))
+    drop-shadow(0 0 22px rgba(255,245,200,.85))
+    drop-shadow(0 0 42px rgba(255,220,120,.45));
 }
 
 .mushroom {
-  width: 66px;
+  width: 72px;
   animation: mushroomPulse 1.8s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 0 16px rgba(180,120,255,.58))
@@ -241,7 +244,7 @@ body {
 }
 
 .npc {
-  width: 110px;
+  width: 118px;
   animation: npcBob 2s ease-in-out infinite alternate;
   filter:
     drop-shadow(0 12px 12px rgba(0,0,0,.55))
@@ -346,6 +349,7 @@ body {
   width: 220px;
   height: 170px;
   object-fit: contain;
+  background: transparent !important;
 }
 
 .sparkle-pop {
@@ -434,579 +438,4 @@ body {
 <div class="choice-screen" id="choiceScreen">
   <div class="choice-box">
     <h1>Choose Your Fox</h1>
-    <p>Who will follow the glowing forest path?</p>
-
-    <div class="foxChoices">
-      <div class="foxCard" onclick="chooseFox('male')">
-        <img src="foxy-player-idle.png" alt="Boy fox">
-        <h2>Boy Fox ♂</h2>
-      </div>
-
-      <div class="foxCard" onclick="chooseFox('female')">
-        <img src="female-foxy-player-idle.png" alt="Female fox">
-        <h2>Female Fox ♀</h2>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const game = document.getElementById("game");
-const world = document.getElementById("world");
-const fox = document.getElementById("fox");
-const message = document.getElementById("message");
-const choiceScreen = document.getElementById("choiceScreen");
-
-const heartsEl = document.getElementById("hearts");
-const wishCountEl = document.getElementById("wishCount");
-const wishTotalEl = document.getElementById("wishTotal");
-const sheepCountEl = document.getElementById("sheepCount");
-const sheepTotalEl = document.getElementById("sheepTotal");
-const levelNumEl = document.getElementById("levelNum");
-const oracleText = document.getElementById("oracleText");
-
-const SAVE_KEY = "foxfire_painted_platform_save_v1";
-const WORLD_WIDTH = 3500;
-
-let keys = {};
-let gameStarted = false;
-let currentLevel = 0;
-let cameraX = 0;
-let foxType = "male";
-
-let x = 120, y = 210, vx = 0, vy = 0;
-let facing = "right";
-let onGround = false;
-let doubleJumpReady = true;
-let hearts = 3;
-let wishes = 0;
-let sheep = 0;
-let dizzyTimer = 0;
-let lastSafeX = 120;
-let lastSafeY = 210;
-
-let movingSheep = [];
-let floatingWishes = [];
-
-const foxImages = {
-  male: {
-    idle: "foxy-player-idle.png",
-    run: "foxy-player-enchanted.png",
-    jump: "foxy-player-jump.png"
-  },
-  female: {
-    idle: "female-foxy-player-idle.png",
-    run: "female-foxy-player-run.png",
-    jump: "foxy-player-female.png"
-  }
-};
-
-const oracleMessages = [
-  "Believe in your light. You can go anywhere.",
-  "Small paws can cross great forests.",
-  "Trust the next platform. The path appears as you move.",
-  "Slow steps still count as magic.",
-  "Even dizzy moments pass. Breathe and begin again.",
-  "The forest opens for those who keep going.",
-  "A rescued heart always leaves a glow behind."
-];
-
-const levels = [
-  {
-    name: "Misty Meadows",
-    image: "level-misty-meadows.png",
-    start: [130, 210],
-    wishesNeeded: 12,
-    sheepNeeded: 1,
-    platforms: [
-      [0, 110, 980, 95],
-      [420, 450, 650, 70],
-      [1120, 300, 480, 70],
-      [1600, 445, 430, 70],
-      [2100, 245, 520, 70],
-      [2540, 425, 410, 70],
-      [2890, 520, 480, 80]
-    ],
-    wishes: [[650,560],[790,590],[930,620],[1210,410],[1410,415],[1720,560],[1890,570],[2260,355],[2400,370],[2670,540],[3030,640],[3190,650]],
-    sheep: [[1750,510,"sheep-new.png",1620,1980]],
-    mushrooms: [[1510,370,"mushroom-baby.png","dizzy"],[2300,320,"mushroom-elder.png","oracle"]],
-    npc: [[2700,500,"mushroom-man.png"]],
-    goal: [3130,640]
-  },
-  {
-    name: "Twilight Hollow",
-    image: "level-twilight-hollow.png",
-    start: [130, 230],
-    wishesNeeded: 10,
-    sheepNeeded: 2,
-    platforms: [
-      [0, 115, 850, 95],
-      [470, 505, 560, 70],
-      [1080, 360, 420, 70],
-      [1490, 505, 360, 70],
-      [1840, 310, 430, 70],
-      [2250, 465, 430, 70],
-      [2680, 575, 620, 80]
-    ],
-    wishes: [[630,625],[790,630],[970,610],[1170,470],[1600,620],[1980,420],[2140,425],[2400,585],[2800,690],[3070,690]],
-    sheep: [[1180,420,"sheep-baby.png",1090,1470],[2390,530,"sheep-new.png",2260,2640]],
-    mushrooms: [[620,205,"mushroom-young.png","dizzy"],[1600,565,"mushroom-female.png","helper"],[2150,375,"mushroom-elder.png","oracle"]],
-    npc: [[2920,655,"mushroom-man.png"]],
-    goal: [3000,675]
-  },
-  {
-    name: "Moonlit Canopy",
-    image: "level-moonlit-canopy.png",
-    start: [130, 250],
-    wishesNeeded: 10,
-    sheepNeeded: 2,
-    platforms: [
-      [0, 135, 850, 95],
-      [430, 465, 550, 70],
-      [1000, 620, 420, 70],
-      [1420, 430, 470, 70],
-      [1900, 300, 470, 70],
-      [2380, 510, 450, 70],
-      [2820, 640, 520, 80]
-    ],
-    wishes: [[560,585],[720,590],[910,580],[1110,735],[1290,735],[1580,545],[2030,420],[2490,625],[2660,625],[3050,755]],
-    sheep: [[1130,680,"luma-sheep.png",1020,1380],[2540,575,"sheep-golden.png",2400,2780]],
-    mushrooms: [[560,200,"mushroom-baby.png","dizzy"],[1480,500,"mushroom-young.png","dizzy"],[1990,370,"mushroom-elder.png","oracle"]],
-    npc: [[2480,580,"mushroom-man.png"]],
-    goal: [3050,755]
-  }
-];
-
-function create(tag, cls, src) {
-  const el = document.createElement(tag);
-  if (cls) el.className = cls;
-  if (src) el.src = src;
-  world.appendChild(el);
-  return el;
-}
-
-function addHitbox(px, py, w, h) {
-  const el = create("div", "hitbox");
-  el.style.left = px + "px";
-  el.style.bottom = py + "px";
-  el.style.width = w + "px";
-  el.style.height = h + "px";
-  el.dataset.x = px;
-  el.dataset.y = py;
-  el.dataset.w = w;
-  el.dataset.h = h;
-}
-
-function addImg(cls, src, px, py) {
-  const el = create("img", cls, src);
-  el.style.left = px + "px";
-  el.style.bottom = py + "px";
-  return el;
-}
-
-function loadLevel(index, clicked = false) {
-  const unlocked = Number(localStorage.getItem("foxfire_unlocked_level") || 0);
-  if (clicked && index > unlocked) {
-    setMessage("This forest path is still locked.");
-    return;
-  }
-
-  currentLevel = index;
-  const level = levels[index];
-
-  world.innerHTML = "";
-  world.style.backgroundImage = `url("${level.image}")`;
-
-  movingSheep = [];
-  floatingWishes = [];
-
-  x = level.start[0];
-  y = level.start[1];
-  vx = 0;
-  vy = 0;
-  wishes = 0;
-  sheep = 0;
-  dizzyTimer = 0;
-  lastSafeX = x;
-  lastSafeY = y;
-
-  level.platforms.forEach(p => addHitbox(...p));
-
-  level.wishes.forEach(p => {
-    const el = addImg("item wish", "dandelion-magical.png", p[0], p[1]);
-    floatingWishes.push({
-      el,
-      baseX: p[0],
-      baseY: p[1],
-      t: Math.random() * 100,
-      drift: 10 + Math.random() * 16,
-      lift: 12 + Math.random() * 18
-    });
-  });
-
-  level.sheep.forEach((p, i) => {
-    const el = addImg("sheep rescue", p[2], p[0], p[1]);
-    movingSheep.push({
-      el,
-      x: p[0],
-      y: p[1],
-      minX: p[3],
-      maxX: p[4],
-      dir: i % 2 === 0 ? 1 : -1,
-      hop: Math.random() * 100,
-      speed: 0.7 + Math.random() * 0.55
-    });
-  });
-
-  level.mushrooms.forEach(p => {
-    const el = addImg("mushroom mushroomPerson", p[2], p[0], p[1]);
-    el.dataset.effect = p[3];
-  });
-
-  level.npc.forEach(p => {
-    const el = addImg("npc mushroomNpc", p[2], p[0], p[1]);
-    el.dataset.effect = "npc";
-  });
-
-  addImg("goal", "glow-orb.png", level.goal[0], level.goal[1]);
-
-  wishTotalEl.textContent = level.wishesNeeded;
-  sheepTotalEl.textContent = level.sheepNeeded;
-  wishCountEl.textContent = wishes;
-  sheepCountEl.textContent = sheep;
-  levelNumEl.textContent = currentLevel + 1;
-  heartsEl.textContent = hearts;
-
-  document.querySelectorAll(".levelCard").forEach(c => c.classList.remove("active"));
-  document.getElementById("levelCard" + currentLevel).classList.add("active");
-
-  randomOracle();
-  setMessage(level.name + " begins. Follow the painted platforms and gather the foxfire wishes.");
-  setFoxImage("idle");
-  saveGame();
-}
-
-function chooseFox(type) {
-  foxType = type;
-  choiceScreen.style.display = "none";
-  gameStarted = true;
-  setFoxImage("idle");
-  setMessage("Use arrow keys to run, space to jump, and Shift to dash.");
-  saveGame();
-}
-
-function setFoxImage(state) {
-  fox.src = foxImages[foxType][state];
-}
-
-function setMessage(text) {
-  message.textContent = text;
-}
-
-function randomOracle() {
-  oracleText.textContent = oracleMessages[Math.floor(Math.random() * oracleMessages.length)];
-}
-
-function saveGame() {
-  localStorage.setItem(SAVE_KEY, JSON.stringify({
-    level: currentLevel,
-    hearts,
-    foxType,
-    chosen: gameStarted,
-    unlocked: Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)
-  }));
-
-  localStorage.setItem("foxfire_unlocked_level", String(Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel)));
-}
-
-function loadSave() {
-  try {
-    const data = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}");
-    if (typeof data.level === "number") currentLevel = Math.min(data.level, levels.length - 1);
-    if (typeof data.hearts === "number") hearts = data.hearts;
-    if (data.foxType) foxType = data.foxType;
-    if (data.chosen) {
-      choiceScreen.style.display = "none";
-      gameStarted = true;
-    }
-  } catch(e) {}
-}
-
-function resetSave() {
-  localStorage.removeItem(SAVE_KEY);
-  localStorage.removeItem("foxfire_unlocked_level");
-  location.reload();
-}
-
-function rect(el) {
-  return el.getBoundingClientRect();
-}
-
-function overlap(a, b) {
-  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
-}
-
-function sparkle(x, y) {
-  const s = document.createElement("div");
-  s.className = "sparkle-pop";
-  s.style.left = x + "px";
-  s.style.top = y + "px";
-  game.appendChild(s);
-  setTimeout(() => s.remove(), 800);
-}
-
-function hurtFox() {
-  hearts--;
-  heartsEl.textContent = hearts;
-
-  if (hearts <= 0) {
-    hearts = 3;
-    heartsEl.textContent = hearts;
-    x = levels[currentLevel].start[0];
-    y = levels[currentLevel].start[1];
-    setMessage("The foxfire brings you back to the start.");
-  } else {
-    x = lastSafeX;
-    y = lastSafeY + 20;
-    setMessage("Careful, little fox. Try again.");
-  }
-
-  vx = 0;
-  vy = 0;
-  saveGame();
-}
-
-function finishLevel() {
-  const level = levels[currentLevel];
-
-  if (wishes < level.wishesNeeded || sheep < level.sheepNeeded) {
-    setMessage("The moon gate needs more wishes and rescued sheep first.");
-    return;
-  }
-
-  sparkle(window.innerWidth / 2, window.innerHeight / 2);
-  setMessage("Level complete! The next forest path is opening.");
-  oracleText.textContent = "A new path opens because you kept going.";
-
-  const next = currentLevel + 1;
-  localStorage.setItem("foxfire_unlocked_level", String(next));
-
-  setTimeout(() => {
-    if (next < levels.length) loadLevel(next);
-    else {
-      setMessage("You completed Foxfire Forest! The forest remembers your light.");
-      oracleText.textContent = "You carried your glow all the way home.";
-    }
-  }, 900);
-}
-
-document.addEventListener("keydown", e => {
-  keys[e.key] = true;
-
-  if ((e.key === " " || e.key === "ArrowUp") && gameStarted) {
-    e.preventDefault();
-
-    if (onGround) {
-      vy = 16;
-      onGround = false;
-      doubleJumpReady = true;
-      setFoxImage("jump");
-    } else if (doubleJumpReady) {
-      vy = 14;
-      doubleJumpReady = false;
-      setFoxImage("jump");
-      sparkle(fox.getBoundingClientRect().left + 55, fox.getBoundingClientRect().top + 70);
-    }
-  }
-
-  if (e.key === "Shift" && gameStarted) {
-    x += facing === "right" ? 70 : -70;
-    sparkle(fox.getBoundingClientRect().left + 55, fox.getBoundingClientRect().top + 70);
-  }
-});
-
-document.addEventListener("keyup", e => keys[e.key] = false);
-
-function updateCamera() {
-  const panelSpace = window.innerWidth > 950 ? 390 : 0;
-  const viewWidth = window.innerWidth - panelSpace;
-  cameraX = Math.max(0, Math.min(x - viewWidth * .38, WORLD_WIDTH - viewWidth));
-  world.style.transform = `translateX(${-cameraX}px)`;
-  fox.style.left = (x - cameraX) + "px";
-}
-
-function updateFloatingWishes() {
-  floatingWishes.forEach(w => {
-    if (w.el.dataset.done) return;
-    w.t += 0.025;
-    const dx = Math.sin(w.t * 1.4) * w.drift;
-    const dy = Math.cos(w.t * 1.8) * w.lift;
-    w.el.style.left = (w.baseX + dx) + "px";
-    w.el.style.bottom = (w.baseY + dy) + "px";
-  });
-}
-
-function updateMovingSheep() {
-  movingSheep.forEach(s => {
-    if (s.el.dataset.done) return;
-
-    s.x += s.dir * s.speed;
-    if (s.x < s.minX || s.x > s.maxX) {
-      s.dir *= -1;
-      s.el.style.transform = s.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
-    }
-
-    s.hop += 0.08;
-    const hopY = Math.abs(Math.sin(s.hop)) * 18;
-
-    s.el.style.left = s.x + "px";
-    s.el.style.bottom = (s.y + hopY) + "px";
-  });
-}
-
-function gameLoop() {
-  updateFloatingWishes();
-  updateMovingSheep();
-
-  if (gameStarted) {
-    const speed = dizzyTimer > 0 ? 2.4 : 5.3;
-
-    if (keys["ArrowLeft"]) {
-      vx = -speed;
-      facing = "left";
-      if (onGround) setFoxImage("run");
-    } else if (keys["ArrowRight"]) {
-      vx = speed;
-      facing = "right";
-      if (onGround) setFoxImage("run");
-    } else {
-      vx *= .78;
-      if (Math.abs(vx) < .08) vx = 0;
-      if (onGround) setFoxImage("idle");
-    }
-
-    x += vx;
-    vy -= .72;
-    y += vy;
-    onGround = false;
-
-    const fw = 118;
-
-    document.querySelectorAll(".hitbox").forEach(p => {
-      const px = Number(p.dataset.x);
-      const py = Number(p.dataset.y);
-      const pw = Number(p.dataset.w);
-      const ph = Number(p.dataset.h);
-      const platformTop = py + ph;
-
-      if (
-        x + fw - 22 > px + 20 &&
-        x + 22 < px + pw - 20 &&
-        y <= platformTop + 18 &&
-        y >= platformTop - 28 &&
-        vy <= 0
-      ) {
-        y = platformTop;
-        vy = 0;
-        onGround = true;
-        doubleJumpReady = true;
-        lastSafeX = x;
-        lastSafeY = y;
-      }
-    });
-
-    fox.style.bottom = y + "px";
-    fox.classList.toggle("left", facing === "left");
-    fox.classList.toggle("dizzy", dizzyTimer > 0);
-    if (dizzyTimer > 0) dizzyTimer--;
-
-    const foxRect = rect(fox);
-
-    document.querySelectorAll(".wish").forEach(item => {
-      if (item.dataset.done) return;
-      if (overlap(foxRect, rect(item))) {
-        item.dataset.done = "yes";
-        item.style.display = "none";
-        wishes++;
-        wishCountEl.textContent = wishes;
-        const r = rect(item);
-        sparkle(r.left + 30, r.top + 30);
-        setMessage("A glowing dandelion wish was gathered.");
-        randomOracle();
-        saveGame();
-      }
-    });
-
-    document.querySelectorAll(".rescue").forEach(item => {
-      if (item.dataset.done) return;
-      if (overlap(foxRect, rect(item))) {
-        item.dataset.done = "yes";
-        item.style.display = "none";
-        sheep++;
-        sheepCountEl.textContent = sheep;
-        const r = rect(item);
-        sparkle(r.left + 42, r.top + 38);
-        setMessage("You rescued a bouncing sheep.");
-        oracleText.textContent = "Kindness is one of the oldest kinds of magic.";
-        saveGame();
-      }
-    });
-
-    document.querySelectorAll(".mushroomPerson, .mushroomNpc").forEach(m => {
-      if (m.dataset.done) return;
-      if (overlap(foxRect, rect(m))) {
-        const effect = m.dataset.effect;
-        const r = rect(m);
-        sparkle(r.left + r.width / 2, r.top + r.height / 2);
-
-        if (effect === "dizzy") {
-          dizzyTimer = 190;
-          setMessage("Oh no — mushroom magic! The fox is dizzy and slow.");
-          oracleText.textContent = "Move gently. Strange feelings pass.";
-        }
-
-        if (effect === "helper") {
-          setMessage("The mushroom woman whispers: the safest path is not always the straightest.");
-          oracleText.textContent = "Look for the glowing ledges. They remember your steps.";
-        }
-
-        if (effect === "oracle") {
-          setMessage("The elder mushroom shares a forest blessing.");
-          oracleText.textContent = "You do not need to rush. Even slow magic reaches the moon gate.";
-        }
-
-        if (effect === "npc") {
-          setMessage("The mushroom man raises his lantern and shows you the way.");
-          oracleText.textContent = "A guide appears when the path feels strange.";
-        }
-
-        m.dataset.done = "yes";
-      }
-    });
-
-    const goal = document.querySelector(".goal");
-    if (goal && overlap(foxRect, rect(goal))) finishLevel();
-
-    if (y < -170) hurtFox();
-
-    x = Math.max(0, Math.min(x, WORLD_WIDTH - 120));
-    updateCamera();
-  }
-
-  requestAnimationFrame(gameLoop);
-}
-
-loadSave();
-heartsEl.textContent = hearts;
-loadLevel(currentLevel);
-
-if (gameStarted) {
-  setMessage("Saved game loaded. Keep following the foxfire path.");
-} else {
-  choiceScreen.style.display = "flex";
-}
-
-gameLoop();
-</script>
-</body>
-</html>
+    <p>Who will follow the
