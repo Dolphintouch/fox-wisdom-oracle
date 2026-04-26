@@ -30,6 +30,7 @@ body {
   background: #07120c;
 }
 
+/* BACKGROUND */
 .forest-layer {
   position: absolute;
   inset: 0;
@@ -40,20 +41,39 @@ body {
 }
 
 .forest-back { z-index: 1; }
-.forest-mid { z-index: 2; opacity: 0.95; }
+.forest-mid { z-index: 2; opacity: 0.96; }
 .forest-front { z-index: 8; }
 
-#gameArea::after {
-  content: "";
+#levelTint {
   position: absolute;
   inset: 0;
   z-index: 9;
   pointer-events: none;
+  transition: background 1.5s ease;
   background:
     radial-gradient(circle at 50% 18%, rgba(255,230,150,0.12), transparent 35%),
-    linear-gradient(to top, rgba(0,0,0,0.28), transparent 45%);
+    linear-gradient(to top, rgba(0,0,0,0.25), transparent 45%);
 }
 
+#levelTint.day {
+  background:
+    radial-gradient(circle at 50% 15%, rgba(255,230,150,0.12), transparent 35%),
+    linear-gradient(to top, rgba(0,0,0,0.22), transparent 45%);
+}
+
+#levelTint.dusk {
+  background:
+    radial-gradient(circle at 60% 22%, rgba(255,150,90,0.20), transparent 35%),
+    linear-gradient(to top, rgba(55,15,40,0.42), rgba(70,30,80,0.18), transparent 55%);
+}
+
+#levelTint.spirit {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(160,230,255,0.22), transparent 38%),
+    linear-gradient(to top, rgba(20,10,60,0.55), rgba(40,15,90,0.22), transparent 55%);
+}
+
+/* LANTERNS */
 .lantern-img {
   position: absolute;
   width: 165px;
@@ -64,16 +84,10 @@ body {
     drop-shadow(0 0 48px rgba(255,190,80,0.35));
 }
 
-.lantern-img.left {
-  left: 55px;
-  top: 115px;
-}
+.lantern-img.left { left: 45px; top: 110px; }
+.lantern-img.right { right: 50px; top: 135px; }
 
-.lantern-img.right {
-  right: 60px;
-  top: 135px;
-}
-
+/* FIREFLIES */
 .firefly {
   position: absolute;
   width: 5px;
@@ -90,6 +104,7 @@ body {
   to { transform: translateY(-38px) translateX(24px); opacity: 1; }
 }
 
+/* UI */
 .score-box {
   position: absolute;
   top: 14px;
@@ -107,6 +122,7 @@ body {
   letter-spacing: 3px;
 }
 
+/* FOX */
 #fox {
   position: absolute;
   width: 120px;
@@ -115,12 +131,19 @@ body {
   transform: translateX(-50%);
   z-index: 25;
   pointer-events: none;
+  animation: foxIdle 2.4s ease-in-out infinite;
   filter:
     drop-shadow(0 12px 12px rgba(0,0,0,0.55))
     drop-shadow(0 0 18px rgba(255,190,90,0.75))
     brightness(1.08);
 }
 
+@keyframes foxIdle {
+  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+  50% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
+}
+
+/* FALLING ITEMS */
 .falling {
   position: absolute;
   z-index: 22;
@@ -130,12 +153,33 @@ body {
 
 .dandelion-item {
   width: 78px;
-  filter: drop-shadow(0 0 22px rgba(255,220,90,0.9));
+  filter: drop-shadow(0 0 22px rgba(255,220,90,0.95));
+  animation: dandelionTwinkle 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes dandelionTwinkle {
+  from { transform: scale(1) rotate(-5deg); opacity: 0.88; }
+  to { transform: scale(1.15) rotate(6deg); opacity: 1; }
 }
 
 .sheep-item {
-  width: 88px;
+  width: 90px;
   filter: drop-shadow(0 0 18px rgba(255,230,130,0.85));
+}
+
+.sheep-rare {
+  width: 100px;
+  filter:
+    drop-shadow(0 0 20px rgba(255,235,130,1))
+    drop-shadow(0 0 45px rgba(255,210,80,0.85));
+}
+
+.sheep-run {
+  animation: sheepRun 1.2s ease-in forwards;
+}
+
+@keyframes sheepRun {
+  to { transform: translateX(260px) scale(0.92); opacity: 0; }
 }
 
 .rock-item {
@@ -143,6 +187,7 @@ body {
   filter: drop-shadow(0 0 14px rgba(255,150,70,0.5));
 }
 
+/* OVERLAY */
 .overlay {
   position: absolute;
   inset: 0;
@@ -169,19 +214,23 @@ body {
   color: #ffe6a3;
 }
 
-button {
+button, .link-btn {
   font-family: Georgia, serif;
   border: none;
   border-radius: 999px;
-  padding: 12px 24px;
+  padding: 12px 20px;
   background: linear-gradient(#ffe18a, #d99a2b);
   color: #3b2105;
-  font-size: 18px;
+  font-size: 17px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 }
 
+/* SIDE PANEL */
 .side-panel {
-  width: 330px;
+  width: 340px;
   height: 100vh;
   background: linear-gradient(rgba(36,18,7,0.95), rgba(17,37,18,0.96));
   border-left: 3px solid rgba(255,217,124,0.35);
@@ -193,6 +242,7 @@ button {
 .side-panel h2 {
   text-align: center;
   color: #ffe6a3;
+  margin-top: 4px;
 }
 
 .helper-card {
@@ -204,13 +254,21 @@ button {
   margin-bottom: 18px;
 }
 
+.oracle-title {
+  color: #ffe18a;
+  font-size: 15px;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
 .speech {
-  background: rgba(255,246,210,0.92);
+  background: rgba(255,246,210,0.94);
   color: #4a2b0d;
-  padding: 12px;
+  padding: 13px;
   border-radius: 16px;
   margin-bottom: 12px;
   font-size: 15px;
+  line-height: 1.35;
 }
 
 .helper-fox-img {
@@ -223,6 +281,7 @@ button {
   border: 2px solid rgba(255,217,124,0.35);
   border-radius: 22px;
   padding: 14px;
+  margin-bottom: 16px;
 }
 
 .how-item {
@@ -251,8 +310,8 @@ button {
   color: #ff9d9d;
 }
 
-.sound-box {
-  margin-top: 18px;
+.sound-box, .save-box {
+  margin-top: 16px;
   padding: 12px;
   background: rgba(0,0,0,0.24);
   border-radius: 16px;
@@ -266,21 +325,39 @@ button {
 
 #volumeSlider { width: 100%; }
 
-.sparkle {
+/* MAGIC EFFECTS */
+.sparkle, .trail, .pop-sparkle {
   position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 70;
+  animation: sparkleFade 800ms forwards;
+}
+
+.sparkle {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
   background: #fff3a8;
   box-shadow: 0 0 12px #fff3a8;
-  z-index: 70;
-  pointer-events: none;
-  animation: sparkleFade 750ms forwards;
+}
+
+.trail {
+  width: 6px;
+  height: 6px;
+  background: #ffd86b;
+  box-shadow: 0 0 12px #ffd86b;
+}
+
+.pop-sparkle {
+  width: 10px;
+  height: 10px;
+  background: #fff8c9;
+  box-shadow: 0 0 16px #fff8c9;
 }
 
 @keyframes sparkleFade {
   from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(3) translateY(-25px); }
+  to { opacity: 0; transform: scale(3.2) translateY(-25px); }
 }
 
 .magic-ring {
@@ -308,6 +385,7 @@ button {
     <img src="forest-back.png" class="forest-layer forest-back" alt="">
     <img src="forest-mid.png" class="forest-layer forest-mid" alt="">
     <img src="forest-front.png" class="forest-layer forest-front" alt="">
+    <div id="levelTint" class="day"></div>
 
     <img class="lantern-img left clean-img" data-src="lantern.png" alt="">
     <img class="lantern-img right clean-img" data-src="lantern.png" alt="">
@@ -319,7 +397,9 @@ button {
     <div class="firefly" style="left:90%; top:36%; animation-delay:.9s;"></div>
 
     <div class="score-box">
+      Level: <span id="levelName">Day Forest</span><br>
       Score: <span id="score">0</span><br>
+      Best: <span id="bestScore">0</span><br>
       Hearts: <span id="hearts" class="hearts">♥ ♥ ♥</span>
     </div>
 
@@ -328,7 +408,8 @@ button {
     <div id="startOverlay" class="overlay">
       <div class="overlay-card">
         <h1>Foxfire Forest</h1>
-        <p>Catch the magical dandelions and golden sheep.</p>
+        <p>Catch the drifting dandelion wishes.</p>
+        <p>Watch for sheep — they bounce, then run away!</p>
         <p>Avoid the enchanted rocks.</p>
         <button onclick="startGame()">🐾 Play Game 🐾</button>
       </div>
@@ -339,8 +420,9 @@ button {
     <h2>Foxfire Forest</h2>
 
     <div class="helper-card">
+      <div class="oracle-title">Oracle Message</div>
       <div class="speech" id="foxSpeech">
-        You’re doing amazing! Catch the glowing wishes, little one. ✨
+        The forest is waiting. Move gently, trust your paws, and catch the little wishes as they float. ✨
       </div>
       <img class="helper-fox-img clean-img" data-src="foxy-helper-new.png" alt="Friendly fox helper">
     </div>
@@ -351,7 +433,7 @@ button {
       <div class="how-item">
         <img class="how-icon-img clean-img" data-src="dandelion-magical.png" alt="Dandelion wish">
         <div>
-          <strong>Catch Magical Dandelions</strong>
+          <strong>Floating Dandelions</strong>
           <span class="points">+10 points</span>
         </div>
       </div>
@@ -359,18 +441,24 @@ button {
       <div class="how-item">
         <img class="how-icon-img clean-img" data-src="sheep-golden.png" alt="Golden sheep">
         <div>
-          <strong>Catch Golden Sheep</strong>
-          <span class="points">+50 points</span>
+          <strong>Bouncing Sheep</strong>
+          <span class="points">+50 / rare +100</span>
         </div>
       </div>
 
       <div class="how-item">
         <img class="how-icon-img clean-img" data-src="enchanted-rock.png" alt="Enchanted rock">
         <div>
-          <strong>Avoid Enchanted Rocks</strong>
+          <strong>Enchanted Rocks</strong>
           <span class="points bad-points">-1 heart</span>
         </div>
       </div>
+    </div>
+
+    <div class="save-box">
+      <a class="link-btn" href="platform-game.html">🌿 Platform Adventure</a>
+      <br><br>
+      <button onclick="resetSave()">Reset Saved Score</button>
     </div>
 
     <div class="sound-box">
@@ -388,14 +476,19 @@ button {
 const gameArea = document.getElementById("gameArea");
 const fox = document.getElementById("fox");
 const scoreEl = document.getElementById("score");
+const bestScoreEl = document.getElementById("bestScore");
 const heartsEl = document.getElementById("hearts");
+const levelNameEl = document.getElementById("levelName");
+const levelTint = document.getElementById("levelTint");
 const startOverlay = document.getElementById("startOverlay");
 const foxSpeech = document.getElementById("foxSpeech");
 const muteBtn = document.getElementById("muteBtn");
 const volumeSlider = document.getElementById("volumeSlider");
 
 let score = 0;
+let bestScore = Number(localStorage.getItem("foxfireBestScore") || 0);
 let hearts = 3;
+let level = 1;
 let foxX = 50;
 let gameRunning = false;
 let dropTimer = null;
@@ -404,8 +497,10 @@ let moveRight = false;
 let muted = false;
 let masterVolume = 0.6;
 
-const MAX_ITEMS_ON_SCREEN = 5;
-const DROP_EVERY_MS = 1450;
+const MAX_ITEMS_ON_SCREEN = 4;
+const DROP_EVERY_MS = 1700;
+
+bestScoreEl.textContent = bestScore;
 
 const sounds = {
   bg: new Audio("pineglass.mp3"),
@@ -447,11 +542,8 @@ muteBtn.addEventListener("click", () => {
   muteBtn.textContent = muted ? "🔇" : "🔊";
   updateVolumes();
 
-  if (muted) {
-    sounds.bg.pause();
-  } else if (gameRunning) {
-    sounds.bg.play().catch(() => {});
-  }
+  if (muted) sounds.bg.pause();
+  else if (gameRunning) sounds.bg.play().catch(() => {});
 });
 
 volumeSlider.addEventListener("input", () => {
@@ -459,7 +551,7 @@ volumeSlider.addEventListener("input", () => {
   updateVolumes();
 });
 
-/* STRONG IMAGE CLEANER */
+/* IMAGE CLEANER */
 const cleanCache = {};
 
 function cleanImage(src, callback) {
@@ -481,54 +573,17 @@ function cleanImage(src, callback) {
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    const w = canvas.width;
-    const h = canvas.height;
 
-    function isBg(px, py) {
-      const i = (py * w + px) * 4;
+    for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      const avg = (r + g + b) / 3;
+      const brightness = (r + g + b) / 3;
+      const diff = Math.max(r, g, b) - Math.min(r, g, b);
 
-      return (
-        (r > 228 && g > 228 && b > 228) ||
-        (avg > 190 && max - min < 42)
-      );
-    }
-
-    const visited = new Uint8Array(w * h);
-    const queue = [];
-
-    function add(px, py) {
-      if (px < 0 || py < 0 || px >= w || py >= h) return;
-      const index = py * w + px;
-      if (visited[index]) return;
-      visited[index] = 1;
-      if (isBg(px, py)) queue.push([px, py]);
-    }
-
-    for (let x = 0; x < w; x++) {
-      add(x, 0);
-      add(x, h - 1);
-    }
-
-    for (let y = 0; y < h; y++) {
-      add(0, y);
-      add(w - 1, y);
-    }
-
-    while (queue.length) {
-      const [px, py] = queue.pop();
-      const i = (py * w + px) * 4;
-      data[i + 3] = 0;
-
-      add(px + 1, py);
-      add(px - 1, py);
-      add(px, py + 1);
-      add(px, py - 1);
+      if (brightness > 180 && diff < 60) {
+        data[i + 3] = 0;
+      }
     }
 
     ctx.putImageData(imageData, 0, 0);
@@ -552,17 +607,21 @@ document.querySelectorAll(".clean-img").forEach(img => {
 
 setCleanImg(fox, "foxy-player-new.png");
 
+/* START */
 function startGame() {
   score = 0;
   hearts = 3;
+  level = 1;
   foxX = 50;
   gameRunning = true;
 
-  scoreEl.textContent = score;
-  heartsEl.textContent = "♥ ♥ ♥";
-  foxSpeech.textContent = "The forest is awake. Catch the glowing wishes! ✨";
+  updateScore();
+  updateHearts();
+  updateLevel();
 
-  document.querySelectorAll(".falling, .sparkle, .magic-ring").forEach(el => el.remove());
+  foxSpeech.textContent = "The forest wakes. Catch the floating wishes before they drift away. ✨";
+
+  document.querySelectorAll(".falling, .sparkle, .magic-ring, .trail, .pop-sparkle").forEach(el => el.remove());
 
   startOverlay.style.display = "none";
 
@@ -575,11 +634,27 @@ function startGame() {
   requestAnimationFrame(gameLoop);
 }
 
+/* LEVELS */
+function updateLevel() {
+  if (score >= 450) {
+    level = 3;
+    levelNameEl.textContent = "Spirit Forest";
+    levelTint.className = "spirit";
+  } else if (score >= 200) {
+    level = 2;
+    levelNameEl.textContent = "Dusk Forest";
+    levelTint.className = "dusk";
+  } else {
+    level = 1;
+    levelNameEl.textContent = "Day Forest";
+    levelTint.className = "day";
+  }
+}
+
+/* CREATE ITEMS */
 function createFallingItem() {
   if (!gameRunning) return;
-
-  const currentItems = document.querySelectorAll(".falling").length;
-  if (currentItems >= MAX_ITEMS_ON_SCREEN) return;
+  if (document.querySelectorAll(".falling").length >= MAX_ITEMS_ON_SCREEN) return;
 
   const item = document.createElement("img");
   item.classList.add("falling");
@@ -591,27 +666,50 @@ function createFallingItem() {
     item.classList.add("dandelion-item");
     item.alt = "Magical dandelion";
     setCleanImg(item, "dandelion-magical.png");
-  } else if (chance < 0.80) {
-    item.dataset.type = "sheep";
-    item.classList.add("sheep-item");
+
+    const startX = random(60, gameArea.clientWidth - 120);
+    item.dataset.startX = startX;
+    item.dataset.drift = random(60, 150);
+    item.dataset.wave = random(0.018, 0.035);
+    item.dataset.offset = random(0, 1000);
+
+    item.style.left = startX + "px";
+    item.style.top = "-120px";
+
+  } else if (chance < 0.84) {
+    const rare = Math.random() < 0.18;
+    item.dataset.type = rare ? "rareSheep" : "sheep";
+    item.classList.add(rare ? "sheep-rare" : "sheep-item");
     item.alt = "Golden sheep";
     setCleanImg(item, "sheep-golden.png");
+
+    item.dataset.bounces = "0";
+    item.dataset.bounceTarget = String(Math.floor(random(2, 4)));
+    item.dataset.vy = "0";
+    item.dataset.state = "falling";
+
+    item.style.left = random(45, gameArea.clientWidth - 125) + "px";
+    item.style.top = "-130px";
+
     playSound(sounds.sheep);
-    foxSpeech.textContent = "A golden sheep has wandered in! Catch it if you can! 🐑✨";
-    entranceSparkles(random(80, gameArea.clientWidth - 80), 60);
+    foxSpeech.textContent = rare
+      ? "A rare golden sheep has appeared! Catch that little light! 🌟"
+      : "A golden sheep has wandered in. It will bounce, then run! 🐑";
+
   } else {
     item.dataset.type = "rock";
     item.classList.add("rock-item");
     item.alt = "Enchanted rock";
     setCleanImg(item, "enchanted-rock.png");
-  }
 
-  item.style.left = random(45, gameArea.clientWidth - 115) + "px";
-  item.style.top = "-130px";
+    item.style.left = random(45, gameArea.clientWidth - 115) + "px";
+    item.style.top = "-130px";
+  }
 
   gameArea.appendChild(item);
 }
 
+/* GAME LOOP */
 function gameLoop() {
   if (!gameRunning) return;
 
@@ -628,12 +726,12 @@ function moveFox() {
   foxX = Math.max(8, Math.min(92, foxX));
   fox.style.left = foxX + "%";
 
-  if (moveLeft || moveRight) {
+  if (moveLeft || moveRight || Math.random() < 0.10) {
     const rect = fox.getBoundingClientRect();
     const areaRect = gameArea.getBoundingClientRect();
-    createSparkle(
+    createTrail(
       rect.left - areaRect.left + rect.width / 2 + random(-25, 25),
-      rect.bottom - areaRect.top - 18 + random(-8, 8)
+      rect.bottom - areaRect.top - 20 + random(-8, 8)
     );
   }
 }
@@ -642,14 +740,17 @@ function moveItems() {
   const items = document.querySelectorAll(".falling");
 
   items.forEach(item => {
-    let y = parseFloat(item.style.top);
     const type = item.dataset.type;
+    let y = parseFloat(item.style.top);
 
-    if (type === "sheep") y += 2.8;
-    else if (type === "rock") y += 4.1;
-    else y += 3.4;
-
-    item.style.top = y + "px";
+    if (type === "dandelion") {
+      moveDandelion(item, y);
+    } else if (type === "sheep" || type === "rareSheep") {
+      moveSheep(item, y);
+    } else {
+      y += level === 3 ? 4.7 : level === 2 ? 4.3 : 3.9;
+      item.style.top = y + "px";
+    }
 
     const itemRect = item.getBoundingClientRect();
     const foxRect = fox.getBoundingClientRect();
@@ -660,13 +761,77 @@ function moveItems() {
       return;
     }
 
-    if (y > gameArea.clientHeight + 80) {
-      if (type !== "rock") playSound(sounds.miss);
+    if (parseFloat(item.style.top) > gameArea.clientHeight + 90) {
+      if (type === "dandelion") {
+        dandelionGroundPop(item);
+        playSound(sounds.miss);
+        foxSpeech.textContent = "A little wish touched the earth and became sparkles. 🌙";
+      }
       item.remove();
     }
   });
 }
 
+/* DANDELION FLOATING */
+function moveDandelion(item, y) {
+  y += level === 3 ? 1.75 : level === 2 ? 1.55 : 1.35;
+
+  const startX = Number(item.dataset.startX);
+  const drift = Number(item.dataset.drift);
+  const wave = Number(item.dataset.wave);
+  const offset = Number(item.dataset.offset);
+
+  let newX = startX + Math.sin((y + offset) * wave) * drift;
+
+  newX = Math.max(15, Math.min(gameArea.clientWidth - 95, newX));
+
+  item.style.left = newX + "px";
+  item.style.top = y + "px";
+
+  if (Math.random() < 0.10) {
+    createSparkle(newX + random(25, 55), y + random(25, 55));
+  }
+}
+
+/* SHEEP BOUNCE THEN RUN */
+function moveSheep(item, y) {
+  const groundY = gameArea.clientHeight - 130;
+  let vy = Number(item.dataset.vy);
+  let state = item.dataset.state;
+  let bounces = Number(item.dataset.bounces);
+  const target = Number(item.dataset.bounceTarget);
+
+  if (state === "falling") {
+    vy += 0.32;
+    y += vy;
+
+    if (y >= groundY) {
+      y = groundY;
+      bounces++;
+      item.dataset.bounces = String(bounces);
+      playSound(sounds.sheep);
+      burstSparkles(parseFloat(item.style.left) + 45, y + 45, 8);
+
+      if (bounces >= target) {
+        item.dataset.state = "running";
+        item.classList.add("sheep-run");
+        foxSpeech.textContent = "The sheep bounced away into the ferns! 🐑";
+        setTimeout(() => item.remove(), 1200);
+      } else {
+        vy = -8.8;
+      }
+    }
+  }
+
+  if (state === "running") {
+    y += 0;
+  }
+
+  item.dataset.vy = String(vy);
+  item.style.top = y + "px";
+}
+
+/* CATCHING */
 function handleCatch(item) {
   const type = item.dataset.type;
   const rect = item.getBoundingClientRect();
@@ -676,30 +841,108 @@ function handleCatch(item) {
 
   if (type === "dandelion") {
     score += 10;
-    scoreEl.textContent = score;
-    foxSpeech.textContent = "Beautiful catch! A wish has joined your pocket. ✨";
+    foxSpeech.textContent = randomOracleMessage();
     playSound(sounds.catch);
-    burstSparkles(x, y, 16);
+    burstSparkles(x, y, 20);
   }
 
   if (type === "sheep") {
     score += 50;
-    scoreEl.textContent = score;
-    foxSpeech.textContent = "You caught the golden sheep! The forest giggles with joy. 🐑";
+    foxSpeech.textContent = "You caught the golden sheep before it ran away. The forest giggles. 🐑";
     playSound(sounds.sheep);
     playSound(sounds.special);
-    burstSparkles(x, y, 28);
+    burstSparkles(x, y, 30);
+    magicRing(x, y);
+  }
+
+  if (type === "rareSheep") {
+    score += 100;
+    foxSpeech.textContent = "Rare sheep blessing! A bright little miracle found you. 🌟";
+    playSound(sounds.sheep);
+    playSound(sounds.special);
+    burstSparkles(x, y, 42);
     magicRing(x, y);
   }
 
   if (type === "rock") {
     hearts -= 1;
     playSound(sounds.miss);
-    burstSparkles(x, y, 10);
-    foxSpeech.textContent = "Ouch! Careful, little fox — those rocks are enchanted.";
+    burstSparkles(x, y, 12);
+    foxSpeech.textContent = "Ouch. Even enchanted paths have stones. Keep going.";
     updateHearts();
 
-    if (hearts <= 0) endGame();
+    if (hearts <= 0) {
+      endGame();
+      return;
+    }
+  }
+
+  updateScore();
+  updateLevel();
+}
+
+/* EFFECTS */
+function dandelionGroundPop(item) {
+  const x = parseFloat(item.style.left) + 40;
+  const y = gameArea.clientHeight - 35;
+
+  for (let i = 0; i < 22; i++) {
+    createPopSparkle(x + random(-35, 35), y + random(-20, 20));
+  }
+
+  magicRing(x, y);
+}
+
+function createSparkle(x, y) {
+  const sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+  sparkle.style.left = x + "px";
+  sparkle.style.top = y + "px";
+  gameArea.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 850);
+}
+
+function createPopSparkle(x, y) {
+  const sparkle = document.createElement("div");
+  sparkle.className = "pop-sparkle";
+  sparkle.style.left = x + "px";
+  sparkle.style.top = y + "px";
+  gameArea.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 850);
+}
+
+function createTrail(x, y) {
+  const trail = document.createElement("div");
+  trail.className = "trail";
+  trail.style.left = x + "px";
+  trail.style.top = y + "px";
+  gameArea.appendChild(trail);
+  setTimeout(() => trail.remove(), 850);
+}
+
+function burstSparkles(x, y, amount) {
+  for (let i = 0; i < amount; i++) {
+    createSparkle(x + random(-38, 38), y + random(-38, 38));
+  }
+}
+
+function magicRing(x, y) {
+  const ring = document.createElement("div");
+  ring.className = "magic-ring";
+  ring.style.left = (x - 12) + "px";
+  ring.style.top = (y - 12) + "px";
+  gameArea.appendChild(ring);
+  setTimeout(() => ring.remove(), 800);
+}
+
+/* SCORE */
+function updateScore() {
+  scoreEl.textContent = score;
+
+  if (score > bestScore) {
+    bestScore = score;
+    bestScoreEl.textContent = bestScore;
+    localStorage.setItem("foxfireBestScore", bestScore);
   }
 }
 
@@ -722,12 +965,50 @@ function endGame() {
     <div class="overlay-card">
       <h1>Game Over</h1>
       <p>Your score was <strong>${score}</strong>.</p>
+      <p>Your best score is <strong>${bestScore}</strong>.</p>
       <p>The foxfire path is waiting for you again.</p>
       <button onclick="location.reload()">🐾 Play Again 🐾</button>
     </div>
   `;
 }
 
+function resetSave() {
+  localStorage.removeItem("foxfireBestScore");
+  bestScore = 0;
+  bestScoreEl.textContent = "0";
+  foxSpeech.textContent = "The old score has been released back into the forest. 🌿";
+}
+
+/* ORACLE */
+function randomOracleMessage() {
+  const messages = [
+    "A wish was caught. Something gentle is coming closer. ✨",
+    "Your paws found the light before it faded.",
+    "The forest whispers: keep going, little one.",
+    "A golden seed of courage has landed in your heart.",
+    "You are quicker than doubt and softer than fear.",
+    "The path glows brighter each time you try."
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+setInterval(() => {
+  if (!gameRunning) return;
+
+  const idleMessages = [
+    "The forest is breathing softly around you...",
+    "Even when nothing falls, something is unfolding.",
+    "Stay gentle. Not everything must be caught.",
+    "The glow you follow is already within you.",
+    "The path listens as much as it speaks."
+  ];
+
+  if (Math.random() < 0.35) {
+    foxSpeech.textContent = idleMessages[Math.floor(Math.random() * idleMessages.length)];
+  }
+}, 4500);
+
+/* COLLISION + HELPERS */
 function isColliding(a, b) {
   return !(
     a.bottom < b.top ||
@@ -737,40 +1018,11 @@ function isColliding(a, b) {
   );
 }
 
-function createSparkle(x, y) {
-  const sparkle = document.createElement("div");
-  sparkle.className = "sparkle";
-  sparkle.style.left = x + "px";
-  sparkle.style.top = y + "px";
-  gameArea.appendChild(sparkle);
-  setTimeout(() => sparkle.remove(), 800);
-}
-
-function burstSparkles(x, y, amount) {
-  for (let i = 0; i < amount; i++) {
-    createSparkle(x + random(-35, 35), y + random(-35, 35));
-  }
-}
-
-function entranceSparkles(x, y) {
-  for (let i = 0; i < 14; i++) {
-    createSparkle(x + random(-55, 55), y + random(-20, 45));
-  }
-}
-
-function magicRing(x, y) {
-  const ring = document.createElement("div");
-  ring.className = "magic-ring";
-  ring.style.left = (x - 12) + "px";
-  ring.style.top = (y - 12) + "px";
-  gameArea.appendChild(ring);
-  setTimeout(() => ring.remove(), 750);
-}
-
 function random(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+/* CONTROLS */
 document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") moveLeft = true;
   if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") moveRight = true;
