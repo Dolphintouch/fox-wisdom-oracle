@@ -298,7 +298,7 @@ body {
 }
 
 .chicken {
-  width: 122px;
+  width: 150px;
   z-index: 61;
   filter:
     drop-shadow(0 10px 12px rgba(0,0,0,.4))
@@ -375,19 +375,19 @@ body {
 
 .eggCollect {
   z-index: 55;
-  width: 46px;
-  height: 58px;
-  border-radius: 50% 50% 45% 45%;
-  background: radial-gradient(circle at 35% 25%, #fffef2 0 18%, #ffe9a8 45%, #d8a24a 100%);
-  box-shadow:
-    0 0 14px rgba(255,236,170,.95),
-    0 0 34px rgba(255,210,90,.55),
-    0 8px 10px rgba(0,0,0,.35);
+  width: 95px;
+  height: 95px;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 16px rgba(255,236,170,.95))
+    drop-shadow(0 0 36px rgba(255,210,90,.55));
   animation: eggBob 2s ease-in-out infinite alternate;
 }
 
 @keyframes eggBob {
   from { transform: translateY(0) rotate(-3deg); }
+  to { transform: translateY(-12px) rotate(4deg); }
+}
   to { transform: translateY(-12px) rotate(4deg); }
 }
 
@@ -577,7 +577,7 @@ body {
   <aside id="sidePanel">
     <div class="card">
       <h2>Collect & Explore</h2>
-      <p>Find eggs, rescue chickens, gather a few dandelion wishes, and reach the glowing portal. Rocks, spikes, and dogs cost hearts.</p>
+      <p>Find golden eggs, rescue chickens, gather a few dandelion wishes, and reach the glowing portal. Rocks, spikes, and dogs cost hearts.</p>
     </div>
 
     <div class="card">
@@ -635,6 +635,7 @@ body {
 
 <script>
 const game = document.getElementById("game");
+game.setAttribute("tabindex", "0");
 const world = document.getElementById("world");
 const fox = document.getElementById("fox");
 const message = document.getElementById("message");
@@ -1046,6 +1047,7 @@ function setFoxImage(state) {
 }
 
 function chooseFox(type) {
+  window.focus();
   startAmbient();
   foxType = type;
   choiceScreen.style.display = "none";
@@ -1173,12 +1175,13 @@ function updatePuppy() {
 
 /* OBJECTS */
 function addEgg(x, y) {
-  const e = document.createElement("div");
-  e.className = "eggCollect";
-  e.style.left = x + "px";
-  e.style.bottom = y + "px";
-  world.appendChild(e);
-  return e;
+  const el = addImg("eggCollect", "egg-golden.png", x, y);
+
+  el.style.width = "95px";
+  el.style.height = "95px";
+  el.style.zIndex = 55;
+
+  return el;
 }
 
 function addDog(platformIndex, offsetX, minOffset, maxOffset) {
@@ -1643,11 +1646,11 @@ function gameLoop() {
   if (gameStarted) {
     const speed = dizzyTimer > 0 ? 2.4 : 5.4;
 
-    if (keys["ArrowLeft"]) {
+    if (keys["ArrowLeft"] || keys["a"]) {
       vx = -speed;
       facing = "left";
       if (onGround) setFoxImage("run");
-    } else if (keys["ArrowRight"]) {
+    } else if (keys["ArrowRight"] || keys["d"]) {
       vx = speed;
       facing = "right";
       if (onGround) setFoxImage("run");
@@ -1896,9 +1899,15 @@ function gameLoop() {
 
 /* CONTROLS */
 document.addEventListener("keydown", e => {
-  keys[e.key] = true;
+  const key = e.key;
+  keys[key] = true;
+  keys[key.toLowerCase()] = true;
 
-  if ((e.key === " " || e.key === "ArrowUp") && gameStarted) {
+  if (["ArrowLeft","ArrowRight","ArrowUp"," ","Shift","a","d","w"].includes(key) || ["a","d","w"].includes(key.toLowerCase())) {
+    e.preventDefault();
+  }
+
+  if ((e.key === " " || e.key === "ArrowUp" || e.key.toLowerCase() === "w") && gameStarted) {
     e.preventDefault();
 
     if (onGround) {
@@ -1927,7 +1936,9 @@ document.addEventListener("keydown", e => {
 });
 
 document.addEventListener("keyup", e => {
-  keys[e.key] = false;
+  const key = e.key;
+  keys[key] = false;
+  keys[key.toLowerCase()] = false;
 });
 
 document.addEventListener("click", () => startAmbient(), { once: true });
