@@ -297,6 +297,20 @@ body {
     drop-shadow(0 0 40px rgba(255,220,120,.35));
 }
 
+.chicken {
+  width: 122px;
+  z-index: 61;
+  filter:
+    drop-shadow(0 10px 12px rgba(0,0,0,.4))
+    drop-shadow(0 0 20px rgba(255,224,140,.65));
+  animation: chickenBob 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes chickenBob {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-8px) rotate(2deg); }
+}
+
 .mushroom,
 .npc {
   width: 165px;
@@ -547,8 +561,10 @@ body {
 
   <div class="top-ui">
     <a href="fox-game.html">← Fox Drop Game</a>
+    <div class="pill">❤️ <span id="hearts">3</span></div>
     <div class="pill">🌼 <span id="wishCount">0</span>/<span id="wishTotal">0</span></div>
     <div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepTotal">0</span></div>
+    <div class="pill">🐔 <span id="chickenCount">0</span>/<span id="chickenTotal">0</span></div>
     <div class="pill">🥚 <span id="eggCount">0</span>/<span id="eggTotal">0</span></div>
     <div class="pill">Level <span id="levelNum">1</span></div>
     <button onclick="resetSave()">Reset Save</button>
@@ -561,7 +577,7 @@ body {
   <aside id="sidePanel">
     <div class="card">
       <h2>Collect & Explore</h2>
-      <p>Collect dandelion wishes, eggs, and rescue fluffy sheep. Nothing takes lives now — everything just nudges you gently.</p>
+      <p>Find eggs, rescue chickens, gather a few dandelion wishes, and reach the glowing portal. Rocks, spikes, and dogs cost hearts.</p>
     </div>
 
     <div class="card">
@@ -571,7 +587,7 @@ body {
 
     <div class="card">
       <h2>Mushroom Folk</h2>
-      <p>The mushroom family wanders the ledges. Touching them makes a spore puff and moves them gently out of your way.</p>
+      <p>Mushrooms are puzzle blocks now. Touch one to puff it away for a short time and open the path.</p>
     </div>
 
     <div class="card">
@@ -623,10 +639,13 @@ const world = document.getElementById("world");
 const fox = document.getElementById("fox");
 const message = document.getElementById("message");
 const choiceScreen = document.getElementById("choiceScreen");
+const heartsEl = document.getElementById("hearts");
 const wishCountEl = document.getElementById("wishCount");
 const wishTotalEl = document.getElementById("wishTotal");
 const sheepCountEl = document.getElementById("sheepCount");
 const sheepTotalEl = document.getElementById("sheepTotal");
+const chickenCountEl = document.getElementById("chickenCount");
+const chickenTotalEl = document.getElementById("chickenTotal");
 const eggCountEl = document.getElementById("eggCount");
 const eggTotalEl = document.getElementById("eggTotal");
 const levelNumEl = document.getElementById("levelNum");
@@ -651,12 +670,15 @@ let wasOnGround = false;
 let doubleJumpReady = true;
 let wishes = 0;
 let sheep = 0;
+let chickens = 0;
 let eggs = 0;
+let hearts = 3;
 let dizzyTimer = 0;
 let lastSafeX = 120;
 let lastSafeY = 210;
 
 let movingSheep = [];
+let movingChickens = [];
 let floatingWishes = [];
 let skyWishes = [];
 let walkingMushrooms = [];
@@ -710,8 +732,9 @@ const levels = [
     name: "Misty Meadows",
     image: "level-misty-meadows.png",
     start: [120,175],
-    wishesNeeded: 10,
+    wishesNeeded: 5,
     sheepNeeded: 1,
+    chickensNeeded: 1,
     eggsNeeded: 3,
     platforms: [
       [0,118,650,24],
@@ -724,16 +747,14 @@ const levels = [
       [1640,655,145,24]
     ],
     hazards: [[575,118,95,48],[1235,118,95,48]],
-    wishes: [[1,65],[1,165],[2,55],[2,185],[3,95],[4,85],[5,70],[6,80],[0,500],[3,210],[4,180]],
+    wishes: [[1,65],[2,55],[3,95],[5,70],[6,80]],
     eggs: [[0,210],[1,105],[3,130]],
     sheep: [[6,110,"sheep-golden.png",55,250]],
+    chickens: [[2,155,"chicken-cute.png",35,230]],
     mushrooms: [
       [1,80,"mushroom-baby.png","dizzy"],
-      [2,100,"mushroom-young.png","dizzy"],
-      [4,120,"mushroom-female.png","helper"],
-      [5,110,"mushroom-elder-good.png","oracle"]
+      [4,120,"mushroom-female.png","helper"]
     ],
-    npc: [[6,190,"mushroom-man.png","npc"]],
     dogs: [[0,420,80,560]],
     rocks: [[4,210,35,270]],
     puppy: [0,180],
@@ -743,8 +764,9 @@ const levels = [
     name: "Twilight Hollow",
     image: "level-twilight-hollow.png",
     start: [120,185],
-    wishesNeeded: 10,
-    sheepNeeded: 2,
+    wishesNeeded: 5,
+    sheepNeeded: 1,
+    chickensNeeded: 2,
     eggsNeeded: 4,
     platforms: [
       [0,118,365,24],
@@ -759,17 +781,14 @@ const levels = [
       [1640,715,130,24]
     ],
     hazards: [[550,118,90,48],[1180,118,90,48]],
-    wishes: [[1,70],[2,100],[2,220],[3,70],[4,100],[5,85],[6,70],[7,95],[9,25],[0,210],[3,200]],
+    wishes: [[1,70],[2,100],[4,100],[6,70],[9,25]],
     eggs: [[0,220],[2,135],[4,155],[7,160]],
-    sheep: [[3,110,"sheep-golden.png",50,235],[7,120,"sheep-golden.png",55,245]],
+    sheep: [[7,120,"sheep-golden.png",55,245]],
+    chickens: [[3,110,"chicken-cute.png",45,240],[6,105,"chick-baby.png",35,235]],
     mushrooms: [
-      [1,125,"mushroom-young.png","dizzy"],
       [2,120,"mushroom-baby.png","dizzy"],
-      [4,125,"mushroom-female.png","helper"],
-      [5,135,"mushroom-elder-good.png","oracle"],
-      [6,145,"mushroom-baby.png","dizzy"]
+      [5,135,"mushroom-elder-good.png","oracle"]
     ],
-    npc: [[9,25,"mushroom-man.png","npc"]],
     dogs: [[2,160,30,240],[7,160,40,260]],
     rocks: [[3,240,20,250],[8,100,30,240]],
     puppy: [0,170],
@@ -779,8 +798,9 @@ const levels = [
     name: "Moonlit Canopy",
     image: "level-moonlit-canopy.png",
     start: [120,205],
-    wishesNeeded: 10,
-    sheepNeeded: 2,
+    wishesNeeded: 5,
+    sheepNeeded: 1,
+    chickensNeeded: 2,
     eggsNeeded: 4,
     platforms: [
       [0,140,385,24],
@@ -794,23 +814,20 @@ const levels = [
       [1645,782,135,24]
     ],
     hazards: [[520,140,90,48],[1000,140,90,48]],
-    wishes: [[1,85],[2,105],[3,70],[3,220],[4,105],[5,95],[6,85],[7,90],[8,35],[0,220],[2,220]],
+    wishes: [[1,85],[3,70],[4,105],[6,85],[8,35]],
     eggs: [[0,235],[2,145],[3,145],[5,160]],
-    sheep: [[3,115,"sheep-golden.png",55,240],[6,120,"sheep-golden.png",55,255]],
+    sheep: [[6,120,"sheep-golden.png",55,255]],
+    chickens: [[3,115,"chicken-cute.png",45,250],[5,145,"chick-baby.png",35,250]],
     mushrooms: [
-      [1,125,"mushroom-baby.png","dizzy"],
       [2,145,"mushroom-female.png","helper"],
-      [4,125,"mushroom-young.png","dizzy"],
-      [5,130,"mushroom-elder-good.png","oracle"],
-      [6,135,"mushroom-baby.png","dizzy"]
+      [5,130,"mushroom-elder-good.png","oracle"]
     ],
-    npc: [[7,155,"mushroom-man.png","npc"]],
     dogs: [[1,160,25,230],[6,170,50,260]],
     rocks: [[4,260,20,280],[7,240,35,260]],
     puppy: [0,170],
     goal: [8,50]
   }
-];
+]
 
 /* SOUND */
 function setGameVolume(v) {
@@ -841,20 +858,70 @@ function startAmbient() {
   sounds.ambient.play().catch(() => {});
 }
 
-/* IMAGE LOADER — SAFE VERSION
-   This version does NOT remove backgrounds automatically.
-   The old canvas cleaner was eating away pale parts of the art.
-   Use proper transparent PNGs from Canva instead.
+/* SMART IMAGE CLEANER
+   Removes only near-white/very pale square backgrounds from small sprites.
+   Do NOT use it for level background images.
 */
+const cleanCache = {};
+
+function cleanImage(src, callback) {
+  if (cleanCache[src]) {
+    callback(cleanCache[src]);
+    return;
+  }
+
+  const img = new Image();
+  img.src = src;
+
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = img.naturalWidth || img.width;
+    c.height = img.naturalHeight || img.height;
+
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0);
+
+    const data = ctx.getImageData(0, 0, c.width, c.height);
+    const d = data.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i];
+      const g = d[i + 1];
+      const b = d[i + 2];
+
+      // Remove only very pale neutral backgrounds.
+      // This keeps golden glow, cream fur, yellow chick fluff, and mushroom details.
+      const bright = (r + g + b) / 3;
+      const diff = Math.max(r, g, b) - Math.min(r, g, b);
+
+      if (bright > 232 && diff < 38) {
+        d[i + 3] = 0;
+      }
+    }
+
+    ctx.putImageData(data, 0, 0);
+
+    const out = c.toDataURL("image/png");
+    cleanCache[src] = out;
+    callback(out);
+  };
+
+  img.onerror = () => callback(src);
+}
+
 function setClean(el, src) {
-  el.src = src;
+  cleanImage(src, cleaned => {
+    el.src = cleaned;
+  });
 }
 
 /* HELPERS */
 function create(tag, cls, src, clean = true) {
   const el = document.createElement(tag);
   if (cls) el.className = cls;
-  if (src) el.src = src;
+  if (src) {
+    clean ? setClean(el, src) : el.src = src;
+  }
   world.appendChild(el);
   return el;
 }
@@ -1187,6 +1254,7 @@ function loadLevel(i, clicked = false) {
   world.style.backgroundImage = `url("${L.image}")`;
 
   movingSheep = [];
+  movingChickens = [];
   floatingWishes = [];
   skyWishes = [];
   walkingMushrooms = [];
@@ -1200,6 +1268,7 @@ function loadLevel(i, clicked = false) {
   vy = 0;
   wishes = 0;
   sheep = 0;
+  chickens = 0;
   eggs = 0;
   dizzyTimer = 0;
   lastSafeX = x;
@@ -1258,6 +1327,24 @@ function loadLevel(i, clicked = false) {
     });
   });
 
+  L.chickens.forEach((p, n) => {
+    const plat = platformByIndex(p[0]);
+    const pos = snapToPlatform(0, p[0], p[1], 8);
+
+    const el = addImg("chicken chickenRescue", p[2], pos.x, pos.y);
+
+    movingChickens.push({
+      el,
+      x: pos.x,
+      y: pos.y,
+      minX: plat.x + p[3],
+      maxX: plat.x + p[4],
+      dir: n % 2 ? -1 : 1,
+      hop: Math.random() * 100,
+      speed: .28 + Math.random() * .18
+    });
+  });
+
   L.mushrooms.forEach((p, n) => {
     const plat = platformByIndex(p[0]);
     const pos = snapToPlatform(0, p[0], p[1], 10);
@@ -1308,15 +1395,18 @@ function loadLevel(i, clicked = false) {
   portal.style.bottom = g.y + "px";
   world.appendChild(portal);
 
-  spawnSkyWishes(20);
+  spawnSkyWishes(4);
 
   wishTotalEl.textContent = L.wishesNeeded;
   sheepTotalEl.textContent = L.sheepNeeded;
+  chickenTotalEl.textContent = L.chickensNeeded || 0;
   eggTotalEl.textContent = L.eggsNeeded || 0;
   wishCountEl.textContent = wishes;
   sheepCountEl.textContent = sheep;
+  chickenCountEl.textContent = chickens;
   eggCountEl.textContent = eggs;
   levelNumEl.textContent = currentLevel + 1;
+  if (heartsEl) heartsEl.textContent = hearts;
 
   document.querySelectorAll(".levelCard").forEach(c => c.classList.remove("active"));
 
@@ -1353,6 +1443,35 @@ function nudgeFox(text) {
   vy = 0;
 
   sparkle(fox.getBoundingClientRect().left + 75, fox.getBoundingClientRect().top + 80);
+}
+
+function loseHeart(text) {
+  if (fox.dataset.invincible === "yes") return;
+
+  fox.dataset.invincible = "yes";
+  hearts = Math.max(0, hearts - 1);
+  if (heartsEl) heartsEl.textContent = hearts;
+
+  playSound("hurt");
+  setMessage(text + " You lost one heart.");
+  sparkle(fox.getBoundingClientRect().left + 75, fox.getBoundingClientRect().top + 80);
+
+  x = lastSafeX;
+  y = lastSafeY + 35;
+  vx = 0;
+  vy = 0;
+
+  if (hearts <= 0) {
+    hearts = 3;
+    if (heartsEl) heartsEl.textContent = hearts;
+    x = levels[currentLevel].start[0];
+    y = levels[currentLevel].start[1];
+    setMessage("The foxfire brings you back to the start. Try again, little fox.");
+  }
+
+  setTimeout(() => {
+    fox.dataset.invincible = "";
+  }, 1200);
 }
 
 /* UPDATES */
@@ -1399,6 +1518,24 @@ function updateMovingSheep() {
 
     s.el.style.left = s.x + "px";
     s.el.style.bottom = (s.y + Math.abs(Math.sin(s.hop)) * 18) + "px";
+  });
+}
+
+function updateMovingChickens() {
+  movingChickens.forEach(c => {
+    if (c.el.dataset.done) return;
+
+    c.x += c.dir * c.speed;
+
+    if (c.x < c.minX || c.x > c.maxX) {
+      c.dir *= -1;
+      c.el.style.transform = c.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+    }
+
+    c.hop += .08;
+
+    c.el.style.left = c.x + "px";
+    c.el.style.bottom = (c.y + Math.abs(Math.sin(c.hop)) * 10) + "px";
   });
 }
 
@@ -1467,8 +1604,8 @@ function updateRollingRocks() {
 function finishLevel() {
   const L = levels[currentLevel];
 
-  if (wishes < L.wishesNeeded || sheep < L.sheepNeeded || eggs < (L.eggsNeeded || 0)) {
-    setMessage("The moon gate needs more wishes, eggs, and rescued sheep first.");
+  if (wishes < L.wishesNeeded || sheep < L.sheepNeeded || chickens < (L.chickensNeeded || 0) || eggs < (L.eggsNeeded || 0)) {
+    setMessage("The moon gate needs more wishes, eggs, chickens, and rescued sheep first.");
     return;
   }
 
@@ -1497,6 +1634,7 @@ function gameLoop() {
   updateFloatingWishes();
   updateSkyWishes();
   updateMovingSheep();
+  updateMovingChickens();
   updateWalkingMushrooms();
   updateDogs();
   updateRollingRocks();
@@ -1557,7 +1695,7 @@ function gameLoop() {
 
     document.querySelectorAll(".hazardBox").forEach(h => {
       if (overlap(f, h.getBoundingClientRect())) {
-        nudgeFox("A tricky patch! The fox steps back gently.");
+        loseHeart("Sharp spikes on the path!");
       }
     });
 
@@ -1599,6 +1737,25 @@ function gameLoop() {
       }
     });
 
+    document.querySelectorAll(".chickenRescue").forEach(item => {
+      if (item.dataset.done) return;
+
+      if (overlap(f, collectRect(item, 18))) {
+        item.dataset.done = "yes";
+        item.style.display = "none";
+        chickens++;
+        playSound("sheep");
+        chickenCountEl.textContent = chickens;
+
+        const r = item.getBoundingClientRect();
+        sparkle(r.left + 55, r.top + 45);
+
+        setMessage("You rescued a little chicken.");
+        oracleText.textContent = "Every small life matters in the forest.";
+        saveGame();
+      }
+    });
+
     document.querySelectorAll(".eggCollect").forEach(item => {
       if (item.dataset.done) return;
 
@@ -1626,7 +1783,7 @@ function gameLoop() {
 
       if (overlap(f, collectRect(d.el, 10))) {
         d.cooldown = 90;
-        nudgeFox("A rolling stone nudges the fox back. No harm done.");
+        loseHeart("A forest dog startled the fox!");
       }
     });
 
@@ -1638,7 +1795,7 @@ function gameLoop() {
 
       if (overlap(f, collectRect(r.el, 10))) {
         r.cooldown = 90;
-        nudgeFox("A rolling rock bumps the fox gently aside.");
+        loseHeart("A rolling rock bumped the fox!");
       }
     });
 
@@ -1776,7 +1933,7 @@ document.addEventListener("keyup", e => {
 document.addEventListener("click", () => startAmbient(), { once: true });
 
 document.querySelectorAll("[data-clean]").forEach(img => {
-  img.src = img.getAttribute("src");
+  setClean(img, img.getAttribute("src"));
 });
 
 /* LOAD */
