@@ -6,57 +6,106 @@
 <title>Foxfire Forest Platform Adventure</title>
 
 <style>
-body {
-  margin:0;
-  overflow:hidden;
-  background:#06110b;
-  color:#ffe8a8;
-  font-family:Georgia;
+body{
+margin:0;
+overflow:hidden;
+background:#06110b;
+font-family:Georgia;
+color:#ffe8a8;
 }
 
 #world{
-  position:absolute;
-  width:1792px;
-  height:100vh;
-  background-size:cover;
-  background-position:bottom;
+position:absolute;
+width:1792px;
+height:100vh;
+background-size:cover;
+background-position:bottom;
+transform:translateX(0);
 }
 
 #fox{
-  position:absolute;
-  width:110px;
-  height:110px;
-  background-size:contain;
-  background-repeat:no-repeat;
+position:absolute;
+width:110px;
+height:110px;
+background-size:contain;
+background-repeat:no-repeat;
+filter:drop-shadow(0 0 15px gold);
 }
 
 .sprite{
-  position:absolute;
-  background-size:contain;
-  background-repeat:no-repeat;
+position:absolute;
+background-size:contain;
+background-repeat:no-repeat;
 }
 
-/* simple glow */
-.wish{filter:drop-shadow(0 0 10px gold);}
-.portal{
-  width:90px;
-  height:120px;
-  border-radius:50%;
-  background:radial-gradient(circle,white,green,transparent);
+/* glow effects */
+.wish{
+filter:drop-shadow(0 0 10px #ffe066);
 }
-  </style>
+
+.sheep{
+filter:drop-shadow(0 0 8px white);
+}
+
+.chicken{
+filter:drop-shadow(0 0 6px orange);
+}
+
+.egg{
+filter:drop-shadow(0 0 8px gold);
+}
+
+.portal{
+width:100px;
+height:140px;
+border-radius:50%;
+background:radial-gradient(circle,#fff,#8affc1,#00a86b,transparent);
+box-shadow:0 0 20px #8affc1,0 0 40px #00a86b;
+animation:pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse{
+from{transform:scale(0.9);}
+to{transform:scale(1.1);}
+}
+
+/* platforms (invisible unless debug) */
+.platform{
+position:absolute;
+height:25px;
+background:rgba(0,255,100,0.2);
+}
+
+/* UI */
+#ui{
+position:absolute;
+top:10px;
+left:10px;
+z-index:100;
+background:rgba(0,0,0,0.4);
+padding:10px;
+border-radius:10px;
+}
+
+</style>
 </head>
 <body>
 
 <div id="world"></div>
 <div id="fox"></div>
 
-<script>
+<div id="ui">
+❤️ <span id="hearts">3</span><br>
+🌼 <span id="wishes">0</span><br>
+🐑 <span id="sheep">0</span><br>
+⭐ <span id="score">0</span>
+</div>
 
-const world = document.getElementById("world");
+<script>
+  const world = document.getElementById("world");
 const fox = document.getElementById("fox");
 
-let x = 100;
+let x = 120;
 let y = 300;
 let vx = 0;
 let vy = 0;
@@ -66,119 +115,264 @@ let onGround = false;
 
 let keys = {};
 
+let hearts = 3;
+let wishes = 0;
+let sheep = 0;
+let score = 0;
+
+let cameraX = 0;
+
+/* LEVEL DATA (aligned to background art) */
 let level = {
-  bg:"level-misty-meadows.png",
+bg:"level-misty-meadows.png",
 
-  platforms:[
-    {x:0,y:50,w:1792},
-    {x:300,y:300,w:300},
-    {x:800,y:400,w:300},
-    {x:1300,y:550,w:300}
-  ],
+platforms:[
+{x:0,y:50,w:1792},
+{x:320,y:300,w:260},
+{x:800,y:420,w:280},
+{x:1300,y:580,w:260}
+],
 
-  wishes:[
-    {x:350,y:350},
-    {x:900,y:450},
-    {x:1400,y:600}
-  ],
+wishes:[
+{x:360,y:360},
+{x:900,y:500},
+{x:1380,y:640}
+],
 
-  portal:{x:1500,y:600}
-}; function buildLevel(){
-  world.style.backgroundImage = `url(${level.bg})`;
+sheep:[
+{x:1350,y:600}
+],
 
-  document.querySelectorAll(".sprite").forEach(e=>e.remove());
+chickens:[
+{x:820,y:450}
+],
 
-  // platforms
-  level.platforms.forEach(p=>{
-    let el=document.createElement("div");
-    el.className="platform sprite";
-    el.style.left=p.x+"px";
-    el.style.bottom=p.y+"px";
-    el.style.width=p.w+"px";
-    el.style.height="20px";
-    world.appendChild(el);
-  });
+eggs:[
+{x:870,y:450}
+],
 
-  // wishes (few only)
-  level.wishes.forEach(w=>{
-    let el=document.createElement("div");
-    el.className="sprite wish";
-    el.style.left=w.x+"px";
-    el.style.bottom=w.y+"px";
-    el.style.width="40px";
-    el.style.height="60px";
-    el.style.backgroundImage="url(dandelion.png)";
-    world.appendChild(el);
-  });
+portal:{x:1500,y:600}
+};
 
-  // portal aligned
-  let portal=document.createElement("div");
-  portal.className="sprite portal";
-  portal.style.left=level.portal.x+"px";
-  portal.style.bottom=level.portal.y+"px";
-  portal.id="portal";
-  world.appendChild(portal);
-}function update(){
+/* BUILD LEVEL */
+function buildLevel(){
+world.style.backgroundImage = `url(${level.bg})`;
 
-  // movement
-  if(keys["ArrowLeft"]) vx=-5;
-  else if(keys["ArrowRight"]) vx=5;
-  else vx*=0.8;
+document.querySelectorAll(".sprite,.platform").forEach(e=>e.remove());
 
-  // jump
-  if(keys[" "] && onGround){
-    vy=12;
-    onGround=false;
+/* platforms */
+level.platforms.forEach(p=>{
+let el=document.createElement("div");
+el.className="platform";
+el.style.left=p.x+"px";
+el.style.bottom=p.y+"px";
+el.style.width=p.w+"px";
+world.appendChild(el);
+});
+
+/* wishes (few only) */
+level.wishes.forEach(w=>{
+let el=document.createElement("div");
+el.className="sprite wish";
+el.style.left=w.x+"px";
+el.style.bottom=w.y+"px";
+el.style.width="40px";
+el.style.height="60px";
+el.style.backgroundImage="url(dandelion-magical.png)";
+world.appendChild(el);
+});
+
+/* sheep */
+level.sheep.forEach(s=>{
+let el=document.createElement("div");
+el.className="sprite sheep";
+el.style.left=s.x+"px";
+el.style.bottom=s.y+"px";
+el.style.width="80px";
+el.style.height="80px";
+el.style.backgroundImage="url(luma-sheep.png)";
+world.appendChild(el);
+});
+
+/* chickens */
+level.chickens.forEach(c=>{
+let el=document.createElement("div");
+el.className="sprite chicken";
+el.style.left=c.x+"px";
+el.style.bottom=c.y+"px";
+el.style.width="60px";
+el.style.height="60px";
+el.style.backgroundImage="url(chicken-cute.png)";
+world.appendChild(el);
+});
+
+/* eggs */
+level.eggs.forEach(e=>{
+let el=document.createElement("div");
+el.className="sprite egg";
+el.style.left=e.x+"px";
+el.style.bottom=e.y+"px";
+el.style.width="40px";
+el.style.height="50px";
+el.style.backgroundImage="url(egg-golden.png)";
+world.appendChild(el);
+});
+
+/* portal */
+let portal=document.createElement("div");
+portal.className="sprite portal";
+portal.style.left=level.portal.x+"px";
+portal.style.bottom=level.portal.y+"px";
+portal.id="portal";
+world.appendChild(portal);
+}
+  /* CONTROLS */
+window.addEventListener("keydown", e => {
+  keys[e.key] = true;
+});
+
+window.addEventListener("keyup", e => {
+  keys[e.key] = false;
+});
+
+/* SOUND */
+const music = new Audio("foxglow-glade.mp3");
+music.loop = true;
+music.volume = 0.35;
+
+const collectSound = new Audio("sparkle-chime.mp3");
+const sheepSound = new Audio("sheep-baa.mp3");
+const jumpSound = new Audio("soft-poof.mp3");
+
+document.addEventListener("click", () => {
+  music.play().catch(() => {});
+}, { once:true });
+
+function playSound(sound){
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
+
+/* COLLISION HELPERS */
+function rect(el){
+  return el.getBoundingClientRect();
+}
+
+function overlap(a,b){
+  return (
+    a.left < b.right &&
+    a.right > b.left &&
+    a.top < b.bottom &&
+    a.bottom > b.top
+  );
+}
+
+/* UPDATE LOOP */
+function update(){
+
+  if(keys["ArrowLeft"] || keys["a"]){
+    vx = -5;
+  } else if(keys["ArrowRight"] || keys["d"]){
+    vx = 5;
+  } else {
+    vx *= 0.8;
   }
 
-  vy-=gravity;
+  if((keys[" "] || keys["ArrowUp"] || keys["w"]) && onGround){
+    vy = 13;
+    onGround = false;
+    playSound(jumpSound);
+  }
 
-  x+=vx;
-  y+=vy;
+  vy -= gravity;
+  x += vx;
+  y += vy;
 
-  onGround=false;
+  onGround = false;
 
-  // platform collision (aligned)
   document.querySelectorAll(".platform").forEach(p=>{
-    let px=p.offsetLeft;
-    let py=parseInt(p.style.bottom);
-    let pw=p.offsetWidth;
+    let px = p.offsetLeft;
+    let py = parseInt(p.style.bottom);
+    let pw = p.offsetWidth;
 
-    if(x+80>px && x+20<px+pw){
-      if(y<=py+10 && y>=py-20 && vy<=0){
-        y=py;
-        vy=0;
-        onGround=true;
+    if(x + 85 > px && x + 25 < px + pw){
+      if(y <= py + 25 && y >= py - 25 && vy <= 0){
+        y = py + 25;
+        vy = 0;
+        onGround = true;
       }
     }
   });
 
-  if(y<0){
-    x=100;
-    y=300;
+  if(y < -80){
+    x = 120;
+    y = 300;
+    vx = 0;
+    vy = 0;
+    hearts--;
+    document.getElementById("hearts").textContent = hearts;
+    if(hearts <= 0){
+      hearts = 3;
+      document.getElementById("hearts").textContent = hearts;
+    }
   }
 
-  fox.style.left=x+"px";
-  fox.style.bottom=y+"px";
+  fox.style.left = x + "px";
+  fox.style.bottom = y + "px";
+
+  cameraX = Math.max(0, Math.min(1792 - window.innerWidth, x - window.innerWidth / 3));
+  world.style.transform = `translateX(${-cameraX}px)`;
+
+  checkCollect();
 
   requestAnimationFrame(update);
-}// FOX IMAGE (with white background fix via CSS trick)
-fox.style.backgroundImage="url(female-fox.png)";
-fox.style.filter="drop-shadow(0 0 12px gold)";
+}
+  /* COLLECT ITEMS */
+function checkCollect(){
 
-// SOUND FIX
-let music = new Audio("forest.mp3");
-music.loop=true;
+  let f = rect(fox);
 
-document.addEventListener("click",()=>{
-  music.play().catch(()=>{});
-},{once:true});
+  document.querySelectorAll(".wish").forEach(w=>{
+    if(overlap(f, rect(w))){
+      w.remove();
+      wishes++;
+      score++;
+      document.getElementById("wishes").textContent = wishes;
+      document.getElementById("score").textContent = score;
+      playSound(collectSound);
+    }
+  });
 
-// controls
-window.addEventListener("keydown",e=>keys[e.key]=true);
-window.addEventListener("keyup",e=>keys[e.key]=false);
+  document.querySelectorAll(".sheep").forEach(s=>{
+    if(overlap(f, rect(s))){
+      s.remove();
+      sheep++;
+      score += 10;
+      document.getElementById("sheep").textContent = sheep;
+      document.getElementById("score").textContent = score;
+      playSound(sheepSound);
+    }
+  });
 
-// start
+  document.querySelectorAll(".egg").forEach(e=>{
+    if(overlap(f, rect(e))){
+      e.remove();
+      score += 5;
+      document.getElementById("score").textContent = score;
+      playSound(collectSound);
+    }
+  });
+
+  let portal = document.getElementById("portal");
+  if(portal && overlap(f, rect(portal))){
+    alert("Next level portal reached!");
+  }
+}
+
+/* FOX IMAGE */
+fox.style.backgroundImage = "url(female-foxy-player-idle.png)";
+
+/* START GAME */
 buildLevel();
 update();
 
