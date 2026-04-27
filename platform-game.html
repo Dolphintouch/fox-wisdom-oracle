@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Foxfire Forest Platform Adventure</title>
-<!-- VERSION: restored-visible-editor-stable -->
+<!-- VERSION: object-editor-and-start-fix -->
 <style>*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#06110b;color:#ffe8a8;font-family:Georgia,"Times New Roman",serif}#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}#world{position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;background:url("level-misty-meadows.png") no-repeat left bottom;background-size:1792px 100vh;transform:translateX(0)}#world::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);background-size:150px 170px,240px 260px;opacity:.36;animation:fireflies 20s linear infinite}@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}.top-ui{position:absolute;top:12px;left:12px;z-index:120;display:flex;gap:8px;flex-wrap:wrap;max-width:470px}.pill,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}.top-ui button{cursor:pointer}#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:110;display:flex;flex-direction:column;gap:12px}.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}.card p{margin:0;color:#fff0cc;line-height:1.35}.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}#thumb0{background-image:url("level-misty-meadows.png")}#thumb1{background-image:url("level-twilight-hollow.png")}#thumb2{background-image:url("level-moonlit-canopy.png")}.sprite{position:absolute;z-index:35;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain}#fox{width:190px;height:190px;z-index:55;background-repeat:no-repeat;background-position:center bottom;background-size:160px auto;overflow:visible;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite}#fox.left{transform:scaleX(-1)}#fox.running{animation:foxRunBounce .35s ease-in-out infinite}#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}#fox.landing{animation:foxLanding .22s ease-out}@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}@keyframes foxLanding{0%{scale:1.06 .92}70%{scale:.98 1.04}100%{scale:1}}#puppy{width:88px;height:88px;z-index:50;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}.wish{
   width:54px;
   height:78px;
@@ -109,6 +109,24 @@
   min-width:74px;
   color:#ffe7a6;
   font-weight:bold;
+}
+
+
+.editorOn .sheep,.editorOn .chicken,.editorOn .egg,.editorOn .mushroom,.editorOn .rock,.editorOn .wish,.editorOn .portal,.editorOn .treasure{
+  pointer-events:auto!important;
+  cursor:move!important;
+  outline:2px dashed rgba(255,245,140,.95);
+  border-radius:12px;
+}
+.editorObjSelected{
+  outline:3px solid #fff!important;
+  box-shadow:0 0 22px #fff4a8!important;
+}
+.editorHelp{
+  color:#fff4bf;
+  font-size:12px;
+  line-height:1.35;
+  margin:5px 0 8px;
 }
 
 #editorPanel{
@@ -235,7 +253,7 @@
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button><button onclick="toggleEditor()">Edit Ledges</button>
-<button onclick="resetLevel()">Restart</button>
+<button onclick="resetLevel()">Restart</button><button onclick="clearAllGameSaves()">Clear Saves</button>
 </div>  <div id="sidePanel">
 <div class="card">
 <h2>❧ Collect & Explore ❧</h2>
@@ -296,9 +314,9 @@
 
 <div id="editorPanel">
   <strong>🛠 Ledge Editor Mode</strong>
-  <p style="margin:6px 0 8px;">Press Edit Ledges to open editor mode. Drag ledges and red danger boxes, then save or copy the level code.</p>
+  <p class="editorHelp">Drag green ledges/red danger boxes AND objects like sheep, eggs, chickens, mushrooms, rocks, wishes, portal and treasure. Use Copy FULL Level Code when finished.</p>
   <button onclick="toggleEditor()">Close Editor</button>
-  <button onclick="copyLevelCode()">Copy Level Code</button><button onclick="saveEditedLevel()">Save This Level</button><button onclick="resetEditedLevel()">Reset This Level</button>
+  <button onclick="copyLevelCode()">Copy Ledges Only</button><button onclick="copyFullLevelCode()">Copy FULL Level Code</button><button onclick="saveEditedLevel()">Save This Level</button><button onclick="resetEditedLevel()">Reset This Level</button>
   <button onclick="addEditorLedge()">Add Ledge</button>
   <button onclick="addEditorHazard()">Add Danger</button>
   <button onclick="deleteSelectedEditorBox()">Delete Selected</button>
@@ -321,7 +339,7 @@
 </audio>
 
 <script>
-const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=0,boulderActive=false,treasureOpen=false;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:12,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[{x:385,y:520},{x:510,y:545},{x:635,y:565},{x:880,y:430},{x:990,y:445},{x:1180,y:505},{x:1290,y:545},{x:1385,y:565},{x:1510,y:705},{x:1585,y:720},{x:1660,y:710},{x:1710,y:690}],sheep:[{x:1260,y:405},{x:1540,y:655}],chickens:[{x:850,y:315},{x:1160,y:400}],eggs:[{x:910,y:315},{x:1215,y:400}],mushrooms:[{x:1060,y:315},{x:1370,y:500}],rocks:[{x:1290,y:405},{x:1430,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:12,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[{x:260,y:405},{x:340,y:430},{x:610,y:480},{x:720,y:500},{x:930,y:570},{x:1040,y:590},{x:1285,y:505},{x:1405,y:520},{x:1510,y:670},{x:1585,y:690},{x:1655,y:680},{x:1710,y:650}],sheep:[{x:690,y:375},{x:1535,y:565}],chickens:[{x:900,y:465},{x:1300,y:405}],eggs:[{x:955,y:465},{x:1360,y:405}],mushrooms:[{x:760,y:375},{x:1325,y:405}],rocks:[{x:1010,y:465},{x:1470,y:405}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:16,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[{x:210,y:380},{x:300,y:400},{x:545,y:470},{x:660,y:490},{x:850,y:595},{x:960,y:615},{x:1070,y:610},{x:1220,y:700},{x:1330,y:715},{x:1425,y:690},{x:1510,y:740},{x:1580,y:760},{x:1660,y:750},{x:1715,y:720}],sheep:[{x:640,y:365},{x:1280,y:590},{x:1550,y:635}],chickens:[{x:875,y:485},{x:1235,y:590}],eggs:[{x:935,y:485},{x:1305,y:590},{x:310,y:810},{x:690,y:635},{x:980,y:805},{x:1175,y:510},{x:1410,y:650},{x:1515,y:285}],mushrooms:[{x:700,y:365},{x:1390,y:590}],rocks:[{x:1005,y:485},{x:1490,y:635},{x:520,y:548},{x:720,y:420},{x:1120,y:512},{x:1375,y:650},{x:1580,y:285}]}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){const cleaned=await cleanImageURL(url);el.style.backgroundImage=`url("${cleaned}")`}function init(){bindControls();setVolume();loadSave();buildLevel(currentLevel);requestAnimationFrame(gameLoop)}function loadSave(){try{const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");if(saved.foxType)foxType=saved.foxType;if(typeof saved.currentLevel==="number")currentLevel=Math.max(0,Math.min(levels.length-1,saved.currentLevel));choiceScreen.style.display="flex";gameStarted=false}catch(err){choiceScreen.style.display="flex";gameStarted=false}}function saveGame(){localStorage.setItem(SAVE_KEY,JSON.stringify({foxType,currentLevel}))}function buildLevel(index){currentLevel=index;applySavedLayoutForLevel();const L=levels[currentLevel];world.style.backgroundImage=`url("${L.bg}")`;document.querySelectorAll(".hitbox,.hazardBox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.boulder,.treasure,.portal,.floatText,.sparkle-pop,.dust,.wishSpark").forEach(el=>el.remove());wishes=0;sheep=0;chickens=0;eggs=0;hearts=3;portalOpen=false;boulderActive=false;boulderTimer=0;treasureOpen=false;activeWishTotal=0;wishPool=[...L.wishes];wishGoalEl.textContent=L.wishGoal;sheepGoalEl.textContent=L.sheepGoal;wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;chickenCountEl.textContent=chickens;heartCountEl.textContent=hearts;scoreCountEl.textContent=score;setMessage(L.message);x=L.startX;y=L.startY;vx=0;vy=0;puppyX=x-65;puppyY=y-10;facing="right";onGround=false;wasOnGround=false;doubleJumpReady=true;coyoteTimer=0;jumpBuffer=0;lastSafeX=x;lastSafeY=y;document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));document.getElementById("levelCard"+currentLevel).classList.add("active");buildPlatforms(L.platforms);buildHazards(L.hazards);buildSheep(L.sheep);buildChickens(L.chickens);buildEggs(L.eggs);buildMushrooms(L.mushrooms);buildRocks(L.rocks);buildPortal(L.portal);buildTreasureIfNeeded();setAtmosphereForLevel();refillVisibleWishes();setFoxImage("idle");setCleanBackground(puppyEl,"puppy-forest.png");updateCamera();saveGame()}function buildPlatforms(platforms){platforms.forEach(p=>{const el=document.createElement("div");el.className="hitbox";el.dataset.x=p.x;el.dataset.y=p.y;el.dataset.w=p.w;el.dataset.h=p.h;el.style.left=p.x+"px";el.style.bottom=p.y+"px";el.style.width=p.w+"px";el.style.height=p.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'platform');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function buildHazards(hazards){hazards.forEach(h=>{const el=document.createElement("div");el.className="hazardBox";el.style.left=h.x+"px";el.style.bottom=h.y+"px";el.style.width=h.w+"px";el.style.height=h.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'hazard');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}
+const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=0,boulderActive=false,treasureOpen=false;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:12,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[{x:385,y:520},{x:510,y:545},{x:635,y:565},{x:880,y:430},{x:990,y:445},{x:1180,y:505},{x:1290,y:545},{x:1385,y:565},{x:1510,y:705},{x:1585,y:720},{x:1660,y:710},{x:1710,y:690}],sheep:[{x:1260,y:405},{x:1540,y:655}],chickens:[{x:850,y:315},{x:1160,y:400}],eggs:[{x:910,y:315},{x:1215,y:400}],mushrooms:[{x:1060,y:315},{x:1370,y:500}],rocks:[{x:1290,y:405},{x:1430,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:12,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[{x:260,y:405},{x:340,y:430},{x:610,y:480},{x:720,y:500},{x:930,y:570},{x:1040,y:590},{x:1285,y:505},{x:1405,y:520},{x:1510,y:670},{x:1585,y:690},{x:1655,y:680},{x:1710,y:650}],sheep:[{x:690,y:375},{x:1535,y:565}],chickens:[{x:900,y:465},{x:1300,y:405}],eggs:[{x:955,y:465},{x:1360,y:405}],mushrooms:[{x:760,y:375},{x:1325,y:405}],rocks:[{x:1010,y:465},{x:1470,y:405}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:16,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[{x:210,y:380},{x:300,y:400},{x:545,y:470},{x:660,y:490},{x:850,y:595},{x:960,y:615},{x:1070,y:610},{x:1220,y:700},{x:1330,y:715},{x:1425,y:690},{x:1510,y:740},{x:1580,y:760},{x:1660,y:750},{x:1715,y:720}],sheep:[{x:640,y:365},{x:1280,y:590},{x:1550,y:635}],chickens:[{x:875,y:485},{x:1235,y:590}],eggs:[{x:935,y:485},{x:1305,y:590},{x:310,y:810},{x:690,y:635},{x:980,y:805},{x:1175,y:510},{x:1410,y:650},{x:1515,y:285}],mushrooms:[{x:700,y:365},{x:1390,y:590}],rocks:[{x:1005,y:485},{x:1490,y:635},{x:520,y:548},{x:720,y:420},{x:1120,y:512},{x:1375,y:650},{x:1580,y:285}]}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){const cleaned=await cleanImageURL(url);el.style.backgroundImage=`url("${cleaned}")`}function init(){bindControls();setVolume();loadSave();buildLevel(currentLevel);requestAnimationFrame(gameLoop)}function loadSave(){try{const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");if(saved.foxType)foxType=saved.foxType;if(typeof saved.currentLevel==="number")currentLevel=Math.max(0,Math.min(levels.length-1,saved.currentLevel));choiceScreen.style.display="flex";gameStarted=false}catch(err){choiceScreen.style.display="flex";gameStarted=false}}function saveGame(){localStorage.setItem(SAVE_KEY,JSON.stringify({foxType,currentLevel}))}function buildLevel(index){currentLevel=index;applySavedLayoutForLevel();const L=levels[currentLevel];world.style.backgroundImage=`url("${L.bg}")`;document.querySelectorAll(".hitbox,.hazardBox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.boulder,.treasure,.portal,.floatText,.sparkle-pop,.dust,.wishSpark").forEach(el=>el.remove());wishes=0;sheep=0;chickens=0;eggs=0;hearts=3;portalOpen=false;boulderActive=false;boulderTimer=0;treasureOpen=false;activeWishTotal=0;wishPool=[...L.wishes];wishGoalEl.textContent=L.wishGoal;sheepGoalEl.textContent=L.sheepGoal;wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;chickenCountEl.textContent=chickens;heartCountEl.textContent=hearts;scoreCountEl.textContent=score;setMessage(L.message);x=L.startX;y=L.startY;vx=0;vy=0;puppyX=x-65;puppyY=y-10;facing="right";onGround=false;wasOnGround=false;doubleJumpReady=true;coyoteTimer=0;jumpBuffer=0;lastSafeX=x;lastSafeY=y;document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));document.getElementById("levelCard"+currentLevel).classList.add("active");buildPlatforms(L.platforms);buildHazards(L.hazards);buildSheep(L.sheep);buildChickens(L.chickens);buildEggs(L.eggs);buildMushrooms(L.mushrooms);buildRocks(L.rocks);buildPortal(L.portal);buildTreasureIfNeeded();setAtmosphereForLevel();refillVisibleWishes();if(editorMode){makeObjectsEditable()}setFoxImage("idle");setCleanBackground(puppyEl,"puppy-forest.png");updateCamera();saveGame()}function buildPlatforms(platforms){platforms.forEach(p=>{const el=document.createElement("div");el.className="hitbox";el.dataset.x=p.x;el.dataset.y=p.y;el.dataset.w=p.w;el.dataset.h=p.h;el.style.left=p.x+"px";el.style.bottom=p.y+"px";el.style.width=p.w+"px";el.style.height=p.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'platform');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function buildHazards(hazards){hazards.forEach(h=>{const el=document.createElement("div");el.className="hazardBox";el.style.left=h.x+"px";el.style.bottom=h.y+"px";el.style.width=h.w+"px";el.style.height=h.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'hazard');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}
 function spriteFootOffset(className){
   if(className==="sheep")return -42;
   if(className==="chicken")return -34;
@@ -340,6 +358,7 @@ function createSprite(className,img,xPos,yPos,extra={}){
   Object.keys(extra).forEach(key=>el.dataset[key]=extra[key]);
   setCleanBackground(el,img);
   world.appendChild(el);
+  if(editorMode&&typeof makeObjectsEditable==='function'){setTimeout(makeObjectsEditable,0)}
   return el;
 }function buildSheep(data){data.forEach((s,index)=>createSprite("sheep",index%2?"sheep-fluffy-glow.png":"luma-sheep.png",s.x,s.y,{done:"no",baseX:s.x,dir:index%2?-1:1}))}function buildChickens(data){data.forEach((c,index)=>createSprite("chicken",index%2?"chicken-cute.png":"chick-baby.png",c.x,c.y,{done:"no",baseX:c.x,dir:index%2?-1:1}))}function buildEggs(data){data.forEach(e=>createSprite("egg","egg-golden.png",e.x,e.y,{done:"no"}))}function buildMushrooms(data){const imgs=["mushroom-baby.png","mushroom-young.png","mushroom-female.png","mushroom-man.png"];data.forEach((m,index)=>createSprite("mushroom",imgs[index%imgs.length],m.x,m.y,{hidden:"no"}))}function buildRocks(data){data.forEach((r,index)=>createSprite("rock",index%2?"rock-magical.png":"enchanted-rock.png",r.x,r.y,{baseX:r.x,dir:index%2?-1:1,rot:0}))}function buildPortal(p){const portal=createSprite("portal","glow-orb.png",p.x,p.y,{});portal.id="levelPortal"}function refillVisibleWishes(){const maxVisible=9;while(document.querySelectorAll(".wish:not([data-done='yes'])").length<maxVisible&&wishPool.length>0&&activeWishTotal<levels[currentLevel].wishGoal){const next=wishPool.shift();createSprite("wish","dandelion-magical.png",next.x,next.y,{done:"no",float:Math.random()*10,drift:(Math.random()*.42+.18).toFixed(2),sway:(Math.random()*3+1.4).toFixed(2),baseX:next.x});activeWishTotal++}}function setFoxImage(state){const img=foxImages[foxType][state]||foxImages[foxType].idle;setCleanBackground(foxEl,img);foxEl.style.backgroundSize=foxType==="male"?"155px auto":"160px auto";foxEl.style.backgroundPosition="center 95%"}function bindControls(){
   window.addEventListener("keydown",e=>{
@@ -526,7 +545,18 @@ function puppyCollectHelp(){
   });
 }
 
-function checkCollectibles(){const f=rect(foxEl);document.querySelectorAll(".wish").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";wishes++;score+=1;wishCountEl.textContent=wishes;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+20,r.top+20);floatText(r.left,r.top,"+wish");playSound("collect");setMessage("A glowing dandelion wish was gathered.");randomOracle();refillVisibleWishes();checkMissionComplete()}});document.querySelectorAll(".egg").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";eggs++;score+=5;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+20,r.top+20);floatText(r.left,r.top,"+egg");playSound("collect");setMessage("A golden egg was found near the chickens.")}});document.querySelectorAll(".chicken").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";chickens++;score+=8;chickenCountEl.textContent=chickens;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+35,r.top+35);floatText(r.left,r.top,"chicken! +8");playSound("collect");setMessage("A little chicken followed the foxfire path home.")}});document.querySelectorAll(".sheep").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";sheep++;score+=10;sheepCountEl.textContent=sheep;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+32,r.top+32);floatText(r.left,r.top,"rescued!");playSound("sheep");setMessage("A fluffy sheep has been rescued.");randomOracle();checkMissionComplete()}});document.querySelectorAll(".mushroom").forEach(item=>{if(item.dataset.hidden==="yes")return;if(overlap(f,rect(item))&&dizzyTimer<=0){dizzyTimer=90;playSound("hit");setMessage("The mushroom made the fox wobble — try landing on top to poof it away.");floatText(f.left,f.top,"wobble!")}})}function checkHazards(){if(hurtCooldown>0){hurtCooldown--;return}const f=rect(foxEl);document.querySelectorAll(".hazardBox,.rock,.boulder").forEach(h=>{if(overlap(f,rect(h)))hurtFox("Ouch!")})}function hurtFox(text){if(hurtCooldown>0)return;hurtCooldown=70;hearts--;heartCountEl.textContent=hearts;playSound("hit");setMessage(text+" Return to the last safe ledge.");floatText(rect(foxEl).left,rect(foxEl).top,text);x=lastSafeX;y=lastSafeY+30;vx=0;vy=0;if(hearts<=0)setTimeout(()=>{setMessage("The forest gives you another try.");resetLevel()},600)}function checkMissionComplete(){const L=levels[currentLevel];if(wishes>=L.wishGoal&&sheep>=L.sheepGoal&&!portalOpen){portalOpen=true;const portal=document.getElementById("levelPortal");if(portal)portal.style.display="block";setMessage(currentLevel===2?"The final treasure is waking. Find the chest!":"The portal has opened. Follow the glow to the next level.");playSound("shimmer");if(currentLevel===2)revealFinalTreasure()}}function checkPortal(){if(!portalOpen)return;const portal=document.getElementById("levelPortal");if(!portal)return;if(overlap(rect(foxEl),rect(portal))){playSound("shimmer");const next=currentLevel+1;if(next<levels.length)changeLevel(next);else{setMessage("You found all three paths of Foxfire Forest.");portalOpen=false;portal.style.display="none"}}}function changeLevel(index){if(editorMode){removeAllResizeHandles()}currentLevel=index;gameStarted=true;choiceScreen.style.display="none";buildLevel(currentLevel);if(editorMode){attachResizeHandlesToAll();refreshEditorOutput()}startAmbientFromGesture()}function resetLevel(){buildLevel(currentLevel);gameStarted=true;choiceScreen.style.display="none"}function setVolume(){ambientAudio.volume=.26;ambientBackupAudio.volume=.26;collectAudio.volume=.42;sheepAudio.volume=.42;jumpAudio.volume=.35;hitAudio.volume=.35;shimmerAudio.volume=.42}function startAmbientFromGesture(){if(soundOn)return;ambientAudio.play().then(()=>{soundOn=true;soundBtn.textContent="Music: On"}).catch(()=>{ambientBackupAudio.play().then(()=>{soundOn=true;soundBtn.textContent="Music: On"}).catch(()=>{})})}function toggleSound(){if(soundOn){ambientAudio.pause();ambientBackupAudio.pause();soundOn=false;soundBtn.textContent="Music: Off"}else startAmbientFromGesture()}function playSound(name){const map={collect:collectAudio,sheep:sheepAudio,jump:jumpAudio,hit:hitAudio,shimmer:shimmerAudio},s=map[name];if(!s)return;try{s.currentTime=0;s.play().catch(()=>{})}catch(err){}}function makeSparkle(px,py){const s=document.createElement("div");s.className="sparkle-pop";s.style.left=px+"px";s.style.top=py+"px";game.appendChild(s);setTimeout(()=>s.remove(),820)}function landingDust(){for(let i=0;i<7;i++){const d=document.createElement("div");d.className="dust";d.style.left=(x-cameraX+54)+"px";d.style.top=(window.innerHeight-y+92)+"px";d.style.setProperty("--dx",((Math.random()*70)-35)+"px");game.appendChild(d);setTimeout(()=>d.remove(),720)}}function floatText(px,py,text){const t=document.createElement("div");t.className="floatText";t.textContent=text;t.style.left=px+"px";t.style.top=py+"px";game.appendChild(t);setTimeout(()=>t.remove(),900)}function setMessage(text){messageEl.textContent=text}function randomOracle(){const messages=["Slow steps still count as magic.","The safest ledge is the one beneath your paws.","Follow the glow, but trust your timing.","A little courage can cross a big gap.","The forest rewards gentle patience.","Pause, breathe, then leap."];if(Math.random()<.45)setMessage(messages[Math.floor(Math.random()*messages.length)])}function toggleHitboxes(){showHitboxes=!showHitboxes;world.classList.toggle("showHitboxes",showHitboxes);ledgeBtn.textContent=showHitboxes?"Ledges: Shown":"Ledges: Hidden"}
+function checkCollectibles(){const f=rect(foxEl);document.querySelectorAll(".wish").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";wishes++;score+=1;wishCountEl.textContent=wishes;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+20,r.top+20);floatText(r.left,r.top,"+wish");playSound("collect");setMessage("A glowing dandelion wish was gathered.");randomOracle();refillVisibleWishes();checkMissionComplete()}});document.querySelectorAll(".egg").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";eggs++;score+=5;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+20,r.top+20);floatText(r.left,r.top,"+egg");playSound("collect");setMessage("A golden egg was found near the chickens.")}});document.querySelectorAll(".chicken").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";chickens++;score+=8;chickenCountEl.textContent=chickens;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+35,r.top+35);floatText(r.left,r.top,"chicken! +8");playSound("collect");setMessage("A little chicken followed the foxfire path home.")}});document.querySelectorAll(".sheep").forEach(item=>{if(item.dataset.done==="yes")return;if(overlap(f,rect(item))){item.dataset.done="yes";item.style.display="none";sheep++;score+=10;sheepCountEl.textContent=sheep;scoreCountEl.textContent=score;const r=rect(item);makeSparkle(r.left+32,r.top+32);floatText(r.left,r.top,"rescued!");playSound("sheep");setMessage("A fluffy sheep has been rescued.");randomOracle();checkMissionComplete()}});document.querySelectorAll(".mushroom").forEach(item=>{if(item.dataset.hidden==="yes")return;if(overlap(f,rect(item))&&dizzyTimer<=0){dizzyTimer=90;playSound("hit");setMessage("The mushroom made the fox wobble — try landing on top to poof it away.");floatText(f.left,f.top,"wobble!")}})}function checkHazards(){if(hurtCooldown>0){hurtCooldown--;return}const f=rect(foxEl);document.querySelectorAll(".hazardBox,.rock,.boulder").forEach(h=>{if(overlap(f,rect(h)))hurtFox("Ouch!")})}function hurtFox(text){if(hurtCooldown>0)return;hurtCooldown=70;hearts--;heartCountEl.textContent=hearts;playSound("hit");setMessage(text+" Return to the last safe ledge.");floatText(rect(foxEl).left,rect(foxEl).top,text);x=lastSafeX;y=lastSafeY+30;vx=0;vy=0;if(hearts<=0)setTimeout(()=>{setMessage("The forest gives you another try.");resetLevel()},600)}function checkMissionComplete(){const L=levels[currentLevel];if(wishes>=L.wishGoal&&sheep>=L.sheepGoal&&!portalOpen){portalOpen=true;const portal=document.getElementById("levelPortal");if(portal)portal.style.display="block";setMessage(currentLevel===2?"The final treasure is waking. Find the chest!":"The portal has opened. Follow the glow to the next level.");playSound("shimmer");if(currentLevel===2)revealFinalTreasure()}}function checkPortal(){if(!portalOpen)return;const portal=document.getElementById("levelPortal");if(!portal)return;if(overlap(rect(foxEl),rect(portal))){playSound("shimmer");const next=currentLevel+1;if(next<levels.length)changeLevel(next);else{setMessage("You found all three paths of Foxfire Forest.");portalOpen=false;portal.style.display="none"}}}function changeLevel(index){if(editorMode){removeAllResizeHandles()}currentLevel=index;gameStarted=true;choiceScreen.style.display="none";buildLevel(currentLevel);if(editorMode){attachResizeHandlesToAll();refreshEditorOutput()}startAmbientFromGesture()}
+function clearAllGameSaves(){
+  try{
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem("foxfire_custom_level_layouts_v1");
+    localStorage.removeItem("foxfireForestSave_fullSmoothFox_v4");
+  }catch(e){}
+  setMessage("Saved layouts cleared. Reloading clean game...");
+  setTimeout(()=>location.reload(),350);
+}
+
+function resetLevel(){buildLevel(currentLevel);gameStarted=true;choiceScreen.style.display="none"}function setVolume(){ambientAudio.volume=.26;ambientBackupAudio.volume=.26;collectAudio.volume=.42;sheepAudio.volume=.42;jumpAudio.volume=.35;hitAudio.volume=.35;shimmerAudio.volume=.42}function startAmbientFromGesture(){if(soundOn)return;ambientAudio.play().then(()=>{soundOn=true;soundBtn.textContent="Music: On"}).catch(()=>{ambientBackupAudio.play().then(()=>{soundOn=true;soundBtn.textContent="Music: On"}).catch(()=>{})})}function toggleSound(){if(soundOn){ambientAudio.pause();ambientBackupAudio.pause();soundOn=false;soundBtn.textContent="Music: Off"}else startAmbientFromGesture()}function playSound(name){const map={collect:collectAudio,sheep:sheepAudio,jump:jumpAudio,hit:hitAudio,shimmer:shimmerAudio},s=map[name];if(!s)return;try{s.currentTime=0;s.play().catch(()=>{})}catch(err){}}function makeSparkle(px,py){const s=document.createElement("div");s.className="sparkle-pop";s.style.left=px+"px";s.style.top=py+"px";game.appendChild(s);setTimeout(()=>s.remove(),820)}function landingDust(){for(let i=0;i<7;i++){const d=document.createElement("div");d.className="dust";d.style.left=(x-cameraX+54)+"px";d.style.top=(window.innerHeight-y+92)+"px";d.style.setProperty("--dx",((Math.random()*70)-35)+"px");game.appendChild(d);setTimeout(()=>d.remove(),720)}}function floatText(px,py,text){const t=document.createElement("div");t.className="floatText";t.textContent=text;t.style.left=px+"px";t.style.top=py+"px";game.appendChild(t);setTimeout(()=>t.remove(),900)}function setMessage(text){messageEl.textContent=text}function randomOracle(){const messages=["Slow steps still count as magic.","The safest ledge is the one beneath your paws.","Follow the glow, but trust your timing.","A little courage can cross a big gap.","The forest rewards gentle patience.","Pause, breathe, then leap."];if(Math.random()<.45)setMessage(messages[Math.floor(Math.random()*messages.length)])}function toggleHitboxes(){showHitboxes=!showHitboxes;world.classList.toggle("showHitboxes",showHitboxes);ledgeBtn.textContent=showHitboxes?"Ledges: Shown":"Ledges: Hidden"}
 
 let editorMode=false;
 let selectedEditorBox=null;
@@ -548,6 +578,15 @@ function applySavedLayoutForLevel(){
   if(!layout)return;
   levels[currentLevel].platforms=layout.platforms||levels[currentLevel].platforms;
   levels[currentLevel].hazards=layout.hazards||levels[currentLevel].hazards;
+  if(layout.objects){
+    levels[currentLevel].wishes=layout.objects.wishes||levels[currentLevel].wishes;
+    levels[currentLevel].sheep=layout.objects.sheep||levels[currentLevel].sheep;
+    levels[currentLevel].chickens=layout.objects.chickens||levels[currentLevel].chickens;
+    levels[currentLevel].eggs=layout.objects.eggs||levels[currentLevel].eggs;
+    levels[currentLevel].mushrooms=layout.objects.mushrooms||levels[currentLevel].mushrooms;
+    levels[currentLevel].rocks=layout.objects.rocks||levels[currentLevel].rocks;
+    levels[currentLevel].portal=layout.objects.portal||levels[currentLevel].portal;
+  }
 }
 
 function toggleEditor(){
@@ -559,6 +598,7 @@ function toggleEditor(){
     world.classList.add("showHitboxes");
     ledgeBtn.textContent="Ledges: Shown";
     attachResizeHandlesToAll();
+    makeObjectsEditable();
     refreshEditorOutput();
     setMessage("Editor mode: drag ledges, resize with white handles, then save this level.");
   }else{
@@ -809,6 +849,128 @@ function resetEditedLevel(){
   saveLayouts(saved);
   setMessage("Reset saved editor layout for this level. Restarting level...");
   setTimeout(()=>buildLevel(currentLevel),250);
+}
+
+
+function editableObjectSelector(){
+  return ".wish,.sheep,.chicken,.egg,.mushroom,.rock,.portal,.treasure";
+}
+
+function objectBaseY(el){
+  const visual=parseFloat(el.dataset.visualOffset||0);
+  return Math.round((parseFloat(el.style.bottom)||0)-visual);
+}
+
+function objectGroupName(el){
+  if(el.classList.contains("wish"))return "wishes";
+  if(el.classList.contains("sheep"))return "sheep";
+  if(el.classList.contains("chicken"))return "chickens";
+  if(el.classList.contains("egg"))return "eggs";
+  if(el.classList.contains("mushroom"))return "mushrooms";
+  if(el.classList.contains("rock"))return "rocks";
+  if(el.classList.contains("portal"))return "portal";
+  if(el.classList.contains("treasure"))return "treasure";
+  return "objects";
+}
+
+function makeObjectsEditable(){
+  if(!editorMode)return;
+  world.querySelectorAll(editableObjectSelector()).forEach(el=>{
+    if(el.dataset.objectEditorReady==="yes")return;
+    el.dataset.objectEditorReady="yes";
+    el.addEventListener("pointerdown",e=>{
+      if(!editorMode)return;
+      if(e.target.classList.contains("resize-handle"))return;
+      e.preventDefault();
+      e.stopPropagation();
+      if(selectedEditorBox)selectedEditorBox.classList.remove("editorSelected");
+      world.querySelectorAll(".editorObjSelected").forEach(o=>o.classList.remove("editorObjSelected"));
+      selectedEditorBox=el;
+      selectedEditorBox.classList.add("editorObjSelected");
+      dragData={
+        el:el,
+        startX:e.clientX,
+        startY:e.clientY,
+        origLeft:parseFloat(el.style.left)||0,
+        origBottom:parseFloat(el.style.bottom)||0,
+        isObject:true
+      };
+      try{el.setPointerCapture(e.pointerId)}catch(err){}
+    });
+    el.addEventListener("pointermove",e=>{
+      if(!editorMode||!dragData||dragData.el!==el||!dragData.isObject)return;
+      const dx=e.clientX-dragData.startX;
+      const dy=e.clientY-dragData.startY;
+      el.style.left=Math.round(dragData.origLeft+dx)+"px";
+      el.style.bottom=Math.round(dragData.origBottom-dy)+"px";
+      refreshEditorOutput();
+    });
+    el.addEventListener("pointerup",()=>{
+      if(dragData&&dragData.el===el)dragData=null;
+      refreshEditorOutput();
+    });
+  });
+}
+
+function getEditorObjects(){
+  const groups={wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[]};
+  world.querySelectorAll(".wish,.sheep,.chicken,.egg,.mushroom,.rock").forEach(el=>{
+    if(el.dataset.done==="yes")return;
+    if(el.dataset.hidden==="yes")return;
+    const group=objectGroupName(el);
+    if(groups[group]){
+      groups[group].push({x:Math.round(parseFloat(el.style.left)||0),y:objectBaseY(el)});
+    }
+  });
+  const portal=document.getElementById("levelPortal");
+  const portalPos=portal?{x:Math.round(parseFloat(portal.style.left)||0),y:objectBaseY(portal)}:levels[currentLevel].portal;
+  const chest=document.getElementById("finalTreasure");
+  const treasurePos=chest?{x:Math.round(parseFloat(chest.style.left)||0),y:objectBaseY(chest)}:null;
+  return {...groups,portal:portalPos,treasure:treasurePos};
+}
+
+function copyFullLevelCode(){
+  const platforms=getEditorPlatforms();
+  const hazards=getEditorHazards();
+  const obj=getEditorObjects();
+  const out=document.getElementById("editorOutput");
+  out.value="LEVEL: "+levels[currentLevel].name+"\\n"+
+    "platforms:"+JSON.stringify(platforms).replaceAll('"','')+",\\n"+
+    "hazards:"+JSON.stringify(hazards).replaceAll('"','')+",\\n"+
+    "wishes:"+JSON.stringify(obj.wishes).replaceAll('"','')+",\\n"+
+    "sheep:"+JSON.stringify(obj.sheep).replaceAll('"','')+",\\n"+
+    "chickens:"+JSON.stringify(obj.chickens).replaceAll('"','')+",\\n"+
+    "eggs:"+JSON.stringify(obj.eggs).replaceAll('"','')+",\\n"+
+    "mushrooms:"+JSON.stringify(obj.mushrooms).replaceAll('"','')+",\\n"+
+    "rocks:"+JSON.stringify(obj.rocks).replaceAll('"','')+",\\n"+
+    "portal:"+JSON.stringify(obj.portal).replaceAll('"','')+
+    (obj.treasure?",\\ntreasure:"+JSON.stringify(obj.treasure).replaceAll('"',''):"");
+  out.focus();
+  out.select();
+  try{document.execCommand("copy")}catch(e){}
+  setMessage("Full level code copied for "+levels[currentLevel].name+".");
+}
+
+function saveEditedLevel(){
+  const saved=getSavedLayouts();
+  const obj=getEditorObjects();
+  saved[currentLevel]={
+    platforms:getEditorPlatforms(),
+    hazards:getEditorHazards(),
+    objects:obj
+  };
+  saveLayouts(saved);
+  levels[currentLevel].platforms=saved[currentLevel].platforms;
+  levels[currentLevel].hazards=saved[currentLevel].hazards;
+  levels[currentLevel].wishes=obj.wishes;
+  levels[currentLevel].sheep=obj.sheep;
+  levels[currentLevel].chickens=obj.chickens;
+  levels[currentLevel].eggs=obj.eggs;
+  levels[currentLevel].mushrooms=obj.mushrooms;
+  levels[currentLevel].rocks=obj.rocks;
+  levels[currentLevel].portal=obj.portal;
+  refreshEditorOutput();
+  setMessage("Saved ledges and object positions for "+levels[currentLevel].name+".");
 }
 
 setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-idle.png");setCleanBackground(document.getElementById("malePreview"),"foxy-player-idle.png");document.getElementById("femalePreview").style.backgroundSize="110%";document.getElementById("malePreview").style.backgroundSize="145%";init();
