@@ -841,64 +841,20 @@ function startAmbient() {
   sounds.ambient.play().catch(() => {});
 }
 
-/* IMAGE CLEANER */
-const cleanCache = {};
-
-function cleanImage(src, callback) {
-  if (cleanCache[src]) {
-    callback(cleanCache[src]);
-    return;
-  }
-
-  const img = new Image();
-  img.src = src;
-
-  img.onload = () => {
-    const c = document.createElement("canvas");
-    c.width = img.naturalWidth || img.width;
-    c.height = img.naturalHeight || img.height;
-
-    const ctx = c.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0);
-
-    const data = ctx.getImageData(0, 0, c.width, c.height);
-    const d = data.data;
-
-    for (let i = 0; i < d.length; i += 4) {
-      const r = d[i];
-      const g = d[i + 1];
-      const b = d[i + 2];
-      const brightness = (r + g + b) / 3;
-      const diff = Math.max(r, g, b) - Math.min(r, g, b);
-
-      if (brightness > 180 && diff < 60) {
-        d[i + 3] = 0;
-      }
-    }
-
-    ctx.putImageData(data, 0, 0);
-
-    const out = c.toDataURL("image/png");
-    cleanCache[src] = out;
-    callback(out);
-  };
-
-  img.onerror = () => callback(src);
-}
-
+/* IMAGE LOADER — SAFE VERSION
+   This version does NOT remove backgrounds automatically.
+   The old canvas cleaner was eating away pale parts of the art.
+   Use proper transparent PNGs from Canva instead.
+*/
 function setClean(el, src) {
-  cleanImage(src, cleaned => {
-    el.src = cleaned;
-  });
+  el.src = src;
 }
 
 /* HELPERS */
 function create(tag, cls, src, clean = true) {
   const el = document.createElement(tag);
   if (cls) el.className = cls;
-  if (src) {
-    clean ? setClean(el, src) : el.src = src;
-  }
+  if (src) el.src = src;
   world.appendChild(el);
   return el;
 }
@@ -1820,7 +1776,7 @@ document.addEventListener("keyup", e => {
 document.addEventListener("click", () => startAmbient(), { once: true });
 
 document.querySelectorAll("[data-clean]").forEach(img => {
-  setClean(img, img.getAttribute("src"));
+  img.src = img.getAttribute("src");
 });
 
 /* LOAD */
