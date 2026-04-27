@@ -1,166 +1,1840 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-<title>Foxfire Forest</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foxfire Forest Platform Adventure</title>
+
 <style>
-body{margin:0;background:#0b1d13;overflow:hidden;font-family:Georgia;color:#ffe8a8;}
-#game{position:relative;width:100vw;height:100vh;overflow:hidden;}
-
-#fox{
-position:absolute;
-bottom:20px;
-left:50%;
-width:160px;
-transform:translateX(-50%);
-z-index:50;
+* {
+  box-sizing: border-box;
 }
 
-.item{
-position:absolute;
-width:80px;
-pointer-events:none;
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #06110b;
+  font-family: Georgia, serif;
+  color: #ffe8a8;
 }
 
-.side{
-position:absolute;
-right:10px;
-top:10px;
-width:260px;
-background:rgba(0,0,0,0.6);
-padding:15px;
-border-radius:15px;
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #06110b;
 }
 
+/* WORLD */
+#world {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1792px;
+  height: 100vh;
+  z-index: 5;
+  background: url("level-misty-meadows.png") no-repeat left bottom;
+  background-size: 1792px 100vh;
+}
+
+#world::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(circle, rgba(255,231,150,.65) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(255,255,220,.35) 0 1px, transparent 3px);
+  background-size: 150px 170px, 240px 260px;
+  opacity: .38;
+  animation: fireflies 20s linear infinite;
+}
+
+@keyframes fireflies {
+  from { background-position: 0 0, 80px 50px; }
+  to { background-position: 160px -220px, 280px -180px; }
+}
+
+/* TITLE */
+.title {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  width: calc(100vw - 390px);
+  z-index: 80;
+  text-align: center;
+  font-size: clamp(2.1rem, 5vw, 4.5rem);
+  color: #ffe7a6;
+  text-shadow: 0 0 18px rgba(255,220,120,.7), 0 6px 18px #000;
+  pointer-events: none;
+}
+
+.subtitle {
+  position: absolute;
+  top: 88px;
+  left: 0;
+  width: calc(100vw - 390px);
+  z-index: 80;
+  text-align: center;
+  font-size: clamp(1rem, 2vw, 1.45rem);
+  color: #cfeea2;
+  text-shadow: 0 4px 12px #000;
+  pointer-events: none;
+}
+
+/* UI */
+.top-ui {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 460px;
+}
+
+.pill,
+.top-ui a,
+.top-ui button {
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(5,18,10,.86);
+  color: #ffe8a8;
+  border: 1px solid rgba(255,225,150,.42);
+  text-decoration: none;
+  font-family: Georgia, serif;
+  font-size: .95rem;
+  box-shadow: 0 0 12px rgba(255,220,120,.12);
+}
+
+.top-ui button {
+  cursor: pointer;
+}
+
+.volumeBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(5,18,10,.86);
+  border: 1px solid rgba(255,225,150,.42);
+}
+
+.volumeBox input {
+  width: 82px;
+  accent-color: #ffe08a;
+}
+
+/* SIDE PANEL */
+#sidePanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 370px;
+  height: calc(100vh - 24px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  border-radius: 20px;
+  border: 1px solid rgba(255,225,150,.36);
+  background: linear-gradient(rgba(10,27,16,.91), rgba(3,12,8,.9));
+  box-shadow: inset 0 0 22px rgba(255,220,120,.06), 0 0 24px rgba(0,0,0,.35);
+  padding: 15px;
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  color: #ffe7a6;
+  font-size: 1.35rem;
+}
+
+.card p {
+  margin: 0;
+  color: #fff0cc;
+  line-height: 1.35;
+}
+
+.levelCard {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.levelCard.active {
+  border-color: rgba(255,230,130,.9);
+  box-shadow: 0 0 22px rgba(255,220,120,.18);
+}
+
+.thumb {
+  height: 68px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+/* PLAYER */
+#fox {
+  position: absolute;
+  left: 90px;
+  bottom: 180px;
+  width: 190px;
+  height: 190px;
+  z-index: 75;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 90%;
+  animation: foxIdle 1.8s ease-in-out infinite;
+  filter:
+    drop-shadow(0 14px 12px rgba(0,0,0,.55))
+    drop-shadow(0 0 18px rgba(255,205,90,.55));
+}
+
+#fox.running {
+  animation: foxRun .34s ease-in-out infinite;
+}
+
+#fox.jumping {
+  animation: foxJump .55s ease-in-out infinite;
+}
+
+#fox.left {
+  transform: scaleX(-1);
+}
+
+#fox.dizzy {
+  animation: foxDizzy .38s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 14px 12px rgba(0,0,0,.55))
+    drop-shadow(0 0 26px rgba(180,130,255,.8))
+    hue-rotate(25deg);
+}
+
+@keyframes foxIdle {
+  0%,100% { transform: translateY(0) rotate(-.5deg); }
+  50% { transform: translateY(-3px) rotate(.5deg); }
+}
+
+@keyframes foxRun {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-5px) rotate(1deg); }
+}
+
+@keyframes foxJump {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+@keyframes foxDizzy {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(4deg); }
+}
+
+/* PLATFORM HITBOXES */
+.hitbox,
+.hazardBox {
+  position: absolute;
+  z-index: 12;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.showHitboxes .hitbox {
+  opacity: .55;
+  background: rgba(255,230,120,.13);
+  border-top: 3px solid rgba(255,245,180,.95);
+  border-radius: 8px;
+}
+
+/* GAME OBJECTS */
+.item,
+.sheep,
+.mushroom,
+.npc,
+.portal,
+.rock,
+.skyWish,
+.eggCollect,
+.puppyCompanion {
+  position: absolute;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  background: transparent !important;
+}
+
+.item {
+  width: 88px;
+  z-index: 58;
+  filter:
+    drop-shadow(0 0 12px rgba(255,245,190,1))
+    drop-shadow(0 0 34px rgba(255,220,100,.9));
+  animation: wishFloat 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes wishFloat {
+  from { transform: translateY(0) translateX(-6px) rotate(-6deg); }
+  to { transform: translateY(-22px) translateX(12px) rotate(8deg); }
+}
+
+.sheep {
+  width: 190px;
+  z-index: 60;
+  filter:
+    drop-shadow(0 10px 12px rgba(0,0,0,.4))
+    drop-shadow(0 0 22px rgba(255,245,200,.78))
+    drop-shadow(0 0 40px rgba(255,220,120,.35));
+}
+
+.mushroom,
+.npc {
+  width: 165px;
+  z-index: 62;
+  animation: mushroomPulse 1.8s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 10px 12px rgba(0,0,0,.55))
+    drop-shadow(0 0 18px rgba(255,205,120,.45));
+}
+
+.npc {
+  width: 175px;
+}
+
+.mushroom.puffed,
+.npc.puffed {
+  animation: mushroomPuff 1.2s ease-out forwards;
+}
+
+@keyframes mushroomPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.04); }
+}
+
+@keyframes mushroomPuff {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  45% { opacity: .95; transform: translateY(-35px) scale(1.12); }
+  100% { opacity: 0; transform: translateY(-80px) scale(.85); }
+}
+
+.rock {
+  width: 90px;
+  z-index: 57;
+  filter: drop-shadow(0 10px 12px rgba(0,0,0,.55));
+}
+
+.portal {
+  width: 115px;
+  height: 145px;
+  z-index: 56;
+  border-radius: 50% 50% 44% 44%;
+  background:
+    radial-gradient(circle at center, rgba(255,245,175,.95), rgba(110,210,255,.65) 38%, rgba(80,40,170,.28) 68%, transparent 72%);
+  box-shadow:
+    0 0 24px rgba(170,235,255,.9),
+    0 0 70px rgba(150,210,255,.55);
+  animation: portalPulse 1.8s ease-in-out infinite alternate;
+}
+
+.portal::after {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,245,190,.55);
+}
+
+@keyframes portalPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.eggCollect {
+  z-index: 55;
+  width: 46px;
+  height: 58px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 35% 25%, #fffef2 0 18%, #ffe9a8 45%, #d8a24a 100%);
+  box-shadow:
+    0 0 14px rgba(255,236,170,.95),
+    0 0 34px rgba(255,210,90,.55),
+    0 8px 10px rgba(0,0,0,.35);
+  animation: eggBob 2s ease-in-out infinite alternate;
+}
+
+@keyframes eggBob {
+  from { transform: translateY(0) rotate(-3deg); }
+  to { transform: translateY(-12px) rotate(4deg); }
+}
+
+.skyWish {
+  width: 68px;
+  z-index: 38;
+  filter:
+    drop-shadow(0 0 14px rgba(255,245,190,1))
+    drop-shadow(0 0 36px rgba(255,220,100,.9));
+}
+
+.puppyCompanion {
+  z-index: 66;
+  width: 135px;
+  height: 135px;
+  filter:
+    drop-shadow(0 12px 12px rgba(0,0,0,.55))
+    drop-shadow(0 0 18px rgba(255,220,140,.55));
+  animation: puppyIdle 1.8s ease-in-out infinite alternate;
+}
+
+.puppyCompanion.run {
+  animation: puppyRun .38s ease-in-out infinite;
+}
+
+.puppyCompanion.sleep {
+  animation: puppySleep 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes puppyIdle {
+  from { transform: translateY(0) rotate(-1deg); }
+  to { transform: translateY(-4px) rotate(1deg); }
+}
+
+@keyframes puppyRun {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+@keyframes puppySleep {
+  from { transform: translateY(0) scale(.98); }
+  to { transform: translateY(-2px) scale(1); }
+}
+
+.puppyHint {
+  position: absolute;
+  z-index: 69;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #ffe8a8;
+  background: rgba(5,18,10,.78);
+  border: 1px solid rgba(255,225,150,.36);
+  font: 700 13px Georgia, serif;
+  text-shadow: 0 2px 5px #000;
+  pointer-events: none;
+  opacity: .92;
+}
+
+/* MESSAGE */
+.message {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  width: calc(100vw - 420px);
+  z-index: 110;
+  padding: 13px 20px;
+  border-radius: 999px;
+  background: rgba(5,18,10,.88);
+  border: 1px solid rgba(255,225,150,.38);
+  color: #ffe8a8;
+  text-align: center;
+  box-shadow: 0 0 18px rgba(255,220,120,.12);
+}
+
+/* CHOOSE FOX SCREEN */
+.choice-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(255,220,120,.16), transparent 34%), rgba(3,10,6,.92);
+  padding: 20px;
+}
+
+.choice-box {
+  width: min(980px, 94vw);
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(rgba(13,29,18,.96), rgba(4,13,8,.96));
+  border: 1px solid rgba(255,225,150,.45);
+  text-align: center;
+  box-shadow: 0 0 38px rgba(255,220,120,.2);
+}
+
+.choice-box h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+}
+
+.choice-box p {
+  margin: 0 0 22px;
+  color: #fff0cc;
+}
+
+.foxChoices {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.foxCard {
+  width: 280px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,225,150,.34);
+  background: rgba(255,240,190,.07);
+  color: #ffe8a8;
+  cursor: pointer;
+  transition: .25s ease;
+}
+
+.foxCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 26px rgba(255,220,120,.22);
+}
+
+.foxCard img {
+  width: 240px;
+  height: 190px;
+  object-fit: contain;
+  background: transparent !important;
+}
+
+.sparkle-pop {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  z-index: 200;
+  border-radius: 50%;
+  background: #ffe7a1;
+  box-shadow:
+    0 0 12px #ffe7a1,
+    18px -8px 0 -2px rgba(255,231,161,.9),
+    -16px -10px 0 -3px rgba(255,231,161,.8),
+    12px 16px 0 -3px rgba(255,231,161,.75),
+    -20px 13px 0 -4px rgba(255,231,161,.7);
+  pointer-events: none;
+  animation: pop .75s ease forwards;
+}
+
+@keyframes pop {
+  from { opacity: 1; transform: translate(-50%,-50%) scale(.4); }
+  to { opacity: 0; transform: translate(-50%,-50%) scale(3); }
+}
+
+@media(max-width:950px) {
+  #sidePanel { display: none; }
+  .title, .subtitle, .message { width: 100vw; }
+}
 </style>
 </head>
 
 <body>
+
 <div id="game">
+  <div class="title">Foxfire Forest</div>
+  <div class="subtitle">Platform Adventure</div>
 
-<img id="fox" src="foxy-player.png">
+  <div class="top-ui">
+    <a href="fox-game.html">← Fox Drop Game</a>
+    <div class="pill">🌼 <span id="wishCount">0</span>/<span id="wishTotal">0</span></div>
+    <div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepTotal">0</span></div>
+    <div class="pill">🥚 <span id="eggCount">0</span>/<span id="eggTotal">0</span></div>
+    <div class="pill">Level <span id="levelNum">1</span></div>
+    <button onclick="resetSave()">Reset Save</button>
+    <label class="volumeBox">🔊 <input id="volumeControl" type="range" min="0" max="100" value="35"></label>
+  </div>
 
-<div class="side">
-  <div id="speech">Catch the glowing wishes ✨</div>
-  <div id="oracle"></div>
+  <div id="world"></div>
+  <img id="fox" src="foxy-player-idle.png" alt="Fox player">
+
+  <aside id="sidePanel">
+    <div class="card">
+      <h2>Collect & Explore</h2>
+      <p>Collect dandelion wishes, eggs, and rescue fluffy sheep. Nothing takes lives now — everything just nudges you gently.</p>
+    </div>
+
+    <div class="card">
+      <h2>How to Play</h2>
+      <p>Arrow keys move. Space jumps. Shift gives a little foxfire dash. Walk into the glowing portal to go to the next level.</p>
+    </div>
+
+    <div class="card">
+      <h2>Mushroom Folk</h2>
+      <p>The mushroom family wanders the ledges. Touching them makes a spore puff and moves them gently out of your way.</p>
+    </div>
+
+    <div class="card">
+      <h2>Foxfire Oracle</h2>
+      <p id="oracleText">Believe in your light. You can go anywhere.</p>
+    </div>
+
+    <div class="card levelCard active" id="levelCard0" onclick="loadLevel(0,true)">
+      <div class="thumb" style="background-image:url('level-misty-meadows.png')"></div>
+      <div><h2>Misty Meadows</h2><p>Gentle forest beginning.</p></div>
+    </div>
+
+    <div class="card levelCard" id="levelCard1" onclick="loadLevel(1,true)">
+      <div class="thumb" style="background-image:url('level-twilight-hollow.png')"></div>
+      <div><h2>Twilight Hollow</h2><p>More ledges and mushrooms.</p></div>
+    </div>
+
+    <div class="card levelCard" id="levelCard2" onclick="loadLevel(2,true)">
+      <div class="thumb" style="background-image:url('level-moonlit-canopy.png')"></div>
+      <div><h2>Moonlit Canopy</h2><p>Spirit forest challenge.</p></div>
+    </div>
+  </aside>
+
+  <div class="message" id="message">Choose your fox to begin.</div>
 </div>
 
+<div class="choice-screen" id="choiceScreen">
+  <div class="choice-box">
+    <h1>Choose Your Fox</h1>
+    <p>Who will follow the glowing forest path?</p>
+
+    <div class="foxChoices">
+      <div class="foxCard" onclick="chooseFox('male')">
+        <img src="foxy-player-idle.png" alt="Boy fox" data-clean>
+        <h2>Boy Fox ♂</h2>
+      </div>
+
+      <div class="foxCard" onclick="chooseFox('female')">
+        <img src="female-foxy-player-idle.png" alt="Female fox" data-clean>
+        <h2>Female Fox ♀</h2>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
+const game = document.getElementById("game");
+const world = document.getElementById("world");
+const fox = document.getElementById("fox");
+const message = document.getElementById("message");
+const choiceScreen = document.getElementById("choiceScreen");
+const wishCountEl = document.getElementById("wishCount");
+const wishTotalEl = document.getElementById("wishTotal");
+const sheepCountEl = document.getElementById("sheepCount");
+const sheepTotalEl = document.getElementById("sheepTotal");
+const eggCountEl = document.getElementById("eggCount");
+const eggTotalEl = document.getElementById("eggTotal");
+const levelNumEl = document.getElementById("levelNum");
+const oracleText = document.getElementById("oracleText");
+const volumeControl = document.getElementById("volumeControl");
 
-// --- CLEAN IMAGE (removes white backgrounds)
-function clean(src, cb){
-  let img=new Image();
-  img.src=src;
-  img.onload=()=>{
-    let c=document.createElement("canvas");
-    c.width=img.width;
-    c.height=img.height;
-    let ctx=c.getContext("2d");
-    ctx.drawImage(img,0,0);
-    let d=ctx.getImageData(0,0,c.width,c.height);
+const SAVE_KEY = "foxfire_platform_save_peaceful_v2";
+const WORLD_WIDTH = 1792;
 
-    for(let i=0;i<d.data.length;i+=4){
-      let r=d.data[i],g=d.data[i+1],b=d.data[i+2];
-      if((r+g+b)/3>200)d.data[i+3]=0;
-    }
+let keys = {};
+let gameStarted = false;
+let currentLevel = 0;
+let cameraX = 0;
+let foxType = "male";
+let x = 120;
+let y = 210;
+let vx = 0;
+let vy = 0;
+let facing = "right";
+let onGround = false;
+let wasOnGround = false;
+let doubleJumpReady = true;
+let wishes = 0;
+let sheep = 0;
+let eggs = 0;
+let dizzyTimer = 0;
+let lastSafeX = 120;
+let lastSafeY = 210;
 
-    ctx.putImageData(d,0,0);
-    cb(c.toDataURL());
+let movingSheep = [];
+let floatingWishes = [];
+let skyWishes = [];
+let walkingMushrooms = [];
+let dogs = [];
+let rollingRocks = [];
+let puppy = null;
+
+const sounds = {
+  ambient: new Audio("foxglow-glade (2).mp3"),
+  collect: new Audio("sparkle-chime.mp3"),
+  sheep: new Audio("sheep-baa.mp3"),
+  jump: new Audio("soft-poof.mp3"),
+  hurt: new Audio("soft-poof.mp3"),
+  level: new Audio("magical-shimmer.mp3")
+};
+
+sounds.ambient.loop = true;
+
+const puppyImages = {
+  idle: "puppy-sit.png",
+  run: "puppy-run.png",
+  sleep: "puppy-sleep.png",
+  forest: "puppy-forest.png"
+};
+
+const foxImages = {
+  male: {
+    idle: "foxy-player-idle.png",
+    run: "foxy-player-run.png",
+    jump: "foxy-player-jump.png"
+  },
+  female: {
+    idle: "female-foxy-player-idle.png",
+    run: "female-foxy-player-run.png",
+    jump: "foxy-player-female.png"
   }
-}
+};
 
-// --- GAME
-let game=document.getElementById("game");
-let fox=document.getElementById("fox");
-
-let x=window.innerWidth/2;
-
-document.addEventListener("mousemove",e=>{
-  x=e.clientX;
-  fox.style.left=x+"px";
-});
-
-// --- SPAWN ITEMS
-function spawn(type){
-  let el=document.createElement("img");
-  el.className="item";
-
-  if(type==="d"){
-    clean("dandelion-magical.png",src=>el.src=src);
-    el.dataset.type="d";
-  }
-  if(type==="s"){
-    clean("sheep-golden.png",src=>el.src=src);
-    el.dataset.type="s";
-  }
-  if(type==="m"){
-    clean("mushroom-young.png",src=>el.src=src);
-    el.dataset.type="m";
-  }
-
-  el.style.left=Math.random()*window.innerWidth+"px";
-  el.style.top="-100px";
-
-  game.appendChild(el);
-
-  let fall=setInterval(()=>{
-    el.style.top=(el.offsetTop+2)+"px";
-
-    // collision
-    let f=fox.getBoundingClientRect();
-    let i=el.getBoundingClientRect();
-
-    if(i.bottom>f.top && i.left<f.right && i.right>f.left){
-
-      if(el.dataset.type==="d"){
-        document.getElementById("speech").innerText="✨ beautiful catch!";
-      }
-
-      if(el.dataset.type==="s"){
-        document.getElementById("speech").innerText="🐑 rescued sheep!";
-      }
-
-      if(el.dataset.type==="m"){
-        document.getElementById("speech").innerText="🍄 puff! it moves away";
-      }
-
-      el.remove();
-      clearInterval(fall);
-    }
-
-    if(el.offsetTop>window.innerHeight){
-      el.remove();
-      clearInterval(fall);
-    }
-
-  },16);
-}
-
-// --- LOOP
-setInterval(()=>{
-  let r=Math.random();
-
-  if(r<0.6)spawn("d");
-  else if(r<0.85)spawn("s");
-  else spawn("m");
-
-},1200);
-
-// --- ORACLE
-let msgs=[
- "You are doing amazing ✨",
- "Keep going 🌿",
- "Magic follows you 🦊",
- "The forest sees you 🌙"
+const oracleMessages = [
+  "Believe in your light. You can go anywhere.",
+  "Small paws can cross great forests.",
+  "Trust the next ledge. The path appears as you move.",
+  "Slow steps still count as magic.",
+  "Even dizzy moments pass. Breathe and begin again.",
+  "The forest opens for those who keep going.",
+  "A rescued heart always leaves a glow behind."
 ];
 
-setInterval(()=>{
- document.getElementById("oracle").innerText=
-   msgs[Math.floor(Math.random()*msgs.length)];
-},4000);
+const levels = [
+  {
+    name: "Misty Meadows",
+    image: "level-misty-meadows.png",
+    start: [120,175],
+    wishesNeeded: 10,
+    sheepNeeded: 1,
+    eggsNeeded: 3,
+    platforms: [
+      [0,118,650,24],
+      [330,382,335,24],
+      [645,510,285,24],
+      [870,355,300,24],
+      [1085,455,310,24],
+      [1305,268,275,24],
+      [1450,545,315,24],
+      [1640,655,145,24]
+    ],
+    hazards: [[575,118,95,48],[1235,118,95,48]],
+    wishes: [[1,65],[1,165],[2,55],[2,185],[3,95],[4,85],[5,70],[6,80],[0,500],[3,210],[4,180]],
+    eggs: [[0,210],[1,105],[3,130]],
+    sheep: [[6,110,"sheep-golden.png",55,250]],
+    mushrooms: [
+      [1,80,"mushroom-baby.png","dizzy"],
+      [2,100,"mushroom-young.png","dizzy"],
+      [4,120,"mushroom-female.png","helper"],
+      [5,110,"mushroom-elder-good.png","oracle"]
+    ],
+    npc: [[6,190,"mushroom-man.png","npc"]],
+    dogs: [[0,420,80,560]],
+    rocks: [[4,210,35,270]],
+    puppy: [0,180],
+    goal: [7,40]
+  },
+  {
+    name: "Twilight Hollow",
+    image: "level-twilight-hollow.png",
+    start: [120,185],
+    wishesNeeded: 10,
+    sheepNeeded: 2,
+    eggsNeeded: 4,
+    platforms: [
+      [0,118,365,24],
+      [285,285,240,24],
+      [410,502,295,24],
+      [640,378,290,24],
+      [870,526,275,24],
+      [875,735,315,24],
+      [1085,328,305,24],
+      [1295,478,315,24],
+      [1490,610,285,24],
+      [1640,715,130,24]
+    ],
+    hazards: [[550,118,90,48],[1180,118,90,48]],
+    wishes: [[1,70],[2,100],[2,220],[3,70],[4,100],[5,85],[6,70],[7,95],[9,25],[0,210],[3,200]],
+    eggs: [[0,220],[2,135],[4,155],[7,160]],
+    sheep: [[3,110,"sheep-golden.png",50,235],[7,120,"sheep-golden.png",55,245]],
+    mushrooms: [
+      [1,125,"mushroom-young.png","dizzy"],
+      [2,120,"mushroom-baby.png","dizzy"],
+      [4,125,"mushroom-female.png","helper"],
+      [5,135,"mushroom-elder-good.png","oracle"],
+      [6,145,"mushroom-baby.png","dizzy"]
+    ],
+    npc: [[9,25,"mushroom-man.png","npc"]],
+    dogs: [[2,160,30,240],[7,160,40,260]],
+    rocks: [[3,240,20,250],[8,100,30,240]],
+    puppy: [0,170],
+    goal: [9,65]
+  },
+  {
+    name: "Moonlit Canopy",
+    image: "level-moonlit-canopy.png",
+    start: [120,205],
+    wishesNeeded: 10,
+    sheepNeeded: 2,
+    eggsNeeded: 4,
+    platforms: [
+      [0,140,385,24],
+      [285,315,240,24],
+      [395,480,310,24],
+      [635,650,300,24],
+      [860,455,315,24],
+      [1080,330,320,24],
+      [1300,535,320,24],
+      [1490,675,300,24],
+      [1645,782,135,24]
+    ],
+    hazards: [[520,140,90,48],[1000,140,90,48]],
+    wishes: [[1,85],[2,105],[3,70],[3,220],[4,105],[5,95],[6,85],[7,90],[8,35],[0,220],[2,220]],
+    eggs: [[0,235],[2,145],[3,145],[5,160]],
+    sheep: [[3,115,"sheep-golden.png",55,240],[6,120,"sheep-golden.png",55,255]],
+    mushrooms: [
+      [1,125,"mushroom-baby.png","dizzy"],
+      [2,145,"mushroom-female.png","helper"],
+      [4,125,"mushroom-young.png","dizzy"],
+      [5,130,"mushroom-elder-good.png","oracle"],
+      [6,135,"mushroom-baby.png","dizzy"]
+    ],
+    npc: [[7,155,"mushroom-man.png","npc"]],
+    dogs: [[1,160,25,230],[6,170,50,260]],
+    rocks: [[4,260,20,280],[7,240,35,260]],
+    puppy: [0,170],
+    goal: [8,50]
+  }
+];
 
+/* SOUND */
+function setGameVolume(v) {
+  const vol = Math.max(0, Math.min(1, v / 100));
+  Object.values(sounds).forEach(s => {
+    if (s) s.volume = vol;
+  });
+  sounds.ambient.volume = vol * 0.75;
+  localStorage.setItem("foxfire_volume", String(v));
+}
+
+const savedVolume = Number(localStorage.getItem("foxfire_volume") || 35);
+volumeControl.value = savedVolume;
+volumeControl.addEventListener("input", e => setGameVolume(Number(e.target.value)));
+setGameVolume(savedVolume);
+
+function playSound(name) {
+  const s = sounds[name];
+  if (!s) return;
+  try {
+    const c = s.cloneNode();
+    c.volume = s.volume;
+    c.play().catch(() => {});
+  } catch(e) {}
+}
+
+function startAmbient() {
+  sounds.ambient.play().catch(() => {});
+}
+
+/* IMAGE CLEANER */
+const cleanCache = {};
+
+function cleanImage(src, callback) {
+  if (cleanCache[src]) {
+    callback(cleanCache[src]);
+    return;
+  }
+
+  const img = new Image();
+  img.src = src;
+
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = img.naturalWidth || img.width;
+    c.height = img.naturalHeight || img.height;
+
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0);
+
+    const data = ctx.getImageData(0, 0, c.width, c.height);
+    const d = data.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i];
+      const g = d[i + 1];
+      const b = d[i + 2];
+      const brightness = (r + g + b) / 3;
+      const diff = Math.max(r, g, b) - Math.min(r, g, b);
+
+      if (brightness > 180 && diff < 60) {
+        d[i + 3] = 0;
+      }
+    }
+
+    ctx.putImageData(data, 0, 0);
+
+    const out = c.toDataURL("image/png");
+    cleanCache[src] = out;
+    callback(out);
+  };
+
+  img.onerror = () => callback(src);
+}
+
+function setClean(el, src) {
+  cleanImage(src, cleaned => {
+    el.src = cleaned;
+  });
+}
+
+/* HELPERS */
+function create(tag, cls, src, clean = true) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (src) {
+    clean ? setClean(el, src) : el.src = src;
+  }
+  world.appendChild(el);
+  return el;
+}
+
+function addHitbox(px, py, w, h, cls = "hitbox") {
+  const el = create("div", cls, null, false);
+  el.style.left = px + "px";
+  el.style.bottom = py + "px";
+  el.style.width = w + "px";
+  el.style.height = h + "px";
+  el.dataset.x = px;
+  el.dataset.y = py;
+  el.dataset.w = w;
+  el.dataset.h = h;
+  return el;
+}
+
+function addImg(cls, src, px, py, clean = true) {
+  const el = create("img", cls, src, clean);
+  el.style.left = px + "px";
+  el.style.bottom = py + "px";
+  return el;
+}
+
+function platformByIndex(idx) {
+  const L = levels[currentLevel];
+  if (!L || !L.platforms[idx]) return null;
+  const p = L.platforms[idx];
+  return { x: p[0], y: p[1], w: p[2], h: p[3], top: p[1] + p[3] };
+}
+
+function snapToPlatform(_, platformIndex, offsetX, lift = 8) {
+  const p = platformByIndex(platformIndex);
+  if (!p) return { x: offsetX, y: 200 };
+  return { x: p.x + offsetX, y: p.top + lift };
+}
+
+function setMessage(t) {
+  message.textContent = t;
+}
+
+function randomOracle() {
+  oracleText.textContent = oracleMessages[Math.floor(Math.random() * oracleMessages.length)];
+}
+
+function sparkle(px, py) {
+  const s = document.createElement("div");
+  s.className = "sparkle-pop";
+  s.style.left = px + "px";
+  s.style.top = py + "px";
+  game.appendChild(s);
+  setTimeout(() => s.remove(), 800);
+}
+
+function collectRect(el, pad = 0) {
+  const r = el.getBoundingClientRect();
+  return {
+    left: r.left - pad,
+    right: r.right + pad,
+    top: r.top - pad,
+    bottom: r.bottom + pad
+  };
+}
+
+function overlap(a, b) {
+  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+}
+
+function foxRect() {
+  const r = fox.getBoundingClientRect();
+  return {
+    left: r.left + 45,
+    right: r.right - 45,
+    top: r.top + 35,
+    bottom: r.bottom - 18
+  };
+}
+
+/* SAVE */
+function saveGame() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify({
+    level: currentLevel,
+    foxType,
+    chosen: gameStarted
+  }));
+
+  localStorage.setItem(
+    "foxfire_unlocked_level",
+    String(Math.max(Number(localStorage.getItem("foxfire_unlocked_level") || 0), currentLevel))
+  );
+}
+
+function loadSave() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}");
+
+    if (typeof d.level === "number") {
+      currentLevel = Math.min(d.level, levels.length - 1);
+    }
+
+    if (d.foxType) {
+      foxType = d.foxType;
+    }
+
+    if (d.chosen) {
+      choiceScreen.style.display = "none";
+      gameStarted = true;
+    }
+  } catch(e) {}
+}
+
+function resetSave() {
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem("foxfire_unlocked_level");
+  location.reload();
+}
+
+/* FOX */
+function setFoxImage(state) {
+  const src = foxImages[foxType][state] || foxImages[foxType].idle;
+  setClean(fox, src);
+}
+
+function chooseFox(type) {
+  startAmbient();
+  foxType = type;
+  choiceScreen.style.display = "none";
+  gameStarted = true;
+  setFoxImage("idle");
+  setMessage("Use arrow keys to run, space to jump, and Shift to dash.");
+  saveGame();
+}
+
+/* PUPPY */
+function createPuppy(platformIndex, offsetX) {
+  const pos = snapToPlatform(0, platformIndex, offsetX, 8);
+
+  const el = addImg("puppyCompanion", puppyImages.idle, pos.x, pos.y);
+
+  const hint = document.createElement("div");
+  hint.className = "puppyHint";
+  hint.textContent = "Puppy helper";
+  world.appendChild(hint);
+
+  puppy = {
+    el,
+    hint,
+    x: pos.x,
+    y: pos.y,
+    targetX: pos.x,
+    dir: 1,
+    state: "idle",
+    timer: 0,
+    helpCooldown: 0
+  };
+}
+
+function setPuppyImage(state) {
+  if (!puppy) return;
+
+  puppy.state = state;
+  puppy.el.classList.toggle("run", state === "run");
+  puppy.el.classList.toggle("sleep", state === "sleep");
+
+  setClean(puppy.el, puppyImages[state] || puppyImages.idle);
+}
+
+function puppySpeak(text) {
+  if (!puppy) return;
+
+  puppy.hint.textContent = text;
+  puppy.hint.style.opacity = ".95";
+
+  clearTimeout(puppy.speechTimer);
+
+  puppy.speechTimer = setTimeout(() => {
+    if (puppy) puppy.hint.style.opacity = ".35";
+  }, 1800);
+}
+
+function updatePuppy() {
+  if (!puppy || !gameStarted) return;
+
+  puppy.timer++;
+
+  if (puppy.helpCooldown > 0) puppy.helpCooldown--;
+
+  const desiredX = x - 120;
+
+  puppy.targetX = Math.max(40, Math.min(WORLD_WIDTH - 90, desiredX));
+
+  const dx = puppy.targetX - puppy.x;
+  const dist = Math.abs(dx);
+
+  let nearDanger = false;
+
+  dogs.forEach(d => {
+    if (Math.abs(d.x - x) < 210) nearDanger = true;
+  });
+
+  rollingRocks.forEach(r => {
+    if (Math.abs(r.x - x) < 180) nearDanger = true;
+  });
+
+  if (nearDanger && puppy.helpCooldown <= 0) {
+    puppySpeak("Woof! Watch your paws!");
+    puppy.helpCooldown = 140;
+    playSound("sheep");
+  }
+
+  if (dist > 26) {
+    puppy.x += Math.sign(dx) * Math.min(3.3, dist * .055);
+    puppy.dir = dx < 0 ? -1 : 1;
+    if (puppy.state !== "run") setPuppyImage("run");
+  } else {
+    if (puppy.timer % 420 > 340) {
+      if (puppy.state !== "sleep") setPuppyImage("sleep");
+    } else {
+      if (puppy.state !== "idle") setPuppyImage("idle");
+    }
+  }
+
+  let bestY = puppy.y;
+  let bestDist = 9999;
+
+  levels[currentLevel].platforms.forEach(p => {
+    const left = p[0];
+    const right = p[0] + p[2];
+    const top = p[1] + p[3];
+
+    if (puppy.x > left - 30 && puppy.x < right + 30) {
+      const dd = Math.abs(top - puppy.y);
+      if (dd < bestDist) {
+        bestDist = dd;
+        bestY = top + 8;
+      }
+    }
+  });
+
+  puppy.y += (bestY - puppy.y) * .12;
+
+  puppy.el.style.left = puppy.x + "px";
+  puppy.el.style.bottom = puppy.y + "px";
+  puppy.el.style.transform = puppy.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+
+  puppy.hint.style.left = (puppy.x - cameraX + 35) + "px";
+  puppy.hint.style.top = (window.innerHeight - puppy.y - 165) + "px";
+}
+
+/* OBJECTS */
+function addEgg(x, y) {
+  const e = document.createElement("div");
+  e.className = "eggCollect";
+  e.style.left = x + "px";
+  e.style.bottom = y + "px";
+  world.appendChild(e);
+  return e;
+}
+
+function addDog(platformIndex, offsetX, minOffset, maxOffset) {
+  const plat = platformByIndex(platformIndex);
+  const pos = snapToPlatform(0, platformIndex, offsetX, 8);
+
+  const el = addImg("rock", "rock-chibi.png", pos.x, pos.y);
+
+  dogs.push({
+    el,
+    x: pos.x,
+    y: pos.y,
+    minX: plat.x + minOffset,
+    maxX: plat.x + maxOffset,
+    dir: 1,
+    speed: .45,
+    cooldown: 0
+  });
+}
+
+function addRollingRock(platformIndex, offsetX, minOffset, maxOffset) {
+  const plat = platformByIndex(platformIndex);
+  const pos = snapToPlatform(0, platformIndex, offsetX, 0);
+
+  const el = addImg("rock", "rock-magical.png", pos.x, pos.y);
+
+  rollingRocks.push({
+    el,
+    x: pos.x,
+    y: pos.y,
+    minX: plat.x + minOffset,
+    maxX: plat.x + maxOffset,
+    dir: 1,
+    speed: .75,
+    rot: 0,
+    cooldown: 0
+  });
+}
+
+function spawnSkyWishes(count = 20) {
+  for (let i = 0; i < count; i++) {
+    const el = addImg("skyWish", "dandelion-magical.png", Math.random() * WORLD_WIDTH, window.innerHeight + Math.random() * 420);
+
+    const obj = {
+      el,
+      x: Math.random() * WORLD_WIDTH,
+      y: window.innerHeight + Math.random() * 420,
+      speed: .35 + Math.random() * .55,
+      drift: .5 + Math.random() * 1.4,
+      phase: Math.random() * 100,
+      size: 52 + Math.random() * 38
+    };
+
+    skyWishes.push(obj);
+    el.style.width = obj.size + "px";
+  }
+}
+
+/* LEVEL */
+function loadLevel(i, clicked = false) {
+  const unlocked = Number(localStorage.getItem("foxfire_unlocked_level") || 0);
+
+  if (clicked && i > unlocked) {
+    setMessage("This forest path is still locked.");
+    return;
+  }
+
+  currentLevel = i;
+
+  const L = levels[i];
+
+  world.innerHTML = "";
+  world.style.backgroundImage = `url("${L.image}")`;
+
+  movingSheep = [];
+  floatingWishes = [];
+  skyWishes = [];
+  walkingMushrooms = [];
+  dogs = [];
+  rollingRocks = [];
+  puppy = null;
+
+  x = L.start[0];
+  y = L.start[1];
+  vx = 0;
+  vy = 0;
+  wishes = 0;
+  sheep = 0;
+  eggs = 0;
+  dizzyTimer = 0;
+  lastSafeX = x;
+  lastSafeY = y;
+
+  L.platforms.forEach(p => addHitbox(...p));
+  L.hazards.forEach(p => addHitbox(...p, "hazardBox"));
+
+  L.wishes.forEach(p => {
+    const pos = snapToPlatform(0, p[0], p[1], 44);
+
+    const el = addImg("item wish", "dandelion-magical.png", pos.x, pos.y);
+
+    floatingWishes.push({
+      el,
+      baseX: pos.x,
+      baseY: pos.y,
+      t: Math.random() * 100,
+      drift: 28 + Math.random() * 34,
+      lift: 24 + Math.random() * 34
+    });
+  });
+
+  L.eggs.forEach(p => {
+    const pos = snapToPlatform(0, p[0], p[1], 34);
+    addEgg(pos.x, pos.y);
+  });
+
+  if (L.dogs) {
+    L.dogs.forEach(p => addDog(p[0], p[1], p[2], p[3]));
+  }
+
+  if (L.rocks) {
+    L.rocks.forEach(p => addRollingRock(p[0], p[1], p[2], p[3]));
+  }
+
+  if (L.puppy) {
+    createPuppy(L.puppy[0], L.puppy[1]);
+  }
+
+  L.sheep.forEach((p, n) => {
+    const plat = platformByIndex(p[0]);
+    const pos = snapToPlatform(0, p[0], p[1], 8);
+
+    const el = addImg("sheep rescue", p[2], pos.x, pos.y);
+
+    movingSheep.push({
+      el,
+      x: pos.x,
+      y: pos.y,
+      minX: plat.x + p[3],
+      maxX: plat.x + p[4],
+      dir: n % 2 ? -1 : 1,
+      hop: Math.random() * 100,
+      speed: .35 + Math.random() * .22
+    });
+  });
+
+  L.mushrooms.forEach((p, n) => {
+    const plat = platformByIndex(p[0]);
+    const pos = snapToPlatform(0, p[0], p[1], 10);
+
+    const el = addImg("mushroom mushroomPerson", p[2], pos.x, pos.y);
+    el.dataset.effect = p[3];
+
+    walkingMushrooms.push({
+      el,
+      x: pos.x,
+      y: pos.y,
+      minX: plat.x + 25,
+      maxX: plat.x + plat.w - 120,
+      dir: n % 2 ? -1 : 1,
+      step: Math.random() * 100,
+      speed: .18 + Math.random() * .24,
+      hidden: false,
+      respawn: 0
+    });
+  });
+
+  L.npc.forEach((p, n) => {
+    const plat = platformByIndex(p[0]);
+    const pos = snapToPlatform(0, p[0], p[1], 10);
+
+    const el = addImg("npc mushroomNpc", p[2], pos.x, pos.y);
+    el.dataset.effect = "npc";
+
+    walkingMushrooms.push({
+      el,
+      x: pos.x,
+      y: pos.y,
+      minX: plat.x + 20,
+      maxX: plat.x + plat.w - 140,
+      dir: 1,
+      step: Math.random() * 100,
+      speed: .16 + Math.random() * .2,
+      hidden: false,
+      respawn: 0
+    });
+  });
+
+  const g = snapToPlatform(0, L.goal[0], L.goal[1], 18);
+
+  const portal = document.createElement("div");
+  portal.className = "portal";
+  portal.style.left = g.x + "px";
+  portal.style.bottom = g.y + "px";
+  world.appendChild(portal);
+
+  spawnSkyWishes(20);
+
+  wishTotalEl.textContent = L.wishesNeeded;
+  sheepTotalEl.textContent = L.sheepNeeded;
+  eggTotalEl.textContent = L.eggsNeeded || 0;
+  wishCountEl.textContent = wishes;
+  sheepCountEl.textContent = sheep;
+  eggCountEl.textContent = eggs;
+  levelNumEl.textContent = currentLevel + 1;
+
+  document.querySelectorAll(".levelCard").forEach(c => c.classList.remove("active"));
+
+  const card = document.getElementById("levelCard" + currentLevel);
+  if (card) card.classList.add("active");
+
+  randomOracle();
+
+  setMessage(L.name + " begins. Collect, explore, and step through the glowing portal.");
+
+  fox.classList.remove("running", "jumping", "dizzy");
+
+  setFoxImage("idle");
+  saveGame();
+  updateCamera();
+}
+
+/* MOVEMENT */
+function updateCamera() {
+  const panel = window.innerWidth > 950 ? 390 : 0;
+  const view = window.innerWidth - panel;
+
+  cameraX = Math.max(0, Math.min(x - view * .38, WORLD_WIDTH - view));
+
+  world.style.transform = `translateX(${-cameraX}px)`;
+  fox.style.left = (x - cameraX) + "px";
+}
+
+function nudgeFox(text) {
+  setMessage(text);
+  x = lastSafeX;
+  y = lastSafeY + 25;
+  vx = 0;
+  vy = 0;
+
+  sparkle(fox.getBoundingClientRect().left + 75, fox.getBoundingClientRect().top + 80);
+}
+
+/* UPDATES */
+function updateFloatingWishes() {
+  floatingWishes.forEach(w => {
+    if (w.el.dataset.done) return;
+
+    w.t += .038;
+
+    w.el.style.left = (w.baseX + Math.sin(w.t * 1.4) * w.drift) + "px";
+    w.el.style.bottom = (w.baseY + Math.cos(w.t * 1.8) * w.lift) + "px";
+  });
+}
+
+function updateSkyWishes() {
+  skyWishes.forEach(w => {
+    w.phase += .025;
+    w.y -= w.speed;
+    w.x += Math.sin(w.phase) * w.drift;
+
+    if (w.y < -120) {
+      w.y = window.innerHeight + 80 + Math.random() * 320;
+      w.x = Math.random() * WORLD_WIDTH;
+    }
+
+    w.el.style.left = w.x + "px";
+    w.el.style.bottom = w.y + "px";
+    w.el.style.transform = `rotate(${Math.sin(w.phase) * 18}deg)`;
+  });
+}
+
+function updateMovingSheep() {
+  movingSheep.forEach(s => {
+    if (s.el.dataset.done) return;
+
+    s.x += s.dir * s.speed;
+
+    if (s.x < s.minX || s.x > s.maxX) {
+      s.dir *= -1;
+      s.el.style.transform = s.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+    }
+
+    s.hop += .08;
+
+    s.el.style.left = s.x + "px";
+    s.el.style.bottom = (s.y + Math.abs(Math.sin(s.hop)) * 18) + "px";
+  });
+}
+
+function updateWalkingMushrooms() {
+  walkingMushrooms.forEach(m => {
+    if (m.hidden) {
+      m.respawn--;
+
+      if (m.respawn <= 0) {
+        m.hidden = false;
+        m.el.dataset.done = "";
+        m.el.classList.remove("puffed");
+        m.el.style.display = "block";
+        m.el.style.opacity = "1";
+      }
+
+      return;
+    }
+
+    m.x += m.dir * m.speed;
+
+    if (m.x < m.minX || m.x > m.maxX) {
+      m.dir *= -1;
+      m.el.style.transform = m.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+    }
+
+    m.step += .08;
+
+    const bob = Math.abs(Math.sin(m.step)) * 8;
+
+    m.el.style.left = m.x + "px";
+    m.el.style.bottom = (m.y + bob) + "px";
+  });
+}
+
+function updateDogs() {
+  dogs.forEach(d => {
+    d.x += d.dir * d.speed;
+
+    if (d.x < d.minX || d.x > d.maxX) {
+      d.dir *= -1;
+      d.el.style.transform = d.dir < 0 ? "scaleX(-1)" : "scaleX(1)";
+    }
+
+    d.el.style.left = d.x + "px";
+    d.el.style.bottom = d.y + "px";
+  });
+}
+
+function updateRollingRocks() {
+  rollingRocks.forEach(r => {
+    r.x += r.dir * r.speed;
+    r.rot += r.dir * 4;
+
+    if (r.x < r.minX || r.x > r.maxX) {
+      r.dir *= -1;
+    }
+
+    r.el.style.left = r.x + "px";
+    r.el.style.bottom = r.y + "px";
+    r.el.style.transform = `rotate(${r.rot}deg)`;
+  });
+}
+
+/* FINISH */
+function finishLevel() {
+  const L = levels[currentLevel];
+
+  if (wishes < L.wishesNeeded || sheep < L.sheepNeeded || eggs < (L.eggsNeeded || 0)) {
+    setMessage("The moon gate needs more wishes, eggs, and rescued sheep first.");
+    return;
+  }
+
+  playSound("level");
+  sparkle(window.innerWidth / 2, window.innerHeight / 2);
+
+  setMessage("Level complete! The next forest path is opening.");
+  oracleText.textContent = "A new path opens because you kept going.";
+
+  const next = currentLevel + 1;
+
+  localStorage.setItem("foxfire_unlocked_level", String(next));
+
+  setTimeout(() => {
+    if (next < levels.length) {
+      loadLevel(next);
+    } else {
+      setMessage("You completed Foxfire Forest! The forest remembers your light.");
+      oracleText.textContent = "You carried your glow all the way home.";
+    }
+  }, 900);
+}
+
+/* MAIN LOOP */
+function gameLoop() {
+  updateFloatingWishes();
+  updateSkyWishes();
+  updateMovingSheep();
+  updateWalkingMushrooms();
+  updateDogs();
+  updateRollingRocks();
+  updatePuppy();
+
+  if (gameStarted) {
+    const speed = dizzyTimer > 0 ? 2.4 : 5.4;
+
+    if (keys["ArrowLeft"]) {
+      vx = -speed;
+      facing = "left";
+      if (onGround) setFoxImage("run");
+    } else if (keys["ArrowRight"]) {
+      vx = speed;
+      facing = "right";
+      if (onGround) setFoxImage("run");
+    } else {
+      vx *= .78;
+      if (Math.abs(vx) < .08) vx = 0;
+      if (onGround) setFoxImage("idle");
+    }
+
+    x += vx;
+    vy -= .72;
+    y += vy;
+
+    wasOnGround = onGround;
+    onGround = false;
+
+    const fw = 138;
+
+    document.querySelectorAll(".hitbox").forEach(p => {
+      const px = +p.dataset.x;
+      const py = +p.dataset.y;
+      const pw = +p.dataset.w;
+      const ph = +p.dataset.h;
+      const top = py + ph;
+
+      if (x + fw - 35 > px + 15 && x + 35 < px + pw - 15 && y <= top + 28 && y >= top - 42 && vy <= 0) {
+        y = top;
+        vy = 0;
+        onGround = true;
+        doubleJumpReady = true;
+        lastSafeX = x;
+        lastSafeY = y;
+      }
+    });
+
+    fox.style.bottom = y + "px";
+    fox.classList.toggle("left", facing === "left");
+    fox.classList.toggle("dizzy", dizzyTimer > 0);
+    fox.classList.toggle("running", onGround && Math.abs(vx) > .35);
+    fox.classList.toggle("jumping", !onGround);
+
+    if (dizzyTimer > 0) dizzyTimer--;
+
+    const f = foxRect();
+
+    document.querySelectorAll(".hazardBox").forEach(h => {
+      if (overlap(f, h.getBoundingClientRect())) {
+        nudgeFox("A tricky patch! The fox steps back gently.");
+      }
+    });
+
+    document.querySelectorAll(".wish").forEach(item => {
+      if (item.dataset.done) return;
+
+      if (overlap(f, collectRect(item, 26))) {
+        item.dataset.done = "yes";
+        item.style.display = "none";
+        wishes++;
+        playSound("collect");
+        wishCountEl.textContent = wishes;
+
+        const r = item.getBoundingClientRect();
+        sparkle(r.left + 30, r.top + 30);
+
+        setMessage("A glowing dandelion wish was gathered.");
+        randomOracle();
+        saveGame();
+      }
+    });
+
+    document.querySelectorAll(".rescue").forEach(item => {
+      if (item.dataset.done) return;
+
+      if (overlap(f, collectRect(item, 20))) {
+        item.dataset.done = "yes";
+        item.style.display = "none";
+        sheep++;
+        playSound("sheep");
+        sheepCountEl.textContent = sheep;
+
+        const r = item.getBoundingClientRect();
+        sparkle(r.left + 70, r.top + 60);
+
+        setMessage("You rescued a fluffy sheep.");
+        oracleText.textContent = "Kindness is one of the oldest kinds of magic.";
+        saveGame();
+      }
+    });
+
+    document.querySelectorAll(".eggCollect").forEach(item => {
+      if (item.dataset.done) return;
+
+      if (overlap(f, collectRect(item, 16))) {
+        item.dataset.done = "yes";
+        item.style.display = "none";
+        eggs++;
+        eggCountEl.textContent = eggs;
+        playSound("collect");
+
+        const r = item.getBoundingClientRect();
+        sparkle(r.left + 20, r.top + 22);
+
+        setMessage("A warm golden egg was found.");
+        oracleText.textContent = "Even the smallest treasure carries a little sun.";
+        saveGame();
+      }
+    });
+
+    dogs.forEach(d => {
+      if (d.cooldown > 0) {
+        d.cooldown--;
+        return;
+      }
+
+      if (overlap(f, collectRect(d.el, 10))) {
+        d.cooldown = 90;
+        nudgeFox("A rolling stone nudges the fox back. No harm done.");
+      }
+    });
+
+    rollingRocks.forEach(r => {
+      if (r.cooldown > 0) {
+        r.cooldown--;
+        return;
+      }
+
+      if (overlap(f, collectRect(r.el, 10))) {
+        r.cooldown = 90;
+        nudgeFox("A rolling rock bumps the fox gently aside.");
+      }
+    });
+
+    document.querySelectorAll(".mushroomPerson,.mushroomNpc").forEach(m => {
+      if (m.dataset.done) return;
+
+      if (overlap(f, collectRect(m, 16))) {
+        const e = m.dataset.effect;
+        const r = m.getBoundingClientRect();
+
+        sparkle(r.left + r.width / 2, r.top + r.height / 2);
+
+        if (e === "dizzy") {
+          dizzyTimer = 150;
+          setMessage("Mushroom spores! The fox feels dizzy and slow for a moment.");
+          oracleText.textContent = "Move gently. Strange feelings pass.";
+        }
+
+        if (e === "helper") {
+          setMessage("The mushroom mother puffs aside and leaves a gentle clue.");
+          oracleText.textContent = "The safest path is not always the straightest.";
+        }
+
+        if (e === "oracle") {
+          setMessage("The elder mushroom gives a soft spore blessing and steps aside.");
+          oracleText.textContent = "You do not need to rush. Even slow magic reaches the moon gate.";
+        }
+
+        if (e === "npc") {
+          setMessage("The mushroom man raises his lantern, puffs away, and shows the path.");
+          oracleText.textContent = "A guide appears when the path feels strange.";
+        }
+
+        m.dataset.done = "yes";
+        m.classList.add("puffed");
+
+        const obj = walkingMushrooms.find(mm => mm.el === m);
+
+        if (obj) {
+          obj.hidden = true;
+          obj.respawn = 330;
+
+          setTimeout(() => {
+            m.style.display = "none";
+          }, 900);
+        }
+      }
+    });
+
+    if (puppy) {
+      document.querySelectorAll(".wish,.eggCollect").forEach(item => {
+        if (item.dataset.done) return;
+
+        const ir = item.getBoundingClientRect();
+        const px = puppy.x - cameraX + 55;
+        const py = window.innerHeight - puppy.y - 55;
+        const cx = ir.left + ir.width / 2;
+        const cy = ir.top + ir.height / 2;
+
+        if (Math.hypot(cx - px, cy - py) < 48) {
+          item.dataset.done = "yes";
+          item.style.display = "none";
+
+          if (item.classList.contains("wish")) {
+            wishes++;
+            wishCountEl.textContent = wishes;
+            setMessage("Puppy nudged a dandelion wish to you!");
+          } else {
+            eggs++;
+            eggCountEl.textContent = eggs;
+            setMessage("Puppy found a golden egg!");
+          }
+
+          playSound("collect");
+          sparkle(cx, cy);
+          saveGame();
+        }
+      });
+    }
+
+    const goal = document.querySelector(".portal");
+
+    if (goal && overlap(f, collectRect(goal, 6))) {
+      finishLevel();
+    }
+
+    if (y < -170) {
+      nudgeFox("The forest lifts you back onto the path.");
+    }
+
+    x = Math.max(0, Math.min(x, WORLD_WIDTH - 145));
+
+    updateCamera();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+/* CONTROLS */
+document.addEventListener("keydown", e => {
+  keys[e.key] = true;
+
+  if ((e.key === " " || e.key === "ArrowUp") && gameStarted) {
+    e.preventDefault();
+
+    if (onGround) {
+      vy = 16;
+      playSound("jump");
+      onGround = false;
+      doubleJumpReady = true;
+      setFoxImage("jump");
+    } else if (doubleJumpReady) {
+      vy = 14;
+      playSound("jump");
+      doubleJumpReady = false;
+      setFoxImage("jump");
+
+      const fr = fox.getBoundingClientRect();
+      sparkle(fr.left + 80, fr.top + 90);
+    }
+  }
+
+  if (e.key === "Shift" && gameStarted) {
+    x += facing === "right" ? 70 : -70;
+
+    const fr = fox.getBoundingClientRect();
+    sparkle(fr.left + 80, fr.top + 90);
+  }
+});
+
+document.addEventListener("keyup", e => {
+  keys[e.key] = false;
+});
+
+document.addEventListener("click", () => startAmbient(), { once: true });
+
+document.querySelectorAll("[data-clean]").forEach(img => {
+  setClean(img, img.getAttribute("src"));
+});
+
+/* LOAD */
+loadSave();
+loadLevel(currentLevel);
+
+if (gameStarted) {
+  choiceScreen.style.display = "none";
+  setMessage("Saved game loaded. Keep following the foxfire path.");
+} else {
+  choiceScreen.style.display = "flex";
+}
+
+gameLoop();
 </script>
 
 </body>
