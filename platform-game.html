@@ -1,127 +1,1365 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fox Platform Adventure</title>
+
 <style>
-body { margin:0; overflow:hidden; background:#102414; font-family:Georgia; color:#fff; }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #102414;
+  color: #fff7dd;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+#gameWrap {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background: radial-gradient(circle at top, #3d5a34, #102414 72%);
+}
+
+/* ======================================================
+   SIDEBAR
+====================================================== */
 
 #sidebar {
-  position:absolute; left:0; top:0; bottom:0; width:250px;
-  background:#0c1d12; padding:15px; z-index:10;
+  width: 270px;
+  min-width: 270px;
+  height: 100vh;
+  padding: 16px;
+  background: rgba(9, 27, 15, 0.92);
+  border-right: 2px solid rgba(255, 230, 160, 0.25);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+  z-index: 50;
+  overflow-y: auto;
 }
+
+#sidebar h1 {
+  font-size: 24px;
+  line-height: 1.05;
+  margin: 0 0 12px;
+  color: #ffe8a8;
+  text-shadow: 0 0 12px rgba(255, 209, 91, 0.8);
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 230, 160, 0.22);
+  border-radius: 18px;
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.panel p {
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  margin: 4px 3px 4px 0;
+  background: linear-gradient(#ffe9a9, #d59b35);
+  color: #281607;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255, 212, 108, 0.35);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.smallNote {
+  font-size: 12px;
+  opacity: 0.82;
+}
+
+/* ======================================================
+   GAME AREA
+====================================================== */
 
 #game {
-  position:absolute; left:250px; right:0; top:0; bottom:0;
-  overflow:hidden;
+  position: relative;
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+  outline: none;
+  user-select: none;
 }
+
+/* ======================================================
+   BACKGROUNDS
+====================================================== */
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+#bgBack {
+  background-image:
+    linear-gradient(rgba(10, 26, 14, 0.05), rgba(10, 26, 14, 0.28)),
+    url("forest-back.png");
+  opacity: 0.96;
+  z-index: 0;
+}
+
+#bgMid {
+  background-image: url("forest-mid.png");
+  opacity: 0.9;
+  z-index: 1;
+}
+
+#bgFront {
+  background-image: url("forest-front.png");
+  opacity: 0.93;
+  z-index: 2;
+}
+
+#fallbackGlow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 235, 150, 0.16), transparent 22%),
+    radial-gradient(circle at 18% 78%, rgba(145, 220, 140, 0.10), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(170, 230, 160, 0.08), transparent 26%);
+  pointer-events: none;
+}
+
+#mist {
+  position: absolute;
+  inset: -20%;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 70%, rgba(255,255,255,.08), transparent 25%),
+    radial-gradient(circle at 65% 42%, rgba(255,255,255,.07), transparent 30%),
+    radial-gradient(circle at 86% 80%, rgba(255,255,255,.045), transparent 26%);
+  animation: mistMove 16s ease-in-out infinite alternate;
+}
+
+@keyframes mistMove {
+  from { transform: translateX(-3%); }
+  to { transform: translateX(3%); }
+}
+
+/* ======================================================
+   REAL PLATFORMS
+   These are the REAL collision ledges.
+   They are visible on purpose so there is no guessing.
+====================================================== */
 
 .platform {
-  position:absolute;
-  height:30px;
-  background:#4a6b2a;
-  border-radius:20px;
-  box-shadow:0 0 10px #000;
+  position: absolute;
+  height: 34px;
+  border-radius: 60px;
+  z-index: 6;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255,255,255,.22), transparent 25%),
+    linear-gradient(#6e9149, #354f20 62%, #1d3014);
+  border: 2px solid rgba(255, 235, 165, .35);
+  box-shadow:
+    inset 0 8px 0 rgba(255,255,255,.12),
+    0 10px 18px rgba(0,0,0,.36),
+    0 0 14px rgba(255, 222, 130, .23);
 }
+
+.platform::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: -10px;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8fbf65, #bdd57c, #73984a);
+  opacity: 0.95;
+}
+
+.platform.showLabel::before {
+  content: "jump here";
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 247, 210, 0.78);
+  text-shadow: 0 0 8px black;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* ======================================================
+   FOX
+====================================================== */
 
 #fox {
-  position:absolute;
-  width:80px;
-  height:80px;
-  background:url("fox-chibi.png") center/contain no-repeat;
+  position: absolute;
+  width: 98px;
+  height: 98px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 20;
+  filter: drop-shadow(0 0 10px rgba(255, 205, 100, 0.82));
+  transform-origin: center bottom;
 }
 
-.overlay {
-  position:absolute; inset:0;
-  background:rgba(0,0,0,0.7);
-  display:flex; justify-content:center; align-items:center;
+#fox.facingLeft {
+  transform: scaleX(-1);
 }
 
-.box {
-  background:#123; padding:20px; border-radius:15px;
+#fox.jumping {
+  animation: foxJumpPulse 0.35s ease-out;
+}
+
+@keyframes foxJumpPulse {
+  0% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+  100% { translate: 0 0; }
+}
+
+/* ======================================================
+   PUPPY
+====================================================== */
+
+#puppy {
+  position: absolute;
+  width: 78px;
+  height: 78px;
+  background: url("puppy-forest.png") center / contain no-repeat;
+  z-index: 17;
+  filter: drop-shadow(0 0 8px rgba(255, 230, 170, .62));
+  pointer-events: none;
+}
+
+/* ======================================================
+   COLLECTIBLES
+====================================================== */
+
+.collectible {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 15;
+  filter: drop-shadow(0 0 10px rgba(255, 244, 170, .9));
+  animation: floaty 2.8s ease-in-out infinite alternate;
+}
+
+.egg {
+  width: 38px;
+  height: 44px;
+}
+
+@keyframes floaty {
+  from { translate: 0 -4px; rotate: -4deg; }
+  to { translate: 0 7px; rotate: 4deg; }
+}
+
+/* ======================================================
+   FRIENDS / NPCS
+====================================================== */
+
+.mushroom {
+  position: absolute;
+  width: 78px;
+  height: 78px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 14;
+  filter: drop-shadow(0 0 8px rgba(255, 200, 180, .45));
+}
+
+.sheep {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  background: url("sheep.png") center / contain no-repeat;
+  z-index: 14;
+  filter: drop-shadow(0 0 9px rgba(255, 255, 255, .65));
+}
+
+.chicken {
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  background: url("chicken-baby.png") center / contain no-repeat;
+  z-index: 14;
+  filter: drop-shadow(0 0 7px rgba(255, 240, 170, .55));
+}
+
+/* ======================================================
+   ROCKS
+====================================================== */
+
+.rock {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  background: url("rock.png") center / contain no-repeat;
+  z-index: 16;
+  filter: drop-shadow(0 0 8px rgba(0,0,0,.45));
+}
+
+/* ======================================================
+   EFFECTS
+====================================================== */
+
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff1a3;
+  box-shadow: 0 0 12px #ffe76a;
+  pointer-events: none;
+  z-index: 25;
+  animation: sparkleFade .62s linear forwards;
+}
+
+@keyframes sparkleFade {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(.2) translateY(20px); }
+}
+
+.popText {
+  position: absolute;
+  z-index: 30;
+  color: #fff1a3;
+  font-weight: bold;
+  text-shadow: 0 0 8px black;
+  pointer-events: none;
+  animation: popUp 0.75s ease-out forwards;
+}
+
+@keyframes popUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-34px); }
+}
+
+/* ======================================================
+   FOX CHOICE OVERLAY
+====================================================== */
+
+#foxChoiceOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background:
+    radial-gradient(circle at center, rgba(255,226,160,.15), transparent 34%),
+    rgba(5, 18, 10, .88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#foxChoiceBox {
+  width: min(690px, 92vw);
+  padding: 24px;
+  border-radius: 26px;
+  background: rgba(17, 39, 22, .96);
+  border: 2px solid rgba(255,230,160,.35);
+  text-align: center;
+  box-shadow: 0 0 40px rgba(0,0,0,.55);
+}
+
+#foxChoiceBox h2 {
+  margin-top: 0;
+  color: #fff0b5;
+}
+
+.foxPick {
+  display: inline-block;
+  width: 165px;
+  min-height: 170px;
+  margin: 12px;
+  padding: 12px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,230,160,.25);
+  cursor: pointer;
+  vertical-align: top;
+}
+
+.foxPick img {
+  width: 115px;
+  height: 115px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255,220,120,.65));
+}
+
+.foxPick:hover {
+  background: rgba(255,230,160,.14);
+  transform: translateY(-2px);
+}
+
+/* ======================================================
+   MOBILE CONTROLS
+====================================================== */
+
+#mobileControls {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  z-index: 80;
+  display: none;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.mobileGroup {
+  pointer-events: auto;
+}
+
+.bigBtn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  font-size: 24px;
+}
+
+@media (max-width: 850px) {
+  #sidebar {
+    width: 210px;
+    min-width: 210px;
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  #mobileControls {
+    display: flex;
+  }
+
+  #fox {
+    width: 90px;
+    height: 90px;
+  }
 }
 </style>
 </head>
 
 <body>
+<div id="gameWrap">
 
-<div id="sidebar">
-  <h2>Fox Platform</h2>
-  <button onclick="openFox()">Choose Fox</button>
-</div>
+  <aside id="sidebar">
+    <h1>Fox Platform Adventure</h1>
 
-<div id="game" tabindex="0">
-  <div id="fox"></div>
-
-  <div class="platform" style="left:50px; top:500px; width:600px;"></div>
-  <div class="platform" style="left:200px; top:350px; width:200px;"></div>
-  <div class="platform" style="left:500px; top:250px; width:200px;"></div>
-
-  <div id="overlay" class="overlay">
-    <div class="box">
-      <h3>Choose Fox</h3>
-      <button onclick="chooseFox()">Start</button>
+    <div class="panel">
+      <strong>Score:</strong> <span id="score">0</span><br>
+      <strong>Lives:</strong> <span id="lives">3</span><br>
+      <strong>Fox:</strong> <span id="foxName">Not chosen</span>
     </div>
-  </div>
+
+    <div class="panel">
+      <p><strong>How to play</strong></p>
+      <p>Move: A/D or Arrow Keys</p>
+      <p>Jump: Space, W, or Up Arrow</p>
+      <p>The glowing green ledges are the real places you can stand.</p>
+      <p class="smallNote">This version keeps visible platforms so you do not jump at fake background ledges.</p>
+    </div>
+
+    <div class="panel">
+      <button onclick="openFoxChoice()">Choose Fox</button>
+      <button onclick="restartGame()">Restart</button>
+      <button onclick="togglePlatformLabels()" id="labelBtn">Labels: On</button>
+    </div>
+
+    <div class="panel">
+      <label>Volume</label>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="0.35">
+      <button onclick="toggleSound()" id="soundBtn">Forest Sounds: Off</button>
+    </div>
+
+    <div class="panel">
+      <p><strong>Files this code looks for:</strong></p>
+      <p class="smallNote">
+      forest-back.png<br>
+      forest-mid.png<br>
+      forest-front.png<br>
+      fox-girl.png<br>
+      fox-boy.png<br>
+      fox-chibi.png<br>
+      puppy-forest.png<br>
+      dandelion-seed.png<br>
+      egg.png<br>
+      sheep.png<br>
+      chicken-baby.png<br>
+      mushroom-baby.png<br>
+      mushroom-young.png<br>
+      mushroom-female.png<br>
+      mushroom-man.png<br>
+      rock.png
+      </p>
+    </div>
+  </aside>
+
+  <main id="game" tabindex="0">
+    <div class="bg" id="bgBack"></div>
+    <div id="fallbackGlow"></div>
+    <div class="bg" id="bgMid"></div>
+    <div class="bg" id="bgFront"></div>
+    <div id="mist"></div>
+
+    <div id="foxChoiceOverlay">
+      <div id="foxChoiceBox">
+        <h2>Choose Your Fox</h2>
+        <p>Pick who will run through the enchanted forest.</p>
+
+        <div class="foxPick" onclick="chooseFox('fox-girl.png', 'Girl Fox')">
+          <img src="fox-girl.png" alt="Girl Fox">
+          <div>Girl Fox</div>
+        </div>
+
+        <div class="foxPick" onclick="chooseFox('fox-boy.png', 'Boy Fox')">
+          <img src="fox-boy.png" alt="Boy Fox">
+          <div>Boy Fox</div>
+        </div>
+
+        <div class="foxPick" onclick="chooseFox('fox-chibi.png', 'Little Fox')">
+          <img src="fox-chibi.png" alt="Little Fox">
+          <div>Little Fox</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="fox"></div>
+    <div id="puppy"></div>
+
+    <div id="mobileControls">
+      <div class="mobileGroup">
+        <button class="bigBtn" id="leftBtn">◀</button>
+        <button class="bigBtn" id="rightBtn">▶</button>
+      </div>
+      <div class="mobileGroup">
+        <button class="bigBtn" id="jumpBtn">▲</button>
+      </div>
+    </div>
+  </main>
 </div>
+
+<audio id="forestAudio" src="forest-ambience.mp3" loop></audio>
+<audio id="sparkleAudio" src="sparkle-chime.mp3"></audio>
+<audio id="poofAudio" src="soft-poof.mp3"></audio>
 
 <script>
-let fox = {x:100, y:100, vx:0, vy:0, grounded:false};
+/* ======================================================
+   FOX PLATFORM ADVENTURE
+   Longer full version restored as a proper .txt code file.
+   Key fixes:
+   - Choose fox restored.
+   - Movement restored.
+   - Jump restored.
+   - Game focus restored.
+   - Visible real platforms so you know where to jump.
+   - Platforms use percentages so they scale with the screen.
+====================================================== */
+
+const game = document.getElementById("game");
+const foxEl = document.getElementById("fox");
+const puppyEl = document.getElementById("puppy");
+
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+const foxNameEl = document.getElementById("foxName");
+
+const volumeEl = document.getElementById("volume");
+const forestAudio = document.getElementById("forestAudio");
+const sparkleAudio = document.getElementById("sparkleAudio");
+const poofAudio = document.getElementById("poofAudio");
+const soundBtn = document.getElementById("soundBtn");
+const labelBtn = document.getElementById("labelBtn");
+
+let W = 0;
+let H = 0;
 
 let keys = {};
+let score = 0;
+let lives = 3;
+let gameStarted = false;
+let labelsVisible = true;
 
-document.addEventListener("keydown", e => keys[e.key]=true);
-document.addEventListener("keyup", e => keys[e.key]=false);
+const fox = {
+  x: 90,
+  y: 100,
+  w: 98,
+  h: 98,
+  vx: 0,
+  vy: 0,
+  speed: 0.72,
+  maxSpeed: 7.2,
+  jumpPower: 18,
+  gravity: 0.82,
+  grounded: false,
+  image: "fox-chibi.png"
+};
 
-function chooseFox(){
-  document.getElementById("overlay").style.display="none";
-  document.getElementById("game").focus();
+let platforms = [];
+let collectibles = [];
+let mushrooms = [];
+let sheep = [];
+let chickens = [];
+let rocks = [];
+
+/*
+======================================================
+PLATFORM ALIGNMENT SECTION
+
+Change these numbers to move the REAL jump ledges.
+
+x = left/right position
+y = up/down position
+w = width
+
+Example:
+{ x:.08, y:.70, w:.24 }
+
+means:
+left 8% across the game area
+top 70% down the game area
+width 24% of the game area
+
+These are visible so the player knows where to land.
+======================================================
+*/
+
+const platformLayout = [
+  { x:.03, y:.88, w:.94, type:"ground" },
+
+  { x:.08, y:.70, w:.25 },
+  { x:.36, y:.63, w:.28 },
+  { x:.70, y:.72, w:.24 },
+
+  { x:.18, y:.50, w:.22 },
+  { x:.50, y:.42, w:.24 },
+  { x:.74, y:.32, w:.19 },
+
+  { x:.34, y:.25, w:.21 },
+  { x:.08, y:.19, w:.18 }
+];
+
+const collectibleLayout = [
+  { x:.15, y:.63, type:"dandelion" },
+  { x:.27, y:.43, type:"dandelion" },
+  { x:.45, y:.55, type:"egg" },
+  { x:.62, y:.35, type:"dandelion" },
+  { x:.80, y:.65, type:"egg" },
+  { x:.40, y:.19, type:"dandelion" },
+  { x:.13, y:.13, type:"egg" },
+  { x:.82, y:.25, type:"dandelion" },
+  { x:.55, y:.78, type:"dandelion" },
+  { x:.72, y:.78, type:"egg" }
+];
+
+const mushroomLayout = [
+  { x:.11, y:.70, image:"mushroom-baby.png" },
+  { x:.45, y:.63, image:"mushroom-young.png" },
+  { x:.76, y:.72, image:"mushroom-female.png" },
+  { x:.54, y:.42, image:"mushroom-man.png" }
+];
+
+const sheepLayout = [
+  { x:.24, y:.88 },
+  { x:.72, y:.88 }
+];
+
+const chickenLayout = [
+  { x:.39, y:.63 },
+  { x:.74, y:.72 },
+  { x:.12, y:.70 }
+];
+
+/* ======================================================
+   SIZE / SETUP
+====================================================== */
+
+function resizeGame() {
+  const rect = game.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
+
+  buildPlatforms();
+  positionAllObjectsAfterResize();
+  keepFoxInBounds();
 }
 
-function openFox(){
-  document.getElementById("overlay").style.display="flex";
+function buildPlatforms() {
+  document.querySelectorAll(".platform").forEach(p => p.remove());
+  platforms = [];
+
+  platformLayout.forEach(layout => {
+    const el = document.createElement("div");
+    el.className = "platform";
+    if (layout.type !== "ground" && labelsVisible) {
+      el.classList.add("showLabel");
+    }
+
+    const obj = {
+      x: layout.x * W,
+      y: layout.y * H,
+      w: layout.w * W,
+      h: layout.type === "ground" ? 48 : 34,
+      type: layout.type || "ledge",
+      el
+    };
+
+    el.style.left = obj.x + "px";
+    el.style.top = obj.y + "px";
+    el.style.width = obj.w + "px";
+    el.style.height = obj.h + "px";
+
+    game.appendChild(el);
+    platforms.push(obj);
+  });
 }
 
-function loop(){
-  let el = document.getElementById("fox");
+function positionAllObjectsAfterResize() {
+  if (!collectibles.length) spawnCollectibles();
+  if (!mushrooms.length || !sheep.length || !chickens.length) spawnFriends();
 
-  // movement
-  if(keys["ArrowLeft"]) fox.vx -=0.5;
-  if(keys["ArrowRight"]) fox.vx +=0.5;
+  collectibles.forEach(c => {
+    c.x = c.layout.x * W;
+    c.y = c.layout.y * H;
+  });
 
-  if(keys[" "] && fox.grounded){
-    fox.vy = -12;
-    fox.grounded=false;
+  mushrooms.forEach(m => {
+    m.x = m.layout.x * W;
+    m.y = m.layout.y * H - m.h;
+    m.baseX = m.x;
+  });
+
+  sheep.forEach(s => {
+    s.x = s.layout.x * W;
+    s.y = s.layout.y * H - s.h;
+  });
+
+  chickens.forEach(c => {
+    c.x = c.layout.x * W;
+    c.y = c.layout.y * H - c.h;
+    c.baseX = c.x;
+  });
+}
+
+function keepFoxInBounds() {
+  fox.x = Math.max(0, Math.min(W - fox.w, fox.x));
+  fox.y = Math.max(0, Math.min(H - fox.h, fox.y));
+}
+
+/* ======================================================
+   FOX CHOICE
+====================================================== */
+
+function openFoxChoice() {
+  document.getElementById("foxChoiceOverlay").style.display = "flex";
+}
+
+function chooseFox(src, name) {
+  fox.image = src;
+  foxEl.style.backgroundImage = `url("${src}")`;
+  foxNameEl.textContent = name;
+
+  localStorage.setItem("platformFoxImage", src);
+  localStorage.setItem("platformFoxName", name);
+
+  document.getElementById("foxChoiceOverlay").style.display = "none";
+  gameStarted = true;
+
+  setTimeout(() => {
+    game.focus();
+  }, 50);
+}
+
+function loadFoxChoice() {
+  const savedImage = localStorage.getItem("platformFoxImage");
+  const savedName = localStorage.getItem("platformFoxName");
+
+  if (savedImage && savedName) {
+    chooseFox(savedImage, savedName);
+  } else {
+    foxEl.style.backgroundImage = `url("${fox.image}")`;
+    openFoxChoice();
+  }
+}
+
+/* ======================================================
+   RESTART / UI
+====================================================== */
+
+function restartGame() {
+  score = 0;
+  lives = 3;
+  scoreEl.textContent = score;
+  livesEl.textContent = lives;
+
+  fox.x = 90;
+  fox.y = H * 0.72;
+  fox.vx = 0;
+  fox.vy = 0;
+  fox.grounded = false;
+
+  clearRocks();
+  spawnCollectibles();
+  spawnFriends();
+
+  setTimeout(() => {
+    game.focus();
+  }, 50);
+}
+
+function togglePlatformLabels() {
+  labelsVisible = !labelsVisible;
+  labelBtn.textContent = labelsVisible ? "Labels: On" : "Labels: Off";
+  buildPlatforms();
+}
+
+/* ======================================================
+   OBJECT SPAWNING
+====================================================== */
+
+function spawnCollectibles() {
+  collectibles.forEach(c => c.el.remove());
+  collectibles = [];
+
+  collectibleLayout.forEach(layout => {
+    const el = document.createElement("div");
+    el.className = "collectible";
+
+    if (layout.type === "egg") {
+      el.classList.add("egg");
+      el.style.backgroundImage = `url("egg.png")`;
+    } else {
+      el.style.backgroundImage = `url("dandelion-seed.png")`;
+    }
+
+    game.appendChild(el);
+
+    collectibles.push({
+      x: layout.x * W,
+      y: layout.y * H,
+      w: layout.type === "egg" ? 38 : 36,
+      h: layout.type === "egg" ? 44 : 36,
+      type: layout.type,
+      layout,
+      el
+    });
+  });
+}
+
+function spawnFriends() {
+  mushrooms.forEach(m => m.el.remove());
+  sheep.forEach(s => s.el.remove());
+  chickens.forEach(c => c.el.remove());
+
+  mushrooms = [];
+  sheep = [];
+  chickens = [];
+
+  mushroomLayout.forEach((layout, i) => {
+    const el = document.createElement("div");
+    el.className = "mushroom";
+    el.style.backgroundImage = `url("${layout.image}")`;
+    game.appendChild(el);
+
+    const obj = {
+      x: layout.x * W,
+      y: layout.y * H - 78,
+      baseX: layout.x * W,
+      w: 78,
+      h: 78,
+      dir: i % 2 ? -1 : 1,
+      layout,
+      el
+    };
+
+    mushrooms.push(obj);
+  });
+
+  sheepLayout.forEach((layout, i) => {
+    const el = document.createElement("div");
+    el.className = "sheep";
+    game.appendChild(el);
+
+    sheep.push({
+      x: layout.x * W,
+      y: layout.y * H - 88,
+      w: 88,
+      h: 88,
+      dir: i % 2 ? -1 : 1,
+      bounce: Math.random() * 10,
+      layout,
+      el
+    });
+  });
+
+  chickenLayout.forEach((layout, i) => {
+    const el = document.createElement("div");
+    el.className = "chicken";
+    game.appendChild(el);
+
+    chickens.push({
+      x: layout.x * W,
+      y: layout.y * H - 74,
+      baseX: layout.x * W,
+      w: 74,
+      h: 74,
+      dir: i % 2 ? -1 : 1,
+      layout,
+      el
+    });
+  });
+}
+
+function clearRocks() {
+  rocks.forEach(r => r.el.remove());
+  rocks = [];
+}
+
+function spawnRock() {
+  if (!gameStarted) return;
+
+  const el = document.createElement("div");
+  el.className = "rock";
+  game.appendChild(el);
+
+  rocks.push({
+    x: W + 60,
+    y: H * 0.88 - 54,
+    w: 54,
+    h: 54,
+    vx: -3.4 - Math.random() * 1.8,
+    rotation: 0,
+    el
+  });
+}
+
+/* ======================================================
+   COLLISION HELPERS
+====================================================== */
+
+function rectsTouch(a, b) {
+  return (
+    a.x < b.x + b.w &&
+    a.x + a.w > b.x &&
+    a.y < b.y + b.h &&
+    a.y + a.h > b.y
+  );
+}
+
+/* ======================================================
+   FOX UPDATE
+====================================================== */
+
+function updateFox() {
+  if (!gameStarted) return;
+
+  const left =
+    keys["ArrowLeft"] ||
+    keys["a"] ||
+    keys["A"] ||
+    keys["mobileLeft"];
+
+  const right =
+    keys["ArrowRight"] ||
+    keys["d"] ||
+    keys["D"] ||
+    keys["mobileRight"];
+
+  const jump =
+    keys[" "] ||
+    keys["ArrowUp"] ||
+    keys["w"] ||
+    keys["W"] ||
+    keys["mobileJump"];
+
+  if (left) {
+    fox.vx -= fox.speed;
+    foxEl.classList.add("facingLeft");
+    makeSparkle();
   }
 
-  fox.vx *=0.9;
-  fox.vy +=0.6;
+  if (right) {
+    fox.vx += fox.speed;
+    foxEl.classList.remove("facingLeft");
+    makeSparkle();
+  }
 
+  if (jump && fox.grounded) {
+    fox.vy = -fox.jumpPower;
+    fox.grounded = false;
+
+    foxEl.classList.remove("jumping");
+    void foxEl.offsetWidth;
+    foxEl.classList.add("jumping");
+  }
+
+  fox.vx *= 0.84;
+  fox.vx = Math.max(-fox.maxSpeed, Math.min(fox.maxSpeed, fox.vx));
+  fox.vy += fox.gravity;
+
+  const oldY = fox.y;
   fox.x += fox.vx;
   fox.y += fox.vy;
 
-  fox.grounded=false;
+  fox.grounded = false;
 
-  document.querySelectorAll(".platform").forEach(p=>{
-    let r = p.getBoundingClientRect();
-    let f = el.getBoundingClientRect();
+  if (fox.x < 0) {
+    fox.x = 0;
+    fox.vx = 0;
+  }
 
-    if(f.bottom <= r.top+10 && f.bottom+fox.vy >= r.top &&
-       f.right > r.left && f.left < r.right){
-        fox.y = r.top - 80;
-        fox.vy=0;
-        fox.grounded=true;
+  if (fox.x + fox.w > W) {
+    fox.x = W - fox.w;
+    fox.vx = 0;
+  }
+
+  for (const p of platforms) {
+    const foxFeetOld = oldY + fox.h;
+    const foxFeetNew = fox.y + fox.h;
+
+    const horizontalOverlap =
+      fox.x + fox.w * 0.72 > p.x &&
+      fox.x + fox.w * 0.28 < p.x + p.w;
+
+    if (
+      horizontalOverlap &&
+      fox.vy >= 0 &&
+      foxFeetOld <= p.y + 8 &&
+      foxFeetNew >= p.y
+    ) {
+      fox.y = p.y - fox.h;
+      fox.vy = 0;
+      fox.grounded = true;
     }
+  }
+
+  if (fox.y > H + 180) {
+    loseLife();
+  }
+
+  foxEl.style.left = fox.x + "px";
+  foxEl.style.top = fox.y + "px";
+
+  updatePuppy();
+}
+
+function loseLife() {
+  lives -= 1;
+  livesEl.textContent = lives;
+  showPopText(fox.x, fox.y, "Oops!");
+
+  fox.x = 90;
+  fox.y = H * 0.70;
+  fox.vx = 0;
+  fox.vy = 0;
+
+  if (lives <= 0) {
+    lives = 3;
+    score = Math.max(0, score - 20);
+    scoreEl.textContent = score;
+    livesEl.textContent = lives;
+    showPopText(W * 0.45, H * 0.45, "Try again");
+  }
+}
+
+function updatePuppy() {
+  const targetX = fox.x - 72;
+  const targetY = fox.y + 22;
+
+  const currentX = parseFloat(puppyEl.style.left || targetX);
+  const currentY = parseFloat(puppyEl.style.top || targetY);
+
+  const nx = currentX + (targetX - currentX) * 0.08;
+  const ny = currentY + (targetY - currentY) * 0.08;
+
+  puppyEl.style.left = nx + "px";
+  puppyEl.style.top = ny + "px";
+}
+
+/* ======================================================
+   COLLECTIBLES
+====================================================== */
+
+function updateCollectibles() {
+  for (let i = collectibles.length - 1; i >= 0; i--) {
+    const c = collectibles[i];
+
+    c.el.style.left = c.x + "px";
+    c.el.style.top = c.y + "px";
+
+    if (rectsTouch(fox, c)) {
+      c.el.remove();
+      collectibles.splice(i, 1);
+
+      if (c.type === "egg") {
+        score += 15;
+        showPopText(c.x, c.y, "+15 egg");
+      } else {
+        score += 10;
+        showPopText(c.x, c.y, "+10");
+      }
+
+      scoreEl.textContent = score;
+      playSparkle();
+
+      if (collectibles.length === 0) {
+        setTimeout(spawnCollectibles, 900);
+      }
+    }
+  }
+}
+
+/* ======================================================
+   FRIENDS
+====================================================== */
+
+function updateFriends() {
+  mushrooms.forEach(m => {
+    m.x += m.dir * 0.24;
+    if (Math.abs(m.x - m.baseX) > 46) {
+      m.dir *= -1;
+    }
+
+    m.el.style.left = m.x + "px";
+    m.el.style.top = m.y + "px";
   });
 
-  el.style.left = fox.x+"px";
-  el.style.top = fox.y+"px";
+  sheep.forEach(s => {
+    s.x += s.dir * 0.46;
+    s.bounce += 0.08;
+
+    if (s.x < 20 || s.x + s.w > W - 20) {
+      s.dir *= -1;
+    }
+
+    s.el.style.left = s.x + "px";
+    s.el.style.top = (s.y + Math.sin(s.bounce) * 6) + "px";
+  });
+
+  chickens.forEach(c => {
+    c.x += c.dir * 0.36;
+
+    if (Math.abs(c.x - c.baseX) > 60) {
+      c.dir *= -1;
+    }
+
+    c.el.style.left = c.x + "px";
+    c.el.style.top = c.y + "px";
+  });
+}
+
+/* ======================================================
+   ROCKS
+====================================================== */
+
+function updateRocks() {
+  for (let i = rocks.length - 1; i >= 0; i--) {
+    const r = rocks[i];
+
+    r.x += r.vx;
+    r.rotation += 4;
+
+    r.el.style.left = r.x + "px";
+    r.el.style.top = r.y + "px";
+    r.el.style.transform = `rotate(${r.rotation}deg)`;
+
+    if (rectsTouch(fox, r)) {
+      r.el.remove();
+      rocks.splice(i, 1);
+
+      score = Math.max(0, score - 10);
+      scoreEl.textContent = score;
+      showPopText(fox.x, fox.y, "-10 rock");
+      playPoof();
+      continue;
+    }
+
+    if (r.x < -90) {
+      r.el.remove();
+      rocks.splice(i, 1);
+    }
+  }
+}
+
+/* ======================================================
+   SPARKLES / TEXT
+====================================================== */
+
+let sparkleTimer = 0;
+
+function makeSparkle() {
+  sparkleTimer++;
+
+  if (sparkleTimer % 5 !== 0) return;
+
+  const sp = document.createElement("div");
+  sp.className = "sparkle";
+  sp.style.left = fox.x + 40 + Math.random() * 20 + "px";
+  sp.style.top = fox.y + 74 + Math.random() * 14 + "px";
+  game.appendChild(sp);
+
+  setTimeout(() => sp.remove(), 650);
+}
+
+function showPopText(x, y, text) {
+  const pop = document.createElement("div");
+  pop.className = "popText";
+  pop.textContent = text;
+  pop.style.left = x + "px";
+  pop.style.top = y + "px";
+  game.appendChild(pop);
+
+  setTimeout(() => pop.remove(), 780);
+}
+
+/* ======================================================
+   SOUND
+====================================================== */
+
+function toggleSound() {
+  forestAudio.volume = parseFloat(volumeEl.value);
+
+  if (forestAudio.paused) {
+    forestAudio.play().catch(() => {});
+    soundBtn.textContent = "Forest Sounds: On";
+  } else {
+    forestAudio.pause();
+    soundBtn.textContent = "Forest Sounds: Off";
+  }
+
+  game.focus();
+}
+
+function playSparkle() {
+  sparkleAudio.volume = parseFloat(volumeEl.value);
+  sparkleAudio.currentTime = 0;
+  sparkleAudio.play().catch(() => {});
+}
+
+function playPoof() {
+  poofAudio.volume = parseFloat(volumeEl.value);
+  poofAudio.currentTime = 0;
+  poofAudio.play().catch(() => {});
+}
+
+volumeEl.addEventListener("input", () => {
+  forestAudio.volume = parseFloat(volumeEl.value);
+  sparkleAudio.volume = parseFloat(volumeEl.value);
+  poofAudio.volume = parseFloat(volumeEl.value);
+});
+
+/* ======================================================
+   KEYBOARD CONTROLS
+====================================================== */
+
+window.addEventListener("keydown", e => {
+  keys[e.key] = true;
+
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", " "].includes(e.key)) {
+    e.preventDefault();
+  }
+});
+
+window.addEventListener("keyup", e => {
+  keys[e.key] = false;
+});
+
+game.addEventListener("click", () => {
+  game.focus();
+});
+
+/* ======================================================
+   MOBILE CONTROLS
+====================================================== */
+
+function holdButton(id, keyName) {
+  const btn = document.getElementById(id);
+
+  btn.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    keys[keyName] = true;
+    game.focus();
+  });
+
+  btn.addEventListener("pointerup", e => {
+    e.preventDefault();
+    keys[keyName] = false;
+  });
+
+  btn.addEventListener("pointerleave", () => {
+    keys[keyName] = false;
+  });
+
+  btn.addEventListener("pointercancel", () => {
+    keys[keyName] = false;
+  });
+}
+
+holdButton("leftBtn", "mobileLeft");
+holdButton("rightBtn", "mobileRight");
+holdButton("jumpBtn", "mobileJump");
+
+/* ======================================================
+   GAME LOOP
+====================================================== */
+
+let rockTimer = 0;
+
+function loop() {
+  updateFox();
+  updateCollectibles();
+  updateFriends();
+  updateRocks();
+
+  if (gameStarted) {
+    rockTimer++;
+    if (rockTimer > 260) {
+      rockTimer = 0;
+      spawnRock();
+    }
+  }
 
   requestAnimationFrame(loop);
 }
 
+/* ======================================================
+   START
+====================================================== */
+
+window.addEventListener("resize", () => {
+  resizeGame();
+});
+
+resizeGame();
+restartGame();
+loadFoxChoice();
 loop();
 </script>
-
 </body>
 </html>
