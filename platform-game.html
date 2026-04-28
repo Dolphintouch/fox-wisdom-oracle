@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Foxfire Forest Platform Adventure</title>
 <!-- Boulder asset filename to upload: big-boulder.png -->
-<!-- VERSION: helper-tutorial-controls-final -->
+<!-- VERSION: final-stable-boulder-image-fix -->
 <style>*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#06110b;color:#ffe8a8;font-family:Georgia,"Times New Roman",serif}#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}#world{position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;background:url("level-misty-meadows.png") no-repeat left bottom;background-size:1792px 100vh;transform:translateX(0)}#world::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);background-size:150px 170px,240px 260px;opacity:.36;animation:fireflies 20s linear infinite}@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}.top-ui{position:absolute;top:12px;left:12px;z-index:120;display:flex;gap:8px;flex-wrap:wrap;max-width:470px}.pill,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}.top-ui button{cursor:pointer}#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:110;display:flex;flex-direction:column;gap:12px}.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}.card p{margin:0;color:#fff0cc;line-height:1.35}.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}#thumb0{background-image:url("level-misty-meadows.png")}#thumb1{background-image:url("level-twilight-hollow.png")}#thumb2{background-image:url("level-moonlit-canopy.png")}.sprite{position:absolute;z-index:35;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain}#fox{width:190px;height:190px;z-index:55;background-repeat:no-repeat;background-position:center bottom;background-size:160px auto;overflow:visible;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite}#fox.left{transform:scaleX(-1)}#fox.running{animation:foxRunBounce .35s ease-in-out infinite}#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}#fox.landing{animation:foxLanding .22s ease-out}@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}@keyframes foxLanding{0%{scale:1.06 .92}70%{scale:.98 1.04}100%{scale:1}}#puppy{width:88px;height:88px;z-index:50;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}.wish{width:44px;height:64px;z-index:45;filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));animation:dandelionFloat 2.8s ease-in-out infinite alternate}@keyframes dandelionFloat{from{translate:0 -4px;rotate:-4deg}to{translate:0 7px;rotate:4deg}}.sheep{width:120px;height:120px;z-index:42;filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45))}.chicken{width:125px;height:125px;z-index:42;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35))}.egg{width:40px;height:46px;z-index:43;filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45))}.rock{width:70px;height:70px;z-index:43;filter:drop-shadow(0 12px 9px rgba(0,0,0,.65))}.mushroom{width:145px;height:145px;z-index:41;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));transition:opacity .25s ease}.portal{width:100px;height:130px;z-index:46;border-radius:50%;background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);animation:portalPulse 1.25s ease-in-out infinite alternate;display:none}@keyframes portalPulse{from{scale:.95;opacity:.82}to{scale:1.06;opacity:1}}.hitbox{position:absolute;z-index:30;pointer-events:none;border-radius:999px;height:28px;background:rgba(255,232,120,0)}.showHitboxes .hitbox{background:rgba(165,255,118,.18);outline:2px solid rgba(255,236,150,.58);box-shadow:0 0 16px rgba(255,236,150,.24)}.showHitboxes .hitbox::after{content:"safe ledge";position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:12px;color:#fff0b4;text-shadow:0 0 7px black;white-space:nowrap}.hazardBox{position:absolute;z-index:34;pointer-events:none;border-radius:8px;background:rgba(255,80,80,0);filter:none}.showHitboxes .hazardBox{outline:2px solid rgba(255,80,80,.6);background-color:rgba(255,50,50,.12)}#choiceScreen{position:absolute;inset:0;z-index:9990;display:flex;pointer-events:auto;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64)}.choiceBox{width:min(820px,92vw);position:relative;z-index:9998;pointer-events:auto;position:relative;z-index:9998;pointer-events:auto;border-radius:26px;border:1px solid rgba(255,230,150,.56);background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);padding:24px;text-align:center}.choiceBox h1{margin:0;color:#ffe7a6;font-size:2rem;text-shadow:0 0 16px rgba(255,220,120,.55)}.choiceCards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:16px}.foxCard{width:210px;min-height:230px;border-radius:22px;pointer-events:auto;position:relative;z-index:9999;border:1px solid rgba(255,230,150,.38);background:rgba(255,255,255,.06);padding:14px;cursor:pointer;color:#ffe8a8;font-size:1.15rem;font-weight:bold}.foxCard:hover{background:rgba(255,230,150,.12);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,220,120,.28)}.foxCard.chosen{background:rgba(255,230,150,.16);box-shadow:0 0 28px rgba(255,220,120,.45);animation:chosenPulse .75s ease-in-out infinite alternate}@keyframes chosenPulse{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.02)}}.foxPreview{width:130px;height:130px;margin:0 auto 8px;background-repeat:no-repeat;background-position:center bottom;background-size:110%;background-color:rgba(5,18,10,.58);border-radius:18px;box-shadow:inset 0 0 18px rgba(255,220,120,.08),0 0 18px rgba(255,220,120,.18);filter:drop-shadow(0 0 12px rgba(255,220,120,.7))}#femalePreview{background-image:url("female-foxy-player-idle.png")}#malePreview{background-image:url("foxy-player-idle.png")}.sparkle-pop{position:absolute;width:18px;height:18px;z-index:160;border-radius:50%;background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);pointer-events:none;animation:sparklePop .8s ease-out forwards}@keyframes sparklePop{0%{opacity:1;scale:.35}100%{opacity:0;scale:2.2;translate:0 -24px}}.floatText{position:absolute;z-index:165;color:#fff0ad;font-weight:bold;font-size:18px;text-shadow:0 0 8px #000;pointer-events:none;animation:floatTextUp .9s ease-out forwards}@keyframes floatTextUp{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -38px}}.dust{position:absolute;width:9px;height:9px;border-radius:50%;z-index:70;background:rgba(255,226,156,.85);box-shadow:0 0 12px rgba(255,226,156,.6);pointer-events:none;animation:dustPoof .7s ease-out forwards}@keyframes dustPoof{from{opacity:.9;transform:translate(-50%,-50%) scale(.35)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
 #choiceScreen.hidden{display:none!important}
 
@@ -668,7 +668,7 @@ body{
   pointer-events:none;
 }
 .boulderFallback{
-  background-image:radial-gradient(circle at 35% 30%,#b5aa90,#5e5a50 48%,#282622 80%);
+  
 }
 
 
@@ -864,6 +864,49 @@ body{
     max-width:86vw;
     text-align:center;
   }
+}
+
+
+/* ===== FINAL STABLE BOULDER IMAGE FIX ===== */
+.boulder{
+  position:absolute!important;
+  width:190px!important;
+  height:190px!important;
+  z-index:180!important;
+
+  background-image:url("boulder-big.png")!important;
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+
+  border-radius:50%!important;
+  overflow:hidden!important;
+  border:none!important;
+
+  filter:
+    drop-shadow(0 18px 18px rgba(0,0,0,.75))
+    drop-shadow(0 0 16px rgba(255,210,90,.35))!important;
+
+  pointer-events:none;
+}
+.boulder::before{
+  content:"";
+  position:absolute;
+  inset:18%;
+  border-radius:50%;
+  background:
+    linear-gradient(35deg,transparent 0 32%,rgba(255,220,90,.82) 33%,transparent 36%),
+    linear-gradient(120deg,transparent 0 42%,rgba(255,170,60,.70) 43%,transparent 46%),
+    linear-gradient(78deg,transparent 0 54%,rgba(255,245,150,.60) 55%,transparent 58%);
+  mix-blend-mode:screen;
+  opacity:.72;
+  filter:drop-shadow(0 0 8px rgba(255,215,90,.85));
+  animation:boulderCrackGlow 1.2s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes boulderCrackGlow{
+  from{opacity:.28;filter:drop-shadow(0 0 5px rgba(255,215,90,.55))}
+  to{opacity:.95;filter:drop-shadow(0 0 16px rgba(255,230,120,1))}
 }
 
 </style>
@@ -1088,7 +1131,7 @@ function preloadLevelBackground(L){
   tryNext();
 }
 
-function buildLevel(index){currentLevel=index;applySavedLayoutForLevel();const L=levels[currentLevel];world.style.backgroundImage=`url("${L.bg}")`;preloadLevelBackground(L);document.querySelectorAll(".hitbox,.hazardBox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.boulder,.treasure,.portal,.floatText,.sparkle-pop,.dust,.whoosh,.atmoObj,.moonDarkFlash,.boulderDust,.boulderDust").forEach(el=>el.remove());wishes=0;sheep=0;chickens=0;eggs=0;hearts=3;portalOpen=(L.name==="Treasure Room");boulderActive=false;boulderTimer=80;treasureOpened=false;activeWishTotal=0;wishPool=[...L.wishes];wishGoalEl.textContent=L.wishGoal;sheepGoalEl.textContent=L.sheepGoal;wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;chickenCountEl.textContent=chickens;heartCountEl.textContent=hearts;scoreCountEl.textContent=score;setMessage(L.message);x=L.startX;y=L.startY;vx=0;vy=0;puppyX=x-65;puppyY=y-10;facing="right";onGround=false;wasOnGround=false;doubleJumpReady=true;coyoteTimer=0;jumpBuffer=0;lastSafeX=x;lastSafeY=y;document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));const activeCard=document.getElementById("levelCard"+currentLevel);if(activeCard)activeCard.classList.add("active");buildPlatforms(L.platforms);buildHazards(L.hazards);buildSheep(L.sheep);buildChickens(L.chickens);buildEggs(L.eggs);buildMushrooms(L.mushrooms);buildRocks(L.rocks);buildPortal(L.portal);buildTreasure(L);game.classList.toggle("treasureRoom",L.name==="Treasure Room");setAtmosphereForLevel();spawnRealAtmosphere();refillVisibleWishes();if(editorMode){makeObjectsEditable()}setFoxImage("idle");setCleanBackground(puppyEl,"puppy-forest.png");updateCamera();saveGame()}function buildPlatforms(platforms){platforms.forEach(p=>{const el=document.createElement("div");el.className="hitbox";el.dataset.x=p.x;el.dataset.y=p.y;el.dataset.w=p.w;el.dataset.h=p.h;el.style.left=p.x+"px";el.style.bottom=p.y+"px";el.style.width=p.w+"px";el.style.height=p.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'platform');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function buildHazards(hazards){hazards.forEach(h=>{const el=document.createElement("div");el.className="hazardBox";el.style.left=h.x+"px";el.style.bottom=h.y+"px";el.style.width=h.w+"px";el.style.height=h.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'hazard');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function spriteFootOffset(className){if(className==="boulder")return -20;if(className==="treasure")return -12;
+function buildLevel(index){currentLevel=index;applySavedLayoutForLevel();const L=levels[currentLevel];world.style.backgroundImage=`url("${L.bg}")`;preloadLevelBackground(L);document.querySelectorAll(".hitbox,.hazardBox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.boulder,.treasure,.portal,.floatText,.sparkle-pop,.dust,.whoosh,.atmoObj,.moonDarkFlash,.boulderDust,.boulderDust,.boulderDust").forEach(el=>el.remove());wishes=0;sheep=0;chickens=0;eggs=0;hearts=3;portalOpen=(L.name==="Treasure Room");boulderActive=false;boulderTimer=80;treasureOpened=false;activeWishTotal=0;wishPool=[...L.wishes];wishGoalEl.textContent=L.wishGoal;sheepGoalEl.textContent=L.sheepGoal;wishCountEl.textContent=wishes;sheepCountEl.textContent=sheep;chickenCountEl.textContent=chickens;heartCountEl.textContent=hearts;scoreCountEl.textContent=score;setMessage(L.message);x=L.startX;y=L.startY;vx=0;vy=0;puppyX=x-65;puppyY=y-10;facing="right";onGround=false;wasOnGround=false;doubleJumpReady=true;coyoteTimer=0;jumpBuffer=0;lastSafeX=x;lastSafeY=y;document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));const activeCard=document.getElementById("levelCard"+currentLevel);if(activeCard)activeCard.classList.add("active");buildPlatforms(L.platforms);buildHazards(L.hazards);buildSheep(L.sheep);buildChickens(L.chickens);buildEggs(L.eggs);buildMushrooms(L.mushrooms);buildRocks(L.rocks);buildPortal(L.portal);buildTreasure(L);game.classList.toggle("treasureRoom",L.name==="Treasure Room");setAtmosphereForLevel();spawnRealAtmosphere();refillVisibleWishes();if(editorMode){makeObjectsEditable()}setFoxImage("idle");setCleanBackground(puppyEl,"puppy-forest.png");updateCamera();saveGame()}function buildPlatforms(platforms){platforms.forEach(p=>{const el=document.createElement("div");el.className="hitbox";el.dataset.x=p.x;el.dataset.y=p.y;el.dataset.w=p.w;el.dataset.h=p.h;el.style.left=p.x+"px";el.style.bottom=p.y+"px";el.style.width=p.w+"px";el.style.height=p.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'platform');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function buildHazards(hazards){hazards.forEach(h=>{const el=document.createElement("div");el.className="hazardBox";el.style.left=h.x+"px";el.style.bottom=h.y+"px";el.style.width=h.w+"px";el.style.height=h.h+"px";world.appendChild(el);makeEditorBoxDraggable(el,'hazard');if(editorMode){addResizeHandles(el);addEditorLabel(el)}})}function spriteFootOffset(className){if(className==="boulder")return -20;if(className==="treasure")return -12;
   if(className==="sheep")return -45;
   if(className==="chicken")return -40;
   if(className==="mushroom")return -62;
@@ -1254,41 +1297,43 @@ function showBoulderWarning(){
 function spawnMoonBoulder(){
   if(currentLevel!==2 || boulderActive || boulderWarningActive || !gameStarted) return;
 
-  boulderWarningActive=true;
+  boulderWarningActive = true;
   showBoulderWarning();
   setMessage("The ground trembles... get ready to double jump!");
 
   setTimeout(()=>{
     if(currentLevel!==2 || boulderActive || !gameStarted){
-      boulderWarningActive=false;
+      boulderWarningActive = false;
       return;
     }
 
-    boulderActive=true;
-    boulderWarningActive=false;
+    boulderWarningActive = false;
+    boulderActive = true;
 
-    const fromLeft=Math.random()<.5;
-    const startX=fromLeft?-260:WORLD_WIDTH+170;
-    const dir=fromLeft?1:-1;
+    const fromLeft = Math.random() < 0.5;
+    const startX = fromLeft ? -260 : WORLD_WIDTH + 170;
+    const dir = fromLeft ? 1 : -1;
 
-    const b=document.createElement("div");
-    b.className="sprite boulder boulderFallback";
-    b.style.left=startX+"px";
-    b.style.bottom="105px";
-    b.style.width="190px";
-    b.style.height="190px";
-    b.style.backgroundSize="contain";
-    b.style.backgroundRepeat="no-repeat";
-    b.style.backgroundPosition="center";
-    b.dataset.dir=dir;
-    b.dataset.rot=0;
+    const b = document.createElement("div");
+    b.className = "sprite boulder";
+    b.style.left = startX + "px";
+    b.style.bottom = "105px";
+    b.style.width = "190px";
+    b.style.height = "190px";
+
+    // Final stable image path. File must be beside platform-game.html.
+    b.style.backgroundImage = "url('boulder-big.png')";
+    b.style.backgroundSize = "contain";
+    b.style.backgroundRepeat = "no-repeat";
+    b.style.backgroundPosition = "center";
+
+    b.dataset.dir = dir;
+    b.dataset.rot = 0;
 
     world.appendChild(b);
 
-    // Use the same cleaner as the other sprites so white background/edges are removed.
-    setCleanBackground(b,"boulder-big.png");
-
-    setMessage("The glowing boulder is rolling — double jump!");showContextTip("Double jump now!",2200);
+    setMessage("The glowing boulder is rolling — double jump!");
+    showContextTip && showContextTip("Double jump now!",2200);
     playBoulderRumble();
   },1200);
 }
@@ -1384,7 +1429,7 @@ function restartAdventure(){
 
 
 function clearRealAtmosphere(){
-  document.querySelectorAll(".atmoObj,.moonDarkFlash,.boulderDust,.boulderDust").forEach(el=>el.remove());
+  document.querySelectorAll(".atmoObj,.moonDarkFlash,.boulderDust,.boulderDust,.boulderDust").forEach(el=>el.remove());
 }
 function spawnRealAtmosphere(){
   clearRealAtmosphere();
