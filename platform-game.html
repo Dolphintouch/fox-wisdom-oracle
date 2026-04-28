@@ -1,942 +1,2068 @@
 <!DOCTYPE html>
+<!-- CLEAN READABLE FULL REPLACEMENT: platform-game.html -->
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Foxfire Forest Platform Adventure</title>
-
-<!--
-  CLEAN PUBLIC PLAYER VERSION
-  No editor buttons. No public edit panel.
-  Big boulder image file name: big-boulder.png
-  Home orb returns to: index.html
--->
+<!-- Clean public version. Editor removed. Boulder file: big-boulder.png -->
 
 <style>
-*{box-sizing:border-box}
-html,body{
-  margin:0;padding:0;width:100%;height:100%;overflow:hidden;
-  background:#06110b;color:#ffe8a8;
-  font-family:Georgia,"Times New Roman",serif;
-  touch-action:none;
-}
+
+*{
+box-sizing:border-box}html,body{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#06110b;
+color:#ffe8a8;
+font-family:Georgia,"Times New Roman",serif;
+touch-action:none;
+overscroll-behavior:none}
 #game{
-  position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b;
-}
+position:relative;
+width:100vw;
+height:100vh;
+overflow:hidden;
+background:#06110b}
 #world{
-  position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;
-  background:url("level-misty-meadows.png") no-repeat left bottom;
-  background-size:1792px 100vh;
-  transform:translateX(0);
-}
+position:absolute;
+left:0;
+bottom:0;
+width:1792px;
+height:100vh;
+overflow:hidden;
+background:url("level-misty-meadows.png") no-repeat left bottom;
+background-size:1792px 100vh;
+transform:translateX(0)}
 #world::after{
-  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
-  background:
-    radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),
-    radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);
-  background-size:150px 170px,240px 260px;
-  opacity:.36;animation:fireflies 20s linear infinite;
-}
-@keyframes fireflies{
-  from{background-position:0 0,80px 50px}
-  to{background-position:160px -220px,280px -180px}
-}
-
+content:"";
+position:absolute;
+inset:0;
+z-index:5;
+pointer-events:none;
+background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);
+background-size:150px 170px,240px 260px;
+opacity:.36;
+animation:fireflies 20s linear infinite}@keyframes fireflies{
+from{
+background-position:0 0,80px 50px}to{
+background-position:160px -220px,280px -180px}}
 .title{
-  position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;
-  text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);
-  color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;
-  pointer-events:none;
-}
+position:absolute;
+top:14px;
+left:0;
+width:calc(100vw - 390px);
+z-index:90;
+text-align:center;
+font-size:clamp(2.1rem,5vw,4.5rem);
+color:#ffe7a6;
+text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;
+pointer-events:none}
 .subtitle{
-  position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;
-  text-align:center;font-size:clamp(1rem,2vw,1.45rem);
-  color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none;
-}
-#hud{
-  position:absolute;top:12px;left:12px;z-index:120;
-  display:flex;gap:8px;flex-wrap:wrap;max-width:720px;
-}
-.pill{
-  padding:8px 13px;border-radius:999px;
-  background:rgba(5,18,10,.86);color:#ffe8a8;
-  border:1px solid rgba(255,225,150,.42);
-  font-family:Georgia,serif;font-size:.95rem;
-  box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05);
-}
+position:absolute;
+top:88px;
+left:0;
+width:calc(100vw - 390px);
+z-index:90;
+text-align:center;
+font-size:clamp(1rem,2vw,1.45rem);
+color:#cfeea2;
+text-shadow:0 4px 12px #000;
+pointer-events:none}
+.top-ui{
+position:absolute;
+top:12px;
+left:12px;
+z-index:120;
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+max-width:470px}
+.pill,.top-ui button{
+padding:8px 13px;
+border-radius:999px;
+background:rgba(5,18,10,.86);
+color:#ffe8a8;
+border:1px solid rgba(255,225,150,.42);
+font-family:Georgia,serif;
+font-size:.95rem;
+box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}
+.top-ui button{
+cursor:pointer}
+.top-ui .adminOnly{
+display:none!important}
 #sidePanel{
-  position:absolute;top:12px;right:12px;width:370px;z-index:110;
-  display:flex;flex-direction:column;gap:12px;
-}
+position:absolute;
+top:12px;
+right:12px;
+width:370px;
+height:calc(100vh - 24px);
+z-index:110;
+display:flex;
+flex-direction:column;
+gap:12px}
 .card{
-  border-radius:20px;border:1px solid rgba(255,225,150,.36);
-  background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));
-  box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);
-  padding:15px;
-}
-.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}
-.card p{margin:0;color:#fff0cc;line-height:1.35}
+border-radius:20px;
+border:1px solid rgba(255,225,150,.36);
+background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));
+box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);
+padding:15px}
+.card h2{
+margin:0 0 6px;
+color:#ffe7a6;
+font-size:1.25rem}
+.card p{
+margin:0;
+color:#fff0cc;
+line-height:1.35}
 .levelCard{
-  display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer;
-}
+display:grid;
+grid-template-columns:86px 1fr;
+gap:12px;
+align-items:center;
+cursor:pointer}
 .levelCard.active{
-  border-color:rgba(255,230,130,.9);
-  box-shadow:0 0 22px rgba(255,220,120,.18);
-}
+border-color:rgba(255,230,130,.9);
+box-shadow:0 0 22px rgba(255,220,120,.18)}
 .thumb{
-  height:68px;border-radius:12px;background-size:cover;background-position:center;
-  border:1px solid rgba(255,255,255,.16);
-}
-#thumb0{background-image:url("level-misty-meadows.png")}
-#thumb1{background-image:url("level-twilight-hollow.png")}
-#thumb2{background-image:url("level-moonlit-canopy.png")}
-#thumb3{background-image:url("treasure-room-bg.jpg")}
-
+height:68px;
+border-radius:12px;
+background-size:cover;
+background-position:center;
+border:1px solid rgba(255,255,255,.16)}
+#thumb0{
+background-image:url("level-misty-meadows.png")}
+#thumb1{
+background-image:url("level-twilight-hollow.png")}
+#thumb2{
+background-image:url("level-moonlit-canopy.png")}
+#thumb3{
+background-image:url("treasure-room-bg.jpg")}
 .sprite{
-  position:absolute;z-index:35;pointer-events:none;
-  background-repeat:no-repeat;background-position:center;background-size:contain;
-}
+position:absolute;
+z-index:35;
+pointer-events:none;
+background-repeat:no-repeat;
+background-position:center;
+background-size:contain}
 #fox{
-  width:190px;height:190px;z-index:55;background-position:center bottom;background-size:160px auto;
-  filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));
-  transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite;
-}
-#fox.left{transform:scaleX(-1)}
-#fox.running{animation:foxRunBounce .35s ease-in-out infinite}
-#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}
-@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}
-@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}
-@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}
-
+width:190px;
+height:190px;
+z-index:55;
+background-position:center bottom;
+background-size:160px auto;
+overflow:visible;
+filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));
+transform-origin:50% 90%;
+animation:foxTailWag 1.25s ease-in-out infinite}
+#fox.left{
+transform:scaleX(-1)}
+#fox.running{
+animation:foxRunBounce .35s ease-in-out infinite}
+#fox.jumping{
+animation:foxJumpFloat .55s ease-in-out infinite}
+#fox.landing{
+animation:foxLanding .22s ease-out}@keyframes foxTailWag{
+0%,100%{
+translate:0 0;
+rotate:-.7deg}50%{
+translate:0 -1px;
+rotate:.9deg}}@keyframes foxRunBounce{
+0%,100%{
+translate:0 0;
+rotate:-2deg}50%{
+translate:0 -6px;
+rotate:2deg}}@keyframes foxJumpFloat{
+0%,100%{
+translate:0 0;
+rotate:-1deg}50%{
+translate:0 -4px;
+rotate:1deg}}@keyframes foxLanding{
+0%{
+scale:1.06 .92}70%{
+scale:.98 1.04}100%{
+scale:1}}
 #puppy{
-  width:88px;height:88px;z-index:50;
-  filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45));
-}
+width:88px;
+height:88px;
+z-index:50;
+filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}
 .wish{
-  width:44px;height:64px;z-index:45;
-  filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));
-  animation:dandelionFloat 2.8s ease-in-out infinite alternate;
-}
-@keyframes dandelionFloat{from{translate:0 -4px;rotate:-4deg}to{translate:0 7px;rotate:4deg}}
+width:44px;
+height:64px;
+z-index:45;
+filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));
+animation:dandelionFloat 2.8s ease-in-out infinite alternate}@keyframes dandelionFloat{
+from{
+translate:0 -4px;
+rotate:-4deg}to{
+translate:0 7px;
+rotate:4deg}}
 .sheep{
-  width:120px;height:120px;z-index:42;
-  filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45));
-}
+width:120px;
+height:120px;
+z-index:42;
+filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45))}
 .chicken{
-  width:125px;height:125px;z-index:42;
-  filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35));
-}
+width:125px;
+height:125px;
+z-index:42;
+filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35))}
 .egg{
-  width:40px;height:46px;z-index:43;
-  filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45));
-}
+width:40px;
+height:46px;
+z-index:43;
+filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45))}
 .rock{
-  width:70px;height:70px;z-index:43;
-  filter:drop-shadow(0 12px 9px rgba(0,0,0,.65));
-}
+width:70px;
+height:70px;
+z-index:43;
+filter:drop-shadow(0 12px 9px rgba(0,0,0,.65))}
 .mushroom{
-  width:145px;height:145px;z-index:41;
-  filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));
-  transition:opacity .25s ease;
-}
+width:145px;
+height:145px;
+z-index:41;
+filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));
+transition:opacity .25s ease}
 .portal{
-  width:100px;height:130px;z-index:46;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);
-  box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);
-  animation:portalPulse 1.25s ease-in-out infinite alternate;display:none;
-}
-@keyframes portalPulse{from{scale:.95;opacity:.82}to{scale:1.06;opacity:1}}
-
-.chest{
-  width:130px;height:110px;z-index:48;
-  background-image:url("treasure-chest.png");
-  filter:drop-shadow(0 0 18px rgba(255,220,120,.8));
-}
-.chestFallback{
-  border-radius:18px;
-  background:
-    linear-gradient(#ffd36d,#9b5c1b 45%,#4b250c 48%,#2a1407);
-  border:3px solid rgba(255,236,150,.7);
-}
-
+width:100px;
+height:130px;
+z-index:46;
+border-radius:50%;
+background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);
+box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);
+animation:portalPulse 1.25s ease-in-out infinite alternate;
+display:none}@keyframes portalPulse{
+from{
+scale:.95;
+opacity:.82}to{
+scale:1.06;
+opacity:1}}
 .hitbox{
-  position:absolute;z-index:30;pointer-events:none;border-radius:999px;height:28px;
-  background:linear-gradient(to bottom,rgba(86,130,58,.95),rgba(31,72,39,.95));
-  border:1px solid rgba(255,236,150,.25);
-  box-shadow:inset 0 6px 8px rgba(255,255,255,.1),0 7px 15px rgba(0,0,0,.35);
-}
-.hazardBox{position:absolute;z-index:34;pointer-events:none;border-radius:8px;background:rgba(255,80,80,0)}
-
-.boulder{
-  width:132px;height:132px;z-index:60;
-  background-image:url("big-boulder.png");
-  filter:drop-shadow(0 14px 12px rgba(0,0,0,.65)) drop-shadow(0 0 16px rgba(255,120,65,.35));
-}
-.boulder.fallback{
-  background:
-    radial-gradient(circle at 35% 30%,#9c8b73,#4d4034 58%,#211915);
-  border-radius:50%;
-}
-#boulderWarning{
-  position:absolute;top:120px;left:50%;transform:translateX(-50%);
-  z-index:180;padding:10px 18px;border-radius:999px;display:none;
-  background:rgba(58,14,8,.9);border:1px solid rgba(255,210,120,.65);
-  color:#ffe7a6;text-shadow:0 0 8px #000;box-shadow:0 0 24px rgba(255,90,60,.35);
-}
-#boulderWarning.show{display:block;animation:warningShake .14s linear infinite}
-@keyframes warningShake{0%,100%{translate:0 0}50%{translate:4px 0}}
-
+position:absolute;
+z-index:30;
+pointer-events:none;
+border-radius:999px;
+height:28px;
+background:rgba(255,232,120,0)}
+.showHitboxes .hitbox{
+background:rgba(165,255,118,.18);
+outline:2px solid rgba(255,236,150,.58);
+box-shadow:0 0 16px rgba(255,236,150,.24)}
+.hazardBox{
+position:absolute;
+z-index:34;
+pointer-events:none;
+border-radius:8px;
+background:rgba(255,80,80,0)}
+.showHitboxes .hazardBox{
+outline:2px solid rgba(255,80,80,.6);
+background-color:rgba(255,50,50,.12)}
 #choiceScreen{
-  position:absolute;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64);
-}
-#choiceScreen.hidden{display:none!important}
+position:absolute;
+inset:0;
+z-index:9990;
+display:flex;
+pointer-events:auto;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64)}
+#choiceScreen.hidden{
+display:none!important}
 .choiceBox{
-  width:min(820px,92vw);border-radius:26px;border:1px solid rgba(255,230,150,.56);
-  background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);
-  box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);
-  padding:24px;text-align:center;
-}
-.choiceBox h1{margin:0;color:#ffe7a6;font-size:2rem;text-shadow:0 0 16px rgba(255,220,120,.55)}
-.choiceCards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:16px}
+width:min(820px,92vw);
+position:relative;
+z-index:9998;
+pointer-events:auto;
+border-radius:26px;
+border:1px solid rgba(255,230,150,.56);
+background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);
+box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);
+padding:24px;
+text-align:center}
+.choiceBox h1{
+margin:0;
+color:#ffe7a6;
+font-size:2rem;
+text-shadow:0 0 16px rgba(255,220,120,.55)}
+.choiceCards{
+display:flex;
+justify-content:center;
+gap:28px;
+flex-wrap:wrap;
+margin-top:16px}
 .foxCard{
-  width:210px;min-height:230px;border-radius:22px;border:1px solid rgba(255,230,150,.38);
-  background:rgba(255,255,255,.06);padding:14px;cursor:pointer;color:#ffe8a8;font-size:1.15rem;font-weight:bold;
-}
-.foxCard:hover{background:rgba(255,230,150,.12);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,220,120,.28)}
+width:210px;
+min-height:230px;
+border-radius:22px;
+pointer-events:auto;
+position:relative;
+z-index:9999;
+border:1px solid rgba(255,230,150,.38);
+background:rgba(255,255,255,.06);
+padding:14px;
+cursor:pointer;
+color:#ffe8a8;
+font-size:1.15rem;
+font-weight:bold}
+.foxCard:hover{
+background:rgba(255,230,150,.12);
+transform:translateY(-2px);
+box-shadow:0 0 24px rgba(255,220,120,.28)}
 .foxPreview{
-  width:130px;height:130px;margin:0 auto 8px;background-repeat:no-repeat;background-position:center bottom;background-size:110%;
-  background-color:rgba(5,18,10,.58);border-radius:18px;filter:drop-shadow(0 0 12px rgba(255,220,120,.7));
-}
-#femalePreview{background-image:url("female-foxy-player-idle.png")}
-#malePreview{background-image:url("foxy-player-idle.png")}
-
-#mobileControls{
-  position:absolute;left:0;right:0;bottom:14px;z-index:200;
-  display:flex;justify-content:space-between;align-items:center;padding:0 28px;pointer-events:none;
-}
-.controlGroup{display:flex;gap:12px;pointer-events:auto}
-#mobileControls button{
-  width:78px;height:78px;border-radius:50%;font-size:32px;color:#ffe8a8;
-  background:rgba(0,18,8,.66);border:1px solid rgba(255,230,150,.6);
-  box-shadow:0 0 14px rgba(255,220,120,.22);
-}
-#jumpBtn{width:88px;height:88px}
-#mobileControls button.pressed{transform:scale(.92);background:rgba(255,220,120,.24)}
-
-#foxHelperTip{
-  position:absolute;left:18px;bottom:110px;z-index:190;
-  display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:.4s ease;
-}
-#foxHelperTip.show{opacity:1}
-#foxHelperTip img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(255,220,120,.65))}
-#foxHelperSpeech{
-  max-width:310px;padding:10px 14px;border-radius:16px;
-  background:rgba(5,18,10,.85);border:1px solid rgba(255,230,150,.42);
-  color:#fff0cc;box-shadow:0 0 16px rgba(0,0,0,.35);
-}
-.contextTip{
-  position:absolute;top:116px;left:50%;transform:translateX(-50%);
-  z-index:190;display:none;padding:9px 16px;border-radius:999px;
-  background:rgba(5,18,10,.88);border:1px solid rgba(255,230,150,.5);
-  color:#ffe7a6;text-shadow:0 0 8px #000;
-}
-.contextTip.show{display:block}
-
-#homeOrb{
-  position:fixed;top:18px;right:18px;width:58px;height:58px;border-radius:50%;
-  z-index:9999;display:flex;align-items:center;justify-content:center;text-decoration:none;
-  font-size:28px;background:radial-gradient(circle,#fff6b8,#f5c75f,#8b5a20);
-  box-shadow:0 0 15px rgba(255,232,140,.9),0 0 35px rgba(255,210,90,.7),0 0 60px rgba(160,255,200,.35);
-  animation:homeOrbFloat 3s ease-in-out infinite;
-}
-#homeOrb::after{
-  content:"Home";position:absolute;top:64px;left:50%;transform:translateX(-50%);
-  padding:4px 9px;border-radius:999px;background:rgba(5,18,10,.86);
-  color:#ffe8a8;font-size:12px;border:1px solid rgba(255,225,150,.35);opacity:0;transition:.25s;
-}
-#homeOrb:hover::after{opacity:1}
-@keyframes homeOrbFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
-
+width:130px;
+height:130px;
+margin:0 auto 8px;
+background-repeat:no-repeat;
+background-position:center bottom;
+background-size:110%;
+background-color:rgba(5,18,10,.58);
+border-radius:18px;
+box-shadow:inset 0 0 18px rgba(255,220,120,.08),0 0 18px rgba(255,220,120,.18);
+filter:drop-shadow(0 0 12px rgba(255,220,120,.7))}
+#mistLayer,#sparkleLayer,#moonCloudLayer,#darknessLayer{
+position:absolute;
+inset:0;
+pointer-events:none}
+#mistLayer{
+z-index:80;
+display:none;
+opacity:1;
+mix-blend-mode:screen;
+background:radial-gradient(ellipse at 15% 70%,rgba(255,255,255,.62),transparent 38%),radial-gradient(ellipse at 45% 55%,rgba(220,255,245,.48),transparent 42%),radial-gradient(ellipse at 82% 68%,rgba(210,235,255,.55),transparent 40%),linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.34),rgba(255,255,255,.12));
+filter:blur(8px);
+animation:bigMistMove 10s ease-in-out infinite alternate}
+#mistLayer::before,#mistLayer::after{
+content:"";
+position:absolute;
+inset:-12% -35%;
+background:radial-gradient(ellipse at 20% 70%,rgba(255,255,255,.42),transparent 32%),radial-gradient(ellipse at 58% 78%,rgba(235,255,250,.36),transparent 35%),radial-gradient(ellipse at 86% 50%,rgba(220,240,255,.32),transparent 34%);
+filter:blur(18px);
+animation:mistBankRoll 18s linear infinite}
+#mistLayer::after{
+opacity:.7;
+animation-duration:27s;
+animation-direction:reverse}@keyframes bigMistMove{
+from{
+transform:translateX(-120px) scale(1.08)}to{
+transform:translateX(140px) scale(1.18)}}@keyframes mistBankRoll{
+from{
+transform:translateX(-220px)}to{
+transform:translateX(220px)}}
+#sparkleLayer{
+z-index:82;
+display:none;
+opacity:1;
+mix-blend-mode:screen}
+#sparkleLayer::before{
+content:"";
+position:absolute;
+inset:0;
+background:radial-gradient(circle at 12% 25%,#fff6a8 0 4px,transparent 8px),radial-gradient(circle at 22% 70%,#ffb7ff 0 4px,transparent 9px),radial-gradient(circle at 36% 38%,#b6e7ff 0 4px,transparent 9px),radial-gradient(circle at 52% 62%,#fff6a8 0 4px,transparent 9px),radial-gradient(circle at 70% 30%,#ffb7ff 0 4px,transparent 9px),radial-gradient(circle at 88% 68%,#b6e7ff 0 4px,transparent 9px);
+filter:drop-shadow(0 0 10px gold) drop-shadow(0 0 18px violet);
+animation:sparkleFloatBig 3.2s ease-in-out infinite alternate}
+#sparkleLayer::after{
+content:"";
+position:absolute;
+inset:0;
+background:radial-gradient(circle,rgba(255,240,150,1) 0 2px,transparent 4px),radial-gradient(circle,rgba(160,220,255,.95) 0 2px,transparent 4px),radial-gradient(circle,rgba(255,180,255,.95) 0 2px,transparent 4px);
+background-size:85px 90px,125px 110px,150px 135px;
+animation:sparkleRain 5s linear infinite}@keyframes sparkleFloatBig{
+from{
+opacity:.55;
+transform:translateY(0) scale(.85)}to{
+opacity:1;
+transform:translateY(-28px) scale(1.08)}}@keyframes sparkleRain{
+from{
+background-position:0 0,40px 20px,60px 80px}to{
+background-position:100px -220px,180px -260px,220px -200px}}
+#moonCloudLayer{
+z-index:84;
+display:none;
+opacity:0;
+mix-blend-mode:screen;
+filter:blur(7px);
+background:radial-gradient(ellipse at 45% 12%,rgba(255,255,255,.88),transparent 18%),radial-gradient(ellipse at 58% 14%,rgba(230,240,255,.82),transparent 20%),radial-gradient(ellipse at 72% 13%,rgba(220,230,255,.70),transparent 20%),linear-gradient(90deg,transparent,rgba(255,255,255,.36),transparent);
+animation:bigCloudPass 24s ease-in-out infinite}
+#darknessLayer{
+z-index:79;
+display:none;
+background:rgba(0,4,28,.72);
+opacity:0;
+animation:bigMoonDark 24s ease-in-out infinite}@keyframes bigCloudPass{
+0%,12%{
+opacity:0;
+transform:translateX(-420px)}30%{
+opacity:1;
+transform:translateX(-60px)}50%{
+opacity:1;
+transform:translateX(150px)}70%{
+opacity:.75;
+transform:translateX(360px)}88%,100%{
+opacity:0;
+transform:translateX(620px)}}@keyframes bigMoonDark{
+0%,18%,78%,100%{
+opacity:0}36%,58%{
+opacity:.68}}
+.atmoObj{
+position:absolute;
+pointer-events:none;
+z-index:120}
+.mistCloud{
+width:520px;
+height:170px;
+border-radius:50%;
+background:radial-gradient(ellipse at 30% 50%,rgba(255,255,255,.70),transparent 55%),radial-gradient(ellipse at 70% 55%,rgba(210,245,255,.55),transparent 55%);
+filter:blur(16px);
+mix-blend-mode:screen;
+opacity:.75;
+animation:mistCloudFloat 13s ease-in-out infinite alternate}@keyframes mistCloudFloat{
+from{
+transform:translateX(-90px) translateY(0) scale(1)}to{
+transform:translateX(150px) translateY(-18px) scale(1.12)}}
+.bigTwinkle{
+width:18px;
+height:18px;
+border-radius:50%;
+background:radial-gradient(circle,#fff,#fff5a8 35%,rgba(255,180,255,.6) 58%,transparent 72%);
+box-shadow:0 0 16px #fff4a8,0 0 32px #ff9cff,0 0 46px #7ee8ff;
+animation:bigTwinklePulse 1.4s ease-in-out infinite alternate}@keyframes bigTwinklePulse{
+from{
+opacity:.35;
+transform:scale(.55) rotate(0)}to{
+opacity:1;
+transform:scale(1.45) rotate(45deg)}}
+.moonCloudObj{
+width:620px;
+height:180px;
+border-radius:50%;
+background:radial-gradient(ellipse at 30% 50%,rgba(255,255,255,.82),transparent 56%),radial-gradient(ellipse at 55% 46%,rgba(225,238,255,.72),transparent 54%),radial-gradient(ellipse at 78% 55%,rgba(210,225,255,.55),transparent 56%);
+filter:blur(12px);
+mix-blend-mode:screen;
+opacity:.9;
+animation:moonCloudRealPass 24s linear infinite}@keyframes moonCloudRealPass{
+from{
+transform:translateX(-760px)}to{
+transform:translateX(2100px)}}
+.moonDarkFlash{
+position:absolute;
+inset:0;
+z-index:118;
+pointer-events:none;
+background:rgba(0,5,30,.58);
+opacity:0;
+animation:realDarkPulse 24s ease-in-out infinite}@keyframes realDarkPulse{
+0%,22%,78%,100%{
+opacity:0}42%,58%{
+opacity:.72}}
+.boulder{
+position:absolute!important;
+width:190px!important;
+height:190px!important;
+z-index:180!important;
+background-image:url("big-boulder.png")!important;
+background-size:contain!important;
+background-repeat:no-repeat!important;
+background-position:center!important;
+border:none!important;
+border-radius:50%!important;
+overflow:visible!important;
+filter:drop-shadow(0 18px 18px rgba(0,0,0,.75)) drop-shadow(0 0 16px rgba(255,210,90,.35))!important;
+pointer-events:none;
+mix-blend-mode:multiply}
+.boulder::before{
+content:"";
+position:absolute;
+inset:18%;
+border-radius:50%;
+background:linear-gradient(35deg,transparent 0 32%,rgba(255,220,90,.82) 33%,transparent 36%),linear-gradient(120deg,transparent 0 42%,rgba(255,170,60,.70) 43%,transparent 46%),linear-gradient(78deg,transparent 0 54%,rgba(255,245,150,.60) 55%,transparent 58%);
+mix-blend-mode:screen;
+opacity:.72;
+filter:drop-shadow(0 0 8px rgba(255,215,90,.85));
+animation:boulderCrackGlow 1.2s ease-in-out infinite alternate;
+pointer-events:none}@keyframes boulderCrackGlow{
+from{
+opacity:.28;
+filter:drop-shadow(0 0 5px rgba(255,215,90,.55))}to{
+opacity:.95;
+filter:drop-shadow(0 0 16px rgba(255,230,120,1))}}
+.boulderDust{
+position:absolute;
+width:120px;
+height:52px;
+border-radius:50%;
+background:radial-gradient(ellipse at 30% 50%,rgba(230,215,175,.42),transparent 58%),radial-gradient(ellipse at 70% 55%,rgba(180,160,125,.25),transparent 68%);
+filter:blur(7px);
+z-index:170;
+pointer-events:none;
+animation:boulderDustFade .65s ease-out forwards}@keyframes boulderDustFade{
+from{
+opacity:.85;
+transform:scale(.65)}to{
+opacity:0;
+transform:scale(1.7) translateY(-8px)}}
+#boulderWarning{
+position:absolute;
+left:50%;
+top:18%;
+transform:translateX(-50%);
+z-index:250;
+display:none;
+color:#ffe8a8;
+background:rgba(35,12,5,.82);
+border:1px solid rgba(255,220,120,.65);
+border-radius:999px;
+padding:10px 18px;
+font-size:22px;
+text-shadow:0 0 10px #000;
+box-shadow:0 0 22px rgba(255,160,80,.25);
+pointer-events:none}
+#boulderWarning.show{
+display:block}
+#game.boulderShake{
+animation:boulderScreenShake .12s linear 10}@keyframes boulderScreenShake{
+0%{
+transform:translate(0,0)}25%{
+transform:translate(3px,-2px)}50%{
+transform:translate(-3px,2px)}75%{
+transform:translate(2px,3px)}100%{
+transform:translate(0,0)}}
+.treasure{
+width:145px!important;
+height:120px!important;
+z-index:65!important;
+cursor:pointer;
+filter:drop-shadow(0 12px 12px rgba(0,0,0,.65)) drop-shadow(0 0 24px rgba(255,220,90,.8));
+animation:treasurePulse 1.2s ease-in-out infinite alternate;
+background:linear-gradient(145deg,#5b2e12,#d99b29 50%,#3a1b08);
+border-radius:18px;
+border:2px solid rgba(255,220,120,.85)}@keyframes treasurePulse{
+from{
+transform:translateY(0) scale(.96)}to{
+transform:translateY(-5px) scale(1.04)}}
+.treasure.open{
+animation:treasureOpen 1s ease-out forwards}@keyframes treasureOpen{
+0%{
+transform:scale(1)}50%{
+transform:scale(1.18) rotate(-3deg)}100%{
+transform:scale(1.08) rotate(0deg)}}
 .sparkle-pop{
-  position:absolute;width:18px;height:18px;z-index:260;border-radius:50%;
-  background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);
-  box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);
-  pointer-events:none;animation:sparklePop .8s ease-out forwards;
-}
-@keyframes sparklePop{0%{opacity:1;scale:.35}100%{opacity:0;scale:2.2;translate:0 -24px}}
+position:absolute;
+width:18px;
+height:18px;
+z-index:260;
+border-radius:50%;
+background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);
+box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);
+pointer-events:none;
+animation:sparklePop .8s ease-out forwards}@keyframes sparklePop{
+0%{
+opacity:1;
+scale:.35}100%{
+opacity:0;
+scale:2.2;
+translate:0 -24px}}
 .floatText{
-  position:absolute;z-index:265;color:#fff0ad;font-weight:bold;font-size:18px;
-  text-shadow:0 0 8px #000;pointer-events:none;animation:floatTextUp .9s ease-out forwards;
-}
-@keyframes floatTextUp{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -38px}}
-
+position:absolute;
+z-index:265;
+color:#fff0ad;
+font-weight:bold;
+font-size:18px;
+text-shadow:0 0 8px #000;
+pointer-events:none;
+animation:floatTextUp .9s ease-out forwards}@keyframes floatTextUp{
+from{
+opacity:1;
+translate:0 0}to{
+opacity:0;
+translate:0 -38px}}
+.dust{
+position:absolute;
+width:9px;
+height:9px;
+border-radius:50%;
+z-index:70;
+background:rgba(255,226,156,.85);
+box-shadow:0 0 12px rgba(255,226,156,.6);
+pointer-events:none;
+animation:dustPoof .7s ease-out forwards}@keyframes dustPoof{
+from{
+opacity:.9;
+transform:translate(-50%,-50%) scale(.35)}to{
+opacity:0;
+transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
+#mobileControls{
+position:fixed;
+left:0;
+right:0;
+bottom:14px;
+z-index:900;
+display:none;
+pointer-events:none;
+justify-content:space-between;
+padding:0 18px}
+.mobilePad{
+display:flex;
+gap:14px;
+pointer-events:auto}
+#mobileControls button{
+width:72px;
+height:72px;
+border-radius:50%;
+border:1px solid rgba(255,230,150,.65);
+background:rgba(4,20,10,.72);
+color:#ffe9a8;
+font-size:30px;
+font-family:Georgia,serif;
+font-weight:bold;
+box-shadow:0 0 20px rgba(255,220,100,.22),inset 0 0 14px rgba(255,230,150,.12);
+touch-action:none;
+user-select:none}
+#mobileControls button.pressed,#mobileControls button:active{
+transform:scale(.94);
+background:rgba(255,220,120,.25)}
+#jumpBtn{
+width:84px!important;
+height:84px!important;
+font-size:34px!important}
+#mobileHint{
+position:fixed;
+left:50%;
+bottom:104px;
+transform:translateX(-50%);
+z-index:901;
+display:none;
+color:#ffe9a8;
+background:rgba(0,18,9,.65);
+border:1px solid rgba(255,230,150,.35);
+border-radius:999px;
+padding:6px 12px;
+font-size:13px;
+pointer-events:none;
+white-space:nowrap}
+#controlsHelp{
+position:absolute;
+left:14px;
+top:118px;
+z-index:260;
+opacity:1;
+transition:opacity 1.2s ease,transform 1.2s ease;
+pointer-events:none}
+.controlsBox{
+background:rgba(7,22,12,.76);
+border:1px solid rgba(255,220,120,.45);
+border-radius:16px;
+padding:12px 16px;
+color:#ffe8a8;
+font-size:14px;
+box-shadow:0 0 18px rgba(255,200,100,.22),inset 0 0 18px rgba(255,240,160,.06)}
+.controlsBox h3{
+margin:0 0 7px;
+font-size:17px}
+.controlsBox p{
+margin:4px 0}
+.controlsBox span{
+color:#fff7c8;
+font-weight:bold;
+display:inline-block;
+min-width:82px}
+.mobileOnly{
+display:none;
+font-size:12px;
+opacity:.82}
+#foxHelperTip{
+position:absolute;
+left:16px;
+bottom:28px;
+z-index:270;
+display:flex;
+align-items:center;
+gap:10px;
+max-width:330px;
+color:#ffe8a8;
+opacity:0;
+transform:translateY(12px);
+transition:opacity .8s ease,transform .8s ease;
+pointer-events:none}
+#foxHelperTip.show{
+opacity:1;
+transform:translateY(0)}
+#foxHelperTip img{
+width:70px;
+height:70px;
+object-fit:contain;
+filter:drop-shadow(0 0 12px rgba(255,220,110,.55))}
+#foxHelperSpeech{
+background:rgba(6,22,12,.84);
+border:1px solid rgba(255,220,120,.45);
+border-radius:18px;
+padding:10px 12px;
+box-shadow:0 0 18px rgba(255,210,110,.18);
+line-height:1.3}
+.contextTip{
+position:absolute;
+left:50%;
+top:88px;
+transform:translateX(-50%);
+z-index:310;
+display:none;
+color:#fff4bd;
+background:rgba(45,16,7,.86);
+border:1px solid rgba(255,220,120,.65);
+border-radius:999px;
+padding:11px 20px;
+font-size:22px;
+text-shadow:0 0 10px #000;
+box-shadow:0 0 24px rgba(255,170,80,.28);
+pointer-events:none}
+.contextTip.show{
+display:block;
+animation:contextPulse 1s ease-in-out infinite alternate}@keyframes contextPulse{
+from{
+transform:translateX(-50%) scale(.96);
+opacity:.78}to{
+transform:translateX(-50%) scale(1.05);
+opacity:1}}
+#tutorialOverlay{
+position:absolute;
+inset:0;
+z-index:520;
+display:none;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at 50% 40%,rgba(255,225,125,.16),transparent 36%),rgba(0,10,6,.74);
+backdrop-filter:blur(5px);
+pointer-events:auto}
+#tutorialOverlay.show{
+display:flex}
+.tutorialBox{
+width:min(720px,88vw);
+background:linear-gradient(180deg,rgba(8,27,15,.96),rgba(2,10,6,.96));
+color:#ffe8a8;
+border:1px solid rgba(255,220,120,.62);
+border-radius:28px;
+padding:28px;
+box-shadow:0 0 42px rgba(255,210,100,.24),inset 0 0 30px rgba(255,240,160,.07);
+text-align:center}
+.tutorialBox h2{
+margin:0 0 12px;
+font-size:36px}
+.tutorialBox p{
+font-size:18px;
+line-height:1.45}
+.tutorialGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin:18px 0;
+text-align:left}
+.tutorialItem{
+background:rgba(255,230,140,.08);
+border:1px solid rgba(255,230,140,.18);
+border-radius:14px;
+padding:10px 12px}
+.tutorialItem b{
+color:#fff4bd}
+.tutorialBox button,.endingBox button,.endingBox a{
+margin:8px;
+padding:12px 20px;
+border-radius:999px;
+border:1px solid rgba(255,225,140,.6);
+background:rgba(255,225,120,.13);
+color:#ffe8a8;
+font-family:Georgia,serif;
+font-weight:bold;
+cursor:pointer;
+text-decoration:none;
+display:inline-block}
 #endingScreen{
-  position:absolute;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 35%,rgba(255,225,130,.26),transparent 38%),rgba(2,8,5,.78);
-}
-#endingScreen.show{display:flex}
+position:absolute;
+inset:0;
+z-index:10000;
+display:none;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at 50% 35%,rgba(255,225,110,.28),transparent 35%),rgba(0,8,5,.78);
+backdrop-filter:blur(6px);
+pointer-events:auto}
 .endingBox{
-  width:min(760px,92vw);border-radius:28px;border:1px solid rgba(255,230,150,.62);
-  background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.14),transparent 36%),rgba(7,23,13,.95);
-  box-shadow:0 0 40px rgba(0,0,0,.6),0 0 30px rgba(255,220,120,.2);
-  padding:26px;text-align:center;
-}
-.endingBox h1{margin:0 0 10px;color:#ffe7a6;font-size:2.15rem;text-shadow:0 0 16px rgba(255,220,120,.55)}
+width:min(760px,88vw);
+border:1px solid rgba(255,225,140,.65);
+border-radius:30px;
+padding:34px;
+text-align:center;
+color:#ffe8a8;
+background:linear-gradient(180deg,rgba(8,25,14,.95),rgba(2,9,5,.95));
+box-shadow:0 0 45px rgba(255,205,80,.28),inset 0 0 40px rgba(255,220,120,.08)}
+.endingBox h1{
+margin:0 0 12px;
+font-size:44px;
+text-shadow:0 0 18px rgba(255,230,120,.75)}
 .endingStats{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px auto;max-width:520px;
-}
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin:16px auto;
+max-width:520px}
 .endingStats div{
-  padding:12px;border-radius:18px;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,230,150,.28);color:#fff0cc;
-}
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,225,140,.24);
+border-radius:16px;
+padding:10px}
 #oracleBlessing{
-  margin:18px auto;padding:16px;max-width:580px;border-radius:18px;
-  background:rgba(255,232,150,.09);border:1px solid rgba(255,232,150,.3);
-  color:#fff1ba;font-size:1.12rem;line-height:1.45;
-}
-.goldBtn,.greenBtn{
-  display:inline-block;margin:7px;padding:12px 20px;border-radius:999px;
-  text-decoration:none;font-family:Georgia,serif;font-weight:bold;cursor:pointer;
-}
-.goldBtn{background:linear-gradient(#ffe39a,#c68a2b);color:#281707;border:1px solid rgba(255,235,168,.65)}
-.greenBtn{background:linear-gradient(#497746,#203c29);color:#fff3c5;border:1px solid rgba(196,255,177,.45)}
-
+margin:16px auto;
+padding:14px;
+border-radius:18px;
+border:1px solid rgba(255,225,140,.28);
+background:rgba(255,230,150,.08);
+max-width:560px;
+line-height:1.4}
+#homeOrb{
+position:fixed;
+top:18px;
+right:405px;
+width:58px;
+height:58px;
+border-radius:50%;
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+font-size:28px;
+background:radial-gradient(circle,#fff6b8,#f5c75f,#8b5a20);
+box-shadow:0 0 15px rgba(255,232,140,.9),0 0 35px rgba(255,210,90,.7),0 0 60px rgba(160,255,200,.35);
+animation:homeOrbFloat 3s ease-in-out infinite}@keyframes homeOrbFloat{
+0%,100%{
+translate:0 0}50%{
+translate:0 -7px}}
+@media(max-width:1120px){
+#sidePanel{
+display:none}
+.title,.subtitle{
+width:100vw}
+#homeOrb{
+right:18px}}
 @media(max-width:900px),(pointer:coarse){
-  #hud{top:6px;left:6px;transform:scale(.72);transform-origin:top left;gap:5px;max-width:720px;z-index:920}
-  #sidePanel{display:none}
-  .title{top:46px;width:100vw;font-size:1.7rem;opacity:.75}
-  .subtitle{top:82px;width:100vw;font-size:.9rem;opacity:.65}
-  #mobileControls{display:flex;bottom:12px;padding:0 18px;z-index:9999}
-  #mobileControls button{width:72px;height:72px;font-size:30px}
-  #jumpBtn{width:82px;height:82px}
-  #foxHelperTip{left:8px;bottom:112px;max-width:260px;transform:scale(.78);transform-origin:bottom left}
-  #foxHelperTip img{width:52px;height:52px}
-  #foxHelperSpeech{font-size:13px;padding:7px 9px}
-  #homeOrb{top:82px;right:10px;width:50px;height:50px;font-size:24px}
-  #homeOrb::after{display:none}
-  .endingStats{grid-template-columns:1fr}
-}
+#hud,.top-ui{
+top:6px!important;
+left:6px!important;
+transform:scale(.52)!important;
+transform-origin:top left!important;
+gap:5px!important;
+max-width:720px!important;
+z-index:920!important}
+#sidePanel{
+display:none!important}
+.title{
+top:30px!important;
+left:50%!important;
+transform:translateX(-50%) scale(.56)!important;
+transform-origin:top center!important;
+white-space:nowrap!important;
+opacity:.75!important}
+.subtitle{
+top:80px!important;
+transform:translateX(-50%) scale(.7)!important;
+opacity:.65!important}
+#controlsHelp{
+display:none!important}
+#foxHelperTip{
+left:8px!important;
+bottom:112px!important;
+max-width:230px!important;
+transform:scale(.72)!important;
+transform-origin:bottom left!important;
+opacity:.85!important}
+#foxHelperTip img{
+width:52px!important;
+height:52px!important}
+#foxHelperSpeech{
+font-size:13px!important;
+padding:7px 9px!important}
+.contextTip{
+top:86px!important;
+font-size:14px!important;
+padding:7px 12px!important;
+max-width:86vw!important}
+#mobileHint{
+display:none!important}
+#mobileControls{
+display:flex!important;
+bottom:12px!important;
+padding:0 18px!important;
+z-index:9999!important}
+.atmoObj,#mistLayer,#sparkleLayer,#moonCloudLayer,#darknessLayer{
+opacity:.65!important;
+animation-duration:32s!important}
+.mistCloud:nth-of-type(n+3),.bigTwinkle:nth-of-type(n+7){
+display:none!important}
+.tutorialBox{
+width:84vw!important;
+padding:18px!important}
+.tutorialBox h2{
+font-size:24px!important}
+.tutorialBox p{
+font-size:14px!important}
+.tutorialGrid{
+display:none!important}
+.endingStats{
+grid-template-columns:1fr}
+#homeOrb{
+top:82px;
+right:10px;
+width:50px;
+height:50px;
+font-size:24px}}
+
 </style>
+
 </head>
 
 <body>
+
 <div id="game">
   <a id="homeOrb" href="index.html" aria-label="Return to Fox Wisdom Oracle">🏡</a>
-
   <div id="world">
-    <div id="fox" class="sprite"></div>
-    <div id="puppy" class="sprite"></div>
+    <div id="mistLayer">
+</div>
+<div id="sparkleLayer">
+</div>
+<div id="moonCloudLayer">
+</div>
+<div id="darknessLayer">
+</div>
+    <div id="fox" class="sprite">
+</div>
+<div id="puppy" class="sprite">
+</div>
   </div>
-
   <div class="title">Foxfire Forest</div>
-  <div class="subtitle">A Platform Adventure through the Oracle Woods</div>
-
-  <div id="hud">
-    <div class="pill">❤️ Hearts: <span id="heartCount">3</span></div>
-    <div class="pill">🌼 Wishes: <span id="wishCount">0</span>/<span id="wishGoal">0</span></div>
-    <div class="pill">🐑 Sheep: <span id="sheepCount">0</span>/<span id="sheepGoal">0</span></div>
-    <div class="pill">🐣 Chickens: <span id="chickenCount">0</span></div>
-    <div class="pill">🥚 Eggs: <span id="eggCount">0</span></div>
-    <div class="pill">✨ Score: <span id="scoreCount">0</span></div>
-  </div>
-
+<div class="subtitle">Platform Adventure</div>
+  <div class="top-ui" id="hud">
+<div class="pill">❤️ <span id="heartCount">3</span>
+</div>
+<div class="pill">🌼 <span id="wishCount">0</span>/<span id="wishGoal">12</span>
+</div>
+<div class="pill">🐑 <span id="sheepCount">0</span>/<span id="sheepGoal">2</span>
+</div>
+<div class="pill">🐔 <span id="chickenCount">0</span>
+</div>
+<div class="pill">🥚 <span id="eggCount">0</span>
+</div>
+<div class="pill">⭐ x <span id="scoreCount">0</span>
+</div>
+<button onclick="toggleSound()" id="soundBtn">Music: Off</button>
+<button onclick="openChoice()">Choose Fox</button>
+<button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
+<button onclick="resetLevel()">Restart</button>
+</div>
   <div id="sidePanel">
-    <div class="card">
-      <h2>🦊 Fox Helper</h2>
-      <p><strong>Computer:</strong> Arrow keys or A/D to move. Space, W or ↑ to jump.</p>
-      <p><strong>Phone:</strong> Use the glowing buttons below.</p>
-      <p id="message">Choose your fox to begin.</p>
-    </div>
-
-    <div class="card levelCard active" id="levelCard0" onclick="goToLevel(0)">
-      <div class="thumb" id="thumb0"></div>
-      <p><strong>Misty Meadows</strong><br>Soft lanterns and first wishes.</p>
-    </div>
-    <div class="card levelCard" id="levelCard1" onclick="goToLevel(1)">
-      <div class="thumb" id="thumb1"></div>
-      <p><strong>Twilight Hollow</strong><br>Deeper paths and hidden glow.</p>
-    </div>
-    <div class="card levelCard" id="levelCard2" onclick="goToLevel(2)">
-      <div class="thumb" id="thumb2"></div>
-      <p><strong>Moonlit Canopy</strong><br>The boulder wakes here.</p>
-    </div>
-    <div class="card levelCard" id="levelCard3" onclick="goToLevel(3)">
-      <div class="thumb" id="thumb3"></div>
-      <p><strong>Treasure Room</strong><br>Open the chest to finish.</p>
-    </div>
-  </div>
-
-  <div id="boulderWarning">⚠️ The moon boulder is rolling!</div>
-  <div id="contextTip" class="contextTip">Nice jump!</div>
-
-  <div id="foxHelperTip">
-    <img src="female-foxy-player-idle.png" alt="">
-    <div id="foxHelperSpeech">Use the round buttons to move and jump.</div>
-  </div>
-
-  <div id="mobileControls">
-    <div class="controlGroup">
-      <button id="leftBtn">←</button>
-      <button id="rightBtn">→</button>
-    </div>
-    <div class="controlGroup">
-      <button id="jumpBtn">↑</button>
-    </div>
-  </div>
-
+<div class="card">
+<h2>❧ Collect & Explore ❧</h2>
+<p>Collect, explore, dodge boulders, and find the hidden treasure room.</p>
+</div>
+<div class="card">
+<h2>❧ Rescue Sheep ❧</h2>
+<p>Find the fluffy sheep on the painted ledges.</p>
+</div>
+<div class="card">
+<h2>❧ Chickens & Eggs ❧</h2>
+<p>Collect golden eggs near the chickens for bonus points.</p>
+</div>
+<div class="card">
+<h2>❧ Foxfire Oracle ❧</h2>
+<p id="message">Choose your fox and follow the glowing path.</p>
+<p style="margin-top:8px;
+color:#ffe7a6;
+">Jump on mushrooms to poof them away. Jump over rolling rocks.</p>
+</div>
+<div class="card levelCard active" id="levelCard0" onclick="changeLevel(0)">
+<div class="thumb" id="thumb0">
+</div>
+<div>
+<h2>Misty Meadows</h2>
+<p>Gentle beginning path.</p>
+</div>
+</div>
+<div class="card levelCard" id="levelCard1" onclick="changeLevel(1)">
+<div class="thumb" id="thumb1">
+</div>
+<div>
+<h2>Twilight Hollow</h2>
+<p>Darker rocks and hidden ledges.</p>
+</div>
+</div>
+<div class="card levelCard" id="levelCard2" onclick="changeLevel(2)">
+<div class="thumb" id="thumb2">
+</div>
+<div>
+<h2>Moonlit Canopy</h2>
+<p>Higher jumps under moonlight.</p>
+</div>
+</div>
+<div class="card levelCard" id="levelCard3" onclick="changeLevel(3)">
+<div class="thumb" id="thumb3">
+</div>
+<div>
+<h2>Treasure Room</h2>
+<p>Open the chest to finish.</p>
+</div>
+</div>
+</div>
   <div id="choiceScreen">
-    <div class="choiceBox">
-      <h1>Choose Your Fox</h1>
-      <p>Pick your little forest guardian and begin the journey.</p>
-      <div class="choiceCards">
-        <div class="foxCard" onclick="chooseFox('female')">
-          <div id="femalePreview" class="foxPreview"></div>
-          Girl Fox
-        </div>
-        <div class="foxCard" onclick="chooseFox('male')">
-          <div id="malePreview" class="foxPreview"></div>
-          Boy Fox
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="choiceBox">
+<h1>Choose Your Fox</h1>
+<p>Who will follow the glowing path?</p>
+<div class="choiceCards">
+<button type="button" class="foxCard" onclick="chooseFox('female')">
+<div class="foxPreview" id="femalePreview">
+</div>Female Fox ♀</button>
+<button type="button" class="foxCard" onclick="chooseFox('male')">
+<div class="foxPreview" id="malePreview">
+</div>Boy Fox ♂</button>
+</div>
+</div>
+</div>
   <div id="endingScreen">
-    <div class="endingBox">
-      <h1>🏆 Forest Guardian Ending</h1>
-      <p>The chest opens. Golden light spills across the forest. The puppy bounds beside the fox, and all the little rescued creatures gather safely.</p>
-      <div class="endingStats">
-        <div>✨ Final Score<br><strong id="endingScore">0</strong></div>
-        <div>🐣 Chickens Rescued<br><strong id="endingChickens">0</strong></div>
-        <div>🌼 Dandelions Collected<br><strong id="endingWishes">0</strong></div>
-        <div>🥚 Eggs Collected<br><strong id="endingEggs">0</strong></div>
-      </div>
-      <div id="oracleBlessing">🦊 You have restored the forest path.</div>
-      <button class="goldBtn" onclick="restartAdventure()">Play Again</button>
-      <a class="greenBtn" href="index.html">Return to Oracle Forest</a>
-      <a class="greenBtn" href="https://dolphintouch.etsy.com" target="_blank" rel="noopener">Visit Dolphintouch Shop</a>
-    </div>
-  </div>
-
-  <audio id="collectAudio" src="sparkle-chime.mp3" preload="auto"></audio>
-  <audio id="jumpAudio" src="soft-poof.mp3" preload="auto"></audio>
-  <audio id="hitAudio" src="rock-rumble.mp3" preload="auto"></audio>
-  <audio id="shimmerAudio" src="magical-shimmer.mp3" preload="auto"></audio>
+<div class="endingBox">
+<h1>🏆 Forest Guardian Ending</h1>
+<p>The Foxfire path is complete. You rescued the forest friends, crossed the moonlit danger, and opened the hidden treasure.</p>
+<div class="endingStats">
+<div>✨ Final Score<br>
+<strong id="endingScore">0</strong>
+</div>
+<div>🐔 Chickens Rescued<br>
+<strong id="endingChickens">0</strong>
+</div>
+<div>🌼 Dandelions Collected<br>
+<strong id="endingWishes">0</strong>
+</div>
+<div>🥚 Eggs Collected<br>
+<strong id="endingEggs">0</strong>
+</div>
+</div>
+<div id="oracleBlessing">🦊 The forest remembers your kindness.</div>
+<button onclick="restartAdventure()">Play Again</button>
+<a href="index.html">Return to Oracle Forest</a>
+<a href="https://dolphintouch.etsy.com" target="_blank" rel="noopener">Visit Dolphintouch Shop</a>
+</div>
+</div>
+  <div id="mobileHint">← → move • ⤒ jump / double jump</div>
+<div id="mobileControls" aria-label="Mobile game controls">
+<div class="mobilePad">
+<button id="leftBtn" type="button">◀</button>
+<button id="rightBtn" type="button">▶</button>
+</div>
+<div class="mobilePad">
+<button id="jumpBtn" type="button">⤒</button>
+</div>
+</div>
+  <div id="boulderWarning">⚠️ Boulder rolling in — double jump!</div>
+  <div id="controlsHelp">
+<div class="controlsBox">
+<h3>Controls</h3>
+<p>
+<span>← →</span> Move</p>
+<p>
+<span>Space</span> Jump</p>
+<p>
+<span>Space ×2</span> Double Jump</p>
+<p class="mobileOnly">Tap the buttons to play</p>
+</div>
+</div>
+  <div id="foxHelperTip">
+<img src="foxy-helper-new.png" onerror="this.src='foxy-helper.png'" alt="">
+<div id="foxHelperSpeech">Use the arrow keys to move, and Space to jump.</div>
+</div>
+<div id="contextTip" class="contextTip">Double jump now!</div>
+  <div id="tutorialOverlay">
+<div class="tutorialBox">
+<h2>Welcome to Foxfire Forest</h2>
+<p>Guide your fox through the enchanted levels, rescue forest friends, collect eggs, and find the hidden treasure room.</p>
+<div class="tutorialGrid">
+<div class="tutorialItem">
+<b>← →</b>
+<br>Move your fox</div>
+<div class="tutorialItem">
+<b>Space</b>
+<br>Jump / double jump</div>
+<div class="tutorialItem">
+<b>Moonlit Canopy</b>
+<br>Double jump over the rolling boulder</div>
+<div class="tutorialItem">
+<b>Treasure Room</b>
+<br>Open the chest to finish</div>
+</div>
+<button onclick="closeTutorial()">Begin Adventure</button>
+</div>
+</div>
+  <audio id="ambientAudio" src="foxglow-glade.mp3" loop>
+</audio>
+<audio id="ambientBackupAudio" src="foxglow-glade (2).mp3" loop>
+</audio>
+<audio id="collectAudio" src="sparkle-chime.mp3">
+</audio>
+<audio id="sheepAudio" src="sheep-baa.mp3">
+</audio>
+<audio id="jumpAudio" src="soft-poof.mp3">
+</audio>
+<audio id="hitAudio" src="soft-poof.mp3">
+</audio>
+<audio id="shimmerAudio" src="magical-shimmer.mp3">
+</audio>
 </div>
 
 <script>
-const game=document.getElementById("game");
-const world=document.getElementById("world");
-const foxEl=document.getElementById("fox");
-const puppyEl=document.getElementById("puppy");
-const choiceScreen=document.getElementById("choiceScreen");
-const messageEl=document.getElementById("message");
-const heartCountEl=document.getElementById("heartCount");
-const wishCountEl=document.getElementById("wishCount");
-const wishGoalEl=document.getElementById("wishGoal");
-const sheepCountEl=document.getElementById("sheepCount");
-const sheepGoalEl=document.getElementById("sheepGoal");
-const chickenCountEl=document.getElementById("chickenCount");
-const eggCountEl=document.getElementById("eggCount");
-const scoreCountEl=document.getElementById("scoreCount");
-const boulderWarning=document.getElementById("boulderWarning");
-const foxHelperTip=document.getElementById("foxHelperTip");
-const foxHelperSpeech=document.getElementById("foxHelperSpeech");
-const contextTip=document.getElementById("contextTip");
-const endingScreen=document.getElementById("endingScreen");
 
-const WORLD_WIDTH=1792;
-const FOX_VISUAL_DROP=58;
-const SAVE_KEY="foxfireForestSave_clean_public_v1";
+const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning"),controlsHelp=document.getElementById("controlsHelp"),foxHelperTip=document.getElementById("foxHelperTip"),foxHelperSpeech=document.getElementById("foxHelperSpeech"),tutorialOverlay=document.getElementById("tutorialOverlay"),contextTip=document.getElementById("contextTip");
 
-let keys={},mobileLeft=false,mobileRight=false,mobileJump=false;
-let currentLevel=0,cameraX=0,gameStarted=false,foxType="female";
+const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),eggCountEl=document.getElementById("eggCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");
+
+const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");
+
+const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_clean_public_boulder_fix";
+
+let keys={
+},mobileLeft=false,mobileRight=false,mobileJump=false,currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";
+
 let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;
-let hearts=3,wishes=0,sheep=0,chickens=0,eggs=0,score=0,hurtCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false;
-let boulder=null,treasureOpened=false,gameFinished=false;
 
-const oracleMessages=[
-  "🦊 The forest remembers your kindness.",
-  "✨ Even the smallest light can guide the way.",
-  "🌿 You walked gently, and the world responded.",
-  "🐣 What you saved will one day save you.",
-  "🌼 The path opens for those who care.",
-  "🌙 Magic grows where love is placed.",
-  "🍃 You are part of the forest now.",
-  "🏆 You are a true Forest Guardian.",
-  "💛 Kindness is the oldest magic of all."
-];
+const FOX_VISUAL_DROP=58;
+
+let hearts=3,wishes=0,sheep=0,chickens=0,eggs=0,score=0,hurtCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,boulderTimer=260,boulderActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,gameFinished=false;
 
 const foxImages={
-  female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},
-  male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}
+female:{
+idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{
+idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};
+
+const oracleMessages=["🦊 The forest remembers your kindness.","✨ Even the smallest light can guide the way.","🌿 You walked gently, and the world responded.","🐣 What you saved will one day save you.","🌼 The path opens for those who care.","🌙 Magic grows where love is placed.","🍃 You are part of the forest now.","🏆 You are a true Forest Guardian."];
+
+const levels=[{
+name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{
+x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{
+x:47,y:79,w:543,h:32},{
+x:1324,y:72,w:271,h:32},{
+x:6,y:185,w:832,h:32},{
+x:1328,y:180,w:380,h:32},{
+x:666,y:295,w:172,h:30},{
+x:875,y:354,w:260,h:30},{
+x:1273,y:333,w:208,h:30},{
+x:53,y:403,w:563,h:30},{
+x:812,y:480,w:180,h:28},{
+x:1152,y:519,w:189,h:28},{
+x:349,y:635,w:249,h:28},{
+x:1000,y:646,w:200,h:30},{
+x:1411,y:613,w:466,h:30}],hazards:[{
+x:844,y:102,w:479,h:55},{
+x:609,y:77,w:156,h:50}],wishes:[],sheep:[{
+x:1322,y:336},{
+x:1520,y:655}],chickens:[{
+x:356,y:637},{
+x:1074,y:639}],eggs:[{
+x:478,y:635},{
+x:1107,y:642}],mushrooms:[{
+x:846,y:486},{
+x:1177,y:527}],rocks:[{
+x:974,y:352},{
+x:1447,y:95}]},{
+name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{
+x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{
+x:-4,y:178,w:777,h:50},{
+x:288,y:583,w:264,h:34},{
+x:101,y:499,w:230,h:34},{
+x:605,y:424,w:230,h:34},{
+x:965,y:767,w:250,h:34},{
+x:1080,y:381,w:330,h:36},{
+x:784,y:550,w:176,h:34},{
+x:1069,y:561,w:185,h:34},{
+x:1100,y:475,w:375,h:36},{
+x:1345,y:610,w:489,h:36},{
+x:1228,y:218,w:520,h:36},{
+x:448,y:64,w:989,h:50},{
+x:862,y:143,w:220,h:32},{
+x:350,y:306,w:118,h:32}],hazards:[{
+x:441,y:196,w:264,h:62},{
+x:642,y:87,w:120,h:55},{
+x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{
+x:689,y:430},{
+x:1545,y:565}],chickens:[{
+x:805,y:553},{
+x:1397,y:601}],eggs:[{
+x:788,y:553},{
+x:1366,y:604}],mushrooms:[{
+x:393,y:589},{
+x:290,y:208}],rocks:[{
+x:1113,y:567},{
+x:1352,y:227}]},{
+name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{
+x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{
+x:216,y:115,w:548,h:38},{
+x:740,y:35,w:980,h:38},{
+x:-74,y:169,w:549,h:34},{
+x:865,y:169,w:188,h:34},{
+x:628,y:289,w:241,h:34},{
+x:1025,y:475,w:295,h:34},{
+x:1225,y:251,w:616,h:36},{
+x:294,y:778,w:270,h:34},{
+x:624,y:597,w:232,h:34},{
+x:927,y:769,w:220,h:34},{
+x:1310,y:610,w:435,h:34},{
+x:145,y:384,w:220,h:32},{
+x:254,y:512,w:376,h:32},{
+x:64,y:439,w:220,h:32},{
+x:1128,y:109,w:220,h:32},{
+x:1346,y:141,w:220,h:32},{
+x:675,y:385,w:220,h:32}],hazards:[{
+x:400,y:528,w:171,h:38}],wishes:[],sheep:[{
+x:611,y:304},{
+x:1271,y:634},{
+x:1556,y:635}],chickens:[{
+x:614,y:596},{
+x:325,y:784}],eggs:[{
+x:1372,y:626},{
+x:1350,y:622},{
+x:324,y:786},{
+x:791,y:605},{
+x:976,y:782},{
+x:1175,y:510},{
+x:1406,y:620},{
+x:1515,y:285}],mushrooms:[{
+x:9,y:452},{
+x:1152,y:492}],rocks:[{
+x:1238,y:248},{
+x:1542,y:635},{
+x:410,y:781},{
+x:848,y:286},{
+x:1003,y:478},{
+x:1098,y:53},{
+x:1528,y:285}]},{
+name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",message:"The hidden treasure room glows ahead. Open the chest to complete the forest.",startX:120,startY:120,wishGoal:0,sheepGoal:0,platforms:[{
+x:0,y:70,w:1792,h:46},{
+x:245,y:300,w:330,h:34},{
+x:630,y:430,w:280,h:34},{
+x:1040,y:330,w:280,h:34},{
+x:1260,y:175,w:420,h:38}],hazards:[],wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[],portal:{
+x:1550,y:205},treasure:{
+x:1390,y:205}}];
+
+const cleanedImageCache={
 };
 
-const levels=[
-  {
-    name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:3,sheepGoal:1,startX:135,startY:385,portal:{x:1515,y:590},
-    message:"Misty Meadows begins. Follow the painted ledges.",
-    platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],
-    wishes:[{x:220,y:430},{x:500,y:665},{x:1070,y:678},{x:1430,y:642}],
-    sheep:[{x:1322,y:365}],chickens:[{x:356,y:665},{x:1074,y:675}],eggs:[{x:478,y:665},{x:1107,y:672}],
-    mushrooms:[{x:846,y:510}],rocks:[{x:974,y:380}],boulder:false
-  },
-  {
-    name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:4,sheepGoal:1,startX:120,startY:240,portal:{x:1510,y:565},
-    message:"Twilight Hollow glows with hidden paths.",
-    platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],
-    wishes:[{x:350,y:615},{x:700,y:455},{x:1120,y:595},{x:1410,y:640},{x:1300,y:250}],
-    sheep:[{x:689,y:455}],chickens:[{x:805,y:580},{x:1397,y:638}],eggs:[{x:788,y:580},{x:1366,y:638}],
-    mushrooms:[{x:393,y:615},{x:290,y:235}],rocks:[{x:1113,y:592},{x:1352,y:252}],boulder:false
-  },
-  {
-    name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:5,sheepGoal:2,startX:105,startY:230,portal:{x:1515,y:635},
-    message:"Moonlit Canopy is higher, softer, and full of secrets. Watch for the moon boulder.",
-    platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],
-    wishes:[{x:300,y:545},{x:720,y:625},{x:1050,y:505},{x:1350,y:650},{x:1500,y:285},{x:980,y:800}],
-    sheep:[{x:611,y:325},{x:1271,y:640}],chickens:[{x:614,y:625},{x:325,y:810}],eggs:[{x:1372,y:650},{x:324,y:810},{x:791,y:625},{x:1175,y:505}],
-    mushrooms:[{x:9,y:470},{x:1152,y:500}],rocks:[{x:1238,y:280},{x:1542,y:665},{x:410,y:810},{x:848,y:315},{x:1003,y:505}],boulder:true
-  },
-  {
-    name:"Treasure Room",bg:"treasure-room-bg.jpg",wishGoal:0,sheepGoal:0,startX:120,startY:120,portal:{x:1550,y:205},
-    message:"The hidden treasure room glows ahead. Open the chest to complete the forest.",
-    platforms:[{x:0,y:70,w:1792,h:46},{x:245,y:300,w:330,h:34},{x:630,y:430,w:280,h:34},{x:1040,y:330,w:280,h:34},{x:1260,y:175,w:420,h:38}],
-    wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[],boulder:false,treasure:{x:1390,y:205}
-  }
-];
+function cleanImageURL(url){
+
+if(cleanedImageCache[url])
+return cleanedImageCache[url];
+
+const promise=new Promise(resolve=>{
+
+const img=new Image();
+img.crossOrigin="anonymous";
+img.onload=()=>{
+try{
+
+const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{
+willReadFrequently:true});
+canvas.width=img.naturalWidth;
+canvas.height=img.naturalHeight;
+ctx.drawImage(img,0,0);
+
+const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;
+
+const seen=new Uint8Array(w*h),queue=[];
+
+function idx(x,y){
+
+return y*w+x}
+function bgAt(x,y){
+
+const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3],max=Math.max(r,g,b),min=Math.min(r,g,b),low=(max-min)<72;
+
+return a>0&&((r>235&&g>235&&b>235)||(max>205&&low)||(max>160&&low&&r>135&&g>135&&b>135))}
+function push(x,y){
+
+if(x<0||y<0||x>=w||y>=h)return;
+
+const n=idx(x,y);
+
+if(seen[n]||!bgAt(x,y))return;
+seen[n]=1;
+queue.push([x,y])}
+for(
+let x=0;
+x<w;
+x++){
+push(x,0);
+push(x,h-1)}
+for(
+let y=0;
+y<h;
+y++){
+push(0,y);
+push(w-1,y)}while(queue.length){
+
+const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;
+d[i+3]=0;
+push(x+1,y);
+push(x-1,y);
+push(x,y+1);
+push(x,y-1)}
+for(
+let y=0;
+y<h;
+y++){
+
+for(
+let x=0;
+x<w;
+x++){
+
+const i=idx(x,y)*4,max=Math.max(d[i],d[i+1],d[i+2]),min=Math.min(d[i],d[i+1],d[i+2]);
+
+if(d[i+3]>0&&max>225&&(max-min)<55)d[i+3]=Math.min(d[i+3],85)}}ctx.putImageData(imageData,0,0);
+resolve(canvas.toDataURL("image/png"))}catch(err){
+resolve(url)}};
+img.onerror=()=>resolve(url);
+img.src=url});
+cleanedImageCache[url]=promise;
+
+return promise}async 
+function setCleanBackground(el,url){
+
+if(!el)return;
+
+const cleaned=await cleanImageURL(url);
+el.style.backgroundImage=`url("${
+cleaned}")`}
+
+function spriteFootOffset(c){
+
+if(c.includes("fox"))
+return 0;
+
+if(c.includes("sheep")||c.includes("chicken")||c.includes("mushroom"))
+return -35;
+
+if(c.includes("egg"))
+return 0;
+
+if(c.includes("wish"))
+return 0;
+
+if(c.includes("portal"))
+return 0;
+
+if(c.includes("treasure"))
+return 0;
+
+return 0}
+function createSprite(cls,img,xp,yp,extra={
+}){
+
+const el=document.createElement("div");
+el.className="sprite "+cls;
+el.style.left=xp+"px";
+el.style.bottom=(yp+spriteFootOffset(cls))+"px";
+el.dataset.baseBottom=yp;
+el.dataset.visualOffset=spriteFootOffset(cls);
+Object.keys(extra).forEach(k=>el.dataset[k]=extra[k]);
+
+if(img)setCleanBackground(el,img);
+world.appendChild(el);
+
+return el}
+function makePlatform(p){
+
+const el=document.createElement("div");
+el.className="hitbox";
+el.dataset.x=p.x;
+el.dataset.y=p.y;
+el.dataset.w=p.w;
+el.dataset.h=p.h;
+el.style.left=p.x+"px";
+el.style.bottom=p.y+"px";
+el.style.width=p.w+"px";
+el.style.height=p.h+"px";
+world.appendChild(el)}
+function makeHazard(p){
+
+const el=document.createElement("div");
+el.className="hazardBox";
+el.style.left=p.x+"px";
+el.style.bottom=p.y+"px";
+el.style.width=p.w+"px";
+el.style.height=p.h+"px";
+world.appendChild(el)}
+
+function buildLevel(i){
+currentLevel=i;
+gameFinished=false;
+
+const L=levels[i];
+world.style.backgroundImage=`url("${
+L.bg}")`;
+document.querySelectorAll(".hitbox,.hazardBox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.boulder,.treasure,.portal,.floatText,.sparkle-pop,.dust,.whoosh,.atmoObj,.moonDarkFlash,.boulderDust").forEach(e=>e.remove());
+wishes=0;
+sheep=0;
+chickens=0;
+eggs=0;
+hearts=3;
+portalOpen=(L.name==="Treasure Room");
+boulderActive=false;
+boulderWarningActive=false;
+boulderTimer=80;
+treasureOpened=false;
+x=L.startX;
+y=L.startY;
+vx=0;
+vy=0;
+puppyX=x-65;
+puppyY=y-10;
+facing="right";
+onGround=false;
+doubleJumpReady=true;
+lastSafeX=x;
+lastSafeY=y;
+wishGoalEl.textContent=L.wishGoal;
+sheepGoalEl.textContent=L.sheepGoal;
+setMessage(L.message);
+L.platforms.forEach(makePlatform);
+L.hazards.forEach(makeHazard);
+L.wishes.forEach(w=>createSprite("wish","wish-dandelion.png",w.x,w.y,{
+done:"no"}));
+L.sheep.forEach((s,ix)=>createSprite("sheep",ix%2?"sheep-fluffy-glow.png":"luma-sheep.png",s.x,s.y,{
+done:"no",baseX:s.x,dir:ix%2?-1:1}));
+L.chickens.forEach((c,ix)=>createSprite("chicken",ix%2?"chicken-cute.png":"chick-baby.png",c.x,c.y,{
+done:"no",baseX:c.x,dir:ix%2?-1:1}));
+L.eggs.forEach(e=>createSprite("egg","egg-golden.png",e.x,e.y,{
+done:"no"}));
+
+const ms=["mushroom-baby.png","mushroom-young.png","mushroom-female.png","mushroom-man.png"];
+L.mushrooms.forEach((m,ix)=>createSprite("mushroom",ms[ix%ms.length],m.x,m.y,{
+hidden:"no"}));
+L.rocks.forEach((r,ix)=>createSprite("rock","rock.png",r.x,r.y,{
+baseX:r.x,dir:ix%2?-1:1}));
+
+const portal=createSprite("portal","",L.portal.x,L.portal.y);
+portal.id="levelPortal";
+
+if(portalOpen)portal.style.display="block";
+
+if(L.treasure){
+
+const chest=createSprite("treasure","treasure-chest.png",L.treasure.x,L.treasure.y);
+chest.id="finalTreasure"}setAtmosphereForLevel();
+spawnRealAtmosphere();
+updateHUD();
+setFoxImage("idle");
+render();
+document.querySelectorAll(".levelCard").forEach(e=>e.classList.remove("active"));
+
+const lc=document.getElementById("levelCard"+i);
+
+if(lc)lc.classList.add("active");
+
+}
+
+function setAtmosphereForLevel(){
+mistLayer.style.display="none";
+sparkleLayer.style.display="none";
+moonCloudLayer.style.display="none";
+darknessLayer.style.display="none";
+
+if(currentLevel===0)mistLayer.style.display="block";
+
+if(currentLevel===1)sparkleLayer.style.display="block";
+
+if(currentLevel===2){
+moonCloudLayer.style.display="block";
+darknessLayer.style.display="block"}}
+function spawnRealAtmosphere(){
+document.querySelectorAll(".atmoObj,.moonDarkFlash").forEach(e=>e.remove());
+
+if(currentLevel===0){
+[{
+x:40,y:120,d:0},{
+x:420,y:260,d:1.5},{
+x:850,y:160,d:.8},{
+x:1180,y:330,d:2.2},{
+x:260,y:520,d:2.8}].forEach(m=>{
+
+const el=document.createElement("div");
+el.className="atmoObj mistCloud";
+el.style.left=m.x+"px";
+el.style.bottom=m.y+"px";
+el.style.animationDelay=m.d+"s";
+world.appendChild(el)})}
+if(currentLevel===1){
+[[120,180],[240,560],[420,300],[580,650],[760,420],[930,720],[1080,250],[1260,550],[1450,380],[1630,690],[330,760],[1380,140]].forEach((p,i)=>{
+
+const el=document.createElement("div");
+el.className="atmoObj bigTwinkle";
+el.style.left=p[0]+"px";
+el.style.bottom=p[1]+"px";
+el.style.animationDelay=(i*.22)+"s";
+world.appendChild(el)})}
+if(currentLevel===2){
+
+const dark=document.createElement("div");
+dark.className="moonDarkFlash";
+world.appendChild(dark);
+
+const cloud=document.createElement("div");
+cloud.className="atmoObj moonCloudObj";
+cloud.style.left="0px";
+cloud.style.bottom="610px";
+world.appendChild(cloud)}}
 
 function chooseFox(type){
-  foxType=type;
-  try{localStorage.setItem(SAVE_KEY,JSON.stringify({foxType}))}catch(e){}
-  choiceScreen.classList.add("hidden");
-  gameStarted=true;
-  setFoxImage("idle");
-  showFoxHelper("The forest path is ready. Collect wishes, rescue friends, and find the glowing portal.",5200);
-}
-
+foxType=type;
+choiceScreen.classList.add("hidden");
+gameStarted=true;
+setFoxImage("idle");
+showTutorialOnce();
+showFoxHelper("The forest path is ready. Collect, rescue, and follow the glow.",4500);
+try{
+localStorage.setItem(SAVE_KEY,JSON.stringify({
+foxType}))}catch(e){
+}}
+function openChoice(){
+choiceScreen.classList.remove("hidden");
+choiceScreen.style.display="flex";
+gameStarted=false}
 function setFoxImage(state){
-  const img=foxImages[foxType][state]||foxImages[foxType].idle;
-  foxEl.style.backgroundImage=`url("${img}")`;
-}
-
-function buildLevel(n){
-  currentLevel=n;
-  const L=levels[n];
-  world.style.backgroundImage=`url("${L.bg}")`;
-  clearWorldObjects();
-  document.querySelectorAll(".levelCard").forEach(el=>el.classList.remove("active"));
-  const lc=document.getElementById("levelCard"+n); if(lc)lc.classList.add("active");
-
-  x=L.startX; y=L.startY; vx=0; vy=0; facing="right";
-  puppyX=x-80; puppyY=y-60;
-  hearts=3; wishes=0; sheep=0; chickens=0; eggs=0; portalOpen=false; treasureOpened=false; gameFinished=false;
-  lastSafeX=x; lastSafeY=y;
-  boulder=null;
-  boulderWarning.classList.remove("show");
-
-  L.platforms.forEach(p=>makePlatform(p));
-  L.wishes.forEach(p=>makeSprite("wish","dandelion.png",p.x,p.y));
-  L.sheep.forEach(p=>makeSprite("sheep","sheep.png",p.x,p.y));
-  L.chickens.forEach(p=>makeSprite("chicken","chicken-baby.png",p.x,p.y));
-  L.eggs.forEach(p=>makeSprite("egg","egg.png",p.x,p.y));
-  L.mushrooms.forEach(p=>makeSprite("mushroom","mushroom-baby.png",p.x,p.y));
-  L.rocks.forEach(p=>makeSprite("rock","rock.png",p.x,p.y));
-
-  const portal=makeSprite("portal","",L.portal.x,L.portal.y);
-  portal.id="levelPortal";
-
-  if(L.treasure){
-    const chest=makeSprite("chest chestFallback","treasure-chest.png",L.treasure.x,L.treasure.y);
-    chest.id="treasureChest";
-  }
-
-  if(L.boulder){
-    const b=makeSprite("boulder","big-boulder.png",1450,720);
-    b.dataset.vx="-4.1";
-    b.dataset.vy="0";
-    b.dataset.active="no";
-    boulder=b;
-    setTimeout(()=>activateBoulder(),1800);
-  }
-
-  wishGoalEl.textContent=L.wishGoal;
-  sheepGoalEl.textContent=L.sheepGoal;
-  setMessage(L.message);
-  updateHUD();
-  setFoxImage("idle");
-  render();
-}
-
-function clearWorldObjects(){
-  world.querySelectorAll(".hitbox,.wish,.sheep,.chicken,.egg,.mushroom,.rock,.portal,.boulder,.chest").forEach(el=>el.remove());
-}
-
-function makePlatform(p){
-  const el=document.createElement("div");
-  el.className="hitbox";
-  el.dataset.x=p.x; el.dataset.y=p.y; el.dataset.w=p.w; el.dataset.h=p.h;
-  el.style.left=p.x+"px";
-  el.style.bottom=p.y+"px";
-  el.style.width=p.w+"px";
-  el.style.height=p.h+"px";
-  world.appendChild(el);
-  return el;
-}
-
-function makeSprite(cls,img,x,y){
-  const el=document.createElement("div");
-  el.className="sprite "+cls;
-  el.dataset.baseX=x;
-  el.dataset.baseY=y;
-  el.style.left=x+"px";
-  el.style.bottom=y+"px";
-  if(img)el.style.backgroundImage=`url("${img}")`;
-  world.appendChild(el);
-  return el;
-}
-
-function goToLevel(n){
-  buildLevel(n);
-  if(!gameStarted){
-    choiceScreen.classList.remove("hidden");
-  }else{
-    showFoxHelper(levels[n].message,4500);
-  }
-}
-
+setCleanBackground(foxEl,foxImages[foxType][state]||foxImages[foxType].idle)}
 function updateHUD(){
-  heartCountEl.textContent=hearts;
-  wishCountEl.textContent=wishes;
-  sheepCountEl.textContent=sheep;
-  chickenCountEl.textContent=chickens;
-  eggCountEl.textContent=eggs;
-  scoreCountEl.textContent=score;
-}
+heartCountEl.textContent=hearts;
+wishCountEl.textContent=wishes;
+sheepCountEl.textContent=sheep;
+chickenCountEl.textContent=chickens;
+eggCountEl.textContent=eggs;
+scoreCountEl.textContent=score}
+function setMessage(t){
+messageEl.textContent=t}
+function showFoxHelper(t,d=4500){
+foxHelperSpeech.textContent=t;
+foxHelperTip.classList.add("show");
+clearTimeout(showFoxHelper.timer);
+showFoxHelper.timer=setTimeout(()=>foxHelperTip.classList.remove("show"),d)}
+function showContextTip(t,d=1400){
+contextTip.textContent=t;
+contextTip.classList.add("show");
+clearTimeout(showContextTip.timer);
+showContextTip.timer=setTimeout(()=>contextTip.classList.remove("show"),d)}
+function randomOracle(){
 
-function setMessage(text){
-  messageEl.textContent=text;
-}
+if(Math.random()<.45)showFoxHelper(oracleMessages[Math.floor(Math.random()*oracleMessages.length)],3500)}
+function playSound(n){
 
-function showFoxHelper(text,duration=3800){
-  foxHelperSpeech.textContent=text;
-  foxHelperTip.classList.add("show");
-  clearTimeout(showFoxHelper.timer);
-  showFoxHelper.timer=setTimeout(()=>foxHelperTip.classList.remove("show"),duration);
-}
+const map={
+collect:collectAudio,sheep:sheepAudio,jump:jumpAudio,hit:hitAudio,shimmer:shimmerAudio};
 
-function showContextTip(text,duration=1200){
-  contextTip.textContent=text;
-  contextTip.classList.add("show");
-  clearTimeout(showContextTip.timer);
-  showContextTip.timer=setTimeout(()=>contextTip.classList.remove("show"),duration);
-}
+const a=map[n];
 
-function playSound(name){
-  const ids={collect:"collectAudio",jump:"jumpAudio",hit:"hitAudio",shimmer:"shimmerAudio"};
-  const a=document.getElementById(ids[name]);
-  if(a){try{a.currentTime=0;a.volume=.55;a.play()}catch(e){}}
-}
-
-function rect(el){return el.getBoundingClientRect()}
-function overlap(a,b){return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top}
+if(a)try{
+a.currentTime=0;
+a.volume=.45;
+a.play()}catch(e){
+}}
 
 function gameLoop(){
-  if(gameStarted && !gameFinished){
-    updateFox();
-    updatePuppy();
-    updateSprites();
-    updateBoulder();
-    checkCollectibles();
-    checkHazards();
-    checkPortal();
-    checkTreasureTouch();
-  }
-  requestAnimationFrame(gameLoop);
-}
 
+if(gameStarted&&!gameFinished){
+updateFox();
+updatePuppy();
+updateSprites();
+updateBoulder();
+checkMushroomBounce();
+checkCollectibles();
+checkHazards();
+checkPortal();
+checkTreasureTouch()}requestAnimationFrame(gameLoop)}
 function updateFox(){
-  const speed=5.05;
-  wasOnGround=onGround;
 
-  if(keys["ArrowLeft"]||keys.a||keys.A||mobileLeft){
-    vx=-speed; facing="left"; if(onGround)setFoxImage("run");
-  }else if(keys["ArrowRight"]||keys.d||keys.D||mobileRight){
-    vx=speed; facing="right"; if(onGround)setFoxImage("run");
-  }else{
-    vx*=.84; if(Math.abs(vx)<.08)vx=0; if(onGround)setFoxImage("idle");
-  }
+const speed=5.05;
+wasOnGround=onGround;
 
-  const wantsJump=keys[" "]||keys["ArrowUp"]||keys.w||keys.W||mobileJump;
-  if(wantsJump && (onGround || doubleJumpReady)){
-    if(onGround){vy=16.2;onGround=false;doubleJumpReady=true}
-    else{vy=13.8;doubleJumpReady=false;showContextTip("Nice double jump!")}
-    setFoxImage("jump");playSound("jump");mobileJump=false;
-  }
+if(keys["ArrowLeft"]||keys.a||keys.A||mobileLeft){
+vx=-speed;
+facing="left";
 
-  x+=vx;
-  vy-=.58;
-  y+=vy;
-  onGround=false;
+if(onGround)setFoxImage("run")}else 
+if(keys["ArrowRight"]||keys.d||keys.D||mobileRight){
+vx=speed;
+facing="right";
 
-  if(x<0){x=0;vx=0}
-  if(x>WORLD_WIDTH-120){x=WORLD_WIDTH-120;vx=0}
+if(onGround)setFoxImage("run")}else{
+vx*=.84;
 
-  const foxWidth=132;
-  document.querySelectorAll(".hitbox").forEach(p=>{
-    const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
-    const horizontal=x+foxWidth-26>px+22 && x+26<px+pw-22;
-    const vertical=y<=top+34 && y>=top-48 && vy<=0;
-    if(horizontal&&vertical){
-      y=top;vy=0;onGround=true;doubleJumpReady=true;lastSafeX=x;lastSafeY=y;
-    }
-  });
+if(Math.abs(vx)<.08)vx=0;
 
-  if(y<-80){
-    hurtFox("Careful!");
-    x=lastSafeX;y=lastSafeY+25;vx=0;vy=0;
-  }
+if(onGround)setFoxImage("idle")}
+const wantsJump=keys[" "]||keys["ArrowUp"]||keys.w||keys.W||mobileJump;
 
-  foxEl.classList.toggle("left",facing==="left");
-  foxEl.classList.toggle("running",onGround&&Math.abs(vx)>.35);
-  foxEl.classList.toggle("jumping",!onGround);
-  updateCamera();
-  render();
-}
+if(wantsJump&&(onGround||doubleJumpReady)){
+
+if(onGround){
+vy=16.2;
+onGround=false;
+doubleJumpReady=true}else{
+vy=13.8;
+doubleJumpReady=false;
+showContextTip("Nice double jump!",1200)}setFoxImage("jump");
+playSound("jump");
+mobileJump=false}x+=vx;
+vy-=.58;
+y+=vy;
+onGround=false;
+
+if(x<0){
+x=0;
+vx=0}
+if(x>WORLD_WIDTH-120){
+x=WORLD_WIDTH-120;
+vx=0}
+const foxWidth=132;
+document.querySelectorAll(".hitbox").forEach(p=>{
+
+const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
+
+const horizontal=x+foxWidth-26>px+22&&x+26<px+pw-22;
+
+const vertical=y<=top+34&&y>=top-48&&vy<=0;
+
+if(horizontal&&vertical){
+y=top;
+vy=0;
+onGround=true;
+doubleJumpReady=true;
+lastSafeX=x;
+lastSafeY=y}});
+
+if(onGround&&!wasOnGround){
+foxEl.classList.add("landing");
+setTimeout(()=>foxEl.classList.remove("landing"),250)}
+if(y<-80){
+hurtFox("Careful!");
+x=lastSafeX;
+y=lastSafeY+25;
+vx=0;
+vy=0}foxEl.classList.toggle("left",facing==="left");
+foxEl.classList.toggle("running",onGround&&Math.abs(vx)>.35);
+foxEl.classList.toggle("jumping",!onGround);
+updateCamera();
+render()}
 
 function updatePuppy(){
-  const targetX=x-82,targetY=y-FOX_VISUAL_DROP+5;
-  puppyX+=(targetX-puppyX)*.08;
-  puppyY+=(targetY-puppyY)*.08;
-  puppyEl.style.backgroundImage=Math.abs(vx)>1?'url("puppy-run.png")':'url("puppy-sit.png")';
-}
 
+const tx=x-82,ty=y-FOX_VISUAL_DROP+5;
+puppyX+=(tx-puppyX)*.08;
+puppyY+=(ty-puppyY)*.08;
+setCleanBackground(puppyEl,Math.abs(vx)>1?"puppy-run.png":"puppy-sit.png")}
 function updateCamera(){
-  let maxCamera=WORLD_WIDTH-window.innerWidth+390;
-  if(window.innerWidth<1120)maxCamera=WORLD_WIDTH-window.innerWidth;
-  maxCamera=Math.max(0,maxCamera);
-  const target=Math.max(0,Math.min(maxCamera,x-window.innerWidth*.36));
-  cameraX+=(target-cameraX)*.1;
-  world.style.transform=`translateX(${-cameraX}px)`;
-}
 
+let max=WORLD_WIDTH-window.innerWidth+390;
+
+if(window.innerWidth<1120)max=WORLD_WIDTH-window.innerWidth;
+max=Math.max(0,max);
+
+const target=Math.max(0,Math.min(max,x-window.innerWidth*.36));
+cameraX+=(target-cameraX)*.1;
+world.style.transform=`translateX(${
+-cameraX}px)`}
 function render(){
-  foxEl.style.left=x+"px";
-  foxEl.style.bottom=(y-FOX_VISUAL_DROP)+"px";
-  puppyEl.style.left=puppyX+"px";
-  puppyEl.style.bottom=puppyY+"px";
-}
+foxEl.style.left=x+"px";
+foxEl.style.bottom=(y-FOX_VISUAL_DROP)+"px";
+puppyEl.style.left=puppyX+"px";
+puppyEl.style.bottom=puppyY+"px"}
 
 function updateSprites(){
-  document.querySelectorAll(".mushroom").forEach(el=>{
-    if(el.dataset.hidden==="yes")return;
-    let bob=parseFloat(el.dataset.bob||"0");bob+=.035;el.dataset.bob=bob;
-    el.style.transform=`translateY(${Math.sin(bob)*4}px)`;
-  });
-  document.querySelectorAll(".sheep,.chicken").forEach(el=>{
-    let baseX=parseFloat(el.dataset.baseX||el.style.left),dir=parseFloat(el.dataset.dir||"1"),left=parseFloat(el.style.left||"0");
-    left+=dir*.28;if(Math.abs(left-baseX)>42)dir*=-1;el.dataset.dir=dir;el.style.left=left+"px";
-  });
-  document.querySelectorAll(".rock").forEach(el=>{
-    let baseX=parseFloat(el.dataset.baseX||el.style.left),dir=parseFloat(el.dataset.dir||"1"),left=parseFloat(el.style.left||"0"),rot=parseFloat(el.dataset.rot||"0");
-    left+=dir*.7;rot+=dir*4;if(Math.abs(left-baseX)>70)dir*=-1;el.dataset.dir=dir;el.dataset.rot=rot;el.style.left=left+"px";el.style.transform=`rotate(${rot}deg)`;
-  });
-}
+document.querySelectorAll(".mushroom").forEach(el=>{
 
-function activateBoulder(){
-  if(!boulder || currentLevel!==2)return;
-  boulder.dataset.active="yes";
-  boulder.style.left="1550px";
-  boulder.style.bottom="730px";
-  boulderWarning.classList.add("show");
-  showFoxHelper("⚠️ The big boulder is rolling. Keep moving!",3000);
-  setTimeout(()=>boulderWarning.classList.remove("show"),2500);
-}
+if(el.dataset.hidden==="yes")return;
 
+let b=parseFloat(el.dataset.bob||"0");
+b+=.035;
+el.dataset.bob=b;
+el.style.transform=`translateY(${
+Math.sin(b)*4}px)`});
+document.querySelectorAll(".sheep,.chicken").forEach(el=>{
+
+let base=+el.dataset.baseX||parseFloat(el.style.left)||0,dir=+el.dataset.dir||1,left=parseFloat(el.style.left)||0;
+left+=dir*.28;
+
+if(Math.abs(left-base)>42)dir*=-1;
+el.dataset.dir=dir;
+el.style.left=left+"px"});
+document.querySelectorAll(".rock").forEach(el=>{
+
+let base=+el.dataset.baseX||parseFloat(el.style.left)||0,dir=+el.dataset.dir||1,left=parseFloat(el.style.left)||0,rot=+el.dataset.rot||0;
+left+=dir*.7;
+rot+=dir*4;
+
+if(Math.abs(left-base)>70)dir*=-1;
+el.dataset.dir=dir;
+el.dataset.rot=rot;
+el.style.left=left+"px";
+el.style.transform=`rotate(${
+rot}deg)`})}
+
+function spawnMoonBoulder(){
+
+if(currentLevel!==2||boulderActive||boulderWarningActive||!gameStarted)return;
+boulderWarningActive=true;
+boulderWarning.classList.add("show");
+game.classList.add("boulderShake");
+setMessage("The ground trembles... get ready to double jump!");
+setTimeout(()=>{
+game.classList.remove("boulderShake")},1400);
+setTimeout(()=>{
+
+if(currentLevel!==2||boulderActive||!gameStarted){
+boulderWarningActive=false;
+return}boulderWarning.classList.remove("show");
+boulderWarningActive=false;
+boulderActive=true;
+
+const fromLeft=Math.random()<.5,startX=fromLeft?-260:WORLD_WIDTH+170,dir=fromLeft?1:-1;
+
+const b=document.createElement("div");
+b.className="sprite boulder";
+b.style.left=startX+"px";
+b.style.bottom="105px";
+b.dataset.dir=dir;
+b.dataset.rot=0;
+world.appendChild(b);
+setCleanBackground(b,"big-boulder.png");
+setMessage("The glowing boulder is rolling — double jump!");
+showContextTip("Double jump now!",2200);
+playSound("hit")},1200)}
 function updateBoulder(){
-  if(!boulder || boulder.dataset.active!=="yes")return;
-  let bx=parseFloat(boulder.style.left),by=parseFloat(boulder.style.bottom);
-  let bvx=parseFloat(boulder.dataset.vx),bvy=parseFloat(boulder.dataset.vy);
-  bx+=bvx;bvy-=.45;by+=bvy;
 
-  document.querySelectorAll(".hitbox").forEach(p=>{
-    const px=+p.dataset.x,py=+p.dataset.y,pw=+p.dataset.w,ph=+p.dataset.h,top=py+ph;
-    if(bx+110>px && bx+20<px+pw && by<=top+25 && by>=top-30 && bvy<0){
-      by=top;bvy=9.5;
-      makeSparkle(bx-cameraX+65,window.innerHeight-by-65);
-    }
-  });
+if(currentLevel!==2)return;
 
-  if(by<-120 || bx<-160){bx=1600;by=720;bvy=0}
-  boulder.style.left=bx+"px";boulder.style.bottom=by+"px";
-  boulder.dataset.vy=bvy;
-  const rot=parseFloat(boulder.dataset.rot||"0")+8;
-  boulder.dataset.rot=rot;
-  boulder.style.transform=`rotate(${rot}deg)`;
-}
+if(!boulderActive){
+boulderTimer--;
 
+if(boulderTimer<=0){
+boulderTimer=150+Math.floor(Math.random()*170);
+spawnMoonBoulder()}return}document.querySelectorAll(".boulder").forEach(b=>{
+
+let dir=+b.dataset.dir||1,left=parseFloat(b.style.left)||0,rot=+b.dataset.rot||0;
+left+=dir*7.2;
+rot+=dir*9.5;
+b.style.left=left+"px";
+b.style.transform=`rotate(${
+rot}deg)`;
+b.dataset.rot=rot;
+
+if(Math.random()<.28){
+
+const d=document.createElement("div");
+d.className="boulderDust";
+d.style.left=(left+(dir>0?18:110))+"px";
+d.style.bottom="92px";
+world.appendChild(d);
+setTimeout(()=>d.remove(),700)}
+if(left<-360||left>WORLD_WIDTH+360){
+b.remove();
+boulderActive=false}})}
+
+function rect(e){
+
+return e.getBoundingClientRect()}
+function overlap(a,b){
+
+return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top}
+function checkMushroomBounce(){
+
+const f=rect(foxEl);
+document.querySelectorAll(".mushroom").forEach(item=>{
+
+if(item.dataset.hidden==="yes")return;
+
+const m=rect(item);
+
+const top=vy<=0&&f.bottom>m.top&&f.bottom<m.top+45&&f.right>m.left+22&&f.left<m.right-22;
+
+if(top){
+item.dataset.hidden="yes";
+item.style.opacity="0";
+vy=10.5;
+score+=4;
+updateHUD();
+makeSparkle(m.left+m.width/2,m.top+m.height/2);
+floatText(m.left,m.top,"poof! +4");
+playSound("shimmer");
+setTimeout(()=>{
+item.dataset.hidden="no";
+item.style.opacity="1"},6000)}})}
 function checkCollectibles(){
-  const f=rect(foxEl);
-  document.querySelectorAll(".wish").forEach(item=>{
-    if(item.dataset.done==="yes")return;
-    if(overlap(f,rect(item))){
-      item.dataset.done="yes";item.style.display="none";wishes++;score+=1;updateHUD();
-      makeSparkleRect(item);floatTextRect(item,"+wish");playSound("collect");setMessage("A glowing dandelion wish was gathered.");randomOracle();checkMissionComplete();
-    }
-  });
-  document.querySelectorAll(".egg").forEach(item=>{
-    if(item.dataset.done==="yes")return;
-    if(overlap(f,rect(item))){
-      item.dataset.done="yes";item.style.display="none";eggs++;score+=5;updateHUD();
-      makeSparkleRect(item);floatTextRect(item,"+egg");playSound("collect");setMessage("A golden egg was found near the chickens.");
-    }
-  });
-  document.querySelectorAll(".chicken").forEach(item=>{
-    if(item.dataset.done==="yes")return;
-    if(overlap(f,rect(item))){
-      item.dataset.done="yes";item.style.display="none";chickens++;score+=8;updateHUD();
-      makeSparkleRect(item);floatTextRect(item,"chicken! +8");playSound("collect");setMessage("A little chicken followed the foxfire path home.");
-    }
-  });
-  document.querySelectorAll(".sheep").forEach(item=>{
-    if(item.dataset.done==="yes")return;
-    if(overlap(f,rect(item))){
-      item.dataset.done="yes";item.style.display="none";sheep++;score+=10;updateHUD();
-      makeSparkleRect(item);floatTextRect(item,"rescued!");playSound("collect");setMessage("A fluffy sheep has been rescued.");randomOracle();checkMissionComplete();
-    }
-  });
-  document.querySelectorAll(".mushroom").forEach(item=>{
-    if(item.dataset.hidden==="yes")return;
-    const m=rect(item);
-    if(overlap(f,m)){
-      item.dataset.hidden="yes";item.style.opacity="0";vy=10.5;score+=4;updateHUD();
-      makeSparkle(m.left+m.width/2,m.top+m.height/2);floatText(m.left,m.top,"poof! +4");playSound("shimmer");
-      setTimeout(()=>{item.dataset.hidden="no";item.style.opacity="1"},5000);
-    }
-  });
-}
 
+const f=rect(foxEl);
+document.querySelectorAll(".wish").forEach(item=>{
+
+if(item.dataset.done==="yes")return;
+
+if(overlap(f,rect(item))){
+item.dataset.done="yes";
+item.style.display="none";
+wishes++;
+score+=1;
+updateHUD();
+makeSparkleRect(item);
+floatTextRect(item,"+wish");
+playSound("collect");
+randomOracle();
+checkMissionComplete()}});
+document.querySelectorAll(".egg").forEach(item=>{
+
+if(item.dataset.done==="yes")return;
+
+if(overlap(f,rect(item))){
+item.dataset.done="yes";
+item.style.display="none";
+eggs++;
+score+=5;
+updateHUD();
+makeSparkleRect(item);
+floatTextRect(item,"+egg");
+playSound("collect")}});
+document.querySelectorAll(".chicken").forEach(item=>{
+
+if(item.dataset.done==="yes")return;
+
+if(overlap(f,rect(item))){
+item.dataset.done="yes";
+item.style.display="none";
+chickens++;
+score+=8;
+updateHUD();
+makeSparkleRect(item);
+floatTextRect(item,"chicken! +8");
+playSound("collect")}});
+document.querySelectorAll(".sheep").forEach(item=>{
+
+if(item.dataset.done==="yes")return;
+
+if(overlap(f,rect(item))){
+item.dataset.done="yes";
+item.style.display="none";
+sheep++;
+score+=10;
+updateHUD();
+makeSparkleRect(item);
+floatTextRect(item,"rescued!");
+playSound("sheep");
+randomOracle();
+checkMissionComplete()}})}
 function checkHazards(){
-  if(hurtCooldown>0){hurtCooldown--;return}
-  const f=rect(foxEl);
-  document.querySelectorAll(".rock,.boulder").forEach(h=>{if(overlap(f,rect(h)))hurtFox("Ouch!")});
-}
 
-function hurtFox(text){
-  if(hurtCooldown>0)return;
-  hurtCooldown=70;hearts--;updateHUD();playSound("hit");
-  setMessage(text+" Return to the last safe ledge.");
-  floatText(rect(foxEl).left,rect(foxEl).top,text);
-  x=lastSafeX;y=lastSafeY+30;vx=0;vy=0;
-  if(hearts<=0)setTimeout(()=>{setMessage("The forest gives you another try.");buildLevel(currentLevel)},600);
-}
+if(hurtCooldown>0){
+hurtCooldown--;
+return}
+const f=rect(foxEl);
+document.querySelectorAll(".hazardBox,.rock,.boulder").forEach(h=>{
 
+if(overlap(f,rect(h)))hurtFox("Ouch!")})}
+function hurtFox(t){
+
+if(hurtCooldown>0)return;
+hurtCooldown=70;
+hearts--;
+updateHUD();
+playSound("hit");
+setMessage(t+" Return to the last safe ledge.");
+floatText(rect(foxEl).left,rect(foxEl).top,t);
+x=lastSafeX;
+y=lastSafeY+30;
+vx=0;
+vy=0;
+
+if(hearts<=0)setTimeout(()=>{
+setMessage("The forest gives you another try.");
+buildLevel(currentLevel)},600)}
 function checkMissionComplete(){
-  const L=levels[currentLevel];
-  if(wishes>=L.wishGoal && sheep>=L.sheepGoal && !portalOpen){
-    portalOpen=true;
-    const portal=document.getElementById("levelPortal");
-    if(portal)portal.style.display="block";
-    setMessage("The portal has opened. Follow the glow to the next level.");
-    playSound("shimmer");
-  }
-}
 
+const L=levels[currentLevel];
+
+if(wishes>=L.wishGoal&&sheep>=L.sheepGoal&&!portalOpen){
+portalOpen=true;
+
+const p=document.getElementById("levelPortal");
+
+if(p)p.style.display="block";
+setMessage("The portal has opened. Follow the glow to the next level.");
+playSound("shimmer")}}
 function checkPortal(){
-  if(!portalOpen)return;
-  const portal=document.getElementById("levelPortal");
-  if(!portal)return;
-  if(overlap(rect(foxEl),rect(portal))){
-    if(currentLevel<levels.length-1){
-      currentLevel++;
-      buildLevel(currentLevel);
-      showFoxHelper("The portal carried you deeper into the Foxfire Forest.",4000);
-    }
-  }
-}
 
+if(!portalOpen)return;
+
+const p=document.getElementById("levelPortal");
+
+if(p&&overlap(rect(foxEl),rect(p))){
+
+if(currentLevel<levels.length-1){
+changeLevel(currentLevel+1);
+showFoxHelper("The portal carried you deeper into the Foxfire Forest.",3600)}}}
 function checkTreasureTouch(){
-  const chest=document.getElementById("treasureChest");
-  if(!chest || treasureOpened)return;
-  if(overlap(rect(foxEl),rect(chest))){
-    treasureOpened=true;
-    score+=100;updateHUD();playSound("shimmer");
-    for(let i=0;i<30;i++)setTimeout(()=>makeSparkle(rect(chest).left+Math.random()*100,rect(chest).top+Math.random()*80),i*45);
-    setTimeout(showEnding,1000);
-  }
-}
 
+const chest=document.getElementById("finalTreasure");
+
+if(!chest||treasureOpened)return;
+
+if(overlap(rect(foxEl),rect(chest))){
+treasureOpened=true;
+chest.classList.add("open");
+score+=100;
+updateHUD();
+playSound("shimmer");
+
+for(
+let i=0;
+i<30;
+i++)setTimeout(()=>makeSparkle(rect(chest).left+Math.random()*100,rect(chest).top+Math.random()*80),i*45);
+setTimeout(showEnding,1000)}}
 function showEnding(){
-  gameFinished=true;
-  document.getElementById("endingScore").textContent=score;
-  document.getElementById("endingChickens").textContent=chickens;
-  document.getElementById("endingWishes").textContent=wishes;
-  document.getElementById("endingEggs").textContent=eggs;
-  document.getElementById("oracleBlessing").textContent=oracleMessages[Math.floor(Math.random()*oracleMessages.length)];
-  endingScreen.classList.add("show");
-}
-
+gameFinished=true;
+document.getElementById("endingScore").textContent=score;
+document.getElementById("endingChickens").textContent=chickens;
+document.getElementById("endingWishes").textContent=wishes;
+document.getElementById("endingEggs").textContent=eggs;
+document.getElementById("oracleBlessing").textContent=oracleMessages[Math.floor(Math.random()*oracleMessages.length)];
+endingScreen.style.display="flex"}
 function restartAdventure(){
-  score=0;
-  endingScreen.classList.remove("show");
-  buildLevel(0);
-  gameStarted=true;
-  gameFinished=false;
-  showFoxHelper("The forest welcomes you back.",3000);
-}
-
-function randomOracle(){
-  if(Math.random()<.45)showFoxHelper(oracleMessages[Math.floor(Math.random()*oracleMessages.length)],3500);
-}
+score=0;
+endingScreen.style.display="none";
+buildLevel(0);
+gameStarted=true;
+gameFinished=false}
 
 function makeSparkleRect(el){
-  const r=rect(el);makeSparkle(r.left+r.width/2,r.top+r.height/2);
-}
-function floatTextRect(el,text){
-  const r=rect(el);floatText(r.left,r.top,text);
-}
+
+const r=rect(el);
+makeSparkle(r.left+r.width/2,r.top+r.height/2)}
+function floatTextRect(el,t){
+
+const r=rect(el);
+floatText(r.left,r.top,t)}
 function makeSparkle(sx,sy){
-  const s=document.createElement("div");s.className="sparkle-pop";s.style.left=sx+"px";s.style.top=sy+"px";game.appendChild(s);
-  setTimeout(()=>s.remove(),850);
-}
-function floatText(sx,sy,text){
-  const t=document.createElement("div");t.className="floatText";t.textContent=text;t.style.left=sx+"px";t.style.top=sy+"px";game.appendChild(t);
-  setTimeout(()=>t.remove(),950);
-}
 
+const s=document.createElement("div");
+s.className="sparkle-pop";
+s.style.left=sx+"px";
+s.style.top=sy+"px";
+game.appendChild(s);
+setTimeout(()=>s.remove(),850)}
+function floatText(sx,sy,t){
+
+const e=document.createElement("div");
+e.className="floatText";
+e.textContent=t;
+e.style.left=sx+"px";
+e.style.top=sy+"px";
+game.appendChild(e);
+setTimeout(()=>e.remove(),950)}
+function closeTutorial(){
+tutorialOverlay.classList.remove("show");
+try{
+localStorage.setItem("foxfireTutorialSeen","yes")}catch(e){
+}}
+function showTutorialOnce(){
+try{
+
+if(localStorage.getItem("foxfireTutorialSeen")==="yes")return}catch(e){
+}tutorialOverlay.classList.add("show")}
+function changeLevel(i){
+buildLevel(i);
+choiceScreen.classList.add("hidden");
+gameStarted=true}
+function resetLevel(){
+buildLevel(currentLevel);
+gameStarted=true;
+choiceScreen.classList.add("hidden")}
+function toggleHitboxes(){
+showHitboxes=!showHitboxes;
+game.classList.toggle("showHitboxes",showHitboxes);
+ledgeBtn.textContent=showHitboxes?"Ledges: Showing":"Ledges: Hidden"}
+function setVolume(){
+[ambientAudio,ambientBackupAudio].forEach(a=>{
+a.volume=.26});
+[collectAudio,sheepAudio,shimmerAudio].forEach(a=>{
+a.volume=.42});
+jumpAudio.volume=.35;
+hitAudio.volume=.35}
+function toggleSound(){
+
+if(soundOn){
+ambientAudio.pause();
+ambientBackupAudio.pause();
+soundOn=false;
+soundBtn.textContent="Music: Off"}else{
+ambientAudio.play().then(()=>{
+soundOn=true;
+soundBtn.textContent="Music: On"}).catch(()=>ambientBackupAudio.play().then(()=>{
+soundOn=true;
+soundBtn.textContent="Music: On"}).catch(()=>{
+}))}}
 function bindControls(){
-  window.addEventListener("keydown",e=>{
-    keys[e.key]=true;
-    if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
-  });
-  window.addEventListener("keyup",e=>keys[e.key]=false);
+window.addEventListener("keydown",e=>{
+keys[e.key]=true;
 
-  const bind=(id,onDown,onUp)=>{
-    const btn=document.getElementById(id);
-    const down=e=>{e.preventDefault();btn.classList.add("pressed");onDown()};
-    const up=e=>{e.preventDefault();btn.classList.remove("pressed");onUp()};
-    btn.addEventListener("pointerdown",down,{passive:false});
-    btn.addEventListener("pointerup",up,{passive:false});
-    btn.addEventListener("pointercancel",up,{passive:false});
-    btn.addEventListener("pointerleave",up,{passive:false});
-  };
-  bind("leftBtn",()=>mobileLeft=true,()=>mobileLeft=false);
-  bind("rightBtn",()=>mobileRight=true,()=>mobileRight=false);
-  bind("jumpBtn",()=>mobileJump=true,()=>mobileJump=false);
-}
+if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault()});
+window.addEventListener("keyup",e=>{
+keys[e.key]=false});
 
+const bind=(id,down,up)=>{
+
+const b=document.getElementById(id);
+
+const d=e=>{
+e.preventDefault();
+b.classList.add("pressed");
+down()};
+
+const u=e=>{
+e.preventDefault();
+b.classList.remove("pressed");
+up()};
+b.addEventListener("pointerdown",d,{
+passive:false});
+b.addEventListener("pointerup",u,{
+passive:false});
+b.addEventListener("pointercancel",u,{
+passive:false});
+b.addEventListener("pointerleave",u,{
+passive:false})};
+bind("leftBtn",()=>mobileLeft=true,()=>mobileLeft=false);
+bind("rightBtn",()=>mobileRight=true,()=>mobileRight=false);
+bind("jumpBtn",()=>mobileJump=true,()=>mobileJump=false)}
 function init(){
-  bindControls();
-  try{
-    const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-    if(saved.foxType)foxType=saved.foxType;
-  }catch(e){}
-  buildLevel(0);
-  setFoxImage("idle");
-  requestAnimationFrame(gameLoop);
-}
+bindControls();
+setVolume();
+try{
 
-init();
+const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{
+}");
+
+if(saved.foxType)foxType=saved.foxType}catch(e){
+}setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-idle.png");
+setCleanBackground(document.getElementById("malePreview"),"foxy-player-idle.png");
+document.getElementById("femalePreview").style.backgroundSize="110%";
+document.getElementById("malePreview").style.backgroundSize="145%";
+buildLevel(0);
+setFoxImage("idle");
+setCleanBackground(puppyEl,"puppy-sit.png");
+requestAnimationFrame(gameLoop)}init();
+
 </script>
+
 </body>
+
 </html>
