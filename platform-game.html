@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Foxfire Forest Platform Adventure</title>
 <!-- Boulder asset filename to upload: boulder-big.png -->
-<!-- VERSION: cinematic-boulder-final -->
+<!-- VERSION: public-final-misty-safe-areas -->
 <style>*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#06110b;color:#ffe8a8;font-family:Georgia,"Times New Roman",serif}#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}#world{position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;background:url("level-misty-meadows.png") no-repeat left bottom;background-size:1792px 100vh;transform:translateX(0)}#world::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);background-size:150px 170px,240px 260px;opacity:.36;animation:fireflies 20s linear infinite}@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}.top-ui{position:absolute;top:12px;left:12px;z-index:120;display:flex;gap:8px;flex-wrap:wrap;max-width:470px}.pill,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}.top-ui button{cursor:pointer}#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:110;display:flex;flex-direction:column;gap:12px}.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}.card p{margin:0;color:#fff0cc;line-height:1.35}.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}#thumb0{background-image:url("level-misty-meadows.png")}#thumb1{background-image:url("level-twilight-hollow.png")}#thumb2{background-image:url("level-moonlit-canopy.png")}.sprite{position:absolute;z-index:35;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain}#fox{width:190px;height:190px;z-index:55;background-repeat:no-repeat;background-position:center bottom;background-size:160px auto;overflow:visible;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite}#fox.left{transform:scaleX(-1)}#fox.running{animation:foxRunBounce .35s ease-in-out infinite}#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}#fox.landing{animation:foxLanding .22s ease-out}@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}@keyframes foxLanding{0%{scale:1.06 .92}70%{scale:.98 1.04}100%{scale:1}}#puppy{width:88px;height:88px;z-index:50;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}.wish{width:44px;height:64px;z-index:45;filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));animation:dandelionFloat 2.8s ease-in-out infinite alternate}@keyframes dandelionFloat{from{translate:0 -4px;rotate:-4deg}to{translate:0 7px;rotate:4deg}}.sheep{width:120px;height:120px;z-index:42;filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45))}.chicken{width:125px;height:125px;z-index:42;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35))}.egg{width:40px;height:46px;z-index:43;filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45))}.rock{width:70px;height:70px;z-index:43;filter:drop-shadow(0 12px 9px rgba(0,0,0,.65))}.mushroom{width:145px;height:145px;z-index:41;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));transition:opacity .25s ease}.portal{width:100px;height:130px;z-index:46;border-radius:50%;background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);animation:portalPulse 1.25s ease-in-out infinite alternate;display:none}@keyframes portalPulse{from{scale:.95;opacity:.82}to{scale:1.06;opacity:1}}.hitbox{position:absolute;z-index:30;pointer-events:none;border-radius:999px;height:28px;background:rgba(255,232,120,0)}.showHitboxes .hitbox{background:rgba(165,255,118,.18);outline:2px solid rgba(255,236,150,.58);box-shadow:0 0 16px rgba(255,236,150,.24)}.showHitboxes .hitbox::after{content:"safe ledge";position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:12px;color:#fff0b4;text-shadow:0 0 7px black;white-space:nowrap}.hazardBox{position:absolute;z-index:34;pointer-events:none;border-radius:8px;background:rgba(255,80,80,0);filter:none}.showHitboxes .hazardBox{outline:2px solid rgba(255,80,80,.6);background-color:rgba(255,50,50,.12)}#choiceScreen{position:absolute;inset:0;z-index:9990;display:flex;pointer-events:auto;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64)}.choiceBox{width:min(820px,92vw);position:relative;z-index:9998;pointer-events:auto;position:relative;z-index:9998;pointer-events:auto;border-radius:26px;border:1px solid rgba(255,230,150,.56);background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);padding:24px;text-align:center}.choiceBox h1{margin:0;color:#ffe7a6;font-size:2rem;text-shadow:0 0 16px rgba(255,220,120,.55)}.choiceCards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:16px}.foxCard{width:210px;min-height:230px;border-radius:22px;pointer-events:auto;position:relative;z-index:9999;border:1px solid rgba(255,230,150,.38);background:rgba(255,255,255,.06);padding:14px;cursor:pointer;color:#ffe8a8;font-size:1.15rem;font-weight:bold}.foxCard:hover{background:rgba(255,230,150,.12);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,220,120,.28)}.foxCard.chosen{background:rgba(255,230,150,.16);box-shadow:0 0 28px rgba(255,220,120,.45);animation:chosenPulse .75s ease-in-out infinite alternate}@keyframes chosenPulse{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.02)}}.foxPreview{width:130px;height:130px;margin:0 auto 8px;background-repeat:no-repeat;background-position:center bottom;background-size:110%;background-color:rgba(5,18,10,.58);border-radius:18px;box-shadow:inset 0 0 18px rgba(255,220,120,.08),0 0 18px rgba(255,220,120,.18);filter:drop-shadow(0 0 12px rgba(255,220,120,.7))}#femalePreview{background-image:url("female-foxy-player-idle.png")}#malePreview{background-image:url("foxy-player-idle.png")}.sparkle-pop{position:absolute;width:18px;height:18px;z-index:160;border-radius:50%;background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);pointer-events:none;animation:sparklePop .8s ease-out forwards}@keyframes sparklePop{0%{opacity:1;scale:.35}100%{opacity:0;scale:2.2;translate:0 -24px}}.floatText{position:absolute;z-index:165;color:#fff0ad;font-weight:bold;font-size:18px;text-shadow:0 0 8px #000;pointer-events:none;animation:floatTextUp .9s ease-out forwards}@keyframes floatTextUp{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -38px}}.dust{position:absolute;width:9px;height:9px;border-radius:50%;z-index:70;background:rgba(255,226,156,.85);box-shadow:0 0 12px rgba(255,226,156,.6);pointer-events:none;animation:dustPoof .7s ease-out forwards}@keyframes dustPoof{from{opacity:.9;transform:translate(-50%,-50%) scale(.35)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
 #choiceScreen.hidden{display:none!important}
 
@@ -863,6 +863,44 @@ body.editorOn #safeEditorMiniBar {
   font-size: 12px;
 }
 
+
+/* ===== CLEAN PUBLIC VERSION: editor removed ===== */
+#editorPanel,
+#safeEditorMiniBar,
+#platformEditorPanel,
+#platformEditBtn {
+  display: none !important;
+}
+
+body.editorOn,
+body.platformEditorOn {
+  cursor: default !important;
+}
+
+.hitbox::after {
+  display: none !important;
+}
+
+.boulder {
+  background-image: url("boulder-big.png") !important;
+  background: transparent url("boulder-big.png") center/contain no-repeat !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.treasure,
+#treasure,
+#treasureChest,
+#finalTreasure,
+.chest {
+  background: transparent url("treasure-chest.png") center/contain no-repeat !important;
+  background-size: contain !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
 </style>
 
 </head>
@@ -888,8 +926,8 @@ body.editorOn #safeEditorMiniBar {
 </div>
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
-<button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button><button onclick="toggleEditor()">Edit Ledges</button>
-<button onclick="resetLevel()">Restart</button><button onclick="forceAtmosphereTest()">Test Effects</button><button onclick="spawnMoonBoulderNow()">Test Boulder</button><button onclick="clearAllGameSaves()">Clear Saves</button>
+<button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
+<button onclick="resetLevel()">Restart</button>
 </div>  <div id="sidePanel">
 <div class="card">
 <h2>❧ Collect & Explore ❧</h2>
@@ -946,30 +984,6 @@ body.editorOn #safeEditorMiniBar {
 </div>
 </div>
 </div>
-</div>
-
-<div id="editorPanel">
-  <strong>🛠 Ledge Editor Mode</strong>
-  <p style="margin:6px 0 8px;">Drag ledges AND objects. Sheep, chickens, eggs, mushrooms, rocks and wishes can be moved by hand. Use Copy FULL Level Code when finished.</p>
-  <button onclick="toggleEditor()">Close Editor</button>
-  <button onclick="copyLevelCode()">Copy Ledges Only</button><button onclick="copyFullLevelCode()">Copy FULL Level Code</button><button onclick="saveEditedLevel()">Save This Level</button><button onclick="resetEditedLevel()">Reset This Level</button>
-  <button onclick="addEditorLedge()">Add Ledge</button>
-  <button onclick="addEditorHazard()">Add Danger</button>
-  <button onclick="deleteSelectedEditorBox()">Delete Selected</button>
-  <textarea id="editorOutput" spellcheck="false"></textarea>
-</div>
-
-
-
-<div id="safeEditorMiniBar">
-  <strong>🛠 Safe Area Editor</strong><br>
-  <button type="button" id="addSafeAreaBtn">Add Safe Area</button>
-  <button type="button" id="biggerSafeAreaBtn">Bigger</button>
-  <button type="button" id="smallerSafeAreaBtn">Smaller</button>
-  <button type="button" id="deleteSafeAreaBtn">Delete Selected</button>
-  <button type="button" id="fixFoxStartBtn">Fix Fox Start</button>
-  <button type="button" id="copySafeAreasBtn">Copy Safe Areas</button>
-  <textarea id="safeEditorOutput" spellcheck="false" placeholder="Safe area positions will appear here."></textarea>
 </div>
 
 <div id="endingScreen">
@@ -1878,275 +1892,157 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
+
 <script>
-/* ===== ENHANCED SAFE AREA EDITOR LOGIC ===== */
+/* ===== PUBLIC FINAL PATCH: USER SAFE AREAS + FOX MOVEMENT FIX ===== */
 (function(){
-  let selected = null;
-  let dragging = null;
-  let resizing = null;
-  let start = null;
+  const USER_MISTY_PLATFORMS = [{"x": -2, "y": 146, "w": 1792, "h": 46}, {"x": 65, "y": 683, "w": 781, "h": 34}, {"x": 409, "y": 366, "w": 210, "h": 34}, {"x": 774, "y": 501, "w": 280, "h": 34}, {"x": 1119, "y": 386, "w": 173, "h": 38}, {"x": 628, "y": 292, "w": 220, "h": 32}, {"x": 972, "y": 578, "w": 220, "h": 32}, {"x": 1382, "y": 385, "w": 220, "h": 32}];
+  const USER_MISTY_TREASURE = {"x": 1453, "y": 423};
+  const USER_MISTY_PORTAL = {"x": 1550, "y": 205};
 
-  function world(){
-    return document.getElementById("world");
-  }
-
-  function num(v){
-    const n = parseFloat(v);
-    return isNaN(n) ? 0 : n;
-  }
-
-  function left(el){ return num(el.style.left); }
-  function bottom(el){ return num(el.style.bottom); }
-  function width(el){ return num(el.style.width || el.offsetWidth || el.dataset.w || 160); }
-  function height(el){ return num(el.style.height || el.offsetHeight || el.dataset.h || 28); }
-
-  function isEditorOn(){
-    return document.body.classList.contains("editorOn") || document.body.classList.contains("platformEditorOn");
-  }
-
-  function point(e){
-    const wr = world().getBoundingClientRect();
-    return {
-      x: e.clientX - wr.left,
-      bottom: wr.height - (e.clientY - wr.top)
-    };
-  }
-
-  function select(el){
-    if(selected) selected.classList.remove("safeEditorSelected");
-    selected = el;
-    if(selected){
-      selected.classList.add("safeEditorSelected");
-      addHandle(selected);
-    }
-    updateOutput();
-  }
-
-  function addHandle(el){
-    removeHandles();
-    if(!el || !el.classList.contains("hitbox")) return;
-    const h = document.createElement("div");
-    h.className = "safeResizeHandle";
-    h.addEventListener("pointerdown", function(e){
-      if(!isEditorOn()) return;
-      e.preventDefault();
-      e.stopPropagation();
-      resizing = el;
-      const p = point(e);
-      start = {
-        x: p.x,
-        bottom: p.bottom,
-        w: width(el),
-        h: height(el)
-      };
-      try { h.setPointerCapture(e.pointerId); } catch(err){}
-    }, true);
-    el.appendChild(h);
-  }
-
-  function removeHandles(){
-    document.querySelectorAll(".safeResizeHandle").forEach(h => h.remove());
-  }
-
-  function startMove(e){
-    if(!isEditorOn()) return;
-    const target = e.target.closest(".hitbox, .treasure, #treasure, #treasureChest, #finalTreasure, .chest");
-    if(!target || e.target.classList.contains("safeResizeHandle")) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    select(target);
-    dragging = target;
-    const p = point(e);
-    start = {
-      x: p.x,
-      bottom: p.bottom,
-      left: left(target),
-      bottom0: bottom(target)
-    };
-    try { target.setPointerCapture(e.pointerId); } catch(err){}
-  }
-
-  function move(e){
-    if(!isEditorOn()) return;
-
-    if(resizing && start){
-      e.preventDefault();
-      e.stopPropagation();
-
-      const p = point(e);
-      const newW = Math.max(40, Math.round(start.w + (p.x - start.x)));
-      const newH = Math.max(18, Math.round(start.h - (p.bottom - start.bottom)));
-
-      resizing.style.width = newW + "px";
-      resizing.style.height = newH + "px";
-      resizing.dataset.w = newW;
-      resizing.dataset.h = newH;
-      updateOutput();
-      return;
-    }
-
-    if(dragging && start){
-      e.preventDefault();
-      e.stopPropagation();
-
-      const p = point(e);
-      const nx = Math.round(start.left + (p.x - start.x));
-      const nb = Math.round(start.bottom0 + (p.bottom - start.bottom));
-
-      dragging.style.left = nx + "px";
-      dragging.style.bottom = nb + "px";
-
-      if(dragging.classList.contains("hitbox")){
-        dragging.dataset.x = nx;
-        dragging.dataset.y = nb;
+  function getLevelName(){
+    try {
+      if(typeof levels !== "undefined" && typeof currentLevel !== "undefined" && levels[currentLevel]) {
+        return levels[currentLevel].name || "";
       }
-      updateOutput();
-    }
+    } catch(e){}
+    return "";
   }
 
-  function end(){
-    dragging = null;
-    resizing = null;
-    start = null;
+  function isMisty(){
+    return getLevelName().toLowerCase().includes("misty") || (typeof currentLevel !== "undefined" && currentLevel === 0);
   }
 
-  function addSafeArea(){
-    if(!document.body.classList.contains("editorOn")){
-      document.body.classList.add("editorOn");
-    }
+  function applyMistyLayout(){
+    if(!isMisty()) return;
 
-    const el = document.createElement("div");
-    el.className = "hitbox";
-    el.dataset.x = "240";
-    el.dataset.y = "230";
-    el.dataset.w = "220";
-    el.dataset.h = "28";
-    el.style.left = "240px";
-    el.style.bottom = "230px";
-    el.style.width = "220px";
-    el.style.height = "28px";
-    world().appendChild(el);
-    select(el);
-    updateOutput();
-  }
+    const platforms = Array.from(document.querySelectorAll(".hitbox"));
+    USER_MISTY_PLATFORMS.forEach((p,i)=>{
+      const el = platforms[i];
+      if(!el) return;
+      el.style.left = p.x + "px";
+      el.style.bottom = p.y + "px";
+      el.style.width = p.w + "px";
+      el.style.height = p.h + "px";
+      el.dataset.x = p.x;
+      el.dataset.y = p.y;
+      el.dataset.w = p.w;
+      el.dataset.h = p.h;
+    });
 
-  function resizeSelected(amount){
-    if(!selected || !selected.classList.contains("hitbox")) return;
-    const newW = Math.max(40, width(selected) + amount);
-    selected.style.width = newW + "px";
-    selected.dataset.w = newW;
-    updateOutput();
-  }
-
-  function deleteSelected(){
-    if(!selected) return;
-    if(selected.classList.contains("hitbox")){
-      selected.remove();
-      selected = null;
-      updateOutput();
-    }
-  }
-
-  function fixFoxStart(){
-    try{
-      if(typeof x !== "undefined") x = 150;
-      if(typeof y !== "undefined") y = 125;
-      if(typeof vx !== "undefined") vx = 0;
-      if(typeof vy !== "undefined") vy = 0;
-      if(typeof lastSafeX !== "undefined") lastSafeX = 150;
-      if(typeof lastSafeY !== "undefined") lastSafeY = 125;
-      if(typeof puppyX !== "undefined") puppyX = 82;
-      if(typeof puppyY !== "undefined") puppyY = 82;
-      if(typeof cameraX !== "undefined") cameraX = 0;
-      if(typeof gameStarted !== "undefined") gameStarted = true;
-      if(typeof render === "function") render();
-      if(typeof updateCamera === "function") updateCamera();
-    }catch(e){}
-
-    const fox = document.getElementById("fox");
-    const puppy = document.getElementById("puppy");
-    if(fox){
-      fox.style.left = "150px";
-      fox.style.bottom = "67px";
-    }
-    if(puppy){
-      puppy.style.left = "82px";
-      puppy.style.bottom = "52px";
-    }
-  }
-
-  function collect(){
-    const platforms = Array.from(document.querySelectorAll(".hitbox")).map(el => ({
-      x: Math.round(left(el)),
-      y: Math.round(bottom(el)),
-      w: Math.round(width(el)),
-      h: Math.round(height(el))
-    }));
-
-    const chest = document.querySelector(".treasure, #treasure, #treasureChest, #finalTreasure, .chest");
-    const treasure = chest ? {
-      x: Math.round(left(chest)),
-      y: Math.round(bottom(chest))
-    } : null;
-
-    return { platforms, treasure };
-  }
-
-  function updateOutput(){
-    const out = document.getElementById("safeEditorOutput");
-    if(!out) return;
-    const data = collect();
-    out.value =
-      "platforms: " + JSON.stringify(data.platforms) + ",\n\n" +
-      "treasure: " + JSON.stringify(data.treasure);
-  }
-
-  function copyOutput(){
-    updateOutput();
-    const out = document.getElementById("safeEditorOutput");
-    if(!out) return;
-    out.select();
-    try { navigator.clipboard.writeText(out.value); } catch(e){ document.execCommand("copy"); }
-  }
-
-  function bind(){
-    const ids = {
-      addSafeAreaBtn: addSafeArea,
-      biggerSafeAreaBtn: () => resizeSelected(40),
-      smallerSafeAreaBtn: () => resizeSelected(-40),
-      deleteSafeAreaBtn: deleteSelected,
-      fixFoxStartBtn: fixFoxStart,
-      copySafeAreasBtn: copyOutput
-    };
-
-    Object.entries(ids).forEach(([id, fn]) => {
-      const btn = document.getElementById(id);
-      if(btn && btn.dataset.bound !== "yes"){
-        btn.dataset.bound = "yes";
-        btn.addEventListener("click", function(e){
-          e.preventDefault();
-          e.stopPropagation();
-          fn();
-        }, true);
+    // Hide any extra old platforms after your saved ones, so your layout is clean.
+    platforms.forEach((el,i)=>{
+      if(i >= USER_MISTY_PLATFORMS.length) {
+        el.style.display = "none";
+      } else {
+        el.style.display = "";
       }
     });
+
+    const chest = document.querySelector(".treasure, #treasure, #treasureChest, #finalTreasure, .chest");
+    if(chest){
+      chest.style.left = USER_MISTY_TREASURE.x + "px";
+      chest.style.bottom = USER_MISTY_TREASURE.y + "px";
+      chest.style.display = "";
+    }
+
+    const portal = document.querySelector(".portal, #levelPortal");
+    if(portal){
+      portal.style.left = USER_MISTY_PORTAL.x + "px";
+      portal.style.bottom = USER_MISTY_PORTAL.y + "px";
+    }
   }
 
-  document.addEventListener("pointerdown", startMove, true);
-  document.addEventListener("pointermove", move, true);
-  document.addEventListener("pointerup", end, true);
-  document.addEventListener("pointercancel", end, true);
+  function forceFoxSafeStart(){
+    try {
+      if(typeof x !== "undefined" && (x < 0 || x > 1750 || y > 900 || y < -80 || (x < 20 && y > 500))) {
+        x = 150;
+        y = 210;
+        vx = 0;
+        vy = 0;
+      }
+      if(typeof lastSafeX !== "undefined") lastSafeX = 150;
+      if(typeof lastSafeY !== "undefined") lastSafeY = 210;
+      if(typeof gameStarted !== "undefined") gameStarted = true;
+      if(typeof cameraX !== "undefined" && cameraX < 0) cameraX = 0;
+      if(typeof render === "function") render();
+    } catch(e){}
 
-  bind();
+    const fox = document.getElementById("fox");
+    if(fox){
+      const r = fox.getBoundingClientRect();
+      if(r.left < -80 || r.top < -80 || r.left > window.innerWidth + 80 || r.top > window.innerHeight + 80){
+        fox.style.left = "150px";
+        fox.style.bottom = "152px";
+      }
+    }
+  }
+
+  function afterChooseFoxFix(){
+    const cs = document.getElementById("choiceScreen");
+    if(cs){
+      cs.classList.add("hidden");
+      cs.style.setProperty("display","none","important");
+      cs.style.setProperty("pointer-events","none","important");
+    }
+    try { if(typeof gameStarted !== "undefined") gameStarted = true; } catch(e){}
+    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 50);
+    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 300);
+    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 900);
+  }
+
+  const oldChoose = window.chooseFox;
+  window.chooseFox = function(type){
+    if(typeof oldChoose === "function") {
+      oldChoose(type);
+    }
+    afterChooseFoxFix();
+    return false;
+  };
+
+  // Ensure fox choice buttons work even if old onclick is unreliable.
+  function bindChoiceButtons(){
+    const female = document.getElementById("chooseFemaleFox");
+    const male = document.getElementById("chooseMaleFox");
+
+    if(female && female.dataset.publicBound !== "yes"){
+      female.dataset.publicBound = "yes";
+      female.addEventListener("click", function(){ afterChooseFoxFix(); }, true);
+    }
+    if(male && male.dataset.publicBound !== "yes"){
+      male.dataset.publicBound = "yes";
+      male.addEventListener("click", function(){ afterChooseFoxFix(); }, true);
+    }
+  }
+
+  // Keep movement alive if old code stops briefly.
+  window.addEventListener("keydown", function(e){
+    try {
+      if(typeof gameStarted !== "undefined") gameStarted = true;
+      if(typeof keys !== "undefined") keys[e.key] = true;
+    } catch(err){}
+  }, true);
+
+  window.addEventListener("keyup", function(e){
+    try {
+      if(typeof keys !== "undefined") keys[e.key] = false;
+    } catch(err){}
+  }, true);
+
+  bindChoiceButtons();
+
   setInterval(function(){
-    bind();
-    if(isEditorOn()) updateOutput();
-  }, 600);
+    bindChoiceButtons();
+    applyMistyLayout();
+    try {
+      if(typeof gameStarted !== "undefined" && gameStarted) {
+        forceFoxSafeStart();
+      }
+    } catch(e){}
+  }, 700);
 
-  window.addSafeArea = addSafeArea;
-  window.fixFoxStart = fixFoxStart;
+  setTimeout(applyMistyLayout, 300);
+  setTimeout(applyMistyLayout, 1200);
 })();
 </script>
 
