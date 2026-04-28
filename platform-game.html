@@ -657,6 +657,7 @@ body{
 }
 
 
+
 /* ===== PUBLIC SAFE VERSION: editor hidden ===== */
 #editorPanel,
 .editorPanel,
@@ -702,7 +703,7 @@ body{
   }
 }
 
-/* ===== BOULDER FIX ONLY ===== */
+/* ===== TRANSPARENT BOULDER FIX ===== */
 .boulder {
   background-image: url("big-boulder.png") !important;
   background-size: contain !important;
@@ -715,24 +716,146 @@ body{
     drop-shadow(0 0 16px rgba(255,210,90,.35)) !important;
 }
 
-
-/* ===== FINAL TREASURE CHEST IMAGE FIX ===== */
-.treasure {
-  width: 150px !important;
-  height: 125px !important;
+/* ===== FINAL MAGICAL TREASURE CHEST FIX ===== */
+.treasure,
+#treasure,
+#treasureChest,
+#finalTreasure,
+.chest {
+  width: 170px !important;
+  height: 135px !important;
+  background-image: url("treasure-chest.png") !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
-}
-.treasure.imgLoaded {
   background-color: transparent !important;
+  background: transparent url("treasure-chest.png") center/contain no-repeat !important;
   border: none !important;
   border-radius: 0 !important;
-}
-.treasure.open {
+  box-shadow: none !important;
   filter:
-    drop-shadow(0 0 18px rgba(255,230,120,1))
-    drop-shadow(0 12px 12px rgba(0,0,0,.65)) !important;
+    drop-shadow(0 12px 12px rgba(0,0,0,.65))
+    drop-shadow(0 0 18px rgba(255,220,90,.65)) !important;
+  animation: treasureIdleGlow 1.9s ease-in-out infinite alternate;
+  pointer-events: auto !important;
+}
+
+.treasure::before,
+#treasure::before,
+#treasureChest::before,
+#finalTreasure::before,
+.chest::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  top: -18%;
+  width: 80%;
+  height: 56%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse, rgba(255,245,170,.9), rgba(255,196,70,.35) 42%, transparent 72%);
+  opacity: 0;
+  transform: scale(.5);
+  pointer-events: none;
+}
+
+.treasure::after,
+#treasure::after,
+#treasureChest::after,
+#finalTreasure::after,
+.chest::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,235,130,.42), rgba(255,198,70,.16) 35%, transparent 65%);
+  opacity: .45;
+  animation: treasureAuraPulse 2.2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.treasure.open,
+#treasure.open,
+#treasureChest.open,
+#finalTreasure.open,
+.chest.open {
+  animation: treasureOpenBounce .9s ease-out forwards, treasureOpenGlow 1.3s ease-in-out infinite alternate .9s;
+  filter:
+    drop-shadow(0 0 22px rgba(255,240,160,1))
+    drop-shadow(0 0 42px rgba(255,197,70,.9))
+    drop-shadow(0 14px 14px rgba(0,0,0,.7)) !important;
+}
+
+.treasure.open::before,
+#treasure.open::before,
+#treasureChest.open::before,
+#finalTreasure.open::before,
+.chest.open::before {
+  animation: treasureLightBurst 1.4s ease-out forwards;
+}
+
+.treasure.open::after,
+#treasure.open::after,
+#treasureChest.open::after,
+#finalTreasure.open::after,
+.chest.open::after {
+  opacity: 1;
+  animation: treasureAuraOpen 1.4s ease-out forwards;
+}
+
+@keyframes treasureIdleGlow {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-4px) scale(1.025); }
+}
+
+@keyframes treasureAuraPulse {
+  from { transform: scale(.92); opacity: .22; }
+  to { transform: scale(1.12); opacity: .55; }
+}
+
+@keyframes treasureOpenBounce {
+  0% { transform: scale(1); }
+  35% { transform: translateY(-8px) scale(1.12) rotate(-2deg); }
+  65% { transform: translateY(1px) scale(.98) rotate(1deg); }
+  100% { transform: translateY(-3px) scale(1.04); }
+}
+
+@keyframes treasureOpenGlow {
+  from { filter: drop-shadow(0 0 18px rgba(255,230,130,.8)); }
+  to { filter: drop-shadow(0 0 44px rgba(255,235,150,1)); }
+}
+
+@keyframes treasureLightBurst {
+  0% { opacity: 0; transform: translateY(20px) scale(.35); }
+  28% { opacity: 1; transform: translateY(-16px) scale(1.35); }
+  100% { opacity: .55; transform: translateY(-72px) scale(2.4); }
+}
+
+@keyframes treasureAuraOpen {
+  0% { opacity: .4; transform: scale(.8); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+.treasureSparkle {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  z-index: 10001;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8c8, #ffd86b 38%, transparent 72%);
+  box-shadow: 0 0 12px #fff2a8, 0 0 24px rgba(255,210,80,.9);
+  animation: treasureSparkleRise 1.4s ease-out forwards;
+}
+
+@keyframes treasureSparkleRise {
+  from { opacity: 1; transform: translate(0,0) scale(.6); }
+  to { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.8); }
+}
+
+#endingScreen.show {
+  display: flex !important;
 }
 
 </style>
@@ -825,7 +948,7 @@ body{
   <div class="endingBox">
     <h1>🏆 Forest Guardian Ending</h1>
     <p>The Foxfire path is complete. You rescued the forest friends, crossed the moonlit danger, and opened the hidden treasure.</p><p>🦊 The forest remembers your kindness.</p>
-    <p id="endingScore">Final Score: 0</p>
+    <p id="endingScore">Final Score: 0</p><p id="endingBlessing">🦊 The forest remembers your kindness.</p>
     <button onclick="restartAdventure()">Play Again</button><a href="index.html" style="margin-left:8px;color:#ffe8a8;">Return to Oracle Forest</a><a href="https://dolphintouch.etsy.com" target="_blank" rel="noopener" style="margin-left:8px;color:#ffe8a8;">Visit Dolphintouch Shop</a>
   </div>
 </div>
@@ -1170,36 +1293,6 @@ function buildTreasure(L){
   chest.setAttribute("aria-label","Open treasure chest");
   tryTreasureChestImages(chest);
   chest.addEventListener("click",openTreasure);
-}
-
-/* ===== TREASURE CHEST IMAGE FALLBACKS ===== */
-function tryTreasureChestImages(chest){
-  if(!chest)return;
-  const files=[
-    "treasure-chest.png",
-    "treasure-chest.PNG",
-    "chest.png",
-    "chest.PNG",
-    "golden-chest.png",
-    "treasure.png",
-    "treasure-box.png"
-  ];
-  let index=0;
-  function tryNext(){
-    if(index>=files.length){
-      chest.classList.remove("imgLoaded");
-      return;
-    }
-    const file=files[index++];
-    const img=new Image();
-    img.onload=function(){
-      setCleanBackground(chest,file);
-      chest.classList.add("imgLoaded");
-    };
-    img.onerror=tryNext;
-    img.src=file;
-  }
-  tryNext();
 }
 
 function openTreasure(){
@@ -1724,78 +1817,154 @@ function copyFullLevelCode(){
 
 setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-idle.png");setCleanBackground(document.getElementById("malePreview"),"foxy-player-idle.png");document.getElementById("femalePreview").style.backgroundSize="110%";document.getElementById("malePreview").style.backgroundSize="145%";init();
 
-/* ===== TREASURE CHEST FINAL SAFETY FIX ===== */
+
+/* ===== MAGICAL TREASURE CHEST FINAL FIX ===== */
 (function(){
-  function dtRect(el){
+  const treasureMessages = [
+    "🦊 The forest remembers your kindness.",
+    "✨ Even the smallest light can guide the way.",
+    "🌿 You walked gently, and the world responded.",
+    "🐣 What you saved will one day save you.",
+    "🌼 The path opens for those who care.",
+    "💛 Kindness is the oldest magic of all."
+  ];
+
+  function q(sel){ return document.querySelector(sel); }
+
+  function rect(el){
     if(!el) return null;
     return el.getBoundingClientRect();
   }
 
-  function dtOverlap(a,b){
+  function overlap(a,b){
     if(!a || !b) return false;
     return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
   }
 
-  function dtFindChest(){
-    return document.querySelector(".treasure, #treasure, #treasureChest, .chest");
+  function treasureCandidates(){
+    return Array.from(document.querySelectorAll(".treasure, #treasure, #treasureChest, #finalTreasure, .chest"));
   }
 
-  function dtOpenForestGuardianEnding(){
-    if(window.__forestGuardianEndingOpened) return;
-    window.__forestGuardianEndingOpened = true;
+  function mainTreasure(){
+    const list = treasureCandidates();
+    if(!list.length) return null;
 
-    const chest = dtFindChest();
-    if(chest){
-      chest.classList.add("open");
-      chest.style.filter = "drop-shadow(0 0 28px rgba(255,220,90,1))";
+    // Keep the treasure that is highest/most visible. Remove obvious duplicate square if there is more than one.
+    const visible = list.filter(el => {
+      const r = rect(el);
+      return r && r.width > 20 && r.height > 20;
+    });
+
+    if(visible.length > 1){
+      // If duplicates exist, keep the first real .treasure and hide later plain squares.
+      visible.slice(1).forEach(el => {
+        if(!el.classList.contains("open")) el.style.display = "none";
+      });
+    }
+    return visible[0] || list[0];
+  }
+
+  function forceTreasureImage(){
+    treasureCandidates().forEach(el => {
+      el.style.setProperty("background-image", 'url("treasure-chest.png")', "important");
+      el.style.setProperty("background", 'transparent url("treasure-chest.png") center/contain no-repeat', "important");
+      el.style.setProperty("border", "none", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+    });
+  }
+
+  function sparkleBurstFrom(el){
+    const r = rect(el);
+    if(!r) return;
+
+    for(let i=0;i<38;i++){
+      setTimeout(() => {
+        const s = document.createElement("div");
+        s.className = "treasureSparkle";
+        s.style.left = (r.left + r.width/2 + (Math.random()*70-35)) + "px";
+        s.style.top = (r.top + r.height/2 + (Math.random()*35-20)) + "px";
+        s.style.setProperty("--tx", (Math.random()*180-90) + "px");
+        s.style.setProperty("--ty", (-80 - Math.random()*140) + "px");
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 1500);
+      }, i * 26);
+    }
+  }
+
+  function playMagicSound(){
+    try{
+      const shimmer = document.getElementById("shimmerAudio");
+      const collect = document.getElementById("collectAudio");
+      if(shimmer){ shimmer.currentTime = 0; shimmer.volume = .75; shimmer.play(); }
+      setTimeout(() => {
+        if(collect){ collect.currentTime = 0; collect.volume = .65; collect.play(); }
+      }, 260);
+    }catch(e){}
+  }
+
+  function showForestGuardianEnding(){
+    const ending = document.getElementById("endingScreen");
+    const scoreEl = document.getElementById("endingScore");
+    const blessingEl = document.getElementById("endingBlessing");
+    const scoreText = document.getElementById("scoreCount")?.textContent || (typeof score !== "undefined" ? score : "0");
+    const chickensText = document.getElementById("chickenCount")?.textContent || "0";
+    const wishesText = document.getElementById("wishCount")?.textContent || "0";
+    const eggsText = (typeof eggs !== "undefined" ? eggs : "0");
+
+    if(scoreEl){
+      scoreEl.innerHTML =
+        "✨ Final Score: " + scoreText +
+        "<br>🐣 Chickens rescued: " + chickensText +
+        "<br>🌼 Dandelion wishes collected: " + wishesText +
+        "<br>🥚 Eggs collected: " + eggsText;
     }
 
-    try {
-      if(typeof shimmerAudio !== "undefined" && shimmerAudio){
-        shimmerAudio.currentTime = 0;
-        shimmerAudio.play();
-      }
-    } catch(e){}
-
-    const scoreText = (typeof score !== "undefined") ? score : (document.getElementById("scoreCount")?.textContent || 0);
-    const ending = document.getElementById("endingScreen");
-    const endingScore = document.getElementById("endingScore");
-
-    if(endingScore){
-      endingScore.innerHTML =
-        "✨ Final Score: " + scoreText +
-        "<br>🐣 Chickens rescued: " + (document.getElementById("chickenCount")?.textContent || "0") +
-        "<br>🌼 Dandelion wishes collected: " + (document.getElementById("wishCount")?.textContent || "0") +
-        "<br>🥚 Eggs collected: " + (typeof eggs !== "undefined" ? eggs : "0") +
-        "<br><br>🦊 The forest remembers your kindness.";
+    if(blessingEl){
+      blessingEl.textContent = treasureMessages[Math.floor(Math.random()*treasureMessages.length)];
     }
 
     if(ending){
       ending.style.display = "flex";
       ending.classList.add("show");
-    } else {
-      alert("🏆 Forest Guardian Ending\n\nThe Foxfire path is complete. You opened the hidden treasure.");
     }
   }
 
-  function dtChestWatcher(){
+  function openMagicalTreasure(){
+    if(window.__magicalTreasureOpened) return;
+    window.__magicalTreasureOpened = true;
+
+    const chest = mainTreasure();
+    if(chest){
+      forceTreasureImage();
+      chest.style.display = "";
+      chest.classList.add("open");
+      sparkleBurstFrom(chest);
+    }
+
+    playMagicSound();
+
+    setTimeout(showForestGuardianEnding, 1350);
+  }
+
+  function watcher(){
+    forceTreasureImage();
+
     const fox = document.getElementById("fox");
-    const chest = dtFindChest();
+    const chest = mainTreasure();
 
-    if(fox && chest && chest.style.display !== "none"){
-      const foxBox = dtRect(fox);
-      const chestBox = dtRect(chest);
-
-      if(dtOverlap(foxBox, chestBox)){
-        dtOpenForestGuardianEnding();
+    if(fox && chest && chest.style.display !== "none" && !window.__magicalTreasureOpened){
+      if(overlap(rect(fox), rect(chest))){
+        openMagicalTreasure();
       }
     }
 
-    requestAnimationFrame(dtChestWatcher);
+    requestAnimationFrame(watcher);
   }
 
-  window.openForestGuardianEnding = dtOpenForestGuardianEnding;
-  requestAnimationFrame(dtChestWatcher);
+  window.openMagicalTreasure = openMagicalTreasure;
+  window.openForestGuardianEnding = openMagicalTreasure;
+  requestAnimationFrame(watcher);
 })();
 
 </script>
