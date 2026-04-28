@@ -970,6 +970,33 @@ body:not(.platformEditorOn) #homeOrb {
   pointer-events: auto !important;
 }
 
+
+/* ===== EDIT BUTTON + FOX START FIX ===== */
+.top-ui {
+  z-index: 10020 !important;
+  pointer-events: auto !important;
+}
+.top-ui button,
+#platformEditBtn {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 10030 !important;
+}
+#world {
+  pointer-events: none;
+}
+body.platformEditorOn #world {
+  pointer-events: auto;
+}
+body.platformEditorOn .hitbox,
+body.platformEditorOn .treasure,
+body.platformEditorOn #treasure,
+body.platformEditorOn #treasureChest,
+body.platformEditorOn #finalTreasure,
+body.platformEditorOn .chest {
+  pointer-events: auto !important;
+}
+
 </style>
 
 </head>
@@ -2362,6 +2389,61 @@ treasure: ${JSON.stringify(layout.treasure)}`;
       }
     } catch(e){}
   }, 500);
+})();
+
+
+/* ===== EDIT BUTTON DIRECT BIND + FOX START POSITION FIX ===== */
+(function(){
+  function hardResetFoxToLevelStart(){
+    try {
+      const L = (typeof levels !== "undefined" && typeof currentLevel !== "undefined") ? levels[currentLevel] : null;
+      if(L){
+        if(typeof x !== "undefined") x = L.startX || 120;
+        if(typeof y !== "undefined") y = L.startY || 210;
+      } else {
+        if(typeof x !== "undefined") x = 120;
+        if(typeof y !== "undefined") y = 210;
+      }
+      if(typeof vx !== "undefined") vx = 0;
+      if(typeof vy !== "undefined") vy = 0;
+      if(typeof puppyX !== "undefined") puppyX = (typeof x !== "undefined" ? x - 80 : 60);
+      if(typeof puppyY !== "undefined") puppyY = (typeof y !== "undefined" ? y - 40 : 170);
+      if(typeof lastSafeX !== "undefined") lastSafeX = (typeof x !== "undefined" ? x : 120);
+      if(typeof lastSafeY !== "undefined") lastSafeY = (typeof y !== "undefined" ? y : 210);
+      if(typeof cameraX !== "undefined") cameraX = 0;
+      if(typeof render === "function") render();
+      if(typeof updateCamera === "function") updateCamera();
+    } catch(e){}
+  }
+
+  const oldChooseFox2 = window.chooseFox;
+  window.chooseFox = function(type){
+    if(typeof oldChooseFox2 === "function"){
+      oldChooseFox2(type);
+    }
+    try { if(typeof gameStarted !== "undefined") gameStarted = true; } catch(e){}
+    setTimeout(hardResetFoxToLevelStart, 80);
+    setTimeout(hardResetFoxToLevelStart, 400);
+    return false;
+  };
+
+  function bindEditButton(){
+    const btn = document.getElementById("platformEditBtn");
+    if(!btn || btn.dataset.directBound === "yes") return;
+    btn.dataset.directBound = "yes";
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(typeof window.togglePlatformEditor === "function"){
+        window.togglePlatformEditor();
+      } else {
+        document.body.classList.toggle("platformEditorOn");
+      }
+    }, true);
+  }
+
+  bindEditButton();
+  setInterval(bindEditButton, 500);
 })();
 
 </script>
