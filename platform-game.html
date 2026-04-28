@@ -142,6 +142,11 @@
   border-radius:18px;
   border:2px solid rgba(255,220,120,.85);
 }
+.treasure.imgLoaded{
+  background-image:none;
+  border:none!important;
+  border-radius:0!important;
+}
 
 
 /* ===== STRONGER LEVEL ATMOSPHERE EFFECTS ===== */
@@ -504,12 +509,14 @@ body{
   border:none;
 }
 .treasure{
-  background:linear-gradient(145deg,#5b2e12,#d99b29 50%,#3a1b08)!important;
+  background:linear-gradient(145deg,#5b2e12,#d99b29 50%,#3a1b08);
 }
 .treasure.imgLoaded{
   background-size:contain!important;
   background-repeat:no-repeat!important;
   background-position:center!important;
+  border:none!important;
+  background-color:transparent!important;
 }
 
 .treasureRoom #sidebar{opacity:.35;pointer-events:none}.treasureRoom #sidebar:hover{opacity:.9}
@@ -708,6 +715,26 @@ body{
     drop-shadow(0 0 16px rgba(255,210,90,.35)) !important;
 }
 
+
+/* ===== FINAL TREASURE CHEST IMAGE FIX ===== */
+.treasure {
+  width: 150px !important;
+  height: 125px !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.treasure.imgLoaded {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+.treasure.open {
+  filter:
+    drop-shadow(0 0 18px rgba(255,230,120,1))
+    drop-shadow(0 12px 12px rgba(0,0,0,.65)) !important;
+}
+
 </style>
 
 </head>
@@ -832,7 +859,11 @@ body{
 </audio>
 
 <script>
-const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"The hidden treasure room glows ahead. Open the chest to complete the forest.",startX:120,startY:120,wishGoal:0,sheepGoal:0,platforms:[{x:0,y:70,w:1792,h:46},{x:245,y:300,w:330,h:34},{x:630,y:430,w:280,h:34},{x:1040,y:330,w:280,h:34},{x:1260,y:175,w:420,h:38}],hazards:[],wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[],portal:{x:1550,y:205},treasure:{x:1390,y:205}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){const cleaned=await cleanImageURL(url);el.style.backgroundImage=`url("${cleaned}")`}function init(){bindControls();setupMobileControls();tuneForMobile();setVolume();loadSave();buildLevel(currentLevel);saveTick++;atmoRefreshTick++;if(atmoRefreshTick>60){atmoRefreshTick=0;setAtmosphereForLevel()}if(saveTick>240){saveTick=0;saveGame()}requestAnimationFrame(gameLoop)}function loadSave(){
+const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"The hidden treasure room glows ahead. Open the chest to complete the forest.",startX:120,startY:120,wishGoal:0,sheepGoal:0,platforms:[{x:0,y:70,w:1792,h:46},{x:245,y:300,w:330,h:34},{x:630,y:430,w:280,h:34},{x:1040,y:330,w:280,h:34},{x:1260,y:175,w:420,h:38}],hazards:[],wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[],portal:{x:1550,y:205},treasure:{x:1390,y:205}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){
+  const cleaned=await cleanImageURL(url);
+  el.style.setProperty("background-image", `url("${cleaned}")`, "important");
+  el.classList.add("imgLoaded");
+}function init(){bindControls();setupMobileControls();tuneForMobile();setVolume();loadSave();buildLevel(currentLevel);saveTick++;atmoRefreshTick++;if(atmoRefreshTick>60){atmoRefreshTick=0;setAtmosphereForLevel()}if(saveTick>240){saveTick=0;saveGame()}requestAnimationFrame(gameLoop)}function loadSave(){
   try{
     const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
     if(saved.foxType)foxType=saved.foxType;
@@ -1135,8 +1166,42 @@ function updateBoulder(){
 function buildTreasure(L){
   if(!L.treasure)return;
   const chest=createSprite("treasure","treasure-chest.png",L.treasure.x,L.treasure.y,{done:"no"});
-  chest.id="finalTreasure";chest.addEventListener("click",openTreasure);
+  chest.id="finalTreasure";
+  chest.setAttribute("aria-label","Open treasure chest");
+  tryTreasureChestImages(chest);
+  chest.addEventListener("click",openTreasure);
 }
+
+/* ===== TREASURE CHEST IMAGE FALLBACKS ===== */
+function tryTreasureChestImages(chest){
+  if(!chest)return;
+  const files=[
+    "treasure-chest.png",
+    "treasure-chest.PNG",
+    "chest.png",
+    "chest.PNG",
+    "golden-chest.png",
+    "treasure.png",
+    "treasure-box.png"
+  ];
+  let index=0;
+  function tryNext(){
+    if(index>=files.length){
+      chest.classList.remove("imgLoaded");
+      return;
+    }
+    const file=files[index++];
+    const img=new Image();
+    img.onload=function(){
+      setCleanBackground(chest,file);
+      chest.classList.add("imgLoaded");
+    };
+    img.onerror=tryNext;
+    img.src=file;
+  }
+  tryNext();
+}
+
 function openTreasure(){
   const chest=document.getElementById("finalTreasure");
   if(!chest||treasureOpened)return;
@@ -1148,7 +1213,7 @@ function openTreasure(){
   for(let i=0;i<18;i++){
     setTimeout(()=>makeSparkle(rect(chest).left+Math.random()*140,rect(chest).top+Math.random()*95),i*70);
   }
-  setMessage("The chest opens! +500 treasure bonus. You completed the forest.");
+  setMessage("The treasure chest opens! +500 treasure bonus. You completed the forest.");
   playSound("shimmer");
   saveGame();
   setTimeout(showEndingScreen,1800);
@@ -1658,6 +1723,81 @@ function copyFullLevelCode(){
 }
 
 setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-idle.png");setCleanBackground(document.getElementById("malePreview"),"foxy-player-idle.png");document.getElementById("femalePreview").style.backgroundSize="110%";document.getElementById("malePreview").style.backgroundSize="145%";init();
+
+/* ===== TREASURE CHEST FINAL SAFETY FIX ===== */
+(function(){
+  function dtRect(el){
+    if(!el) return null;
+    return el.getBoundingClientRect();
+  }
+
+  function dtOverlap(a,b){
+    if(!a || !b) return false;
+    return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+  }
+
+  function dtFindChest(){
+    return document.querySelector(".treasure, #treasure, #treasureChest, .chest");
+  }
+
+  function dtOpenForestGuardianEnding(){
+    if(window.__forestGuardianEndingOpened) return;
+    window.__forestGuardianEndingOpened = true;
+
+    const chest = dtFindChest();
+    if(chest){
+      chest.classList.add("open");
+      chest.style.filter = "drop-shadow(0 0 28px rgba(255,220,90,1))";
+    }
+
+    try {
+      if(typeof shimmerAudio !== "undefined" && shimmerAudio){
+        shimmerAudio.currentTime = 0;
+        shimmerAudio.play();
+      }
+    } catch(e){}
+
+    const scoreText = (typeof score !== "undefined") ? score : (document.getElementById("scoreCount")?.textContent || 0);
+    const ending = document.getElementById("endingScreen");
+    const endingScore = document.getElementById("endingScore");
+
+    if(endingScore){
+      endingScore.innerHTML =
+        "✨ Final Score: " + scoreText +
+        "<br>🐣 Chickens rescued: " + (document.getElementById("chickenCount")?.textContent || "0") +
+        "<br>🌼 Dandelion wishes collected: " + (document.getElementById("wishCount")?.textContent || "0") +
+        "<br>🥚 Eggs collected: " + (typeof eggs !== "undefined" ? eggs : "0") +
+        "<br><br>🦊 The forest remembers your kindness.";
+    }
+
+    if(ending){
+      ending.style.display = "flex";
+      ending.classList.add("show");
+    } else {
+      alert("🏆 Forest Guardian Ending\n\nThe Foxfire path is complete. You opened the hidden treasure.");
+    }
+  }
+
+  function dtChestWatcher(){
+    const fox = document.getElementById("fox");
+    const chest = dtFindChest();
+
+    if(fox && chest && chest.style.display !== "none"){
+      const foxBox = dtRect(fox);
+      const chestBox = dtRect(chest);
+
+      if(dtOverlap(foxBox, chestBox)){
+        dtOpenForestGuardianEnding();
+      }
+    }
+
+    requestAnimationFrame(dtChestWatcher);
+  }
+
+  window.openForestGuardianEnding = dtOpenForestGuardianEnding;
+  requestAnimationFrame(dtChestWatcher);
+})();
+
 </script>
 
 </body>
