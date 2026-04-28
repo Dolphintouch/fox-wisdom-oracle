@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Fairy Garden Keeper</title>
+  <title>Fairy Garden Keeper | Dolphintouch</title>
   <style>
     :root{
       --bg1:#172c23;
@@ -103,6 +103,27 @@
       .btn{width:58px;height:58px;}
       .btn.big{width:74px;height:74px;}
     }
+  
+    .siteLinks{
+      position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:22;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;pointer-events:auto;
+    }
+    .magicLink{
+      text-decoration:none;color:#2a331f;background:linear-gradient(90deg,#fff0b7,#ffd8ef,#c9ffd6);
+      border:1px solid rgba(255,255,255,.7);border-radius:999px;padding:9px 14px;font-size:14px;
+      box-shadow:0 0 22px rgba(255,226,160,.35),0 8px 25px rgba(0,0,0,.24);
+      transition:transform .25s ease, box-shadow .25s ease;
+    }
+    .magicLink:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(255,226,160,.6),0 10px 30px rgba(0,0,0,.3);}
+
+    .brandSig{
+      position:absolute;right:14px;bottom:14px;z-index:9;font-size:12px;opacity:.76;text-shadow:0 0 12px rgba(255,238,180,.45);pointer-events:none;
+    }
+
+    @media (max-width:760px){
+      .siteLinks{bottom:88px;max-width:92vw;}
+      .magicLink{font-size:12px;padding:8px 10px;}
+      .brandSig{display:none;}
+    }
   </style>
 </head>
 <body>
@@ -125,7 +146,14 @@
     </div>
   </div>
 
-  <div id="message">The meadow is tired. Sing to the little plants and clear the rubbish so the fairies can breathe again.</div>
+  <div id="message">Welcome to the Fairy Garden Keeper — restore the meadow before you return to the oracle path.</div>
+
+  <div class="siteLinks">
+    <a class="magicLink" href="index.html">🌲 Back to the Oracle Garden</a>
+    <a class="magicLink" href="whispers-of-nature.html">🌿 Whispers of Nature</a>
+    <a class="magicLink" href="https://dolphintouch.etsy.com" target="_blank" rel="noopener">✨ Visit Dolphintouch Shop</a>
+  </div>
+  <div class="brandSig">Fairy Garden Keeper · by Dolphintouch</div>
 
   <div class="controls">
     <div class="pad">
@@ -141,11 +169,13 @@
   <div id="tutorial">
     <div id="tutorialCard">
       <h1>Fairy Garden Keeper</h1>
+      <p style="font-style:italic;color:#fff1b7;margin-top:-2px;">A tiny ritual game from the Dolphintouch oracle garden.</p>
       <p>You are a tiny fairy of the old meadow. Your song helps plants grow, but rubbish and pesticide clouds weaken fairy magic.</p>
+      <p>Restore the meadow, comfort the animals, and bring the garden back to life before returning to your oracle path.</p>
       <p>Grow all the plants, clean the rubbish, and comfort the animals to restore the garden.</p>
       <p><b>Keyboard:</b> A/D or arrows to move, Space to sing, E to clean.</p>
       <p><b>Mobile:</b> use the glowing buttons at the bottom.</p>
-      <button id="startBtn">Begin the Meadow ✨</button>
+      <button id="startBtn">Enter the Fairy Meadow ✨</button>
     </div>
   </div>
 
@@ -153,6 +183,8 @@
     <div class="card">
       <h2>The Meadow Breathes Again 🌸</h2>
       <p>The plants have lifted their faces, the animals are calm, and the fairy song has returned to the garden.</p>
+      <p><i>You may now return to the oracle path with a lighter heart.</i></p>
+      <p><a class="magicLink" href="index.html">🌲 Return to the Oracle Garden</a></p>
       <button id="resetBtn">Play Again</button>
     </div>
   </div>
@@ -569,4 +601,3 @@
 </script>
 </body>
 </html>
-
