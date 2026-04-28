@@ -1,1 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Fairy Garden Keeper</title>
+  <style>
+    :root{
+      --bg1:#172c23;
+      --bg2:#375542;
+      --cream:#fff7de;
+      --gold:#ffd98a;
+      --pink:#ffd4ee;
+      --green:#9cffb3;
+      --danger:#b66172;
+      --shadow:rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+    html,body{margin:0;height:100%;overflow:hidden;font-family:Georgia,'Times New Roman',serif;background:#102018;color:var(--cream);}
+
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255,220,165,.16), transparent 24%),
+        radial-gradient(circle at 82% 12%, rgba(190,255,210,.12), transparent 25%),
+        radial-gradient(circle at 50% 90%, rgba(255,180,225,.11), transparent 30%),
+        linear-gradient(180deg, #182d28 0%, #365943 55%, #16281d 100%);
+    }
+
+    #gameWrap{position:relative;width:100vw;height:100vh;overflow:hidden;z-index:1;}
+
+    #gameCanvas{
+      position:absolute;left:0;top:0;width:100%;height:100%;display:block;
+      background:linear-gradient(#263e3c 0%, #46664a 58%, #243a25 100%);
+      touch-action:none;
+    }
+
+    .hud{
+      position:absolute;left:12px;top:12px;right:12px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;pointer-events:none;z-index:10;
+    }
+
+    .panel{
+      pointer-events:auto;background:rgba(20,35,27,.62);border:1px solid rgba(255,235,190,.35);
+      box-shadow:0 12px 35px rgba(0,0,0,.25), inset 0 0 30px rgba(255,255,255,.04);
+      backdrop-filter:blur(8px);border-radius:18px;padding:10px 12px;color:var(--cream);
+    }
+
+    .title{font-size:18px;letter-spacing:.5px;color:#fff1b7;text-shadow:0 0 12px rgba(255,214,126,.75);}
+    .small{font-size:13px;line-height:1.35;opacity:.95;}
+    .meters{min-width:210px;}
+    .meterRow{display:grid;grid-template-columns:76px 1fr 34px;gap:7px;align-items:center;margin:5px 0;font-size:12px;}
+    .bar{height:10px;background:rgba(0,0,0,.28);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.18);}
+    .fill{height:100%;width:50%;border-radius:999px;background:linear-gradient(90deg,#a7ffc2,#fff5a8);box-shadow:0 0 10px rgba(170,255,190,.7);}
+    .fill.health{background:linear-gradient(90deg,#ff9fb9,#fff0a5);}
+    .fill.tox{background:linear-gradient(90deg,#c96d83,#9155b7);}
+
+    #message{
+      position:absolute;left:50%;top:76px;transform:translateX(-50%);z-index:12;max-width:min(620px,calc(100vw - 30px));
+      text-align:center;background:rgba(26,42,34,.7);border:1px solid rgba(255,238,180,.4);border-radius:20px;padding:10px 16px;
+      box-shadow:0 0 24px rgba(255,220,150,.16);font-size:16px;line-height:1.35;opacity:1;transition:opacity .8s ease;
+    }
+    #message.hide{opacity:0;}
+
+    .controls{
+      position:absolute;left:0;right:0;bottom:14px;z-index:20;display:flex;justify-content:space-between;align-items:flex-end;padding:0 14px;pointer-events:none;
+    }
+    .pad,.actions{display:flex;gap:10px;pointer-events:auto;}
+    .btn{
+      width:62px;height:62px;border-radius:50%;border:1px solid rgba(255,244,198,.55);
+      background:radial-gradient(circle at 35% 25%, rgba(255,255,255,.34), rgba(255,215,150,.16) 35%, rgba(28,48,37,.72) 100%);
+      color:#fff8dc;font-size:24px;box-shadow:0 8px 25px rgba(0,0,0,.32),0 0 18px rgba(255,220,145,.18);
+      display:grid;place-items:center;user-select:none;touch-action:none;
+    }
+    .btn.big{width:78px;height:78px;font-size:28px;}
+    .btn:active,.btn.active{transform:translateY(2px) scale(.97);box-shadow:0 4px 16px rgba(0,0,0,.32),0 0 25px rgba(255,224,156,.45);}
+
+    #tutorial{
+      position:absolute;inset:0;z-index:40;background:rgba(9,18,14,.66);display:grid;place-items:center;padding:22px;
+    }
+    #tutorialCard{max-width:560px;background:linear-gradient(180deg,rgba(35,58,45,.95),rgba(22,38,30,.96));border:1px solid rgba(255,238,190,.5);border-radius:28px;padding:22px;box-shadow:0 20px 70px rgba(0,0,0,.45),0 0 55px rgba(255,220,160,.12);}
+    #tutorialCard h1{margin:0 0 10px;color:#fff0b7;font-size:30px;text-shadow:0 0 14px rgba(255,215,125,.65);}
+    #tutorialCard p{font-size:16px;line-height:1.45;margin:8px 0;}
+    #startBtn{margin-top:14px;width:100%;border:0;border-radius:18px;padding:13px 16px;font-size:18px;font-family:inherit;color:#25301f;background:linear-gradient(90deg,#fff2ad,#ffd2ed,#bfffd1);box-shadow:0 0 26px rgba(255,230,160,.36);cursor:pointer;}
+
+    #complete{
+      position:absolute;inset:0;display:none;z-index:35;place-items:center;background:rgba(11,24,17,.55);padding:22px;text-align:center;
+    }
+    #complete .card{max-width:520px;background:rgba(34,58,43,.92);border:1px solid rgba(255,238,190,.5);border-radius:28px;padding:24px;box-shadow:0 20px 70px rgba(0,0,0,.45),0 0 60px rgba(180,255,200,.18);}
+    #complete h2{font-size:32px;margin:0 0 8px;color:#fff0b7;}
+    #resetBtn{margin-top:14px;border:0;border-radius:16px;padding:12px 18px;font-family:inherit;font-size:17px;background:#fff0b7;color:#26351f;cursor:pointer;}
+
+    .helper{
+      max-width:250px;
+    }
+
+    @media (max-width:760px){
+      .hud{align-items:flex-start;gap:8px;}
+      .helper{display:none;}
+      .meters{min-width:190px;}
+      .title{font-size:15px;}
+      #message{top:86px;font-size:14px;}
+      .btn{width:58px;height:58px;}
+      .btn.big{width:74px;height:74px;}
+    }
+  </style>
+</head>
+<body>
+<div id="gameWrap">
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="hud">
+    <div class="panel meters">
+      <div class="title">🧚 Fairy Garden Keeper</div>
+      <div class="meterRow"><span>Fairy</span><div class="bar"><div id="healthFill" class="fill health"></div></div><span id="healthTxt">100</span></div>
+      <div class="meterRow"><span>Nature</span><div class="bar"><div id="natureFill" class="fill"></div></div><span id="natureTxt">0</span></div>
+      <div class="meterRow"><span>Toxic</span><div class="bar"><div id="toxicFill" class="fill tox"></div></div><span id="toxicTxt">0</span></div>
+    </div>
+    <div class="panel helper small">
+      <b>Controls</b><br>
+      Move with arrows/A-D or buttons.<br>
+      Hold <b>Sing ✨</b> near plants.<br>
+      Tap <b>Clean 🧺</b> near rubbish.<br>
+      Visit animals to cheer them.
+    </div>
+  </div>
+
+  <div id="message">The meadow is tired. Sing to the little plants and clear the rubbish so the fairies can breathe again.</div>
+
+  <div class="controls">
+    <div class="pad">
+      <div class="btn" data-key="left">◀</div>
+      <div class="btn" data-key="right">▶</div>
+    </div>
+    <div class="actions">
+      <div class="btn big" data-key="sing">✨</div>
+      <div class="btn big" data-key="clean">🧺</div>
+    </div>
+  </div>
+
+  <div id="tutorial">
+    <div id="tutorialCard">
+      <h1>Fairy Garden Keeper</h1>
+      <p>You are a tiny fairy of the old meadow. Your song helps plants grow, but rubbish and pesticide clouds weaken fairy magic.</p>
+      <p>Grow all the plants, clean the rubbish, and comfort the animals to restore the garden.</p>
+      <p><b>Keyboard:</b> A/D or arrows to move, Space to sing, E to clean.</p>
+      <p><b>Mobile:</b> use the glowing buttons at the bottom.</p>
+      <button id="startBtn">Begin the Meadow ✨</button>
+    </div>
+  </div>
+
+  <div id="complete">
+    <div class="card">
+      <h2>The Meadow Breathes Again 🌸</h2>
+      <p>The plants have lifted their faces, the animals are calm, and the fairy song has returned to the garden.</p>
+      <button id="resetBtn">Play Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const msg = document.getElementById('message');
+  const healthFill = document.getElementById('healthFill');
+  const natureFill = document.getElementById('natureFill');
+  const toxicFill = document.getElementById('toxicFill');
+  const healthTxt = document.getElementById('healthTxt');
+  const natureTxt = document.getElementById('natureTxt');
+  const toxicTxt = document.getElementById('toxicTxt');
+  const tutorial = document.getElementById('tutorial');
+  const complete = document.getElementById('complete');
+
+  let W = 0, H = 0, groundY = 0, scale = 1;
+  const keys = { left:false, right:false, sing:false, clean:false };
+  let particles = [];
+  let fireflies = [];
+  let lastTime = 0;
+  let gameStarted = false;
+  let messageTimer = 0;
+
+  const fairy = { x:120, y:260, vx:0, health:100, glow:1, facing:1, singPower:0 };
+
+  let plants, rubbish, toxins, animals;
+
+  function resize(){
+    W = canvas.width = Math.floor(window.innerWidth * devicePixelRatio);
+    H = canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    W = window.innerWidth; H = window.innerHeight;
+    groundY = H * .76;
+    scale = Math.max(.82, Math.min(1.18, W / 980));
+    fairy.y = groundY - 78;
+  }
+  window.addEventListener('resize', resize);
+
+  function resetWorld(){
+    plants = [
+      {x:W*.18,y:groundY,growth:.12,dead:false,kind:'sprout'},
+      {x:W*.34,y:groundY+4,growth:.05,dead:false,kind:'flower'},
+      {x:W*.52,y:groundY,growth:.18,dead:false,kind:'fern'},
+      {x:W*.69,y:groundY+2,growth:.02,dead:false,kind:'flower'},
+      {x:W*.84,y:groundY,growth:.1,dead:false,kind:'sprout'}
+    ];
+    rubbish = [
+      {x:W*.27,y:groundY-9,cleaned:false,type:'can'},
+      {x:W*.47,y:groundY-6,cleaned:false,type:'bag'},
+      {x:W*.76,y:groundY-7,cleaned:false,type:'bottle'}
+    ];
+    toxins = [
+      {x:W*.42,y:groundY-38,r:58,power:1},
+      {x:W*.73,y:groundY-42,r:66,power:1}
+    ];
+    animals = [
+      {x:W*.11,y:groundY-23,happy:.2,type:'rabbit'},
+      {x:W*.61,y:groundY-30,happy:.15,type:'bird'},
+      {x:W*.91,y:groundY-27,happy:.25,type:'deer'}
+    ];
+    fairy.x = Math.max(80, W*.08); fairy.health = 100; fairy.singPower = 0;
+    particles = [];
+    complete.style.display = 'none';
+    showMessage('The meadow is tired. Sing to plants, clean rubbish, and comfort animals. Avoid purple pesticide clouds.');
+  }
+
+  function initFireflies(){
+    fireflies = Array.from({length:70}, () => ({
+      x:Math.random()*W, y:Math.random()*H*.72, a:Math.random()*Math.PI*2, s:.2+Math.random()*.8, r:1+Math.random()*2.2
+    }));
+  }
+
+  function showMessage(text){
+    msg.textContent = text;
+    msg.classList.remove('hide');
+    messageTimer = 4.2;
+  }
+
+  function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+  function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+
+  window.addEventListener('keydown', e => {
+    if(['ArrowLeft','a','A'].includes(e.key)) keys.left = true;
+    if(['ArrowRight','d','D'].includes(e.key)) keys.right = true;
+    if(e.key === ' ') { keys.sing = true; e.preventDefault(); }
+    if(['e','E'].includes(e.key)) keys.clean = true;
+  });
+  window.addEventListener('keyup', e => {
+    if(['ArrowLeft','a','A'].includes(e.key)) keys.left = false;
+    if(['ArrowRight','d','D'].includes(e.key)) keys.right = false;
+    if(e.key === ' ') keys.sing = false;
+    if(['e','E'].includes(e.key)) keys.clean = false;
+  });
+
+  document.querySelectorAll('.btn').forEach(btn => {
+    const k = btn.dataset.key;
+    const on = e => { e.preventDefault(); keys[k] = true; btn.classList.add('active'); };
+    const off = e => { e.preventDefault(); keys[k] = false; btn.classList.remove('active'); };
+    btn.addEventListener('pointerdown', on);
+    btn.addEventListener('pointerup', off);
+    btn.addEventListener('pointercancel', off);
+    btn.addEventListener('pointerleave', off);
+  });
+
+  document.getElementById('startBtn').onclick = () => { tutorial.style.display='none'; gameStarted = true; };
+  document.getElementById('resetBtn').onclick = () => resetWorld();
+
+  function addParticle(x,y,kind='sparkle',n=1){
+    for(let i=0;i<n;i++){
+      particles.push({
+        x:x+(Math.random()-.5)*22, y:y+(Math.random()-.5)*20,
+        vx:(Math.random()-.5)*38, vy:-20-Math.random()*45,
+        life:.45+Math.random()*.8, max:1, kind, size:2+Math.random()*4
+      });
+    }
+  }
+
+  function nearToxin(){
+    return toxins.some(t => Math.hypot(fairy.x - t.x, fairy.y - t.y) < t.r + 20);
+  }
+
+  function update(dt){
+    if(!gameStarted) return;
+    messageTimer -= dt;
+    if(messageTimer < 0) msg.classList.add('hide');
+
+    const speed = 220 * scale;
+    fairy.vx = 0;
+    if(keys.left){ fairy.vx = -speed; fairy.facing = -1; }
+    if(keys.right){ fairy.vx = speed; fairy.facing = 1; }
+    fairy.x = clamp(fairy.x + fairy.vx*dt, 36, W-36);
+    fairy.y = groundY - 78 + Math.sin(performance.now()/520)*5;
+
+    if(Math.abs(fairy.vx)>1 && Math.random()<.55) addParticle(fairy.x-fairy.facing*12, fairy.y+16, 'dust', 1);
+
+    const toxicHere = nearToxin();
+    const dirtyCount = rubbish.filter(r=>!r.cleaned).length;
+    let toxicLevel = clamp((toxicHere?38:0) + dirtyCount*10 + toxins.length*7,0,100);
+
+    if(toxicHere){
+      fairy.health -= 11*dt;
+      if(Math.random()<.35) addParticle(fairy.x, fairy.y, 'sick', 1);
+      if(messageTimer < -1) showMessage('The fairy feels weak near pesticide clouds. Move away and clean the meadow first.');
+    } else {
+      fairy.health += (dirtyCount===0 ? 7 : 3) * dt;
+    }
+    fairy.health = clamp(fairy.health,0,100);
+
+    if(keys.clean){
+      let cleanedAny = false;
+      rubbish.forEach(r => {
+        if(!r.cleaned && Math.abs(fairy.x-r.x)<48){
+          r.cleaned = true; cleanedAny = true; addParticle(r.x,r.y-20,'clean',18);
+        }
+      });
+      if(cleanedAny) showMessage('A little patch of earth can breathe again. The fairy song grows clearer.');
+      keys.clean = false;
+    }
+
+    if(keys.sing && fairy.health>8 && !toxicHere){
+      fairy.singPower = clamp(fairy.singPower + dt*2.8,0,1);
+      addParticle(fairy.x + fairy.facing*18, fairy.y-10, 'song', 3);
+      plants.forEach(p => {
+        const d = Math.abs(fairy.x - p.x);
+        if(d < 112 && !p.dead){
+          p.growth = clamp(p.growth + dt*(.22 + fairy.singPower*.32),0,1);
+          if(Math.random()<.4) addParticle(p.x,p.y-35-p.growth*38,'grow',2);
+        }
+      });
+    } else {
+      fairy.singPower = Math.max(0, fairy.singPower - dt*2.2);
+    }
+
+    animals.forEach(a => {
+      if(Math.abs(fairy.x-a.x)<65 && !toxicHere){
+        a.happy = clamp(a.happy + dt*.25,0,1);
+        if(Math.random()<.06) addParticle(a.x,a.y-20,'heart',1);
+      }
+    });
+
+    // If rubbish remains too long and plants are ignored, they slowly wither.
+    plants.forEach(p => {
+      const nearDirty = rubbish.some(r=>!r.cleaned && Math.abs(r.x-p.x)<120);
+      if((nearDirty || toxicLevel>55) && p.growth < .45){ p.growth = Math.max(0, p.growth - dt*.025); }
+    });
+
+    particles.forEach(p => { p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt; p.vy += 32*dt; });
+    particles = particles.filter(p => p.life > 0);
+
+    fireflies.forEach(f => { f.a += dt*f.s; f.x += Math.cos(f.a)*.22; f.y += Math.sin(f.a*.7)*.18; });
+
+    const nature = Math.round((plants.reduce((s,p)=>s+p.growth,0)/plants.length)*70 + (animals.reduce((s,a)=>s+a.happy,0)/animals.length)*30);
+    healthFill.style.width = fairy.health + '%'; healthTxt.textContent = Math.round(fairy.health);
+    natureFill.style.width = nature + '%'; natureTxt.textContent = nature;
+    toxicFill.style.width = toxicLevel + '%'; toxicTxt.textContent = Math.round(toxicLevel);
+
+    const allGrown = plants.every(p=>p.growth>.92);
+    const allClean = rubbish.every(r=>r.cleaned);
+    const animalsHappy = animals.every(a=>a.happy>.7);
+    if(allGrown && allClean && animalsHappy){
+      complete.style.display = 'grid';
+      gameStarted = false;
+    }
+  }
+
+  function drawBackground(){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#213b3a'); g.addColorStop(.58,'#51704e'); g.addColorStop(1,'#20351f');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+    // Moon glow
+    ctx.save();
+    ctx.globalAlpha=.38;
+    const mg = ctx.createRadialGradient(W*.78,H*.12,5,W*.78,H*.12,180);
+    mg.addColorStop(0,'rgba(255,244,196,.65)'); mg.addColorStop(1,'rgba(255,244,196,0)');
+    ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(W*.78,H*.12,180,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    // Soft hills
+    ctx.fillStyle='rgba(20,45,31,.55)';
+    for(let i=0;i<4;i++){
+      ctx.beginPath();
+      ctx.ellipse(W*(.15+i*.28), groundY-72+i*12, W*.28, 95, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // Tree silhouettes
+    for(let i=0;i<9;i++){
+      const x = (i/8)*W + Math.sin(i)*18;
+      drawTree(x, groundY-70, .65 + (i%3)*.12, 'rgba(13,31,24,.42)');
+    }
+
+    // Ground
+    ctx.fillStyle='#213b22';
+    ctx.beginPath();ctx.moveTo(0,groundY);
+    for(let x=0;x<=W;x+=50){ ctx.lineTo(x, groundY + Math.sin(x*.015)*10 + Math.cos(x*.007)*8); }
+    ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+
+    // Grass strokes
+    ctx.strokeStyle='rgba(185,255,170,.28)';ctx.lineWidth=1;
+    for(let x=8;x<W;x+=14){
+      const h=8+Math.random()*0; // stable enough visually
+      ctx.beginPath();ctx.moveTo(x,groundY+18);ctx.lineTo(x+Math.sin(x)*6,groundY+4-h);ctx.stroke();
+    }
+  }
+
+  function drawTree(x,y,s,color){
+    ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.fillStyle=color;
+    ctx.fillRect(-8,0,16,120);
+    for(let i=0;i<4;i++){
+      ctx.beginPath(); ctx.ellipse(0,-10+i*24,60-i*7,42,0,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawToxins(){
+    toxins.forEach(t => {
+      const pulse = 1 + Math.sin(performance.now()/420)*.07;
+      const rg = ctx.createRadialGradient(t.x,t.y,8,t.x,t.y,t.r*pulse);
+      rg.addColorStop(0,'rgba(190,110,170,.28)');
+      rg.addColorStop(.55,'rgba(130,80,145,.2)');
+      rg.addColorStop(1,'rgba(130,80,145,0)');
+      ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(t.x,t.y,t.r*pulse,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(140,78,130,.4)';
+      for(let i=0;i<6;i++){
+        ctx.beginPath(); ctx.arc(t.x+Math.sin(performance.now()/800+i)*t.r*.42, t.y+Math.cos(performance.now()/900+i)*16, 9+i%3*3, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.font='22px serif';ctx.fillText('☠️',t.x-13,t.y+7);
+    });
+  }
+
+  function drawPlant(p){
+    const g = p.growth;
+    const x=p.x, y=p.y;
+    ctx.save(); ctx.translate(x,y);
+    ctx.strokeStyle = g>.75 ? '#b8ffc1' : '#7fa76f';
+    ctx.lineWidth = 3; ctx.lineCap='round';
+    const height = 22 + g*78;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-10,-height*.45,0,-height); ctx.stroke();
+    ctx.fillStyle = g>.55 ? '#97ffae' : '#66885d';
+    for(let i=0;i<4;i++){
+      const side = i%2?1:-1;
+      const yy = -height*(.28+i*.15);
+      ctx.beginPath(); ctx.ellipse(side*(8+g*12), yy, 10+g*10, 4+g*5, side*.45, 0, Math.PI*2); ctx.fill();
+    }
+    if(g>.72){
+      ctx.fillStyle = p.kind==='flower' ? '#ffd1ee' : '#fff2a8';
+      ctx.shadowColor=ctx.fillStyle; ctx.shadowBlur=14;
+      for(let i=0;i<6;i++){
+        ctx.beginPath(); ctx.ellipse(Math.cos(i*Math.PI/3)*9, -height + Math.sin(i*Math.PI/3)*7, 7, 4, i,0,Math.PI*2); ctx.fill();
+      }
+      ctx.fillStyle='#ffe98d'; ctx.beginPath(); ctx.arc(0,-height,5,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawRubbish(r){
+    if(r.cleaned) return;
+    ctx.save();ctx.translate(r.x,r.y);
+    ctx.shadowBlur=8;ctx.shadowColor='rgba(0,0,0,.35)';
+    if(r.type==='can'){
+      ctx.fillStyle='#b8b8bd';ctx.fillRect(-12,-18,24,18);ctx.fillStyle='#df7777';ctx.fillRect(-10,-15,20,5);
+    } else if(r.type==='bag'){
+      ctx.fillStyle='rgba(240,240,240,.78)';ctx.beginPath();ctx.moveTo(-15,0);ctx.quadraticCurveTo(-10,-24,5,-18);ctx.quadraticCurveTo(20,-8,12,4);ctx.closePath();ctx.fill();
+    } else {
+      ctx.rotate(-.35);ctx.fillStyle='#7fc0d8';ctx.fillRect(-6,-25,12,24);ctx.fillStyle='#dff8ff';ctx.fillRect(-5,-29,10,5);
+    }
+    ctx.restore();
+  }
+
+  function drawAnimal(a){
+    ctx.save();ctx.translate(a.x,a.y);
+    const glow = a.happy;
+    ctx.shadowColor = `rgba(255,230,170,${glow})`; ctx.shadowBlur = 18*glow;
+    if(a.type==='rabbit'){
+      ctx.fillStyle='#e9dccb';ctx.beginPath();ctx.ellipse(0,0,22,14,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(14,-8,12,10,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(18,-24,4,17,.2,0,Math.PI*2);ctx.ellipse(9,-23,4,16,-.2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#2a201b';ctx.beginPath();ctx.arc(18,-10,2,0,Math.PI*2);ctx.fill();
+    } else if(a.type==='bird'){
+      ctx.fillStyle='#ffe0a5';ctx.beginPath();ctx.ellipse(0,0,18,12,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffd0e8';ctx.beginPath();ctx.ellipse(-10,-2,15,7,-.7,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff3ba';ctx.beginPath();ctx.moveTo(17,-2);ctx.lineTo(28,2);ctx.lineTo(17,6);ctx.fill();
+    } else {
+      ctx.fillStyle='#d7b083';ctx.beginPath();ctx.ellipse(0,0,28,16,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(22,-12,13,11,0,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#ead3a8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(25,-20);ctx.lineTo(37,-36);ctx.moveTo(25,-20);ctx.lineTo(13,-35);ctx.stroke();
+    }
+    if(a.happy>.72){ ctx.font='18px serif';ctx.fillText('💛',-8,-32); }
+    ctx.restore();
+  }
+
+  function drawFairy(){
+    const x=fairy.x,y=fairy.y;
+    ctx.save();ctx.translate(x,y);ctx.scale(fairy.facing,1);
+    const weak = fairy.health/100;
+    ctx.globalAlpha = .62 + weak*.38;
+    ctx.shadowColor='rgba(255,239,170,.9)';ctx.shadowBlur=18 + fairy.singPower*26;
+    // wings
+    ctx.fillStyle='rgba(214,255,240,.43)';
+    ctx.beginPath();ctx.ellipse(-13,-11,17,30,-.5,0,Math.PI*2);ctx.ellipse(13,-11,17,30,.5,0,Math.PI*2);ctx.fill();
+    // dress/body
+    ctx.fillStyle='#ffd4ee';ctx.beginPath();ctx.ellipse(0,8,12,25,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff0c3';ctx.beginPath();ctx.arc(0,-18,12,0,Math.PI*2);ctx.fill();
+    // hair
+    ctx.fillStyle='#ffe58f';ctx.beginPath();ctx.arc(-2,-22,14,Math.PI*.92,Math.PI*2.18);ctx.fill();
+    // flower skirt
+    ctx.fillStyle='#bfffd1';
+    for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse((i-2)*6,26,6,13,0,0,Math.PI*2);ctx.fill();}
+    // wand/song hand
+    ctx.strokeStyle='#fff5b8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(10,2);ctx.lineTo(27,-12);ctx.stroke();
+    ctx.font='15px serif';ctx.fillText('✦',28,-12);
+    if(fairy.singPower>.05){
+      ctx.globalAlpha=.5;ctx.strokeStyle='rgba(255,240,180,.8)';ctx.lineWidth=2;
+      for(let i=0;i<3;i++){
+        ctx.beginPath();ctx.arc(28,-12,25+i*18+fairy.singPower*15, -.6, .8);ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawParticles(){
+    particles.forEach(p => {
+      const a = clamp(p.life,0,1);
+      ctx.save();ctx.globalAlpha=a;
+      if(p.kind==='song'){ctx.fillStyle='#fff3a8';ctx.shadowColor='#fff3a8';ctx.shadowBlur=14;ctx.font=`${14+p.size}px serif`;ctx.fillText('♪',p.x,p.y);}
+      else if(p.kind==='heart'){ctx.font='18px serif';ctx.fillText('💛',p.x,p.y);}
+      else if(p.kind==='sick'){ctx.fillStyle='rgba(190,110,170,.7)';ctx.beginPath();ctx.arc(p.x,p.y,p.size+2,0,Math.PI*2);ctx.fill();}
+      else if(p.kind==='clean'){ctx.fillStyle='#d7fff0';ctx.shadowColor='#d7fff0';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}
+      else if(p.kind==='grow'){ctx.fillStyle='#caffc9';ctx.shadowColor='#caffc9';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}
+      else {ctx.fillStyle='rgba(255,230,160,.55)';ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    });
+  }
+
+  function drawFireflies(){
+    fireflies.forEach(f => {
+      ctx.save();
+      ctx.globalAlpha=.25 + Math.sin(performance.now()/500+f.a)*.2;
+      ctx.fillStyle='#fff1a8';ctx.shadowColor='#fff1a8';ctx.shadowBlur=10;
+      ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function draw(){
+    drawBackground();
+    drawFireflies();
+    drawToxins();
+    plants.forEach(drawPlant);
+    rubbish.forEach(drawRubbish);
+    animals.forEach(drawAnimal);
+    drawFairy();
+    drawParticles();
+  }
+
+  function loop(t){
+    const dt = Math.min(.033, (t-lastTime)/1000 || .016);
+    lastTime = t;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  resetWorld();
+  initFireflies();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
 
