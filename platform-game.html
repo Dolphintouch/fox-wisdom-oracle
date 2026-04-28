@@ -950,51 +950,122 @@ body.platformEditorOn .chest {
 }
 
 
-/* ===== CLICK LOCK FIX ===== */
+
+/* ===== FINAL CLICK + EDITOR + FOX SAFETY FIX ===== */
 #choiceScreen.hidden,
-#choiceScreen.forceHidden {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
+#choiceScreen.forceHidden,
 body.gameChosen #choiceScreen {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
-body:not(.platformEditorOn) .levelCard,
-body:not(.platformEditorOn) .top-ui button,
-body:not(.platformEditorOn) #homeOrb {
-  pointer-events: auto !important;
-}
 
-
-/* ===== EDIT BUTTON + FOX START FIX ===== */
 .top-ui {
-  z-index: 10020 !important;
+  z-index: 20000 !important;
   pointer-events: auto !important;
 }
+
 .top-ui button,
-#platformEditBtn {
+#platformEditBtn,
+#homeOrb,
+.levelCard {
   pointer-events: auto !important;
   position: relative !important;
-  z-index: 10030 !important;
+  z-index: 20010 !important;
 }
-#world {
-  pointer-events: none;
+
+#platformEditorPanel {
+  position: fixed !important;
+  left: 14px !important;
+  bottom: 14px !important;
+  width: 390px !important;
+  max-width: 92vw !important;
+  z-index: 30000 !important;
+  display: none;
+  background: rgba(3,12,8,.96);
+  color: #ffe8a8;
+  border: 1px solid rgba(255,225,150,.65);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 0 28px rgba(0,0,0,.65);
+  font-size: 13px;
 }
+
+body.platformEditorOn #platformEditorPanel {
+  display: block !important;
+}
+
+#platformEditorPanel button {
+  margin: 4px 4px 4px 0;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,225,150,.45);
+  background: rgba(255,225,130,.12);
+  color: #ffe8a8;
+  cursor: pointer;
+  font-family: Georgia, serif;
+}
+
+#platformEditorOutput {
+  width: 100%;
+  height: 145px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,225,150,.35);
+  background: #07130b;
+  color: #fff0c2;
+  padding: 8px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
 body.platformEditorOn #world {
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
-body.platformEditorOn .hitbox,
+
+body.platformEditorOn .hitbox {
+  background: rgba(0,255,120,.30) !important;
+  outline: 2px solid rgba(255,245,120,.95) !important;
+  pointer-events: auto !important;
+  cursor: move !important;
+}
+
+body.platformEditorOn .hitbox::after {
+  content: "drag platform";
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff8b8;
+  font-size: 12px;
+  text-shadow: 0 0 6px #000;
+  white-space: nowrap;
+}
+
 body.platformEditorOn .treasure,
 body.platformEditorOn #treasure,
 body.platformEditorOn #treasureChest,
 body.platformEditorOn #finalTreasure,
 body.platformEditorOn .chest {
+  outline: 3px dashed rgba(255,245,140,.95) !important;
   pointer-events: auto !important;
+  cursor: move !important;
+}
+
+.editorDragging {
+  outline: 3px solid white !important;
+  box-shadow: 0 0 22px #fff7a8 !important;
+}
+
+.boulder {
+  background-image: url("boulder-big.png") !important;
+  background: transparent url("boulder-big.png") center/contain no-repeat !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
 }
 
 </style>
@@ -2392,60 +2463,281 @@ treasure: ${JSON.stringify(layout.treasure)}`;
 })();
 
 
-/* ===== EDIT BUTTON DIRECT BIND + FOX START POSITION FIX ===== */
+</script>
+
+
+<script>
+/* ===== SEPARATE SAFETY SCRIPT: EDITOR + FOX FIX ===== */
 (function(){
-  function hardResetFoxToLevelStart(){
+  const SAVE_KEY = "foxfire_platform_editor_positions_safe_v2";
+  let editorOn = false;
+  let dragging = null;
+  let dragStart = null;
+
+  function hideChoice(){
+    const cs = document.getElementById("choiceScreen");
+    if(!cs) return;
+    cs.classList.add("hidden");
+    cs.classList.add("forceHidden");
+    cs.style.setProperty("display","none","important");
+    cs.style.setProperty("visibility","hidden","important");
+    cs.style.setProperty("opacity","0","important");
+    cs.style.setProperty("pointer-events","none","important");
+    document.body.classList.add("gameChosen");
+  }
+
+  function forceFoxStart(){
     try {
-      const L = (typeof levels !== "undefined" && typeof currentLevel !== "undefined") ? levels[currentLevel] : null;
-      if(L){
-        if(typeof x !== "undefined") x = L.startX || 120;
-        if(typeof y !== "undefined") y = L.startY || 210;
-      } else {
-        if(typeof x !== "undefined") x = 120;
-        if(typeof y !== "undefined") y = 210;
-      }
+      if(typeof x !== "undefined") x = 150;
+      if(typeof y !== "undefined") y = 125;
       if(typeof vx !== "undefined") vx = 0;
       if(typeof vy !== "undefined") vy = 0;
-      if(typeof puppyX !== "undefined") puppyX = (typeof x !== "undefined" ? x - 80 : 60);
-      if(typeof puppyY !== "undefined") puppyY = (typeof y !== "undefined" ? y - 40 : 170);
-      if(typeof lastSafeX !== "undefined") lastSafeX = (typeof x !== "undefined" ? x : 120);
-      if(typeof lastSafeY !== "undefined") lastSafeY = (typeof y !== "undefined" ? y : 210);
+      if(typeof lastSafeX !== "undefined") lastSafeX = 150;
+      if(typeof lastSafeY !== "undefined") lastSafeY = 125;
+      if(typeof puppyX !== "undefined") puppyX = 80;
+      if(typeof puppyY !== "undefined") puppyY = 88;
       if(typeof cameraX !== "undefined") cameraX = 0;
+      if(typeof gameStarted !== "undefined") gameStarted = true;
       if(typeof render === "function") render();
       if(typeof updateCamera === "function") updateCamera();
-    } catch(e){}
-  }
+    } catch(e) {}
 
-  const oldChooseFox2 = window.chooseFox;
-  window.chooseFox = function(type){
-    if(typeof oldChooseFox2 === "function"){
-      oldChooseFox2(type);
+    const fox = document.getElementById("fox");
+    const puppy = document.getElementById("puppy");
+    if(fox){
+      fox.style.left = "150px";
+      fox.style.bottom = "67px";
     }
-    try { if(typeof gameStarted !== "undefined") gameStarted = true; } catch(e){}
-    setTimeout(hardResetFoxToLevelStart, 80);
-    setTimeout(hardResetFoxToLevelStart, 400);
-    return false;
-  };
-
-  function bindEditButton(){
-    const btn = document.getElementById("platformEditBtn");
-    if(!btn || btn.dataset.directBound === "yes") return;
-    btn.dataset.directBound = "yes";
-    btn.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      if(typeof window.togglePlatformEditor === "function"){
-        window.togglePlatformEditor();
-      } else {
-        document.body.classList.toggle("platformEditorOn");
-      }
-    }, true);
+    if(puppy){
+      puppy.style.left = "80px";
+      puppy.style.bottom = "50px";
+    }
   }
 
-  bindEditButton();
-  setInterval(bindEditButton, 500);
-})();
+  function afterFoxChoice(){
+    hideChoice();
+    setTimeout(forceFoxStart, 50);
+    setTimeout(forceFoxStart, 250);
+    setTimeout(forceFoxStart, 700);
+  }
 
+  // Directly bind the visible fox buttons, regardless of the old onclick code.
+  function bindFoxButtons(){
+    ["chooseFemaleFox","chooseMaleFox"].forEach(id => {
+      const btn = document.getElementById(id);
+      if(!btn || btn.dataset.safeBound === "yes") return;
+      btn.dataset.safeBound = "yes";
+      btn.addEventListener("click", function(){
+        afterFoxChoice();
+      }, true);
+    });
+  }
+
+  function makePanel(){
+    let panel = document.getElementById("platformEditorPanel");
+    if(panel) return panel;
+
+    panel = document.createElement("div");
+    panel.id = "platformEditorPanel";
+    panel.innerHTML =
+      '<strong>🛠 Platform & Chest Editor</strong>' +
+      '<p>Drag ledges or the treasure chest. Copy positions when finished.</p>' +
+      '<button type="button" id="closePlatformEditorBtn">Close</button>' +
+      '<button type="button" id="copyPlatformLayoutBtn">Copy Positions</button>' +
+      '<button type="button" id="savePlatformLayoutBtn">Save Layout</button>' +
+      '<button type="button" id="clearPlatformLayoutBtn">Clear Saved</button>' +
+      '<textarea id="platformEditorOutput" spellcheck="false"></textarea>';
+    document.body.appendChild(panel);
+    return panel;
+  }
+
+  function getWorld(){
+    return document.getElementById("world");
+  }
+
+  function getNum(v){
+    const n = parseFloat(v);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function getLeft(el){ return getNum(el.style.left); }
+  function getBottom(el){ return getNum(el.style.bottom); }
+
+  function currentLevelNo(){
+    try {
+      if(typeof currentLevel !== "undefined") return currentLevel;
+    } catch(e){}
+    return 0;
+  }
+
+  function getItems(){
+    return Array.from(document.querySelectorAll(".hitbox, .treasure, #treasure, #treasureChest, #finalTreasure, .chest"));
+  }
+
+  function pointInWorld(e){
+    const world = getWorld();
+    const wr = world.getBoundingClientRect();
+    return {
+      x: e.clientX - wr.left,
+      bottom: wr.height - (e.clientY - wr.top)
+    };
+  }
+
+  function collectLayout(){
+    const platforms = Array.from(document.querySelectorAll(".hitbox")).map(el => ({
+      x: Math.round(getLeft(el)),
+      y: Math.round(getBottom(el)),
+      w: Math.round(getNum(el.style.width || el.offsetWidth || el.dataset.w || 0)),
+      h: Math.round(getNum(el.style.height || el.offsetHeight || el.dataset.h || 28))
+    }));
+
+    const chest = document.querySelector(".treasure, #treasure, #treasureChest, #finalTreasure, .chest");
+    const treasure = chest ? {
+      x: Math.round(getLeft(chest)),
+      y: Math.round(getBottom(chest))
+    } : null;
+
+    return { level: currentLevelNo(), platforms, treasure };
+  }
+
+  function updateOutput(){
+    const out = document.getElementById("platformEditorOutput");
+    if(!out) return;
+    const layout = collectLayout();
+    out.value =
+      "// LEVEL " + layout.level + " POSITIONS\n\n" +
+      "platforms: " + JSON.stringify(layout.platforms) + ",\n\n" +
+      "treasure: " + JSON.stringify(layout.treasure);
+  }
+
+  function startDrag(e){
+    if(!editorOn) return;
+    const target = e.target.closest(".hitbox, .treasure, #treasure, #treasureChest, #finalTreasure, .chest");
+    if(!target) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const p = pointInWorld(e);
+    dragging = target;
+    dragging.classList.add("editorDragging");
+    dragStart = {
+      px: p.x,
+      pb: p.bottom,
+      left: getLeft(target),
+      bottom: getBottom(target)
+    };
+
+    try { target.setPointerCapture(e.pointerId); } catch(err){}
+  }
+
+  function moveDrag(e){
+    if(!editorOn || !dragging || !dragStart) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const p = pointInWorld(e);
+    const nx = Math.round(dragStart.left + (p.x - dragStart.px));
+    const nb = Math.round(dragStart.bottom + (p.bottom - dragStart.pb));
+
+    dragging.style.left = nx + "px";
+    dragging.style.bottom = nb + "px";
+
+    if(dragging.classList.contains("hitbox")){
+      dragging.dataset.x = nx;
+      dragging.dataset.y = nb;
+    }
+
+    updateOutput();
+  }
+
+  function endDrag(){
+    if(!dragging) return;
+    dragging.classList.remove("editorDragging");
+    dragging = null;
+    dragStart = null;
+    updateOutput();
+  }
+
+  function toggleEditor(){
+    makePanel();
+    editorOn = !editorOn;
+    document.body.classList.toggle("platformEditorOn", editorOn);
+
+    const btn = document.getElementById("platformEditBtn");
+    if(btn) btn.textContent = editorOn ? "Editor: On" : "Edit Platforms";
+
+    if(editorOn){
+      updateOutput();
+    }
+  }
+
+  function copyPositions(){
+    updateOutput();
+    const out = document.getElementById("platformEditorOutput");
+    if(!out) return;
+    out.select();
+    try { navigator.clipboard.writeText(out.value); } catch(e){ document.execCommand("copy"); }
+  }
+
+  function saveLayout(){
+    const layout = collectLayout();
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}"); } catch(e){}
+    all["level_" + layout.level] = layout;
+    localStorage.setItem(SAVE_KEY, JSON.stringify(all));
+    updateOutput();
+    const out = document.getElementById("platformEditorOutput");
+    if(out) out.value += "\n\n// Saved for this browser.";
+  }
+
+  function clearLayout(){
+    localStorage.removeItem(SAVE_KEY);
+    const out = document.getElementById("platformEditorOutput");
+    if(out) out.value = "// Saved editor layout cleared.";
+  }
+
+  function bindEditorButtons(){
+    makePanel();
+
+    const btn = document.getElementById("platformEditBtn");
+    if(btn && btn.dataset.safeEditorBound !== "yes"){
+      btn.dataset.safeEditorBound = "yes";
+      btn.onclick = null;
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        toggleEditor();
+      }, true);
+    }
+
+    const close = document.getElementById("closePlatformEditorBtn");
+    const copy = document.getElementById("copyPlatformLayoutBtn");
+    const save = document.getElementById("savePlatformLayoutBtn");
+    const clear = document.getElementById("clearPlatformLayoutBtn");
+
+    if(close && close.dataset.bound !== "yes"){ close.dataset.bound = "yes"; close.addEventListener("click", toggleEditor); }
+    if(copy && copy.dataset.bound !== "yes"){ copy.dataset.bound = "yes"; copy.addEventListener("click", copyPositions); }
+    if(save && save.dataset.bound !== "yes"){ save.dataset.bound = "yes"; save.addEventListener("click", saveLayout); }
+    if(clear && clear.dataset.bound !== "yes"){ clear.dataset.bound = "yes"; clear.addEventListener("click", clearLayout); }
+  }
+
+  document.addEventListener("pointerdown", startDrag, true);
+  document.addEventListener("pointermove", moveDrag, true);
+  document.addEventListener("pointerup", endDrag, true);
+  document.addEventListener("pointercancel", endDrag, true);
+
+  bindFoxButtons();
+  bindEditorButtons();
+
+  setInterval(function(){
+    bindFoxButtons();
+    bindEditorButtons();
+    if(document.body.classList.contains("gameChosen")) hideChoice();
+  }, 500);
+
+  window.safeTogglePlatformEditor = toggleEditor;
+})();
 </script>
 
 </body>
