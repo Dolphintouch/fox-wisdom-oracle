@@ -949,6 +949,27 @@ body.platformEditorOn .chest {
     drop-shadow(0 0 18px rgba(255,210,90,.55)) !important;
 }
 
+
+/* ===== CLICK LOCK FIX ===== */
+#choiceScreen.hidden,
+#choiceScreen.forceHidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+body.gameChosen #choiceScreen {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+body:not(.platformEditorOn) .levelCard,
+body:not(.platformEditorOn) .top-ui button,
+body:not(.platformEditorOn) #homeOrb {
+  pointer-events: auto !important;
+}
+
 </style>
 
 </head>
@@ -2286,6 +2307,61 @@ treasure: ${JSON.stringify(layout.treasure)}`;
   setInterval(() => {
     if(editorOn) applySavedLayout();
   }, 1000);
+})();
+
+
+/* ===== FOX CHOICE CLICK-LOCK SAFETY FIX ===== */
+(function(){
+  function hideChoiceOverlayCompletely(){
+    const cs = document.getElementById("choiceScreen");
+    if(!cs) return;
+    cs.classList.add("hidden");
+    cs.classList.add("forceHidden");
+    cs.style.setProperty("display", "none", "important");
+    cs.style.setProperty("visibility", "hidden", "important");
+    cs.style.setProperty("opacity", "0", "important");
+    cs.style.setProperty("pointer-events", "none", "important");
+    document.body.classList.add("gameChosen");
+  }
+
+  // Wrap existing chooseFox so it always releases the page afterwards.
+  const oldChooseFox = window.chooseFox;
+  window.chooseFox = function(type){
+    if(typeof oldChooseFox === "function"){
+      oldChooseFox(type);
+    }
+    hideChoiceOverlayCompletely();
+    try {
+      if(typeof gameStarted !== "undefined") gameStarted = true;
+    } catch(e){}
+    setTimeout(hideChoiceOverlayCompletely, 50);
+    setTimeout(hideChoiceOverlayCompletely, 300);
+    return false;
+  };
+
+  // If any player click happens after choice, make sure the overlay is gone.
+  document.addEventListener("click", function(e){
+    const cs = document.getElementById("choiceScreen");
+    if(cs && cs.classList.contains("hidden")){
+      hideChoiceOverlayCompletely();
+    }
+  }, true);
+
+  // Emergency keyboard escape if needed.
+  window.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){
+      hideChoiceOverlayCompletely();
+    }
+  });
+
+  // Ongoing safety: if game started, overlay must not block.
+  setInterval(function(){
+    try {
+      if(typeof gameStarted !== "undefined" && gameStarted){
+        hideChoiceOverlayCompletely();
+      }
+    } catch(e){}
+  }, 500);
 })();
 
 </script>
