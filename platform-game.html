@@ -474,6 +474,95 @@
       color: #fff1ba;
     }
 
+
+    #homeOrb {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      z-index: 95;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 28px;
+      color: #2a1a08;
+      background:
+        radial-gradient(circle at 35% 25%, #fff8c9, #ffe28a 35%, #d49232 68%, #6f4216 100%);
+      border: 1px solid rgba(255, 241, 184, 0.8);
+      box-shadow:
+        0 0 12px rgba(255, 237, 160, 0.9),
+        0 0 26px rgba(255, 207, 96, 0.65),
+        0 0 44px rgba(130, 255, 190, 0.28);
+      animation: homeOrbFloat 3.2s ease-in-out infinite, homeOrbGlow 2.2s ease-in-out infinite alternate;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    #homeOrb::before {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 235, 150, 0.38), rgba(120, 255, 195, 0.12) 45%, transparent 72%);
+      animation: homeOrbAura 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    #homeOrb::after {
+      content: "Home";
+      position: absolute;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #fff4c2;
+      background: rgba(12, 26, 18, 0.72);
+      border: 1px solid rgba(255, 232, 160, 0.28);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      white-space: nowrap;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    #homeOrb:hover::after,
+    #homeOrb:focus::after {
+      opacity: 1;
+    }
+
+    #homeOrb:hover {
+      transform: scale(1.08);
+      box-shadow:
+        0 0 16px rgba(255, 247, 190, 1),
+        0 0 34px rgba(255, 216, 105, 0.85),
+        0 0 60px rgba(120, 255, 195, 0.38);
+    }
+
+    @keyframes homeOrbFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes homeOrbGlow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.22); }
+    }
+
+    @keyframes homeOrbAura {
+      0%, 100% { transform: scale(0.92); opacity: 0.55; }
+      50% { transform: scale(1.22); opacity: 0.95; }
+    }
+
+    body.fadeOutHome {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
     @media (max-width: 760px) {
       #gameWrapper {
         max-width: none;
@@ -514,6 +603,19 @@
         height: 48px;
       }
 
+
+      #homeOrb {
+        top: 82px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+      }
+
+      #homeOrb::after {
+        display: none;
+      }
+
       .touchBtn {
         width: 58px;
         height: 58px;
@@ -529,6 +631,7 @@
       <div id="bgMid" class="bgLayer"></div>
       <div id="bgFront" class="bgLayer"></div>
       <div id="mist"></div>
+      <a id="homeOrb" href="index.html" onclick="goHomeThroughPortal(event)" aria-label="Return to Fox Wisdom Oracle home">🏡</a>
 
       <div id="world">
         <div id="portal"></div>
@@ -800,6 +903,15 @@
       buildWorld();
       updateHUD();
       render();
+    }
+
+
+    function goHomeThroughPortal(event) {
+      event.preventDefault();
+      document.body.classList.add("fadeOutHome");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 600);
     }
 
     function startGame() {
