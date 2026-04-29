@@ -1,116 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fairy Garden Level 1</title>
-
+<title>Fairy Garden Game</title>
 <style>
-body {
-  margin:0;
-  overflow:hidden;
-  font-family: Georgia;
-}
-
-#game {
-  width:100vw;
-  height:100vh;
-  background:url("level1-forest.png") center/cover no-repeat;
-  position:relative;
-}
-
-#fairy {
-  position:absolute;
-  width:120px;
-  height:120px;
-  background:url("fairy-idle.png") center/contain no-repeat;
-  left:50%;
-  top:60%;
-  transform:translate(-50%,-50%);
-}
-
-#ui {
-  position:absolute;
-  top:10px;
-  left:10px;
-  color:white;
-  background:rgba(0,0,0,0.4);
-  padding:10px;
-  border-radius:10px;
-}
-
-button {
-  position:absolute;
-  bottom:20px;
-  right:20px;
-  padding:10px 20px;
-  font-size:18px;
-}
+body{margin:0;overflow:hidden;font-family:Georgia;background:#102314}
+#game{width:100vw;height:100vh;background:url("level1-forest.png") center/cover no-repeat;position:relative}
+#fairy{position:absolute;width:130px;height:130px;left:45%;top:60%;background:url("fairy-idle.png") center/contain no-repeat;filter:drop-shadow(0 0 15px gold);z-index:10}
+#ui{position:absolute;top:12px;left:12px;color:#fff4c2;background:rgba(20,30,10,.6);padding:12px;border-radius:15px;border:1px solid gold;z-index:20}
+#message{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#fff4c2;background:rgba(20,30,10,.65);padding:12px 18px;border-radius:18px;border:1px solid gold;text-align:center;z-index:20}
+button{position:absolute;right:20px;bottom:20px;padding:12px 22px;border-radius:18px;border:0;background:#ffe98a;font-size:18px;font-weight:bold;z-index:30}
+.plant{position:absolute;width:40px;height:55px;background:radial-gradient(circle,#ffd1e8 20%,#7ee27e 45%,#228b22 80%);border-radius:50%;filter:drop-shadow(0 0 10px #dfff8a);animation:grow 1s ease forwards}
+.bird{position:absolute;font-size:34px;animation:fly 5s linear forwards;filter:drop-shadow(0 0 8px #aeefff)}
+.note,.sparkle{position:absolute;pointer-events:none;z-index:8}
+.note{font-size:32px;color:#fff7a8;text-shadow:0 0 12px gold;animation:note 1.8s ease-out forwards}
+.sparkle{width:8px;height:8px;border-radius:50%;background:gold;box-shadow:0 0 12px white;animation:sparkle 1s ease-out forwards}
+@keyframes grow{from{transform:scale(.1);opacity:.2}to{transform:scale(1);opacity:1}}
+@keyframes note{to{transform:translateY(-100px);opacity:0}}
+@keyframes sparkle{to{transform:translateY(-50px) scale(2);opacity:0}}
+@keyframes fly{from{transform:translateX(0)}to{transform:translateX(500px);opacity:0}}
 </style>
 </head>
-
 <body>
 
 <div id="game">
   <div id="fairy"></div>
-
   <div id="ui">
-    Level 1: Singing Forest<br>
-    Points: <span id="score">0</span>
+    <b>Level 1: Singing Glade</b><br>
+    Points: <span id="score">0</span><br>
+    Press arrow keys to move<br>
+    Press S or Sing
   </div>
-
-  <button onclick="sing()">Sing</button>
+  <div id="message">The forest is waiting for your song...</div>
+  <button onclick="sing()">✨ Sing ✨</button>
 </div>
 
 <script>
-let fairy = document.getElementById("fairy");
-let score = 0;
+let fairy=document.getElementById("fairy");
+let game=document.getElementById("game");
+let score=0;
+let x=window.innerWidth*.45;
+let y=window.innerHeight*.60;
 
-function setSprite(name){
-  fairy.style.backgroundImage = `url(${name})`;
+function sprite(file){
+  fairy.style.backgroundImage=`url("${file}")`;
+}
+
+function update(){
+  fairy.style.left=x+"px";
+  fairy.style.top=y+"px";
+}
+
+function sparkle(){
+  let s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=(x+60+Math.random()*40)+"px";
+  s.style.top=(y+40+Math.random()*40)+"px";
+  game.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+function musicNote(){
+  let n=document.createElement("div");
+  n.className="note";
+  n.innerHTML=["♪","♫","♬"][Math.floor(Math.random()*3)];
+  n.style.left=(x+90+Math.random()*70)+"px";
+  n.style.top=(y+20)+"px";
+  game.appendChild(n);
+  setTimeout(()=>n.remove(),1800);
+}
+
+function growPlant(){
+  let p=document.createElement("div");
+  p.className="plant";
+  p.style.left=(x+Math.random()*180-60)+"px";
+  p.style.top=(y+100+Math.random()*80)+"px";
+  game.appendChild(p);
+}
+
+function bird(){
+  let b=document.createElement("div");
+  b.className="bird";
+  b.innerHTML="🐦";
+  b.style.left=(x-120)+"px";
+  b.style.top=(y-120+Math.random()*90)+"px";
+  game.appendChild(b);
+  setTimeout(()=>b.remove(),5000);
 }
 
 function sing(){
-  setSprite("fairy-sing.png");
-  score += 10;
-  document.getElementById("score").innerText = score;
+  sprite("fairy-sing.png");
+  score+=10;
+  document.getElementById("score").innerText=score;
+
+  for(let i=0;i<10;i++)setTimeout(sparkle,i*80);
+  for(let i=0;i<4;i++)setTimeout(musicNote,i*180);
+  growPlant();
+  if(score%20===0) bird();
+
+  if(score<40){
+    message.innerText="A tiny song wakes the flowers...";
+  }else if(score<80){
+    message.innerText="The birds are hearing you now...";
+  }else if(score<130){
+    message.innerText="The forest is growing brighter!";
+  }else{
+    sprite("fairy-happy.png");
+    message.innerText="The magical glade is alive with song!";
+  }
 
   setTimeout(()=>{
-    if(score >= 50){
-      setSprite("fairy-happy.png");
-    } else {
-      setSprite("fairy-idle.png");
-    }
-  }, 800);
+    if(score<130)sprite("fairy-idle.png");
+  },900);
 }
 
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "ArrowRight"){
-    setSprite("fairy-run.png");
-    fairy.style.left = (fairy.offsetLeft + 10) + "px";
-  }
-  if(e.key === "ArrowLeft"){
-    setSprite("fairy-run.png");
-    fairy.style.left = (fairy.offsetLeft - 10) + "px";
-  }
-  if(e.key === "ArrowUp"){
-    setSprite("fairy-jump.png");
-    fairy.style.top = (fairy.offsetTop - 10) + "px";
-  }
-  if(e.key === "ArrowDown"){
-    setSprite("fairy-fly.png");
-    fairy.style.top = (fairy.offsetTop + 10) + "px";
-  }
-  if(e.key === "s"){
-    sing();
-  }
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"){x+=15;sprite("fairy-run.png")}
+  if(e.key==="ArrowLeft"){x-=15;sprite("fairy-run.png")}
+  if(e.key==="ArrowUp"){y-=15;sprite("fairy-jump.png")}
+  if(e.key==="ArrowDown"){y+=15;sprite("fairy-fly.png")}
+  if(e.key.toLowerCase()==="s")sing();
+  update();
 });
 
-document.addEventListener("keyup", ()=>{
-  if(score < 50){
-    setSprite("fairy-idle.png");
-  }
+document.addEventListener("keyup",()=>{
+  if(score<130)sprite("fairy-idle.png");
 });
+
+update();
 </script>
 
 </body>
