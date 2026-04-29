@@ -41,15 +41,16 @@ body{margin:0;overflow:hidden;font-family:Georgia;background:black}
 /* FAIRY */
 #fairy{
   position:absolute;
-  width:130px;
-  height:130px;
-  left:45%;
-  top:60%;
+  width:170px;
+  height:170px;
   background:center/contain no-repeat;
-  background-color:transparent;
   transform-origin:center;
-  mix-blend-mode:multiply;
-  filter:drop-shadow(0 0 12px gold) brightness(1.05) contrast(1.05);
+  filter:
+    drop-shadow(0 0 10px gold)
+    drop-shadow(0 0 22px rgba(255,230,120,.75))
+    brightness(1.15)
+    contrast(1.1)
+    saturate(1.1);
   z-index:10;
 }
 
@@ -59,17 +60,82 @@ body{margin:0;overflow:hidden;font-family:Georgia;background:black}
   top:10px;
   left:10px;
   color:white;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,.5);
   padding:10px;
   border-radius:10px;
+  z-index:30;
 }
 
-button{
+#message{
   position:absolute;
   bottom:20px;
-  right:20px;
-  padding:10px 20px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff4c2;
+  background:rgba(0,0,0,.45);
+  padding:10px 18px;
+  border-radius:18px;
+  z-index:30;
 }
+
+/* BUTTON */
+#singBtn{
+  position:absolute;
+  right:20px;
+  bottom:20px;
+  padding:12px 22px;
+  border-radius:18px;
+  border:none;
+  background:#ffe98a;
+  font-weight:bold;
+  z-index:40;
+}
+
+/* PLANTS */
+.plantSprite{
+  position:absolute;
+  width:90px;
+  height:90px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 12px #eaff8a);
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+@keyframes plantGrow{
+  from{transform:scale(.2);opacity:.2}
+  to{transform:scale(1);opacity:1}
+}
+
+/* EFFECTS */
+.note{
+  position:absolute;
+  font-size:30px;
+  color:#fff6a8;
+  text-shadow:0 0 12px gold;
+  animation:noteFloat 1.6s ease-out forwards;
+}
+
+.sparkle{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:gold;
+  box-shadow:0 0 12px white;
+  animation:sparkleFloat 1s ease-out forwards;
+}
+
+.bird{
+  position:absolute;
+  font-size:34px;
+  animation:birdFloat 3s ease forwards;
+}
+
+@keyframes noteFloat{to{transform:translateY(-90px);opacity:0}}
+@keyframes sparkleFloat{to{transform:translateY(-45px) scale(2);opacity:0}}
+@keyframes birdFloat{to{transform:translateX(120px);opacity:0}}
+
 </style>
 </head>
 
@@ -83,100 +149,159 @@ button{
   <div id="fairy"></div>
 
   <div id="ui">
-    Points: <span id="score">0</span>
+    Points: <span id="score">0</span><br>
+    Press arrows to move<br>
+    Press S or Sing
   </div>
 
-  <button onclick="sing()">Sing</button>
+  <div id="message">The meadow is waiting for your song...</div>
+
+  <button id="singBtn" onclick="sing()">✨ Sing ✨</button>
 </div>
 
 <script>
+
 let fairy=document.getElementById("fairy");
+let game=document.getElementById("game");
 let score=0;
 
-let x=window.innerWidth*0.45;
-let y=window.innerHeight*0.6;
-
+let x=window.innerWidth*.45;
+let y=window.innerHeight*.6;
 let facing=1;
+let singing=false;
 
-/* SPRITE FUNCTION */
+/* SPRITES */
 function sprite(img){
   fairy.style.backgroundImage=`url("${img}")`;
-  fairy.style.backgroundSize="contain";
-  fairy.style.backgroundRepeat="no-repeat";
-  fairy.style.backgroundPosition="center";
 }
 
-/* UPDATE POSITION + FLIP */
+/* UPDATE */
 function update(){
   fairy.style.left=x+"px";
   fairy.style.top=y+"px";
   fairy.style.transform=`scaleX(${facing})`;
 }
 
+/* PLANT SYSTEM */
+let plantStage=0;
+
+const plantImages=[
+  "plant-seedling.png",
+  "plant-small.png",
+  "plant-growing.png",
+  "plant-bloom.png",
+  "plant-glow-bloom.png"
+];
+
+function growPlant(){
+  let img=plantImages[Math.min(plantStage,plantImages.length-1)];
+
+  let plant=document.createElement("img");
+  plant.src=img;
+  plant.className="plantSprite";
+
+  plant.style.left=(x+Math.random()*180-60)+"px";
+  plant.style.top=(y+120+Math.random()*40)+"px";
+
+  game.appendChild(plant);
+
+  plantStage++;
+}
+
+/* EFFECTS */
+function sparkle(){
+  let s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=(x+50+Math.random()*60-30)+"px";
+  s.style.top=(y+45+Math.random()*60-30)+"px";
+  game.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+function note(px=x,py=y){
+  let n=document.createElement("div");
+  n.className="note";
+  n.innerHTML=["♪","♫","♬"][Math.floor(Math.random()*3)];
+  n.style.left=px+"px";
+  n.style.top=py+"px";
+  game.appendChild(n);
+  setTimeout(()=>n.remove(),1500);
+}
+
+function bird(){
+  let b=document.createElement("div");
+  b.className="bird";
+  b.innerHTML="🐦";
+  b.style.left=x+"px";
+  b.style.top=(y-100)+"px";
+  game.appendChild(b);
+
+  for(let i=0;i<4;i++){
+    setTimeout(()=>note(x,y-100),i*300);
+  }
+
+  setTimeout(()=>b.remove(),3000);
+}
+
 /* SING */
 function sing(){
+  if(singing) return;
+  singing=true;
+
   sprite("fairy-sing.png");
+
   score+=10;
   document.getElementById("score").innerText=score;
 
+  for(let i=0;i<10;i++) setTimeout(sparkle,i*80);
+  for(let i=0;i<5;i++) setTimeout(()=>note(x,y),i*150);
+
+  growPlant();
+
+  if(score%20===0) bird();
+
+  if(score<40) message.innerText="A tiny song wakes the earth...";
+  else if(score<80) message.innerText="The plants are growing...";
+  else if(score<120) message.innerText="The birds are returning...";
+  else message.innerText="The forest is alive with magic!";
+
   setTimeout(()=>{
-    if(score>50){
-      sprite("fairy-happy.png");
-    }else{
-      sprite("fairy-idle.png");
-    }
-  },800);
+    singing=false;
+    if(score>120) sprite("fairy-happy.png");
+    else sprite("fairy-idle.png");
+  },900);
 }
 
 /* CONTROLS */
 document.addEventListener("keydown",e=>{
 
-  if(e.key==="ArrowRight"){
-    x+=10;
-    facing=1;
-    sprite("fairy-run.png");
-  }
+  if(e.key==="ArrowRight"){x+=12;facing=1;sprite("fairy-run.png")}
+  if(e.key==="ArrowLeft"){x-=12;facing=-1;sprite("fairy-run.png")}
+  if(e.key==="ArrowUp"){y-=12;sprite("fairy-jump.png")}
+  if(e.key==="ArrowDown"){y+=12;sprite("fairy-fly.png")}
+  if(e.key.toLowerCase()==="s") sing();
 
-  if(e.key==="ArrowLeft"){
-    x-=10;
-    facing=-1;
-    sprite("fairy-run.png");
-  }
-
-  if(e.key==="ArrowUp"){
-    y-=10;
-    sprite("fairy-jump.png");
-  }
-
-  if(e.key==="ArrowDown"){
-    y+=10;
-    sprite("fairy-fly.png");
-  }
-
-  if(e.key.toLowerCase()==="s"){
-    sing();
-  }
+  x=Math.max(20,Math.min(window.innerWidth-200,x));
+  y=Math.max(40,Math.min(window.innerHeight-200,y));
 
   update();
 });
 
-/* RESET TO IDLE */
+/* RESET */
 document.addEventListener("keyup",()=>{
-  if(score<50){
-    sprite("fairy-idle.png");
-  }
+  if(!singing && score<120) sprite("fairy-idle.png");
 });
 
-/* START BUTTON */
+/* START */
 document.getElementById("startBtn").onclick=()=>{
-  document.getElementById("startScreen").style.display="none";
-  document.getElementById("game").style.display="block";
+  startScreen.style.display="none";
+  game.style.display="block";
   sprite("fairy-idle.png");
+  update();
 };
 
-/* INIT */
 update();
-</script>
 
+</script>
 </body>
 </html>
