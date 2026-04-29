@@ -13,7 +13,6 @@ body{
   background:black;
 }
 
-/* GAME */
 #game{
   width:100vw;
   height:100vh;
@@ -22,7 +21,6 @@ body{
   overflow:hidden;
 }
 
-/* START SCREEN (CLEAN VERSION) */
 #startScreen{
   position:absolute;
   inset:0;
@@ -44,21 +42,18 @@ body{
   color:#4a3210;
   font-weight:bold;
   cursor:pointer;
-  box-shadow:
-    0 0 18px gold,
-    0 0 35px rgba(255,230,120,.75);
+  box-shadow:0 0 18px gold,0 0 35px rgba(255,230,120,.75);
 }
 
-/* FAIRY */
 #fairy{
   position:absolute;
   width:220px;
   height:260px;
   background:url("fairy-idle.png") center/contain no-repeat;
   filter:drop-shadow(0 0 15px gold);
+  z-index:10;
 }
 
-/* UI */
 #ui{
   position:absolute;
   top:15px;
@@ -67,6 +62,7 @@ body{
   background:rgba(0,0,0,.5);
   padding:12px;
   border-radius:15px;
+  z-index:30;
 }
 
 #message{
@@ -78,6 +74,7 @@ body{
   padding:12px 20px;
   border-radius:20px;
   color:#fff4c2;
+  z-index:30;
 }
 
 #singBtn{
@@ -90,6 +87,7 @@ body{
   background:gold;
   font-weight:bold;
   cursor:pointer;
+  z-index:30;
 }
 </style>
 </head>
@@ -125,7 +123,6 @@ let y = window.innerHeight * 0.6;
 let score = 0;
 let soundOn = false;
 
-/* SOUNDS */
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
@@ -141,19 +138,18 @@ function playSound(s){
   s.play().catch(()=>{});
 }
 
-/* START */
 startBtn.onclick = () => {
   soundOn = true;
+  soundBtn.innerText = "Sound: On";
   playSound(sounds.fairy);
   sounds.music.play().catch(()=>{});
 
   startScreen.style.opacity = "0";
-  setTimeout(()=>startScreen.style.display="none",1000);
+  setTimeout(()=>startScreen.style.display = "none", 1000);
 
   update();
 };
 
-/* SOUND BUTTON */
 soundBtn.onclick = () => {
   soundOn = !soundOn;
   soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
@@ -165,37 +161,34 @@ soundBtn.onclick = () => {
   }
 };
 
-/* FAIRY POSITION */
 function update(){
   fairy.style.left = x + "px";
   fairy.style.top = y + "px";
 }
 
-/* MOVEMENT */
-document.addEventListener("keydown", e=>{
-  if(e.key==="ArrowRight") x+=15;
-  if(e.key==="ArrowLeft") x-=15;
-  if(e.key==="ArrowUp") y-=15;
-  if(e.key==="ArrowDown") y+=15;
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowRight") x += 15;
+  if(e.key === "ArrowLeft") x -= 15;
+  if(e.key === "ArrowUp") y -= 15;
+  if(e.key === "ArrowDown") y += 15;
 
-  x=Math.max(0,Math.min(window.innerWidth-200,x));
-  y=Math.max(0,Math.min(window.innerHeight-200,y));
+  x = Math.max(0, Math.min(window.innerWidth - 220, x));
+  y = Math.max(0, Math.min(window.innerHeight - 260, y));
 
   update();
 });
 
-/* SING */
 function sing(){
-  fairy.style.backgroundImage = 'url("fairy-fly.png")'; // clean image (no white box)
+  fairy.style.backgroundImage = 'url("fairy-fly.png")';
   playSound(sounds.fairy);
   playSound(sounds.grow);
 
-  score+=10;
-  scoreBox.innerText=score;
+  score += 10;
+  scoreBox.innerText = score;
 
-  setTimeout(()=>{
+  setTimeout(() => {
     fairy.style.backgroundImage = 'url("fairy-idle.png")';
-  },600);
+  }, 600);
 }
 
 singBtn.onclick = sing;
