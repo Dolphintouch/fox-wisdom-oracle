@@ -15,7 +15,6 @@ body{
 
 /* GAME */
 #game{
-  display:block;
   width:100vw;
   height:100vh;
   background:url("level1-whispering-meadow.png") center/cover no-repeat;
@@ -23,50 +22,31 @@ body{
   overflow:hidden;
 }
 
-/* START SCREEN */
+/* START SCREEN (CLEAN VERSION) */
 #startScreen{
   position:absolute;
   inset:0;
   background:url("fairy-start.png") center/cover no-repeat;
   display:flex;
   justify-content:center;
-  align-items:center;
-  flex-direction:column;
+  align-items:flex-end;
+  padding-bottom:50px;
   z-index:100;
-  opacity:1;
   transition:opacity 1.2s ease;
 }
 
-#startScreen::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at center, rgba(255,238,180,.18), transparent 35%),
-    rgba(0,0,0,0.28);
-}
-
-#startContent{
-  position:relative;
-  text-align:center;
-  z-index:10;
-  color:white;
-  padding:28px 30px;
-  border-radius:28px;
-  background:rgba(0,0,0,0.20);
-  box-shadow:0 0 35px rgba(255,220,120,.50);
-}
-
-#title{
-  font-size:48px;
-  color:#fff2b5;
-  text-shadow:0 0 10px gold, 0 0 25px rgba(255,220,120,.85);
-}
-
-#startText{
-  font-size:22px;
-  color:#fff6c9;
-  margin:20px 0;
+#startBtn{
+  padding:16px 40px;
+  font-size:18px;
+  border-radius:30px;
+  border:none;
+  background:linear-gradient(#fff3a8,#ffd45a);
+  color:#4a3210;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:
+    0 0 18px gold,
+    0 0 35px rgba(255,230,120,.75);
 }
 
 /* FAIRY */
@@ -75,13 +55,7 @@ body{
   width:220px;
   height:260px;
   background:url("fairy-idle.png") center/contain no-repeat;
-  background-color:transparent;
-  filter:
-    drop-shadow(0 0 10px gold)
-    drop-shadow(0 0 22px rgba(255,230,120,.75))
-    brightness(1.15)
-    contrast(1.2)
-    saturate(1.2);
+  filter:drop-shadow(0 0 15px gold);
 }
 
 /* UI */
@@ -103,13 +77,16 @@ body{
   background:rgba(0,0,0,.5);
   padding:12px 20px;
   border-radius:20px;
+  color:#fff4c2;
 }
 
-/* BUTTON */
-button{
-  padding:10px 20px;
-  border-radius:20px;
+#singBtn{
+  position:absolute;
+  right:20px;
+  bottom:20px;
+  padding:12px 25px;
   border:none;
+  border-radius:25px;
   background:gold;
   font-weight:bold;
   cursor:pointer;
@@ -132,14 +109,7 @@ button{
 </div>
 
 <div id="startScreen">
-  <div id="startContent">
-    <div id="title">Fairy Garden Keeper</div>
-    <div id="startText">
-      In the hush between petals and moonlight,<br>
-      the garden waits for your soft fairy bells.
-    </div>
-    <button id="startBtn">Enter the Garden</button>
-  </div>
+  <button id="startBtn">✨ Enter the Fairy Garden ✨</button>
 </div>
 
 <script>
@@ -147,8 +117,11 @@ const fairy = document.getElementById("fairy");
 const startScreen = document.getElementById("startScreen");
 const startBtn = document.getElementById("startBtn");
 const soundBtn = document.getElementById("soundBtn");
+const singBtn = document.getElementById("singBtn");
 const scoreBox = document.getElementById("score");
 
+let x = window.innerWidth * 0.45;
+let y = window.innerHeight * 0.6;
 let score = 0;
 let soundOn = false;
 
@@ -156,40 +129,78 @@ let soundOn = false;
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
-  bloom: new Audio("plant-bloom.mp3"),
-  sparkle: new Audio("magic-sparkle.mp3")
+  music: new Audio("fairy-music.mp3")
 };
+
+sounds.music.loop = true;
+sounds.music.volume = 0.2;
 
 function playSound(s){
   if(!soundOn) return;
   s.currentTime = 0;
-  s.play();
+  s.play().catch(()=>{});
 }
-
-soundBtn.onclick = () => {
-  soundOn = !soundOn;
-  soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
-};
 
 /* START */
 startBtn.onclick = () => {
   soundOn = true;
   playSound(sounds.fairy);
+  sounds.music.play().catch(()=>{});
 
   startScreen.style.opacity = "0";
-  setTimeout(()=>{
-    startScreen.style.display = "none";
-  },1000);
+  setTimeout(()=>startScreen.style.display="none",1000);
+
+  update();
 };
 
+/* SOUND BUTTON */
+soundBtn.onclick = () => {
+  soundOn = !soundOn;
+  soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
+
+  if(soundOn){
+    sounds.music.play().catch(()=>{});
+  } else {
+    sounds.music.pause();
+  }
+};
+
+/* FAIRY POSITION */
+function update(){
+  fairy.style.left = x + "px";
+  fairy.style.top = y + "px";
+}
+
+/* MOVEMENT */
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowRight") x+=15;
+  if(e.key==="ArrowLeft") x-=15;
+  if(e.key==="ArrowUp") y-=15;
+  if(e.key==="ArrowDown") y+=15;
+
+  x=Math.max(0,Math.min(window.innerWidth-200,x));
+  y=Math.max(0,Math.min(window.innerHeight-200,y));
+
+  update();
+});
+
 /* SING */
-document.getElementById("singBtn").onclick = () => {
+function sing(){
+  fairy.style.backgroundImage = 'url("fairy-fly.png")'; // clean image (no white box)
   playSound(sounds.fairy);
   playSound(sounds.grow);
 
-  score += 10;
-  scoreBox.innerText = score;
-};
+  score+=10;
+  scoreBox.innerText=score;
+
+  setTimeout(()=>{
+    fairy.style.backgroundImage = 'url("fairy-idle.png")';
+  },600);
+}
+
+singBtn.onclick = sing;
+
+update();
 </script>
 
 </body>
