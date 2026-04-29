@@ -1134,7 +1134,7 @@ body:not(.editorOn) #safeEditorMiniBar {
 <div id="editorPanel">
   <b>🌿 Forest Ledge Editor</b><br>
   <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="addPlatformBox()">Add Safe Ledge</button>
+  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
   <button onclick="addHazardBox()">Add Red Danger Area</button>
   <button onclick="saveCurrentLevelLayout()">Save This Level</button>
   <button onclick="clearSavedLevelLayout()">Clear Saved Level</button>
@@ -2469,6 +2469,143 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
     box.select();
     try{ document.execCommand("copy"); }catch(e){}
   };
+})();
+</script>
+
+
+<script>
+/* ===== EMERGENCY ADD LEDGE BUTTON FIX ===== */
+(function(){
+  if(window.__emergencyAddLedgeFix) return;
+  window.__emergencyAddLedgeFix = true;
+
+  function currentLvl(){
+    if(typeof levels === "undefined") return null;
+    if(typeof currentLevel === "undefined") return levels[0];
+    return levels[currentLevel];
+  }
+
+  function drawOneLedge(p, index){
+    if(typeof world === "undefined" || !world) return;
+
+    const ledge = document.createElement("div");
+    ledge.className = "hitbox editorMadeLedge";
+    ledge.dataset.platformIndex = index;
+    ledge.style.left = p.x + "px";
+    ledge.style.top = p.y + "px";
+    ledge.style.width = p.w + "px";
+    ledge.style.height = p.h + "px";
+    ledge.style.position = "absolute";
+    ledge.style.zIndex = "999";
+    ledge.style.background = "rgba(80,255,130,.35)";
+    ledge.style.outline = "3px solid rgba(255,245,130,.95)";
+    ledge.style.borderRadius = "12px";
+    ledge.style.pointerEvents = "auto";
+    ledge.style.cursor = "move";
+    ledge.innerHTML = '<span style="position:absolute;top:-22px;left:0;color:#fff8b8;text-shadow:0 0 6px #000;font-size:12px;">new ledge</span>';
+
+    let dragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    ledge.addEventListener("pointerdown", function(e){
+      if(!document.body.classList.contains("editorOn")) return;
+      dragging = true;
+      offsetX = e.clientX - ledge.getBoundingClientRect().left;
+      offsetY = e.clientY - ledge.getBoundingClientRect().top;
+      ledge.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    ledge.addEventListener("pointermove", function(e){
+      if(!dragging) return;
+      const gameRect = game.getBoundingClientRect();
+      const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+      p.x = Math.round(e.clientX - gameRect.left + cam - offsetX);
+      p.y = Math.round(e.clientY - gameRect.top - offsetY);
+      ledge.style.left = p.x + "px";
+      ledge.style.top = p.y + "px";
+      if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    ledge.addEventListener("pointerup", function(e){
+      dragging = false;
+      try{ ledge.releasePointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    world.appendChild(ledge);
+  }
+
+  window.addNewLedgeNow = function(){
+    const lvl = currentLvl();
+    if(!lvl){
+      alert("Could not find the current level.");
+      return;
+    }
+
+    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
+
+    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+    const p = {
+      x: Math.round(cam + 520),
+      y: 360,
+      w: 260,
+      h: 34
+    };
+
+    lvl.platforms.push(p);
+
+    // Try normal game redraw first
+    let redrawn = false;
+    try{
+      if(typeof buildLevel === "function"){
+        buildLevel(currentLevel);
+        redrawn = true;
+      }else if(typeof changeLevel === "function"){
+        changeLevel(currentLevel);
+        redrawn = true;
+      }
+    }catch(e){
+      console.warn("Normal redraw failed, drawing ledge manually", e);
+    }
+
+    // Always draw a visible ledge so the button visibly works
+    drawOneLedge(p, lvl.platforms.length - 1);
+
+    document.body.classList.add("editorOn");
+    if(typeof world !== "undefined" && world){
+      world.classList.add("editorOn");
+      world.classList.add("showHitboxes");
+    }
+    if(typeof editorMode !== "undefined") editorMode = true;
+    if(typeof showHitboxes !== "undefined") showHitboxes = true;
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+    const mini = document.getElementById("safeEditorMiniBar");
+    if(mini) mini.style.display = "block";
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+    const ledgeBtn = document.getElementById("ledgeBtn");
+    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save.");
+  };
+
+  // Force all visible Add Safe Ledge buttons to use the fixed function
+  setTimeout(function(){
+    document.querySelectorAll("button").forEach(function(btn){
+      if((btn.textContent || "").trim().toLowerCase().includes("add safe ledge")){
+        btn.onclick = window.addNewLedgeNow;
+      }
+    });
+  }, 500);
 })();
 </script>
 
