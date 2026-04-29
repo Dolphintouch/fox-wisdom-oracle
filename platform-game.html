@@ -818,50 +818,13 @@ body{
   pointer-events: auto;
 }
 
-#safeEditorMiniBar {
-  position: fixed;
-  left: 14px;
-  bottom: 14px;
-  z-index: 1000001;
-  display: none;
-  width: 390px;
-  max-width: 94vw;
-  background: rgba(3,12,8,.96);
-  border: 1px solid rgba(255,225,150,.6);
-  border-radius: 16px;
-  padding: 10px;
-  color: #ffe8a8;
-  box-shadow: 0 0 28px rgba(0,0,0,.65);
-  font-size: 13px;
-}
 
-body.editorOn #safeEditorMiniBar {
-  display: block;
-}
 
-#safeEditorMiniBar button {
-  margin: 3px;
-  padding: 6px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,225,150,.45);
-  background: rgba(255,225,130,.14);
-  color: #ffe8a8;
-  cursor: pointer;
-  font-family: Georgia, serif;
-}
+body.editorOn 
 
-#safeEditorMiniBar textarea {
-  width: 100%;
-  height: 115px;
-  margin-top: 7px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,225,150,.35);
-  background: #07130b;
-  color: #fff0c2;
-  padding: 8px;
-  font-family: Consolas, monospace;
-  font-size: 12px;
-}
+
+
+
 
 
 /* ===== EDITOR RESTORED VERSION =====
@@ -936,41 +899,73 @@ body.platformEditorOn {
 }
 
 
-/* ===== EDITOR RESTORED - SAFE CONTROLS ===== */
-#editorPanel,
-#safeEditorMiniBar,
-#platformEditorPanel {
-  z-index: 999999 !important;
+/* ===== SINGLE EDITOR RESTORED - CLEAN CONTROLS ===== */
+#editorPanel{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  width:390px;
+  max-width:94vw;
+  max-height:55vh;
+  overflow:auto;
+  z-index:999999!important;
+  display:none;
+  background:rgba(3,12,8,.96);
+  border:1px solid rgba(255,225,150,.6);
+  border-radius:18px;
+  padding:12px;
+  color:#ffe8a8;
+  box-shadow:0 0 28px rgba(0,0,0,.65);
+  font-size:13px;
 }
 
-body.editorOn #editorPanel,
-body.editorOn #safeEditorMiniBar,
-body.platformEditorOn #platformEditorPanel {
-  display: block !important;
+body.editorOn #editorPanel{
+  display:block!important;
 }
 
-body:not(.editorOn) #safeEditorMiniBar {
-  display: none !important;
+#editorPanel button{
+  margin:3px;
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid rgba(255,225,150,.45);
+  background:rgba(255,225,130,.14);
+  color:#ffe8a8;
+  cursor:pointer;
+  font-family:Georgia,serif;
+  pointer-events:auto!important;
 }
 
-.editorOn .hitbox {
-  background: rgba(80,255,130,.30) !important;
-  outline: 2px solid rgba(255,245,130,.95) !important;
-  pointer-events: auto !important;
-  cursor: move !important;
+#editorPanel textarea{
+  width:100%;
+  height:115px;
+  margin-top:7px;
+  border-radius:10px;
+  border:1px solid rgba(255,225,150,.35);
+  background:#07130b;
+  color:#fff0c2;
+  padding:8px;
+  font-family:Consolas,monospace;
+  font-size:12px;
 }
 
-.editorOn .hitbox::after {
-  content: "safe area";
-  position: absolute;
-  top: -23px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #fff8b8;
-  font-size: 12px;
-  text-shadow: 0 0 7px #000;
-  white-space: nowrap;
-  display: block !important;
+.editorOn .hitbox{
+  background:rgba(80,255,130,.30)!important;
+  outline:2px solid rgba(255,245,130,.95)!important;
+  pointer-events:auto!important;
+  cursor:move!important;
+}
+
+.editorOn .hitbox::after{
+  content:"safe area";
+  position:absolute;
+  top:-23px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff8b8;
+  font-size:12px;
+  text-shadow:0 0 7px #000;
+  white-space:nowrap;
+  display:block!important;
 }
 
 .editorOn .treasure,
@@ -985,63 +980,18 @@ body:not(.editorOn) #safeEditorMiniBar {
 .editorOn .chicken,
 .editorOn .egg,
 .editorOn .mushroom,
-.editorOn .portal {
-  pointer-events: auto !important;
-  cursor: move !important;
-  outline: 2px dashed rgba(255,245,140,.95) !important;
-  border-radius: 14px;
+.editorOn .portal{
+  pointer-events:auto!important;
+  cursor:move!important;
+  outline:2px dashed rgba(255,245,140,.95)!important;
+  border-radius:14px;
 }
 
 .editorObjSelected,
 .editorSelected,
-.safeEditorSelected {
-  outline: 3px solid #ffffff !important;
-  box-shadow: 0 0 24px #fff7a8 !important;
-}
-
-#safeEditorMiniBar {
-  position: fixed;
-  left: 14px;
-  bottom: 14px;
-  z-index: 1000001;
-  width: 390px;
-  max-width: 94vw;
-  background: rgba(3,12,8,.96);
-  border: 1px solid rgba(255,225,150,.6);
-  border-radius: 16px;
-  padding: 10px;
-  color: #ffe8a8;
-  box-shadow: 0 0 28px rgba(0,0,0,.65);
-  font-size: 13px;
-}
-
-#safeEditorMiniBar button,
-#editorPanel button,
-#platformEditorPanel button {
-  margin: 3px;
-  padding: 6px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,225,150,.45);
-  background: rgba(255,225,130,.14);
-  color: #ffe8a8;
-  cursor: pointer;
-  font-family: Georgia, serif;
-  pointer-events: auto !important;
-}
-
-#safeEditorMiniBar textarea,
-#editorPanel textarea,
-#platformEditorPanel textarea {
-  width: 100%;
-  height: 115px;
-  margin-top: 7px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,225,150,.35);
-  background: #07130b;
-  color: #fff0c2;
-  padding: 8px;
-  font-family: Consolas, monospace;
-  font-size: 12px;
+.safeEditorSelected{
+  outline:3px solid #ffffff!important;
+  box-shadow:0 0 24px #fff7a8!important;
 }
 
 </style>
@@ -1132,19 +1082,18 @@ body:not(.editorOn) #safeEditorMiniBar {
 
 
 <div id="editorPanel">
-  <b>🌿 Forest Ledge Editor</b><br>
+  <b>🌿 Ledge & Chest Editor</b><br>
   <button onclick="toggleEditor()">Editor On/Off</button>
   <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
-  <button onclick="addHazardBox()">Add Red Danger Area</button>
-  <button onclick="saveCurrentLevelLayout()">Save This Level</button>
-  <button onclick="clearSavedLevelLayout()">Clear Saved Level</button>
-  <button onclick="copyLevelCode()">Copy Level Code</button>
-  <textarea id="editorCode" placeholder="Copied level code appears here."></textarea>
+  <button onclick="saveCurrentLevelLayout()">Save To Browser</button>
+  <button onclick="loadEditorFromBrowser()">Load Saved</button>
+  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
+  <button onclick="copyLevelCode()">Copy Level Data</button>
+  <textarea id="editorCode" placeholder="Level data will appear here."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green ledges and chest while Editor is on. Use white side handles to resize ledges.
+    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
   </div>
 </div>
-
 <div id="endingScreen">
   <div class="endingBox">
     <h1>✨ You Completed the Forest ✨</h1>
@@ -1642,9 +1591,6 @@ function toggleEditor(){
 
   const panel=document.getElementById("editorPanel");
   if(panel) panel.style.display=editorMode?"block":"none";
-
-  const mini=document.getElementById("safeEditorMiniBar");
-  if(mini) mini.style.display=editorMode?"block":"none";
 
   const btn=document.getElementById("editorToggleBtn");
   if(btn) btn.textContent=editorMode?"Editor: On":"Editor: Off";
@@ -2231,20 +2177,6 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
-<div id="safeEditorMiniBar">
-  <b>🌿 Ledge & Chest Editor</b><br>
-  <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="copyCurrentLevelData()">Copy Level Data</button>
-  <button onclick="saveEditorToBrowser()">Save To Browser</button>
-  <button onclick="loadEditorFromBrowser()">Load Saved</button>
-  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
-  <textarea id="editorOutput" placeholder="Level data will appear here when you click Copy Level Data."></textarea>
-  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
-  </div>
-</div>
-
-
 <script>
 /* ===== RESTORED SIMPLE EDITOR HELPERS ===== */
 (function(){
@@ -2353,7 +2285,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
   };
 
   window.copyLevelCode = window.copyLevelCode || function(){
-    const box = document.getElementById("editorCode") || document.getElementById("editorOutput");
+    const box = document.getElementById("editorCode");
     if(!box) return;
     box.value = JSON.stringify(levels[currentLevel], null, 2);
     box.select();
@@ -2444,9 +2376,6 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
     const panel = document.getElementById("editorPanel");
     if(panel) panel.style.display = "block";
 
-    const mini = document.getElementById("safeEditorMiniBar");
-    if(mini) mini.style.display = "block";
-
     const btn = document.getElementById("editorToggleBtn");
     if(btn) btn.textContent = "Editor: On";
 
@@ -2462,7 +2391,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
   };
 
   window.copyLevelCode = function(){
-    const box = document.getElementById("editorCode") || document.getElementById("editorOutput");
+    const box = document.getElementById("editorCode");
     const lvl = getActiveLevel();
     if(!box || !lvl) return;
     box.value = JSON.stringify(lvl, null, 2);
@@ -2587,8 +2516,6 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
     const panel = document.getElementById("editorPanel");
     if(panel) panel.style.display = "block";
-    const mini = document.getElementById("safeEditorMiniBar");
-    if(mini) mini.style.display = "block";
     const btn = document.getElementById("editorToggleBtn");
     if(btn) btn.textContent = "Editor: On";
     const ledgeBtn = document.getElementById("ledgeBtn");
