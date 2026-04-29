@@ -1,4 +1,4 @@
-<!-- FULL RISKY REWRITE: public play version, editor removed, Home goes to Fox Oracle hub -->
+<!-- PUBLIC FIXED BUILD: Home links to Fox Oracle hub; Level One restored; saved ledges disabled -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -1050,23 +1050,14 @@ body.platformEditorOn{
 
 <body>
 
+
 <script>
-/* ===== FINAL PUBLIC PLAY BUILD: clear old editor saves ===== */
+/* ===== PUBLIC BUILD CLEANER: clear old saves before game starts ===== */
 try{
-  [
-    "foxfire_custom_level_layouts_v1",
-    "foxfire_editor_levels_backup",
-    "foxfire_custom_level_layouts_v2_exact_treasure",
-    "foxfire_editor_levels_backup_v2_exact_treasure",
-    "foxfire_custom_level_layouts_v3_your_saved_treasure",
-    "foxfire_editor_levels_backup_v3_your_saved_treasure",
-    "foxfire_editor_save_final_fixed_v5",
-    "foxfire_editor_backup_final_fixed_v5",
-    "foxfire_editor_save_final_exact_treasure_v6",
-    "foxfire_editor_backup_final_exact_treasure_v6"
-  ].forEach(k=>localStorage.removeItem(k));
+  ["foxfire_custom_level_layouts_v1", "foxfire_editor_levels_backup", "foxfire_custom_level_layouts_v2_exact_treasure", "foxfire_editor_levels_backup_v2_exact_treasure", "foxfire_custom_level_layouts_v3_your_saved_treasure", "foxfire_editor_levels_backup_v3_your_saved_treasure", "foxfire_editor_save_final_fixed_v5", "foxfire_editor_backup_final_fixed_v5", "foxfire_editor_save_final_exact_treasure_v6", "foxfire_editor_backup_final_exact_treasure_v6", "foxfireForestSave_fullSmoothFox_v4"].forEach(k=>localStorage.removeItem(k));
 }catch(e){}
 </script>
+
 
 
 
@@ -1097,7 +1088,7 @@ try{
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
 <button onclick="resetLevel()">Restart</button>
-<button onclick="goHome()">🏡 Home</button>
+<button type="button" onclick="window.location.href='https://dolphintouch.github.io/fox-wisdom-oracle/'">🏡 Home</button>
 </div>  <div id="sidePanel">
 <div class="card">
 <h2>❧ Collect & Explore ❧</h2>
@@ -1214,19 +1205,16 @@ const game=document.getElementById("game"),world=document.getElementById("world"
   el.style.setProperty("background-color","transparent","important");
   el.classList.add("cleanedImage");
 }function init(){bindControls();setupMobileControls();tuneForMobile();setVolume();loadSave();buildLevel(currentLevel);saveTick++;atmoRefreshTick++;if(atmoRefreshTick>60){atmoRefreshTick=0;setAtmosphereForLevel()}if(saveTick>240){saveTick=0;saveGame()}requestAnimationFrame(gameLoop)}function loadSave(){
+  currentLevel = 0;
   try{
     const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
     if(saved.foxType)foxType=saved.foxType;
-    if(typeof saved.currentLevel==="number")currentLevel=Math.max(0,Math.min(levels.length-1,saved.currentLevel));
-    if(typeof saved.score==="number")score=saved.score;
-    if(typeof saved.hearts==="number")hearts=saved.hearts;
-    scoreCountEl.textContent=score;
-    heartCountEl.textContent=hearts;
   }catch(err){}
   choiceScreen.style.display="flex";
   choiceScreen.style.pointerEvents="auto";
   gameStarted=false;
 }
+
 function saveGame(){
   try{
     localStorage.setItem(SAVE_KEY,JSON.stringify({foxType,currentLevel,score,hearts}));
@@ -1638,33 +1626,14 @@ let selectedEditorBox=null;
 let dragData=null;
 const EDITOR_SAVE_KEY="foxfire_editor_save_final_exact_treasure_v6";
 
-function getSavedLayouts(){
-  try{return JSON.parse(localStorage.getItem(EDITOR_SAVE_KEY)||"{}")}
-  catch(e){return{}}
-}
+function getSavedLayouts(){ return {}; }
 
-function saveLayouts(obj){
-  localStorage.setItem(EDITOR_SAVE_KEY,JSON.stringify(obj));
-}
 
-function applySavedLayoutForLevel(){
-  const saved=getSavedLayouts();
-  const layout=saved[currentLevel];
-  if(!layout)return;
+function saveLayouts(obj){}
 
-  const L=levels[currentLevel];
 
-  if(Array.isArray(layout.platforms)) L.platforms=layout.platforms;
-  if(Array.isArray(layout.hazards)) L.hazards=layout.hazards;
-  if(Array.isArray(layout.wishes)) L.wishes=layout.wishes;
-  if(Array.isArray(layout.sheep)) L.sheep=layout.sheep;
-  if(Array.isArray(layout.chickens)) L.chickens=layout.chickens;
-  if(Array.isArray(layout.eggs)) L.eggs=layout.eggs;
-  if(Array.isArray(layout.mushrooms)) L.mushrooms=layout.mushrooms;
-  if(Array.isArray(layout.rocks)) L.rocks=layout.rocks;
-  if(layout.portal) L.portal=layout.portal;
-  if(layout.treasure) L.treasure=layout.treasure;
-}
+function applySavedLayoutForLevel(){ return; }
+
 
 function toggleEditor(){
   editorMode=!editorMode;
@@ -2356,51 +2325,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
 
 
-<script>
-/* ===== UI FIX: Home button + Treasure Room card support ===== */
-(function(){
-  window.goHome = function(){
-    if(typeof changeLevel === "function"){
-      changeLevel(0);
-    }
-    if(typeof setMessage === "function"){
-      setMessage("Back to the forest path...");
-    }
-  };
 
-  window.updateLevelCards = function(){
-    if(typeof currentLevel === "undefined") return;
-    document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));
-    const active = document.getElementById("levelCard" + currentLevel);
-    if(active) active.classList.add("active");
-  };
-
-  const oldChangeLevel = window.changeLevel;
-  if(typeof oldChangeLevel === "function" && !oldChangeLevel.__uiFixed){
-    const wrapped = function(i){
-      oldChangeLevel(i);
-      setTimeout(window.updateLevelCards, 30);
-    };
-    wrapped.__uiFixed = true;
-    window.changeLevel = wrapped;
-  }
-
-  setTimeout(function(){
-    if(!document.getElementById("levelCard3")){
-      const side = document.getElementById("sidePanel");
-      if(side){
-        const card = document.createElement("div");
-        card.className = "card levelCard";
-        card.id = "levelCard3";
-        card.onclick = function(){ changeLevel(3); };
-        card.innerHTML = '<div class="thumb" id="thumb3"></div><div><h2>Treasure Room</h2><p>Collect 5 golden wishes and open the hidden chest.</p></div>';
-        side.appendChild(card);
-      }
-    }
-    window.updateLevelCards();
-  }, 200);
-})();
-</script>
 
 
 <script>
@@ -2442,20 +2367,60 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
+
+
+
 <script>
-/* ===== HOME BUTTON FIX: return to Fox Oracle main page ===== */
+/* ===== CLEAN UI FIX: Treasure Room card support only ===== */
+(function(){
+  window.updateLevelCards = function(){
+    if(typeof currentLevel === "undefined") return;
+    document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));
+    const active = document.getElementById("levelCard" + currentLevel);
+    if(active) active.classList.add("active");
+  };
+
+  const oldChangeLevel = window.changeLevel;
+  if(typeof oldChangeLevel === "function" && !oldChangeLevel.__cleanUiFixed){
+    const wrapped = function(i){
+      oldChangeLevel(i);
+      setTimeout(window.updateLevelCards, 30);
+    };
+    wrapped.__cleanUiFixed = true;
+    window.changeLevel = wrapped;
+  }
+
+  setTimeout(function(){
+    if(!document.getElementById("levelCard3")){
+      const side = document.getElementById("sidePanel");
+      if(side){
+        const card = document.createElement("div");
+        card.className = "card levelCard";
+        card.id = "levelCard3";
+        card.onclick = function(){ changeLevel(3); };
+        card.innerHTML = '<div class="thumb" id="thumb3"></div><div><h2>Treasure Room</h2><p>Collect 5 golden wishes and open the hidden chest.</p></div>';
+        side.appendChild(card);
+      }
+    }
+    window.updateLevelCards();
+  }, 200);
+})();
+</script>
+
+
+<script>
+/* ===== FINAL HOME FIX: direct link to Fox Oracle hub ===== */
 (function(){
   window.goHome = function(){
     window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
   };
-
   setTimeout(function(){
     document.querySelectorAll("button").forEach(function(btn){
       if((btn.textContent || "").includes("Home")){
-        btn.onclick = window.goHome;
+        btn.onclick = function(){ window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/"; };
       }
     });
-  }, 200);
+  }, 100);
 })();
 </script>
 
