@@ -1,4 +1,4 @@
-<!-- CLEAN PLAY VERSION: editor removed, saved layouts disabled, Misty Meadows restored -->
+<!-- FULL RISKY REWRITE: public play version, editor removed, Home goes to Fox Oracle hub -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -1027,11 +1027,47 @@ body.platformEditorOn{
   cursor:default!important;
 }
 
+
+/* ===== FINAL PUBLIC PLAY BUILD: editor hidden/removed ===== */
+#editorPanel,
+#safeEditorMiniBar,
+#platformEditorPanel,
+#platformEditBtn,
+#editorToggleBtn{
+  display:none!important;
+}
+body.editorOn,
+body.platformEditorOn{
+  cursor:default!important;
+}
+.hitbox::after{
+  display:none!important;
+}
+
 </style>
 
 </head>
 
 <body>
+
+<script>
+/* ===== FINAL PUBLIC PLAY BUILD: clear old editor saves ===== */
+try{
+  [
+    "foxfire_custom_level_layouts_v1",
+    "foxfire_editor_levels_backup",
+    "foxfire_custom_level_layouts_v2_exact_treasure",
+    "foxfire_editor_levels_backup_v2_exact_treasure",
+    "foxfire_custom_level_layouts_v3_your_saved_treasure",
+    "foxfire_editor_levels_backup_v3_your_saved_treasure",
+    "foxfire_editor_save_final_fixed_v5",
+    "foxfire_editor_backup_final_fixed_v5",
+    "foxfire_editor_save_final_exact_treasure_v6",
+    "foxfire_editor_backup_final_exact_treasure_v6"
+  ].forEach(k=>localStorage.removeItem(k));
+}catch(e){}
+</script>
+
 
 
 
@@ -2402,6 +2438,24 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
     }
     alert("Editor removed in clean play version.");
   };
+})();
+</script>
+
+
+<script>
+/* ===== HOME BUTTON FIX: return to Fox Oracle main page ===== */
+(function(){
+  window.goHome = function(){
+    window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
+  };
+
+  setTimeout(function(){
+    document.querySelectorAll("button").forEach(function(btn){
+      if((btn.textContent || "").includes("Home")){
+        btn.onclick = window.goHome;
+      }
+    });
+  }, 200);
 })();
 </script>
 
