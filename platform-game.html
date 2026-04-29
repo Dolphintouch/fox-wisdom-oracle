@@ -1,4 +1,4 @@
-<!-- PUBLIC FIXED BUILD: Home links to Fox Oracle hub; Level One restored; saved ledges disabled -->
+<!-- TEMP EDITOR VERSION: use this to fix ledges, copy level data, then send it back -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -998,50 +998,71 @@ body.editorOn #editorPanel{
 }
 
 
-/* ===== CLEAN PLAY VERSION: hide editor UI and editor outlines ===== */
-#editorPanel,
-#safeEditorMiniBar,
-#platformEditorPanel,
-#platformEditBtn,
-#editorToggleBtn{
-  display:none!important;
-}
-body.editorOn,
-body.platformEditorOn{
-  cursor:default!important;
-}
-.hitbox::after{
-  display:none!important;
-}
-.editorOn .hitbox,
-.editorOn .treasure,
-.editorOn .boulder,
-.editorOn .rock,
-.editorOn .wish,
-.editorOn .sheep,
-.editorOn .chicken,
-.editorOn .egg,
-.editorOn .mushroom,
-.editorOn .portal{
-  outline:none!important;
-  cursor:default!important;
-}
 
-
-/* ===== FINAL PUBLIC PLAY BUILD: editor hidden/removed ===== */
-#editorPanel,
-#safeEditorMiniBar,
-#platformEditorPanel,
-#platformEditBtn,
-#editorToggleBtn{
-  display:none!important;
+/* ===== TEMP LEDGE FIX EDITOR ===== */
+#editorPanel{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  width:390px;
+  max-width:94vw;
+  max-height:55vh;
+  overflow:auto;
+  z-index:999999!important;
+  display:none;
+  background:rgba(3,12,8,.96);
+  border:1px solid rgba(255,225,150,.6);
+  border-radius:18px;
+  padding:12px;
+  color:#ffe8a8;
+  box-shadow:0 0 28px rgba(0,0,0,.65);
+  font-size:13px;
 }
-body.editorOn,
-body.platformEditorOn{
-  cursor:default!important;
+body.editorOn #editorPanel{display:block!important;}
+#editorPanel button{
+  margin:3px;
+  padding:6px 9px;
+  border-radius:999px;
+  border:1px solid rgba(255,225,150,.45);
+  background:rgba(255,225,130,.14);
+  color:#ffe8a8;
+  cursor:pointer;
+  font-family:Georgia,serif;
 }
-.hitbox::after{
-  display:none!important;
+#editorPanel textarea{
+  width:100%;
+  height:150px;
+  margin-top:7px;
+  border-radius:10px;
+  border:1px solid rgba(255,225,150,.35);
+  background:#07130b;
+  color:#fff0c2;
+  padding:8px;
+  font-family:Consolas,monospace;
+  font-size:12px;
+}
+body.editorOn .hitbox{
+  background:rgba(80,255,130,.32)!important;
+  outline:2px solid rgba(255,245,130,.95)!important;
+  pointer-events:auto!important;
+  cursor:move!important;
+}
+body.editorOn .hitbox.selectedLedge{
+  outline:4px solid #fff!important;
+  box-shadow:0 0 24px #fff7a8!important;
+}
+.resizeDot{
+  position:absolute;
+  right:-9px;
+  bottom:-9px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#fff3a8;
+  border:2px solid #2b1b05;
+  box-shadow:0 0 12px #fff7b8;
+  cursor:nwse-resize;
+  pointer-events:auto;
 }
 
 </style>
@@ -1087,6 +1108,7 @@ try{
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
+<button id="editorToggleBtn" onclick="toggleEditor()">Editor: Off</button>
 <button onclick="resetLevel()">Restart</button>
 <button type="button" onclick="window.location.href='https://dolphintouch.github.io/fox-wisdom-oracle/'">🏡 Home</button>
 </div>  <div id="sidePanel">
@@ -1156,6 +1178,19 @@ try{
 </div>
 </div>
 
+
+
+<div id="editorPanel">
+  <b>🌿 Ledge Fix Editor</b><br>
+  <button onclick="toggleEditor()">Editor On/Off</button>
+  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
+  <button onclick="deleteSelectedLedge()">Delete Selected Ledge</button>
+  <button onclick="copyLevelCode()">Copy Level Data</button>
+  <textarea id="editorOutput" placeholder="Click Copy Level Data after you fix the ledges."></textarea>
+  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
+    Click a green ledge to select it. Drag it where it should be. Resize using the white handle. Then Copy Level Data and paste it to me.
+  </div>
+</div>
 
 <div id="endingScreen">
   <div class="endingBox">
@@ -2328,43 +2363,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
 
 
-<script>
-/* ===== CLEAN PLAY VERSION: editor and saved browser layouts disabled ===== */
-(function(){
-  try{
-    [
-      "foxfire_custom_level_layouts_v1",
-      "foxfire_editor_levels_backup",
-      "foxfire_custom_level_layouts_v2_exact_treasure",
-      "foxfire_editor_levels_backup_v2_exact_treasure",
-      "foxfire_custom_level_layouts_v3_your_saved_treasure",
-      "foxfire_editor_levels_backup_v3_your_saved_treasure",
-      "foxfire_editor_save_final_fixed_v5",
-      "foxfire_editor_backup_final_fixed_v5",
-      "foxfire_editor_save_final_exact_treasure_v6",
-      "foxfire_editor_backup_final_exact_treasure_v6"
-    ].forEach(k=>localStorage.removeItem(k));
-  }catch(e){}
 
-  window.getSavedLayouts = function(){ return {}; };
-  window.saveLayouts = function(){};
-  window.applySavedLayoutForLevel = function(){};
-  window.saveEditedLevel = function(){};
-  window.saveCurrentLevelLayout = function(){};
-  window.loadEditorFromBrowser = function(){ alert("Editor removed in clean play version."); };
-  window.resetEditorBrowserSave = function(){ alert("Editor removed in clean play version."); };
-  window.copyLevelCode = function(){};
-  window.addNewLedgeNow = function(){ alert("Editor removed in clean play version."); };
-
-  window.toggleEditor = function(){
-    document.body.classList.remove("editorOn");
-    if(typeof world !== "undefined" && world){
-      world.classList.remove("editorOn");
-    }
-    alert("Editor removed in clean play version.");
-  };
-})();
-</script>
 
 
 
@@ -2421,6 +2420,164 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
       }
     });
   }, 100);
+})();
+</script>
+
+
+<script>
+/* ===== TEMP LEDGE FIX EDITOR SCRIPT ===== */
+(function(){
+  let editorOn=false;
+  let selectedLedge=null;
+  let dragMode=null;
+  let startX=0,startY=0,startLeft=0,startBottom=0,startW=0,startH=0;
+
+  function currentLevelObj(){
+    if(typeof levels==="undefined" || typeof currentLevel==="undefined") return null;
+    return levels[currentLevel];
+  }
+
+  function getWorldRect(){
+    return world.getBoundingClientRect();
+  }
+
+  function ledgeToData(el){
+    return {
+      x:Math.round(parseFloat(el.style.left)||0),
+      y:Math.round(parseFloat(el.style.bottom)||0),
+      w:Math.round(parseFloat(el.style.width)||0),
+      h:Math.round(parseFloat(el.style.height)||0)
+    };
+  }
+
+  function syncPlatformsFromScreen(){
+    const L=currentLevelObj();
+    if(!L) return;
+    L.platforms=[...world.querySelectorAll(".hitbox")].map(ledgeToData);
+  }
+
+  function addHandles(){
+    document.querySelectorAll(".resizeDot").forEach(d=>d.remove());
+    world.querySelectorAll(".hitbox").forEach((el,i)=>{
+      el.dataset.platformIndex=i;
+      el.style.pointerEvents="auto";
+
+      const dot=document.createElement("div");
+      dot.className="resizeDot";
+      el.appendChild(dot);
+
+      el.onpointerdown=function(e){
+        if(!editorOn) return;
+        if(e.target.classList.contains("resizeDot")) return;
+        selectedLedge=el;
+        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("selectedLedge"));
+        el.classList.add("selectedLedge");
+        dragMode="move";
+        startX=e.clientX;
+        startY=e.clientY;
+        startLeft=parseFloat(el.style.left)||0;
+        startBottom=parseFloat(el.style.bottom)||0;
+        el.setPointerCapture(e.pointerId);
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      dot.onpointerdown=function(e){
+        if(!editorOn) return;
+        selectedLedge=el;
+        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("selectedLedge"));
+        el.classList.add("selectedLedge");
+        dragMode="resize";
+        startX=e.clientX;
+        startY=e.clientY;
+        startW=parseFloat(el.style.width)||100;
+        startH=parseFloat(el.style.height)||30;
+        el.setPointerCapture(e.pointerId);
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      el.onpointermove=function(e){
+        if(!editorOn || selectedLedge!==el || !dragMode) return;
+        const dx=e.clientX-startX;
+        const dy=e.clientY-startY;
+        if(dragMode==="move"){
+          el.style.left=Math.round(startLeft+dx)+"px";
+          el.style.bottom=Math.round(startBottom-dy)+"px";
+        }else if(dragMode==="resize"){
+          el.style.width=Math.max(30,Math.round(startW+dx))+"px";
+          el.style.height=Math.max(12,Math.round(startH-dy))+"px";
+        }
+        syncPlatformsFromScreen();
+        refreshEditorBox();
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      el.onpointerup=function(e){
+        dragMode=null;
+        try{el.releasePointerCapture(e.pointerId);}catch(err){}
+        syncPlatformsFromScreen();
+        refreshEditorBox();
+        e.preventDefault();
+        e.stopPropagation();
+      };
+    });
+  }
+
+  function refreshEditorBox(){
+    const box=document.getElementById("editorOutput");
+    const L=currentLevelObj();
+    if(box && L) box.value=JSON.stringify(L,null,2);
+  }
+
+  window.toggleEditor=function(){
+    editorOn=!editorOn;
+    document.body.classList.toggle("editorOn",editorOn);
+    if(world) world.classList.toggle("showHitboxes",editorOn);
+    const panel=document.getElementById("editorPanel");
+    if(panel) panel.style.display=editorOn?"block":"none";
+    const btn=document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent=editorOn?"Editor: On":"Editor: Off";
+    if(editorOn){
+      if(typeof showHitboxes!=="undefined") showHitboxes=true;
+      if(ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
+      addHandles();
+      refreshEditorBox();
+      if(typeof setMessage==="function") setMessage("Editor on: drag ledges into place, then Copy Level Data.");
+    }
+  };
+
+  window.addNewLedgeNow=function(){
+    const L=currentLevelObj();
+    if(!L) return alert("No current level found.");
+    if(!Array.isArray(L.platforms)) L.platforms=[];
+    const cam=typeof cameraX!=="undefined"?cameraX:0;
+    L.platforms.push({x:Math.round(cam+400),y:360,w:240,h:32});
+    if(typeof buildLevel==="function") buildLevel(currentLevel);
+    editorOn=false;
+    toggleEditor();
+  };
+
+  window.deleteSelectedLedge=function(){
+    if(!selectedLedge) return alert("Click a ledge first, then delete.");
+    selectedLedge.remove();
+    selectedLedge=null;
+    syncPlatformsFromScreen();
+    refreshEditorBox();
+    addHandles();
+  };
+
+  window.copyLevelCode=function(){
+    syncPlatformsFromScreen();
+    refreshEditorBox();
+    const box=document.getElementById("editorOutput");
+    if(!box) return;
+    box.focus();
+    box.select();
+    try{document.execCommand("copy");}catch(e){}
+    alert("Level data copied. Paste it to me.");
+  };
 })();
 </script>
 
