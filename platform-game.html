@@ -864,13 +864,10 @@ body.editorOn #safeEditorMiniBar {
 }
 
 
-/* ===== CLEAN PUBLIC VERSION: editor removed ===== */
-#editorPanel,
-#safeEditorMiniBar,
-#platformEditorPanel,
-#platformEditBtn {
-  display: none !important;
-}
+/* ===== EDITOR RESTORED VERSION =====
+   The old public-version block that forced the editor hidden has been removed.
+   Editor panels may now show again when editor mode is turned on.
+*/
 
 body.editorOn,
 body.platformEditorOn {
@@ -938,6 +935,115 @@ body.platformEditorOn {
     drop-shadow(0 0 26px rgba(255,205,80,.75)) !important;
 }
 
+
+/* ===== EDITOR RESTORED - SAFE CONTROLS ===== */
+#editorPanel,
+#safeEditorMiniBar,
+#platformEditorPanel {
+  z-index: 999999 !important;
+}
+
+body.editorOn #editorPanel,
+body.editorOn #safeEditorMiniBar,
+body.platformEditorOn #platformEditorPanel {
+  display: block !important;
+}
+
+body:not(.editorOn) #safeEditorMiniBar {
+  display: none !important;
+}
+
+.editorOn .hitbox {
+  background: rgba(80,255,130,.30) !important;
+  outline: 2px solid rgba(255,245,130,.95) !important;
+  pointer-events: auto !important;
+  cursor: move !important;
+}
+
+.editorOn .hitbox::after {
+  content: "safe area";
+  position: absolute;
+  top: -23px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff8b8;
+  font-size: 12px;
+  text-shadow: 0 0 7px #000;
+  white-space: nowrap;
+  display: block !important;
+}
+
+.editorOn .treasure,
+.editorOn #treasure,
+.editorOn #treasureChest,
+.editorOn #finalTreasure,
+.editorOn .chest,
+.editorOn .boulder,
+.editorOn .rock,
+.editorOn .wish,
+.editorOn .sheep,
+.editorOn .chicken,
+.editorOn .egg,
+.editorOn .mushroom,
+.editorOn .portal {
+  pointer-events: auto !important;
+  cursor: move !important;
+  outline: 2px dashed rgba(255,245,140,.95) !important;
+  border-radius: 14px;
+}
+
+.editorObjSelected,
+.editorSelected,
+.safeEditorSelected {
+  outline: 3px solid #ffffff !important;
+  box-shadow: 0 0 24px #fff7a8 !important;
+}
+
+#safeEditorMiniBar {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  z-index: 1000001;
+  width: 390px;
+  max-width: 94vw;
+  background: rgba(3,12,8,.96);
+  border: 1px solid rgba(255,225,150,.6);
+  border-radius: 16px;
+  padding: 10px;
+  color: #ffe8a8;
+  box-shadow: 0 0 28px rgba(0,0,0,.65);
+  font-size: 13px;
+}
+
+#safeEditorMiniBar button,
+#editorPanel button,
+#platformEditorPanel button {
+  margin: 3px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,225,150,.45);
+  background: rgba(255,225,130,.14);
+  color: #ffe8a8;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  pointer-events: auto !important;
+}
+
+#safeEditorMiniBar textarea,
+#editorPanel textarea,
+#platformEditorPanel textarea {
+  width: 100%;
+  height: 115px;
+  margin-top: 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,225,150,.35);
+  background: #07130b;
+  color: #fff0c2;
+  padding: 8px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
 </style>
 
 </head>
@@ -964,6 +1070,7 @@ body.platformEditorOn {
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
+<button onclick="toggleEditor()" id="editorToggleBtn">Editor: Off</button>
 <button onclick="resetLevel()">Restart</button>
 </div>  <div id="sidePanel">
 <div class="card">
@@ -2093,6 +2200,82 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
   setTimeout(applyMistyLayout, 300);
   setTimeout(applyMistyLayout, 1200);
+})();
+</script>
+
+
+<div id="safeEditorMiniBar">
+  <b>🌿 Ledge & Chest Editor</b><br>
+  <button onclick="toggleEditor()">Editor On/Off</button>
+  <button onclick="copyCurrentLevelData()">Copy Level Data</button>
+  <button onclick="saveEditorToBrowser()">Save To Browser</button>
+  <button onclick="loadEditorFromBrowser()">Load Saved</button>
+  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
+  <textarea id="editorOutput" placeholder="Level data will appear here when you click Copy Level Data."></textarea>
+  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
+    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
+  </div>
+</div>
+
+
+<script>
+/* ===== RESTORED SIMPLE EDITOR HELPERS ===== */
+(function(){
+  if (window.__foxfireEditorRestored) return;
+  window.__foxfireEditorRestored = true;
+
+  window.toggleEditor = window.toggleEditor || function(){
+    document.body.classList.toggle("editorOn");
+    const btn = document.getElementById("editorToggleBtn");
+    if (btn) btn.textContent = document.body.classList.contains("editorOn") ? "Editor: On" : "Editor: Off";
+  };
+
+  window.copyCurrentLevelData = window.copyCurrentLevelData || function(){
+    const box = document.getElementById("editorOutput");
+    if (!box) return;
+
+    let levelData = null;
+    try {
+      if (typeof levels !== "undefined" && typeof currentLevel !== "undefined") {
+        levelData = levels[currentLevel];
+      }
+    } catch(e) {}
+
+    box.value = levelData ? JSON.stringify(levelData, null, 2) : "Could not find current level data.";
+    box.select();
+    try { document.execCommand("copy"); } catch(e) {}
+  };
+
+  window.saveEditorToBrowser = window.saveEditorToBrowser || function(){
+    try {
+      if (typeof levels === "undefined") return alert("Could not find levels.");
+      localStorage.setItem("foxfire_editor_levels_backup", JSON.stringify(levels));
+      alert("Saved ledges/chest/level data to this browser.");
+    } catch(e) {
+      alert("Save failed: " + e.message);
+    }
+  };
+
+  window.loadEditorFromBrowser = window.loadEditorFromBrowser || function(){
+    try {
+      const saved = localStorage.getItem("foxfire_editor_levels_backup");
+      if (!saved) return alert("No saved editor data found in this browser.");
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && typeof levels !== "undefined") {
+        for (let i = 0; i < parsed.length; i++) levels[i] = parsed[i];
+        if (typeof changeLevel === "function" && typeof currentLevel !== "undefined") changeLevel(currentLevel);
+        else location.reload();
+        alert("Loaded saved editor data.");
+      }
+    } catch(e) {
+      alert("Load failed: " + e.message);
+    }
+  };
+
+  window.resetEditorBrowserSave = window.resetEditorBrowserSave || function(){
+    localStorage.removeItem("foxfire_editor_levels_backup");
+    alert("Browser editor save removed.");
+  };
 })();
 </script>
 
