@@ -1,222 +1,305 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>The Fairy Garden</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fairy Garden Keeper</title>
 
 <style>
-* {
-  box-sizing: border-box;
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Georgia, serif;
+  background:black;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Georgia, serif;
-  background: #1f3328;
-  color: white;
-  overflow: hidden;
+/* START SCREEN */
+#startScreen{
+  position:absolute;
+  inset:0;
+  background:url("fairy-start.png") center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:100;
 }
 
-#gameWrap {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+#startScreen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.25);
 }
 
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+#startContent{
+  position:relative;
+  text-align:center;
+  z-index:10;
+  color:white;
+  padding:25px;
+  border-radius:25px;
+  background:rgba(0,0,0,0.18);
+  box-shadow:0 0 35px rgba(255,220,120,.45);
 }
 
-/* MAGICAL START SCREEN */
-#startScreen {
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255, 230, 255, 0.35), transparent 24%),
-    radial-gradient(circle at 20% 75%, rgba(180, 255, 220, 0.18), transparent 28%),
-    linear-gradient(rgba(50, 34, 75, 0.92), rgba(20, 45, 33, 0.95));
-  transition: opacity 1s ease;
+#title{
+  font-size:48px;
+  color:#fff2b5;
+  text-shadow:
+    0 0 10px gold,
+    0 0 25px rgba(255,220,120,.8);
+  margin-bottom:18px;
 }
 
-.startBox {
-  width: min(90%, 560px);
-  text-align: center;
-  padding: 34px 28px;
-  border-radius: 30px;
-  background: rgba(22, 34, 30, 0.78);
-  border: 1px solid rgba(255,255,255,0.35);
-  box-shadow:
-    0 0 45px rgba(255, 230, 255, 0.42),
-    inset 0 0 35px rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
+#startText{
+  font-size:22px;
+  color:#fff6c9;
+  text-shadow:0 0 10px gold;
+  margin-bottom:35px;
+  animation:glow 2.5s ease-in-out infinite alternate;
 }
 
-.startBox h1 {
-  margin: 0 0 12px;
-  font-size: 42px;
-  text-shadow: 0 0 18px rgba(255,230,255,0.9);
+#startBtn{
+  padding:15px 35px;
+  font-size:20px;
+  border-radius:25px;
+  border:none;
+  background:linear-gradient(gold,#ffd86b);
+  cursor:pointer;
+  box-shadow:0 0 18px gold;
+  transition:.3s;
+  font-weight:bold;
 }
 
-.startBox p {
-  font-size: 19px;
-  line-height: 1.55;
-  opacity: 0.95;
+#startBtn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 28px gold;
 }
 
-.startHint {
-  font-size: 15px;
-  opacity: 0.8;
-  margin-top: 12px;
+@keyframes glow{
+  from{opacity:.72}
+  to{opacity:1}
 }
 
-button {
-  border: 0;
-  border-radius: 999px;
-  padding: 12px 18px;
-  background: linear-gradient(135deg, #f8dfff, #d7fff0);
-  color: #35402f;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 18px rgba(255,255,255,0.6);
+/* GAME */
+#game{
+  display:none;
+  width:100vw;
+  height:100vh;
+  background:url("level1-whispering-meadow.png") center/cover no-repeat;
+  position:relative;
+  overflow:hidden;
 }
 
-button:hover {
-  transform: scale(1.04);
+/* FAIRY */
+#fairy{
+  position:absolute;
+  width:155px;
+  height:185px;
+  background:url("fairy-idle.png") center/contain no-repeat;
+  filter:
+    drop-shadow(0 0 10px gold)
+    drop-shadow(0 0 22px rgba(255,230,120,.75))
+    brightness(1.12)
+    contrast(1.18);
+  z-index:10;
+  transition:filter .2s ease;
 }
 
-#startBtn {
-  margin-top: 14px;
-  font-size: 17px;
-  padding: 14px 24px;
+#fairy.singing{
+  filter:
+    drop-shadow(0 0 18px gold)
+    drop-shadow(0 0 35px rgba(255,240,150,.95))
+    brightness(1.25)
+    contrast(1.18);
 }
 
-#ui {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  pointer-events: none;
-  z-index: 5;
+/* UI */
+#ui{
+  position:absolute;
+  top:15px;
+  left:15px;
+  color:#fff6c9;
+  background:rgba(0,0,0,.5);
+  padding:12px 15px;
+  border-radius:15px;
+  z-index:30;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
 }
 
-.panel {
-  background: rgba(38, 29, 55, 0.65);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 18px;
-  padding: 12px 16px;
-  box-shadow: 0 0 25px rgba(255, 220, 255, 0.25);
-  backdrop-filter: blur(6px);
-  pointer-events: auto;
+#message{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff4c2;
+  background:rgba(0,0,0,.48);
+  padding:12px 20px;
+  border-radius:20px;
+  z-index:30;
+  text-align:center;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  max-width:85vw;
 }
 
-#message {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(90%, 650px);
-  text-align: center;
-  background: rgba(22, 35, 28, 0.78);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 22px;
-  padding: 16px;
-  font-size: 18px;
-  box-shadow: 0 0 30px rgba(255, 230, 255, 0.35);
-  z-index: 4;
+#singBtn{
+  position:absolute;
+  right:20px;
+  bottom:22px;
+  padding:13px 24px;
+  border-radius:25px;
+  border:none;
+  background:#ffe98a;
+  font-weight:bold;
+  font-size:17px;
+  z-index:40;
+  box-shadow:0 0 18px gold;
+  cursor:pointer;
 }
 
-@media (max-width: 700px) {
-  #ui {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+#soundBtn{
+  margin-top:8px;
+  padding:8px 14px;
+  border-radius:18px;
+  border:none;
+  background:#d9fff1;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-  .startBox h1 {
-    font-size: 32px;
-  }
+/* PLANTS */
+.plantSprite{
+  position:absolute;
+  width:95px;
+  height:95px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 14px #eaff8a);
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
 
-  #message {
-    font-size: 15px;
-  }
+.plantFallback{
+  position:absolute;
+  font-size:58px;
+  filter:drop-shadow(0 0 14px #eaff8a);
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+@keyframes plantGrow{
+  from{transform:scale(.2);opacity:.2}
+  to{transform:scale(1);opacity:1}
+}
+
+/* EFFECTS */
+.note{
+  position:absolute;
+  font-size:32px;
+  color:#fff6a8;
+  text-shadow:0 0 12px gold;
+  animation:noteFloat 1.6s ease-out forwards;
+  z-index:20;
+}
+
+.sparkle{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:gold;
+  box-shadow:0 0 14px white;
+  animation:sparkleFloat 1s ease-out forwards;
+  z-index:20;
+}
+
+.bird{
+  position:absolute;
+  font-size:34px;
+  animation:birdFloat 3s ease forwards;
+  z-index:18;
+}
+
+.fairyGlow{
+  position:absolute;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,245,170,.45), transparent 70%);
+  pointer-events:none;
+  animation:glowBurst 1s ease-out forwards;
+  z-index:8;
+}
+
+@keyframes noteFloat{
+  to{transform:translateY(-90px);opacity:0}
+}
+
+@keyframes sparkleFloat{
+  to{transform:translateY(-45px) scale(2);opacity:0}
+}
+
+@keyframes birdFloat{
+  to{transform:translateX(120px) translateY(-20px);opacity:0}
+}
+
+@keyframes glowBurst{
+  from{transform:scale(.4);opacity:1}
+  to{transform:scale(1.6);opacity:0}
 }
 </style>
 </head>
 
 <body>
-<div id="gameWrap">
 
-  <div id="startScreen">
-    <div class="startBox">
-      <h1>🧚‍♀️ The Fairy Garden</h1>
-      <p>
-        The garden has fallen quiet beneath the moonlight.<br>
-        Only the soft fairy bells can wake the sleeping flowers.
-      </p>
-      <button id="startBtn">✨ Enter the Fairy Garden ✨</button>
-      <div class="startHint">
-        Turn sound on, then tap the sleeping plants to grow the magic.
-      </div>
+<!-- START SCREEN -->
+<div id="startScreen">
+  <div id="startContent">
+    <div id="title">Fairy Garden Keeper</div>
+    <div id="startText">
+      The meadow is sleeping beneath the moonlight.<br>
+      Wake it with soft fairy bells.
     </div>
+    <button id="startBtn">Begin</button>
   </div>
+</div>
 
-  <canvas id="game"></canvas>
+<!-- GAME -->
+<div id="game">
+  <div id="fairy"></div>
 
   <div id="ui">
-    <div class="panel">
-      🌸 Garden Magic: <span id="score">0</span><br>
-      🌱 Plants Bloomed: <span id="restored">0</span>/6
-    </div>
-
-    <div class="panel">
-      <button id="soundBtn">Sound: Off</button>
-      <button id="singBtn">🧚 Sing Fairy Bells</button>
-    </div>
+    Points: <span id="score">0</span><br>
+    Move: Arrow Keys<br>
+    Sing: S or button<br>
+    <button id="soundBtn">Sound: Off</button>
   </div>
 
-  <div id="message">
-    Let the fairy bells wake the sleeping garden…  
-    Tap or click near the sleeping plants and watch the magic grow.
-  </div>
+  <div id="message">The meadow is waiting for your song...</div>
 
+  <button id="singBtn">✨ Sing ✨</button>
 </div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-const scoreEl = document.getElementById("score");
-const restoredEl = document.getElementById("restored");
-const messageEl = document.getElementById("message");
-const soundBtn = document.getElementById("soundBtn");
-const singBtn = document.getElementById("singBtn");
+const fairy = document.getElementById("fairy");
+const game = document.getElementById("game");
+const scoreBox = document.getElementById("score");
+const message = document.getElementById("message");
 const startScreen = document.getElementById("startScreen");
 const startBtn = document.getElementById("startBtn");
+const singBtn = document.getElementById("singBtn");
+const soundBtn = document.getElementById("soundBtn");
 
-let soundOn = false;
 let score = 0;
-let restored = 0;
-let particles = [];
-let fireflies = [];
+let x = window.innerWidth * 0.45;
+let y = window.innerHeight * 0.58;
+let facing = 1;
+let singing = false;
+let plantStage = 0;
+let soundOn = false;
 
-// YOUR UPLOADED SOUNDS
+/* YOUR UPLOADED SOUNDS */
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
@@ -229,352 +312,231 @@ sounds.grow.volume = 0.5;
 sounds.bloom.volume = 0.65;
 sounds.sparkle.volume = 0.45;
 
-function unlockSounds() {
-  Object.values(sounds).forEach(sound => {
-    sound.play().then(() => {
-      sound.pause();
-      sound.currentTime = 0;
+function unlockSounds(){
+  Object.values(sounds).forEach(s => {
+    s.play().then(() => {
+      s.pause();
+      s.currentTime = 0;
     }).catch(() => {});
   });
 }
 
-function playSound(sound) {
-  if (!soundOn) return;
+function playSound(sound){
+  if(!soundOn) return;
   sound.currentTime = 0;
   sound.play().catch(() => {});
 }
 
-soundBtn.addEventListener("click", () => {
+soundBtn.onclick = () => {
   soundOn = !soundOn;
-  soundBtn.textContent = soundOn ? "Sound: On" : "Sound: Off";
+  soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
   unlockSounds();
-});
-
-startBtn.addEventListener("click", () => {
-  unlockSounds();
-  startScreen.style.opacity = "0";
-  startScreen.style.pointerEvents = "none";
-
-  setTimeout(() => {
-    startScreen.style.display = "none";
-  }, 1000);
-});
-
-document.addEventListener("click", unlockSounds, { once: true });
-document.addEventListener("touchstart", unlockSounds, { once: true });
-
-const fairy = {
-  x: 140,
-  y: 430,
-  glow: 0
 };
 
-const plants = [
-  { x: 250, y: 0.63, stage: 0 },
-  { x: 420, y: 0.60, stage: 0 },
-  { x: 610, y: 0.65, stage: 0 },
-  { x: 800, y: 0.59, stage: 0 },
-  { x: 980, y: 0.64, stage: 0 },
-  { x: 1160, y: 0.61, stage: 0 }
+document.addEventListener("click", unlockSounds, { once:true });
+document.addEventListener("touchstart", unlockSounds, { once:true });
+
+/* SPRITES */
+function sprite(img){
+  fairy.style.backgroundImage = `url("${img}")`;
+}
+
+function update(){
+  fairy.style.left = x + "px";
+  fairy.style.top = y + "px";
+  fairy.style.transform = `scaleX(${facing})`;
+}
+
+/* PLANTS */
+const plantImages = [
+  "plant-seedling.png",
+  "plant-small.png",
+  "plant-growing.png",
+  "plant-bloom.png",
+  "plant-glow-bloom.png"
 ];
 
-for (let i = 0; i < 60; i++) {
-  fireflies.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 2 + 1,
-    speed: Math.random() * 0.4 + 0.1,
-    glow: Math.random() * Math.PI * 2
-  });
-}
+function growPlant(){
+  const img = plantImages[Math.min(plantStage, plantImages.length - 1)];
 
-function addParticles(x, y, amount = 18) {
-  for (let i = 0; i < amount; i++) {
-    particles.push({
-      x,
-      y,
-      vx: (Math.random() - 0.5) * 3,
-      vy: (Math.random() - 0.5) * 3 - 1,
-      life: 60,
-      size: Math.random() * 4 + 2
-    });
-  }
-}
+  const plant = document.createElement("img");
+  plant.src = img;
+  plant.className = "plantSprite";
+  plant.style.left = (x + Math.random() * 180 - 50) + "px";
+  plant.style.top = (y + 118 + Math.random() * 38) + "px";
 
-function fairySing(targetPlant = null) {
-  playSound(sounds.fairy);
-  fairy.glow = 42;
-  addParticles(fairy.x, fairy.y, 28);
+  plant.onerror = () => {
+    const fallback = document.createElement("div");
+    fallback.className = "plantFallback";
+    fallback.innerHTML = plantStage < 2 ? "🌱" : plantStage < 4 ? "🌿" : "🌸";
+    fallback.style.left = plant.style.left;
+    fallback.style.top = plant.style.top;
+    game.appendChild(fallback);
+    plant.remove();
+  };
 
-  if (targetPlant) {
-    setTimeout(() => growPlant(targetPlant), 350);
-  }
-}
+  game.appendChild(plant);
 
-function growPlant(plant) {
-  if (plant.stage >= 3) return;
-
-  plant.stage++;
-
-  if (plant.stage === 1 || plant.stage === 2) {
+  if(plantStage < 3){
     playSound(sounds.grow);
-  }
-
-  if (plant.stage === 3) {
+  } else {
     playSound(sounds.bloom);
-    restored++;
-    restoredEl.textContent = restored;
   }
 
-  playSound(sounds.sparkle);
+  plantStage++;
+}
+
+/* EFFECTS */
+function sparkle(){
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = (x + 70 + Math.random() * 70 - 35) + "px";
+  s.style.top = (y + 55 + Math.random() * 70 - 35) + "px";
+  game.appendChild(s);
+  setTimeout(() => s.remove(), 1000);
+}
+
+function note(px = x, py = y){
+  const n = document.createElement("div");
+  n.className = "note";
+  n.innerHTML = ["♪","♫","♬"][Math.floor(Math.random() * 3)];
+  n.style.left = (px + 55 + Math.random() * 30) + "px";
+  n.style.top = (py + 20 + Math.random() * 30) + "px";
+  game.appendChild(n);
+  setTimeout(() => n.remove(), 1600);
+}
+
+function glowBurst(){
+  const g = document.createElement("div");
+  g.className = "fairyGlow";
+  g.style.left = (x - 10) + "px";
+  g.style.top = (y - 5) + "px";
+  game.appendChild(g);
+  setTimeout(() => g.remove(), 1000);
+}
+
+function bird(){
+  const b = document.createElement("div");
+  b.className = "bird";
+  b.innerHTML = "🐦";
+  b.style.left = (x + 40) + "px";
+  b.style.top = (y - 90) + "px";
+  game.appendChild(b);
+
+  for(let i = 0; i < 4; i++){
+    setTimeout(() => note(x, y - 95), i * 300);
+  }
+
+  setTimeout(() => b.remove(), 3000);
+}
+
+/* SING */
+function sing(){
+  if(singing) return;
+
+  singing = true;
+  fairy.classList.add("singing");
+  sprite("fairy-sing.png");
+
+  playSound(sounds.fairy);
+  glowBurst();
 
   score += 10;
-  scoreEl.textContent = score;
+  scoreBox.innerText = score;
 
-  const py = canvas.height * plant.y;
-  addParticles(plant.x, py - 40, 35);
+  for(let i = 0; i < 10; i++){
+    setTimeout(sparkle, i * 80);
+  }
 
-  if (restored >= plants.length) {
-    messageEl.innerHTML =
-      "🌸 The fairy garden is blooming again.<br>Message: The smallest song can wake a sleeping world.";
+  for(let i = 0; i < 5; i++){
+    setTimeout(() => note(x, y), i * 150);
+  }
+
+  setTimeout(() => {
+    growPlant();
+    playSound(sounds.sparkle);
+  }, 350);
+
+  if(score % 20 === 0){
+    setTimeout(bird, 700);
+  }
+
+  if(score < 40){
+    message.innerText = "A tiny song wakes the earth...";
+  } else if(score < 80){
+    message.innerText = "The plants are growing...";
+  } else if(score < 120){
+    message.innerText = "The birds are returning...";
   } else {
-    messageEl.textContent = "The fairy bells drift through the garden… something begins to grow.";
+    message.innerText = "The forest is alive with magic!";
   }
+
+  setTimeout(() => {
+    singing = false;
+    fairy.classList.remove("singing");
+    sprite("fairy-idle.png");
+  }, 900);
 }
 
-singBtn.addEventListener("click", () => {
-  const sleeping = plants.find(p => p.stage < 3);
-  fairySing(sleeping);
+/* CONTROLS */
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowRight"){
+    x += 12;
+    facing = 1;
+    if(!singing) sprite("fairy-run.png");
+  }
+
+  if(e.key === "ArrowLeft"){
+    x -= 12;
+    facing = -1;
+    if(!singing) sprite("fairy-run.png");
+  }
+
+  if(e.key === "ArrowUp"){
+    y -= 12;
+    if(!singing) sprite("fairy-jump.png");
+  }
+
+  if(e.key === "ArrowDown"){
+    y += 12;
+    if(!singing) sprite("fairy-fly.png");
+  }
+
+  if(e.key.toLowerCase() === "s"){
+    sing();
+  }
+
+  x = Math.max(20, Math.min(window.innerWidth - 180, x));
+  y = Math.max(40, Math.min(window.innerHeight - 210, y));
+
+  update();
 });
 
-canvas.addEventListener("click", e => {
-  const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX - rect.left;
-  const my = e.clientY - rect.top;
-
-  let closest = null;
-  let closestDist = 9999;
-
-  plants.forEach(plant => {
-    const px = plant.x;
-    const py = canvas.height * plant.y;
-    const d = Math.hypot(mx - px, my - py);
-    if (d < closestDist) {
-      closestDist = d;
-      closest = plant;
-    }
-  });
-
-  if (closest && closestDist < 150) {
-    fairy.x += (closest.x - fairy.x) * 0.45;
-    fairy.y += ((canvas.height * closest.y) - 120 - fairy.y) * 0.45;
-    fairySing(closest);
+document.addEventListener("keyup", () => {
+  if(!singing){
+    sprite("fairy-idle.png");
   }
 });
 
-function drawBackground() {
-  const grd = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  grd.addColorStop(0, "#8d74b8");
-  grd.addColorStop(0.45, "#587869");
-  grd.addColorStop(1, "#203b2e");
-  ctx.fillStyle = grd;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+singBtn.onclick = sing;
 
-  ctx.beginPath();
-  ctx.arc(canvas.width - 140, 110, 70, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(255,245,230,0.45)";
-  ctx.fill();
+/* START */
+startBtn.onclick = () => {
+  unlockSounds();
+  startScreen.style.display = "none";
+  game.style.display = "block";
+  sprite("fairy-idle.png");
+  update();
+};
 
-  ctx.fillStyle = "rgba(30, 71, 50, 0.65)";
-  ctx.beginPath();
-  ctx.moveTo(0, canvas.height * 0.72);
-  ctx.quadraticCurveTo(canvas.width * 0.3, canvas.height * 0.55, canvas.width * 0.6, canvas.height * 0.73);
-  ctx.quadraticCurveTo(canvas.width * 0.8, canvas.height * 0.86, canvas.width, canvas.height * 0.65);
-  ctx.lineTo(canvas.width, canvas.height);
-  ctx.lineTo(0, canvas.height);
-  ctx.fill();
+window.addEventListener("resize", () => {
+  x = Math.max(20, Math.min(window.innerWidth - 180, x));
+  y = Math.max(40, Math.min(window.innerHeight - 210, y));
+  update();
+});
 
-  ctx.fillStyle = "#243f2d";
-  ctx.fillRect(0, canvas.height * 0.82, canvas.width, canvas.height * 0.18);
-}
-
-function drawFireflies() {
-  fireflies.forEach(f => {
-    f.glow += 0.04;
-    f.y -= f.speed;
-    f.x += Math.sin(f.glow) * 0.25;
-
-    if (f.y < -10) {
-      f.y = canvas.height + 10;
-      f.x = Math.random() * canvas.width;
-    }
-
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r + Math.sin(f.glow) * 1.2, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 244, 180, 0.65)";
-    ctx.shadowColor = "rgba(255, 244, 180, 0.9)";
-    ctx.shadowBlur = 14;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  });
-}
-
-function drawFairy() {
-  ctx.save();
-  ctx.translate(fairy.x, fairy.y);
-
-  if (fairy.glow > 0) {
-    ctx.beginPath();
-    ctx.arc(0, 0, fairy.glow * 2, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 230, 255, 0.18)";
-    ctx.fill();
-    fairy.glow *= 0.92;
-  }
-
-  ctx.fillStyle = "rgba(220, 255, 255, 0.45)";
-  ctx.beginPath();
-  ctx.ellipse(-24, -8, 22, 42, -0.5, 0, Math.PI * 2);
-  ctx.ellipse(24, -8, 22, 42, 0.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = "#f5d4ff";
-  ctx.beginPath();
-  ctx.moveTo(0, -18);
-  ctx.lineTo(-22, 36);
-  ctx.lineTo(22, 36);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(0, -34, 14, 0, Math.PI * 2);
-  ctx.fillStyle = "#ffe7cf";
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(0, -42, 15, Math.PI, 0);
-  ctx.fillStyle = "#f6e1a8";
-  ctx.fill();
-
-  ctx.strokeStyle = "#fff9bf";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(18, -5);
-  ctx.lineTo(45, -32);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(48, -35, 5, 0, Math.PI * 2);
-  ctx.fillStyle = "#fff6a8";
-  ctx.shadowColor = "#fff6a8";
-  ctx.shadowBlur = 15;
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  ctx.restore();
-}
-
-function drawPlant(plant) {
-  const x = plant.x;
-  const groundY = canvas.height * plant.y;
-
-  ctx.save();
-  ctx.translate(x, groundY);
-
-  ctx.strokeStyle = "#9be88f";
-  ctx.lineCap = "round";
-  ctx.lineWidth = 5;
-
-  if (plant.stage === 0) {
-    ctx.beginPath();
-    ctx.arc(0, 0, 8, 0, Math.PI * 2);
-    ctx.fillStyle = "#6c4d36";
-    ctx.fill();
-  }
-
-  if (plant.stage >= 1) {
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -45);
-    ctx.stroke();
-
-    ctx.fillStyle = "#9be88f";
-    ctx.beginPath();
-    ctx.ellipse(-14, -25, 16, 8, -0.6, 0, Math.PI * 2);
-    ctx.ellipse(14, -35, 16, 8, 0.6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  if (plant.stage >= 2) {
-    ctx.beginPath();
-    ctx.moveTo(0, -45);
-    ctx.lineTo(0, -80);
-    ctx.stroke();
-
-    ctx.fillStyle = "#b8ff9f";
-    ctx.beginPath();
-    ctx.ellipse(-18, -58, 18, 9, -0.5, 0, Math.PI * 2);
-    ctx.ellipse(18, -68, 18, 9, 0.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  if (plant.stage >= 3) {
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 / 8) * i;
-      ctx.beginPath();
-      ctx.ellipse(
-        Math.cos(angle) * 13,
-        -95 + Math.sin(angle) * 13,
-        10,
-        18,
-        angle,
-        0,
-        Math.PI * 2
-      );
-      ctx.fillStyle = "#ffd8fb";
-      ctx.fill();
-    }
-
-    ctx.beginPath();
-    ctx.arc(0, -95, 10, 0, Math.PI * 2);
-    ctx.fillStyle = "#fff4a8";
-    ctx.shadowColor = "#fff4a8";
-    ctx.shadowBlur = 18;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-
-  ctx.restore();
-}
-
-function drawParticles() {
-  particles = particles.filter(p => p.life > 0);
-
-  particles.forEach(p => {
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.015;
-    p.life--;
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 235, 180, ${p.life / 60})`;
-    ctx.shadowColor = "rgba(255, 230, 170, 0.9)";
-    ctx.shadowBlur = 12;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  });
-}
-
-function gameLoop() {
-  drawBackground();
-  drawFireflies();
-  plants.forEach(drawPlant);
-  drawFairy();
-  drawParticles();
-  requestAnimationFrame(gameLoop);
-}
-
-gameLoop();
+update();
 </script>
+
 </body>
 </html>
