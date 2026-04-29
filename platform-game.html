@@ -1,4 +1,4 @@
-<!-- WORKING EDITOR VERSION: hidden snap-back patch removed -->
+<!-- EDITOR DIRECT FIX: old editor kept, add ledge restored, live data sync prevents snapback -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1090,9 +1090,9 @@ body.editorOn #editorPanel{
   <button onclick="saveEditedLevel()">Save To Browser</button>
   <button onclick="clearEditedLevel()">Clear Saved Level</button>
   <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorCode" placeholder="Level data will appear here."></textarea>
+  <textarea id="editorOutput" placeholder="Level data will appear here."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green safe ledges and treasure chest while Editor is on. Use side handles to resize ledges.
+    Drag green safe ledges while Editor is on. Use side handles to resize ledges. Click Save To Browser after moving them.
   </div>
 </div>
 <div id="endingScreen">
@@ -2036,6 +2036,173 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
       }
     });
   },200);
+})();
+</script>
+
+
+<script>
+/* ===== DIRECT EDITOR FIX: add ledges + live-save moved ledges so they cannot snap back ===== */
+(function(){
+  const EDITOR_KEY = "foxfire_custom_level_layouts_direct_fix_v7";
+
+  function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+  function getLayouts(){
+    try { return JSON.parse(localStorage.getItem(EDITOR_KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+
+  function setLayouts(obj){
+    localStorage.setItem(EDITOR_KEY, JSON.stringify(obj));
+  }
+
+  function readBox(el){
+    return {
+      x: Math.round(parseFloat(el.style.left) || 0),
+      y: Math.round(parseFloat(el.style.bottom) || 0),
+      w: Math.round(parseFloat(el.style.width) || 0),
+      h: Math.round(parseFloat(el.style.height) || 0)
+    };
+  }
+
+  window.getSavedLayouts = function(){
+    return getLayouts();
+  };
+
+  window.saveLayouts = function(obj){
+    setLayouts(obj);
+  };
+
+  window.applySavedLayoutForLevel = function(){
+    const saved = getLayouts();
+    const layout = saved[currentLevel];
+    if(!layout) return;
+    if(Array.isArray(layout.platforms)) levels[currentLevel].platforms = clone(layout.platforms);
+    if(Array.isArray(layout.hazards)) levels[currentLevel].hazards = clone(layout.hazards);
+  };
+
+  window.syncEditorToLevelData = function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+
+    const platforms = [...world.querySelectorAll(".hitbox")]
+      .filter(el => !el.classList.contains("resize-handle"))
+      .map(readBox);
+
+    const hazards = [...world.querySelectorAll(".hazardBox")]
+      .filter(el => !el.classList.contains("resize-handle"))
+      .map(readBox);
+
+    levels[currentLevel].platforms = platforms;
+    levels[currentLevel].hazards = hazards;
+  };
+
+  window.refreshEditorOutput = function(){
+    const out = document.getElementById("editorOutput");
+    if(!out) return;
+    syncEditorToLevelData();
+    out.value = JSON.stringify(levels[currentLevel], null, 2);
+  };
+
+  window.saveEditedLevel = function(){
+    syncEditorToLevelData();
+    const saved = getLayouts();
+    saved[currentLevel] = {
+      platforms: clone(levels[currentLevel].platforms || []),
+      hazards: clone(levels[currentLevel].hazards || [])
+    };
+    setLayouts(saved);
+    refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("Saved ledges for " + levels[currentLevel].name + ".");
+    alert("Saved ledges for " + levels[currentLevel].name + ".");
+  };
+
+  window.clearEditedLevel = function(){
+    const saved = getLayouts();
+    delete saved[currentLevel];
+    setLayouts(saved);
+    alert("Cleared saved ledges for this level.");
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+  };
+
+  window.copyLevelCode = function(){
+    refreshEditorOutput();
+    const out = document.getElementById("editorOutput");
+    if(!out) return;
+    out.focus();
+    out.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    if(typeof setMessage === "function") setMessage("Full level data copied for " + levels[currentLevel].name + ".");
+  };
+
+  window.addPlatformBox = function(){
+    syncEditorToLevelData();
+
+    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+    if(!Array.isArray(levels[currentLevel].platforms)) levels[currentLevel].platforms = [];
+
+    levels[currentLevel].platforms.push({
+      x: Math.round(cam + 430),
+      y: 360,
+      w: 240,
+      h: 32
+    });
+
+    // Save immediately before rebuild so buildLevel cannot reload old ledges.
+    const saved = getLayouts();
+    saved[currentLevel] = {
+      platforms: clone(levels[currentLevel].platforms || []),
+      hazards: clone(levels[currentLevel].hazards || [])
+    };
+    setLayouts(saved);
+
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+
+    if(!editorMode){
+      editorMode = true;
+      document.body.classList.add("editorOn");
+      world.classList.add("editorOn");
+    }
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+
+    showHitboxes = true;
+    world.classList.add("showHitboxes");
+    if(typeof ledgeBtn !== "undefined" && ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
+    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
+    refreshEditorOutput();
+
+    if(typeof setMessage === "function") setMessage("New ledge added. Move it, then Save To Browser.");
+  };
+
+  // Live-sync whenever the old editor moves/resizes something.
+  window.addEventListener("pointermove", function(){
+    if(typeof editorMode !== "undefined" && editorMode) {
+      syncEditorToLevelData();
+      const out = document.getElementById("editorOutput");
+      if(out) out.value = JSON.stringify(levels[currentLevel], null, 2);
+    }
+  }, true);
+
+  window.addEventListener("pointerup", function(){
+    if(typeof editorMode !== "undefined" && editorMode) refreshEditorOutput();
+  }, true);
+
+  // Force buttons to use the fixed functions.
+  setTimeout(function(){
+    document.querySelectorAll("button").forEach(btn=>{
+      const t = (btn.textContent || "").trim().toLowerCase();
+      if(t.includes("add safe ledge")) btn.onclick = addPlatformBox;
+      if(t.includes("save to browser")) btn.onclick = saveEditedLevel;
+      if(t.includes("clear saved")) btn.onclick = clearEditedLevel;
+      if(t.includes("copy level")) btn.onclick = copyLevelCode;
+    });
+  }, 300);
 })();
 </script>
 
