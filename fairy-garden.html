@@ -21,6 +21,7 @@ body{
   overflow:hidden;
 }
 
+/* CLEAN START SCREEN - IMAGE DOES THE TALKING */
 #startScreen{
   position:absolute;
   inset:0;
@@ -45,15 +46,32 @@ body{
   box-shadow:0 0 18px gold,0 0 35px rgba(255,230,120,.75);
 }
 
+/* FAIRY */
 #fairy{
   position:absolute;
   width:220px;
   height:260px;
   background:url("fairy-idle.png") center/contain no-repeat;
-  filter:drop-shadow(0 0 15px gold);
+  background-color:transparent;
+  filter:
+    drop-shadow(0 0 12px gold)
+    drop-shadow(0 0 24px rgba(255,230,120,.75))
+    brightness(1.12)
+    contrast(1.15);
   z-index:10;
+  pointer-events:none;
+  transform-origin:center center;
 }
 
+#fairy.singing{
+  filter:
+    drop-shadow(0 0 18px gold)
+    drop-shadow(0 0 35px rgba(255,240,150,.95))
+    brightness(1.25)
+    contrast(1.18);
+}
+
+/* UI */
 #ui{
   position:absolute;
   top:15px;
@@ -75,6 +93,7 @@ body{
   border-radius:20px;
   color:#fff4c2;
   z-index:30;
+  text-align:center;
 }
 
 #singBtn{
@@ -88,6 +107,53 @@ body{
   font-weight:bold;
   cursor:pointer;
   z-index:30;
+  box-shadow:0 0 18px gold;
+}
+
+button{
+  font-family:Georgia, serif;
+}
+
+/* SIMPLE MAGIC EFFECTS */
+.sparkle{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:gold;
+  box-shadow:0 0 14px white;
+  animation:sparkleFloat 1s ease-out forwards;
+  z-index:20;
+}
+
+.note{
+  position:absolute;
+  font-size:32px;
+  color:#fff6a8;
+  text-shadow:0 0 12px gold;
+  animation:noteFloat 1.6s ease-out forwards;
+  z-index:20;
+}
+
+.plantFallback{
+  position:absolute;
+  font-size:58px;
+  filter:drop-shadow(0 0 14px #eaff8a);
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+@keyframes sparkleFloat{
+  to{transform:translateY(-45px) scale(2);opacity:0}
+}
+
+@keyframes noteFloat{
+  to{transform:translateY(-90px);opacity:0}
+}
+
+@keyframes plantGrow{
+  from{transform:scale(.2);opacity:.2}
+  to{transform:scale(1);opacity:1}
 }
 </style>
 </head>
@@ -99,6 +165,8 @@ body{
 
   <div id="ui">
     Points: <span id="score">0</span><br>
+    Move: Arrow Keys<br>
+    Sing: S or button<br>
     <button id="soundBtn">Sound: Off</button>
   </div>
 
@@ -112,25 +180,52 @@ body{
 
 <script>
 const fairy = document.getElementById("fairy");
+const game = document.getElementById("game");
 const startScreen = document.getElementById("startScreen");
 const startBtn = document.getElementById("startBtn");
 const soundBtn = document.getElementById("soundBtn");
 const singBtn = document.getElementById("singBtn");
 const scoreBox = document.getElementById("score");
+const message = document.getElementById("message");
 
 let x = window.innerWidth * 0.45;
-let y = window.innerHeight * 0.6;
+let y = window.innerHeight * 0.55;
 let score = 0;
 let soundOn = false;
+let singing = false;
+
+/*
+IMPORTANT:
+Most fairy sprites face RIGHT by default.
+facing = 1 means right.
+facing = -1 means left.
+This fixes the backwards walking/flying problem.
+*/
+let facing = 1;
 
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
+  bloom: new Audio("plant-bloom.mp3"),
+  sparkle: new Audio("magic-sparkle.mp3"),
   music: new Audio("fairy-music.mp3")
 };
 
 sounds.music.loop = true;
 sounds.music.volume = 0.2;
+sounds.fairy.volume = 0.55;
+sounds.grow.volume = 0.5;
+sounds.bloom.volume = 0.65;
+sounds.sparkle.volume = 0.45;
+
+function unlockSounds(){
+  Object.values(sounds).forEach(s => {
+    s.play().then(() => {
+      s.pause();
+      s.currentTime = 0;
+    }).catch(()=>{});
+  });
+}
 
 function playSound(s){
   if(!soundOn) return;
@@ -138,60 +233,198 @@ function playSound(s){
   s.play().catch(()=>{});
 }
 
+function sprite(img){
+  fairy.style.backgroundImage = `url("${img}")`;
+}
+
+function update(){
+  x = Math.max(0, Math.min(window.innerWidth - fairy.offsetWidth, x));
+  y = Math.max(0, Math.min(window.innerHeight - fairy.offsetHeight, y));
+
+  fairy.style.left = x + "px";
+  fairy.style.top = y + "px";
+
+  /* THIS IS THE TURNING FIX */
+  fairy.style.transform = `scaleX(${facing})`;
+}
+
+function startMusic(){
+  if(soundOn){
+    sounds.music.play().catch(()=>{});
+  }
+}
+
 startBtn.onclick = () => {
   soundOn = true;
   soundBtn.innerText = "Sound: On";
+
+  unlockSounds();
   playSound(sounds.fairy);
-  sounds.music.play().catch(()=>{});
+  startMusic();
 
   startScreen.style.opacity = "0";
-  setTimeout(()=>startScreen.style.display = "none", 1000);
-
-  update();
+  setTimeout(() => {
+    startScreen.style.display = "none";
+    update();
+  }, 1000);
 };
 
 soundBtn.onclick = () => {
   soundOn = !soundOn;
   soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
+  unlockSounds();
 
   if(soundOn){
-    sounds.music.play().catch(()=>{});
+    startMusic();
   } else {
     sounds.music.pause();
   }
 };
 
-function update(){
-  fairy.style.left = x + "px";
-  fairy.style.top = y + "px";
+/* SPARKLES */
+function sparkle(){
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = (x + fairy.offsetWidth * .5 + Math.random() * 70 - 35) + "px";
+  s.style.top = (y + fairy.offsetHeight * .35 + Math.random() * 70 - 35) + "px";
+  game.appendChild(s);
+  setTimeout(() => s.remove(), 1000);
 }
 
-document.addEventListener("keydown", e => {
-  if(e.key === "ArrowRight") x += 15;
-  if(e.key === "ArrowLeft") x -= 15;
-  if(e.key === "ArrowUp") y -= 15;
-  if(e.key === "ArrowDown") y += 15;
+function note(){
+  const n = document.createElement("div");
+  n.className = "note";
+  n.innerHTML = ["♪","♫","♬"][Math.floor(Math.random() * 3)];
+  n.style.left = (x + fairy.offsetWidth * .5 + Math.random() * 35) + "px";
+  n.style.top = (y + fairy.offsetHeight * .25 + Math.random() * 30) + "px";
+  game.appendChild(n);
+  setTimeout(() => n.remove(), 1600);
+}
 
-  x = Math.max(0, Math.min(window.innerWidth - 220, x));
-  y = Math.max(0, Math.min(window.innerHeight - 260, y));
+function growPlant(){
+  const p = document.createElement("div");
+  p.className = "plantFallback";
 
-  update();
-});
+  if(score < 40){
+    p.innerHTML = "🌱";
+    playSound(sounds.grow);
+  } else if(score < 90){
+    p.innerHTML = "🌿";
+    playSound(sounds.grow);
+  } else {
+    p.innerHTML = "🌸";
+    playSound(sounds.bloom);
+  }
+
+  p.style.left = (x + fairy.offsetWidth * .45 + Math.random() * 130 - 65) + "px";
+  p.style.top = (y + fairy.offsetHeight - 45 + Math.random() * 30) + "px";
+  game.appendChild(p);
+}
 
 function sing(){
-  fairy.style.backgroundImage = 'url("fairy-fly.png")';
+  if(singing) return;
+
+  singing = true;
+  fairy.classList.add("singing");
+
+  /*
+  Uses fairy-fly.png instead of fairy-sing.png because fairy-sing had the white square.
+  It still faces the correct direction because update() keeps scaleX(facing).
+  */
+  sprite("fairy-fly.png");
+  update();
+
   playSound(sounds.fairy);
-  playSound(sounds.grow);
 
   score += 10;
   scoreBox.innerText = score;
 
+  for(let i = 0; i < 10; i++){
+    setTimeout(sparkle, i * 80);
+  }
+
+  for(let i = 0; i < 5; i++){
+    setTimeout(note, i * 150);
+  }
+
   setTimeout(() => {
-    fairy.style.backgroundImage = 'url("fairy-idle.png")';
-  }, 600);
+    growPlant();
+    playSound(sounds.sparkle);
+  }, 350);
+
+  if(score < 40){
+    message.innerText = "A tiny song wakes the earth...";
+  } else if(score < 80){
+    message.innerText = "The plants are growing...";
+  } else if(score < 120){
+    message.innerText = "The birds are returning...";
+  } else {
+    message.innerText = "The forest is alive with magic!";
+  }
+
+  setTimeout(() => {
+    singing = false;
+    fairy.classList.remove("singing");
+    sprite("fairy-idle.png");
+    update();
+  }, 850);
 }
 
+function moveFairy(dx, dy, moveSprite){
+  if(dx > 0) facing = 1;
+  if(dx < 0) facing = -1;
+
+  x += dx;
+  y += dy;
+
+  if(!singing){
+    sprite(moveSprite);
+  }
+
+  update();
+}
+
+/* KEYBOARD CONTROLS */
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowRight"){
+    e.preventDefault();
+    moveFairy(16, 0, "fairy-run.png");
+  }
+
+  if(e.key === "ArrowLeft"){
+    e.preventDefault();
+    moveFairy(-16, 0, "fairy-run.png");
+  }
+
+  if(e.key === "ArrowUp"){
+    e.preventDefault();
+    moveFairy(0, -16, "fairy-fly.png");
+  }
+
+  if(e.key === "ArrowDown"){
+    e.preventDefault();
+    moveFairy(0, 16, "fairy-fly.png");
+  }
+
+  if(e.key.toLowerCase() === "s"){
+    e.preventDefault();
+    sing();
+  }
+});
+
+document.addEventListener("keyup", () => {
+  if(!singing){
+    sprite("fairy-idle.png");
+    update();
+  }
+});
+
 singBtn.onclick = sing;
+
+window.addEventListener("resize", update);
+
+document.addEventListener("click", unlockSounds, { once:true });
+document.addEventListener("touchstart", unlockSounds, { once:true });
 
 update();
 </script>
