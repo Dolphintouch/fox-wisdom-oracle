@@ -1,4 +1,4 @@
-<!-- CLEAN OLD WORKING EDITOR: duplicate bounce patches removed; add/resize/save restored -->
+<!-- WORKING EDITOR VERSION: hidden snap-back patch removed -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -995,7 +995,6 @@ body.editorOn #editorPanel{
   box-shadow:0 0 24px #fff7a8!important;
 }
 
-#thumb3{background-image:url("treasure-room-bg.jpg")}
 </style>
 
 </head>
@@ -1067,15 +1066,7 @@ body.editorOn #editorPanel{
 <p>Higher jumps under moonlight.</p>
 </div>
 </div>
-</div>  
-<div class="card levelCard" id="levelCard3" onclick="changeLevel(3)">
-<div class="thumb" id="thumb3"></div>
-<div>
-<h2>Treasure Room</h2>
-<p>Collect 5 golden wishes and open the hidden chest.</p>
-</div>
-</div>
-<div id="choiceScreen">
+</div>  <div id="choiceScreen">
 <div class="choiceBox">
 <h1>Choose Your Fox</h1>
 <p>Who will follow the glowing path?</p>
@@ -1095,14 +1086,13 @@ body.editorOn #editorPanel{
 <div id="editorPanel">
   <b>🌿 Ledge & Chest Editor</b><br>
   <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
-  <button onclick="saveCurrentLevelLayout()">Save To Browser</button>
-  <button onclick="loadEditorFromBrowser()">Load Saved</button>
-  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
+  <button onclick="addPlatformBox()">Add Safe Ledge</button>
+  <button onclick="saveEditedLevel()">Save To Browser</button>
+  <button onclick="clearEditedLevel()">Clear Saved Level</button>
   <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorOutput" placeholder="Level data will appear here."></textarea>
+  <textarea id="editorCode" placeholder="Level data will appear here."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
+    Drag green safe ledges and treasure chest while Editor is on. Use side handles to resize ledges.
   </div>
 </div>
 <div id="endingScreen">
@@ -2034,263 +2024,18 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
 
 
-<script>
-/* ===== PUBLIC FINAL PATCH: USER SAFE AREAS + FOX MOVEMENT FIX ===== */
-(function(){
-  const USER_MISTY_PLATFORMS = [{"x": -2, "y": 146, "w": 1792, "h": 46}, {"x": 65, "y": 683, "w": 781, "h": 34}, {"x": 409, "y": 366, "w": 210, "h": 34}, {"x": 774, "y": 501, "w": 280, "h": 34}, {"x": 1119, "y": 386, "w": 173, "h": 38}, {"x": 628, "y": 292, "w": 220, "h": 32}, {"x": 972, "y": 578, "w": 220, "h": 32}, {"x": 1382, "y": 385, "w": 220, "h": 32}];
-  const USER_MISTY_TREASURE = {"x": 1453, "y": 423};
-  const USER_MISTY_PORTAL = {"x": 1550, "y": 205};
-
-  function getLevelName(){
-    try {
-      if(typeof levels !== "undefined" && typeof currentLevel !== "undefined" && levels[currentLevel]) {
-        return levels[currentLevel].name || "";
-      }
-    } catch(e){}
-    return "";
-  }
-
-  function isMisty(){
-    return getLevelName().toLowerCase().includes("misty") || (typeof currentLevel !== "undefined" && currentLevel === 0);
-  }
-
-  function applyMistyLayout(){
-    if(!isMisty()) return;
-
-    const platforms = Array.from(document.querySelectorAll(".hitbox"));
-    USER_MISTY_PLATFORMS.forEach((p,i)=>{
-      const el = platforms[i];
-      if(!el) return;
-      el.style.left = p.x + "px";
-      el.style.bottom = p.y + "px";
-      el.style.width = p.w + "px";
-      el.style.height = p.h + "px";
-      el.dataset.x = p.x;
-      el.dataset.y = p.y;
-      el.dataset.w = p.w;
-      el.dataset.h = p.h;
-    });
-
-    // Hide any extra old platforms after your saved ones, so your layout is clean.
-    platforms.forEach((el,i)=>{
-      if(i >= USER_MISTY_PLATFORMS.length) {
-        el.style.display = "none";
-      } else {
-        el.style.display = "";
-      }
-    });
-
-    const chest = document.querySelector(".treasure, #treasure, #treasureChest, #finalTreasure, .chest");
-    if(chest){
-      chest.style.left = USER_MISTY_TREASURE.x + "px";
-      chest.style.bottom = USER_MISTY_TREASURE.y + "px";
-      chest.style.display = "";
-    }
-
-    const portal = document.querySelector(".portal, #levelPortal");
-    if(portal){
-      portal.style.left = USER_MISTY_PORTAL.x + "px";
-      portal.style.bottom = USER_MISTY_PORTAL.y + "px";
-    }
-  }
-
-  function forceFoxSafeStart(){
-    try {
-      if(typeof x !== "undefined" && (x < 0 || x > 1750 || y > 900 || y < -80 || (x < 20 && y > 500))) {
-        x = 150;
-        y = 210;
-        vx = 0;
-        vy = 0;
-      }
-      if(typeof lastSafeX !== "undefined") lastSafeX = 150;
-      if(typeof lastSafeY !== "undefined") lastSafeY = 210;
-      if(typeof gameStarted !== "undefined") gameStarted = true;
-      if(typeof cameraX !== "undefined" && cameraX < 0) cameraX = 0;
-      if(typeof render === "function") render();
-    } catch(e){}
-
-    const fox = document.getElementById("fox");
-    if(fox){
-      const r = fox.getBoundingClientRect();
-      if(r.left < -80 || r.top < -80 || r.left > window.innerWidth + 80 || r.top > window.innerHeight + 80){
-        fox.style.left = "150px";
-        fox.style.bottom = "152px";
-      }
-    }
-  }
-
-  function afterChooseFoxFix(){
-    const cs = document.getElementById("choiceScreen");
-    if(cs){
-      cs.classList.add("hidden");
-      cs.style.setProperty("display","none","important");
-      cs.style.setProperty("pointer-events","none","important");
-    }
-    try { if(typeof gameStarted !== "undefined") gameStarted = true; } catch(e){}
-    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 50);
-    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 300);
-    setTimeout(()=>{ applyMistyLayout(); forceFoxSafeStart(); }, 900);
-  }
-
-  const oldChoose = window.chooseFox;
-  window.chooseFox = function(type){
-    if(typeof oldChoose === "function") {
-      oldChoose(type);
-    }
-    afterChooseFoxFix();
-    return false;
-  };
-
-  // Ensure fox choice buttons work even if old onclick is unreliable.
-  function bindChoiceButtons(){
-    const female = document.getElementById("chooseFemaleFox");
-    const male = document.getElementById("chooseMaleFox");
-
-    if(female && female.dataset.publicBound !== "yes"){
-      female.dataset.publicBound = "yes";
-      female.addEventListener("click", function(){ afterChooseFoxFix(); }, true);
-    }
-    if(male && male.dataset.publicBound !== "yes"){
-      male.dataset.publicBound = "yes";
-      male.addEventListener("click", function(){ afterChooseFoxFix(); }, true);
-    }
-  }
-
-  // Keep movement alive if old code stops briefly.
-  window.addEventListener("keydown", function(e){
-    try {
-      if(typeof gameStarted !== "undefined") gameStarted = true;
-      if(typeof keys !== "undefined") keys[e.key] = true;
-    } catch(err){}
-  }, true);
-
-  window.addEventListener("keyup", function(e){
-    try {
-      if(typeof keys !== "undefined") keys[e.key] = false;
-    } catch(err){}
-  }, true);
-
-  bindChoiceButtons();
-
-  setInterval(function(){
-    bindChoiceButtons();
-    applyMistyLayout();
-    try {
-      if(typeof gameStarted !== "undefined" && gameStarted) {
-        forceFoxSafeStart();
-      }
-    } catch(e){}
-  }, 700);
-
-  setTimeout(applyMistyLayout, 300);
-  setTimeout(applyMistyLayout, 1200);
-})();
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script>
-/* ===== CLEAN OLD EDITOR BRIDGE - NO BOUNCE PATCHES ===== */
+/* ===== HOME ONLY: return to Fox Oracle hub ===== */
 (function(){
-  const HOME_URL = "https://dolphintouch.github.io/fox-wisdom-oracle/";
-
-  window.goHome = function(){
-    window.location.href = HOME_URL;
-  };
-
-  function currentL(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return null;
-    return levels[currentLevel];
-  }
-
-  function ensureEditorOn(){
-    if(typeof editorMode !== "undefined") editorMode = true;
-    document.body.classList.add("editorOn");
-    if(typeof world !== "undefined" && world){
-      world.classList.add("editorOn");
-      world.classList.add("showHitboxes");
-    }
-    if(typeof showHitboxes !== "undefined") showHitboxes = true;
-    const panel=document.getElementById("editorPanel");
-    if(panel) panel.style.display="block";
-    const btn=document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent="Editor: On";
-    if(typeof ledgeBtn !== "undefined" && ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
-  }
-
-  function makeRealLedge(p){
-    const el=document.createElement("div");
-    el.className="hitbox";
-    el.dataset.x=p.x; el.dataset.y=p.y; el.dataset.w=p.w; el.dataset.h=p.h;
-    el.style.left=p.x+"px";
-    el.style.bottom=p.y+"px";
-    el.style.width=p.w+"px";
-    el.style.height=p.h+"px";
-    world.appendChild(el);
-    if(typeof makeEditorBoxDraggable === "function") makeEditorBoxDraggable(el,"platform");
-    if(typeof addResizeHandles === "function") addResizeHandles(el);
-    if(typeof addEditorLabel === "function") addEditorLabel(el);
-    if(typeof selectEditorBox === "function") selectEditorBox(el);
-    return el;
-  }
-
-  window.addNewLedgeNow = function(){
-    const L=currentL();
-    if(!L) return alert("Could not find current level.");
-    if(!Array.isArray(L.platforms)) L.platforms=[];
-    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-    const p={x:Math.round(cam+420), y:360, w:240, h:32};
-    L.platforms.push(p);
-    ensureEditorOn();
-    makeRealLedge(p);
-    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then Save To Browser.");
-  };
-
-  window.saveCurrentLevelLayout = function(){
-    if(typeof saveEditedLevel === "function"){
-      saveEditedLevel();
-      alert("Saved ledges for this level.");
-    }
-  };
-
-  window.loadEditorFromBrowser = function(){
-    if(typeof buildLevel === "function"){
-      buildLevel(currentLevel);
-      ensureEditorOn();
-      if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
-      if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-    }
-  };
-
-  window.resetEditorBrowserSave = function(){
-    if(typeof resetEditedLevel === "function") resetEditedLevel();
-  };
-
+  window.goHome=function(){window.location.href="https://dolphintouch.github.io/fox-wisdom-oracle/";};
   setTimeout(function(){
     document.querySelectorAll("button").forEach(function(btn){
-      const t=(btn.textContent||"").toLowerCase();
-      if(t.includes("add safe ledge")) btn.onclick=window.addNewLedgeNow;
-      if(t.includes("save to browser")) btn.onclick=window.saveCurrentLevelLayout;
-      if(t.includes("load saved")) btn.onclick=window.loadEditorFromBrowser;
-      if(t.includes("reset browser save")) btn.onclick=window.resetEditorBrowserSave;
-      if((btn.textContent||"").includes("Home")) btn.onclick=window.goHome;
+      if((btn.textContent||"").includes("Home")){
+        btn.onclick=function(){window.location.href="https://dolphintouch.github.io/fox-wisdom-oracle/";};
+      }
     });
-  },250);
+  },200);
 })();
 </script>
 
