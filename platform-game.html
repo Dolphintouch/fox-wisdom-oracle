@@ -1,4 +1,4 @@
-<!-- EDITOR DIRECT FIX: old editor kept, add ledge restored, live data sync prevents snapback -->
+<!-- LOCKED FINAL VERSION: editor removed, recovered ledges preserved, Home goes to Fox Oracle hub -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -760,74 +760,6 @@ body{
 }
 
 
-/* ===== ENHANCED SAFE AREA EDITOR + FOX UNSTICK FIX ===== */
-#editorPanel {
-  z-index: 999999 !important;
-  max-height: 55vh !important;
-}
-
-#editorPanel button {
-  pointer-events: auto !important;
-}
-
-.editorOn .hitbox {
-  background: rgba(80,255,130,.30) !important;
-  outline: 2px solid rgba(255,245,130,.95) !important;
-  pointer-events: auto !important;
-  cursor: move !important;
-}
-
-.editorOn .hitbox::after {
-  content: "safe area";
-  position: absolute;
-  top: -23px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #fff8b8;
-  font-size: 12px;
-  text-shadow: 0 0 7px #000;
-  white-space: nowrap;
-}
-
-.editorOn .treasure,
-.editorOn #treasure,
-.editorOn #treasureChest,
-.editorOn #finalTreasure,
-.editorOn .chest {
-  outline: 3px dashed rgba(255,245,140,.95) !important;
-  pointer-events: auto !important;
-  cursor: move !important;
-}
-
-.safeEditorSelected {
-  outline: 3px solid #ffffff !important;
-  box-shadow: 0 0 24px #fff7a8 !important;
-}
-
-.safeResizeHandle {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  right: -9px;
-  bottom: -9px;
-  z-index: 1000000;
-  border-radius: 50%;
-  background: #fff3a8;
-  border: 2px solid #2b1b05;
-  box-shadow: 0 0 12px #fff7b8;
-  cursor: nwse-resize;
-  pointer-events: auto;
-}
-
-
-
-body.editorOn 
-
-
-
-
-
-
 /* ===== EDITOR RESTORED VERSION =====
    The old public-version block that forced the editor hidden has been removed.
    Editor panels may now show again when editor mode is turned on.
@@ -900,75 +832,23 @@ body.platformEditorOn {
 }
 
 
-/* ===== SINGLE EDITOR RESTORED - CLEAN CONTROLS ===== */
-#editorPanel{
-  position:absolute;
-  left:12px;
-  bottom:12px;
-  width:390px;
-  max-width:94vw;
-  max-height:55vh;
-  overflow:auto;
-  z-index:999999!important;
-  display:none;
-  background:rgba(3,12,8,.96);
-  border:1px solid rgba(255,225,150,.6);
-  border-radius:18px;
-  padding:12px;
-  color:#ffe8a8;
-  box-shadow:0 0 28px rgba(0,0,0,.65);
-  font-size:13px;
-}
 
-body.editorOn #editorPanel{
-  display:block!important;
+/* ===== LOCKED FINAL BUILD: editor removed safely ===== */
+#editorPanel,
+#safeEditorMiniBar,
+#platformEditorPanel,
+#platformEditBtn,
+#editorToggleBtn{
+  display:none!important;
 }
-
-#editorPanel button{
-  margin:3px;
-  padding:6px 9px;
-  border-radius:999px;
-  border:1px solid rgba(255,225,150,.45);
-  background:rgba(255,225,130,.14);
-  color:#ffe8a8;
-  cursor:pointer;
-  font-family:Georgia,serif;
-  pointer-events:auto!important;
+body.editorOn,
+body.platformEditorOn{
+  cursor:default!important;
 }
-
-#editorPanel textarea{
-  width:100%;
-  height:115px;
-  margin-top:7px;
-  border-radius:10px;
-  border:1px solid rgba(255,225,150,.35);
-  background:#07130b;
-  color:#fff0c2;
-  padding:8px;
-  font-family:Consolas,monospace;
-  font-size:12px;
+.hitbox::after{
+  display:none!important;
 }
-
-.editorOn .hitbox{
-  background:rgba(80,255,130,.30)!important;
-  outline:2px solid rgba(255,245,130,.95)!important;
-  pointer-events:auto!important;
-  cursor:move!important;
-}
-
-.editorOn .hitbox::after{
-  content:"safe area";
-  position:absolute;
-  top:-23px;
-  left:50%;
-  transform:translateX(-50%);
-  color:#fff8b8;
-  font-size:12px;
-  text-shadow:0 0 7px #000;
-  white-space:nowrap;
-  display:block!important;
-}
-
+.editorOn .hitbox,
 .editorOn .treasure,
 .editorOn #treasure,
 .editorOn #treasureChest,
@@ -982,17 +862,8 @@ body.editorOn #editorPanel{
 .editorOn .egg,
 .editorOn .mushroom,
 .editorOn .portal{
-  pointer-events:auto!important;
-  cursor:move!important;
-  outline:2px dashed rgba(255,245,140,.95)!important;
-  border-radius:14px;
-}
-
-.editorObjSelected,
-.editorSelected,
-.safeEditorSelected{
-  outline:3px solid #ffffff!important;
-  box-shadow:0 0 24px #fff7a8!important;
+  outline:none!important;
+  cursor:default!important;
 }
 
 </style>
@@ -1021,7 +892,6 @@ body.editorOn #editorPanel{
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
-<button onclick="toggleEditor()" id="editorToggleBtn">Editor: Off</button>
 <button onclick="resetLevel()">Restart</button>
 <button type="button" onclick="window.location.href='https://dolphintouch.github.io/fox-wisdom-oracle/'">🏡 Home</button>
 </div>  <div id="sidePanel">
@@ -1083,18 +953,6 @@ body.editorOn #editorPanel{
 </div>
 
 
-<div id="editorPanel">
-  <b>🌿 Ledge & Chest Editor</b><br>
-  <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="addPlatformBox()">Add Safe Ledge</button>
-  <button onclick="saveEditedLevel()">Save To Browser</button>
-  <button onclick="clearEditedLevel()">Clear Saved Level</button>
-  <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorOutput" placeholder="Level data will appear here."></textarea>
-  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green safe ledges while Editor is on. Use side handles to resize ledges. Click Save To Browser after moving them.
-  </div>
-</div>
 <div id="endingScreen">
   <div class="endingBox">
     <h1>✨ You Completed the Forest ✨</h1>
@@ -2026,7 +1884,35 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
 
 <script>
-/* ===== HOME ONLY: return to Fox Oracle hub ===== */
+/* ===== LOCKED FINAL BUILD: editor functions disabled ===== */
+(function(){
+  window.toggleEditor = function(){
+    if(typeof setMessage === "function"){
+      setMessage("Editor has been removed in this locked final version.");
+    }
+  };
+  window.addPlatformBox = function(){};
+  window.addNewLedgeNow = function(){};
+  window.saveEditedLevel = function(){};
+  window.clearEditedLevel = function(){};
+  window.saveCurrentLevelLayout = function(){};
+  window.loadEditorFromBrowser = function(){};
+  window.resetEditorBrowserSave = function(){};
+  window.copyLevelCode = function(){};
+
+  document.body.classList.remove("editorOn","platformEditorOn");
+  setTimeout(function(){
+    const btn=document.getElementById("editorToggleBtn");
+    if(btn) btn.remove();
+    const panel=document.getElementById("editorPanel");
+    if(panel) panel.remove();
+  },100);
+})();
+</script>
+
+
+<script>
+/* ===== LOCKED FINAL HOME LINK ===== */
 (function(){
   window.goHome=function(){window.location.href="https://dolphintouch.github.io/fox-wisdom-oracle/";};
   setTimeout(function(){
@@ -2036,173 +1922,6 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
       }
     });
   },200);
-})();
-</script>
-
-
-<script>
-/* ===== DIRECT EDITOR FIX: add ledges + live-save moved ledges so they cannot snap back ===== */
-(function(){
-  const EDITOR_KEY = "foxfire_custom_level_layouts_direct_fix_v7";
-
-  function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
-
-  function getLayouts(){
-    try { return JSON.parse(localStorage.getItem(EDITOR_KEY) || "{}"); }
-    catch(e){ return {}; }
-  }
-
-  function setLayouts(obj){
-    localStorage.setItem(EDITOR_KEY, JSON.stringify(obj));
-  }
-
-  function readBox(el){
-    return {
-      x: Math.round(parseFloat(el.style.left) || 0),
-      y: Math.round(parseFloat(el.style.bottom) || 0),
-      w: Math.round(parseFloat(el.style.width) || 0),
-      h: Math.round(parseFloat(el.style.height) || 0)
-    };
-  }
-
-  window.getSavedLayouts = function(){
-    return getLayouts();
-  };
-
-  window.saveLayouts = function(obj){
-    setLayouts(obj);
-  };
-
-  window.applySavedLayoutForLevel = function(){
-    const saved = getLayouts();
-    const layout = saved[currentLevel];
-    if(!layout) return;
-    if(Array.isArray(layout.platforms)) levels[currentLevel].platforms = clone(layout.platforms);
-    if(Array.isArray(layout.hazards)) levels[currentLevel].hazards = clone(layout.hazards);
-  };
-
-  window.syncEditorToLevelData = function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
-
-    const platforms = [...world.querySelectorAll(".hitbox")]
-      .filter(el => !el.classList.contains("resize-handle"))
-      .map(readBox);
-
-    const hazards = [...world.querySelectorAll(".hazardBox")]
-      .filter(el => !el.classList.contains("resize-handle"))
-      .map(readBox);
-
-    levels[currentLevel].platforms = platforms;
-    levels[currentLevel].hazards = hazards;
-  };
-
-  window.refreshEditorOutput = function(){
-    const out = document.getElementById("editorOutput");
-    if(!out) return;
-    syncEditorToLevelData();
-    out.value = JSON.stringify(levels[currentLevel], null, 2);
-  };
-
-  window.saveEditedLevel = function(){
-    syncEditorToLevelData();
-    const saved = getLayouts();
-    saved[currentLevel] = {
-      platforms: clone(levels[currentLevel].platforms || []),
-      hazards: clone(levels[currentLevel].hazards || [])
-    };
-    setLayouts(saved);
-    refreshEditorOutput();
-    if(typeof setMessage === "function") setMessage("Saved ledges for " + levels[currentLevel].name + ".");
-    alert("Saved ledges for " + levels[currentLevel].name + ".");
-  };
-
-  window.clearEditedLevel = function(){
-    const saved = getLayouts();
-    delete saved[currentLevel];
-    setLayouts(saved);
-    alert("Cleared saved ledges for this level.");
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-  };
-
-  window.copyLevelCode = function(){
-    refreshEditorOutput();
-    const out = document.getElementById("editorOutput");
-    if(!out) return;
-    out.focus();
-    out.select();
-    try{ document.execCommand("copy"); }catch(e){}
-    if(typeof setMessage === "function") setMessage("Full level data copied for " + levels[currentLevel].name + ".");
-  };
-
-  window.addPlatformBox = function(){
-    syncEditorToLevelData();
-
-    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-    if(!Array.isArray(levels[currentLevel].platforms)) levels[currentLevel].platforms = [];
-
-    levels[currentLevel].platforms.push({
-      x: Math.round(cam + 430),
-      y: 360,
-      w: 240,
-      h: 32
-    });
-
-    // Save immediately before rebuild so buildLevel cannot reload old ledges.
-    const saved = getLayouts();
-    saved[currentLevel] = {
-      platforms: clone(levels[currentLevel].platforms || []),
-      hazards: clone(levels[currentLevel].hazards || [])
-    };
-    setLayouts(saved);
-
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-
-    if(!editorMode){
-      editorMode = true;
-      document.body.classList.add("editorOn");
-      world.classList.add("editorOn");
-    }
-
-    const panel = document.getElementById("editorPanel");
-    if(panel) panel.style.display = "block";
-
-    const btn = document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent = "Editor: On";
-
-    showHitboxes = true;
-    world.classList.add("showHitboxes");
-    if(typeof ledgeBtn !== "undefined" && ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
-
-    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
-    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
-    refreshEditorOutput();
-
-    if(typeof setMessage === "function") setMessage("New ledge added. Move it, then Save To Browser.");
-  };
-
-  // Live-sync whenever the old editor moves/resizes something.
-  window.addEventListener("pointermove", function(){
-    if(typeof editorMode !== "undefined" && editorMode) {
-      syncEditorToLevelData();
-      const out = document.getElementById("editorOutput");
-      if(out) out.value = JSON.stringify(levels[currentLevel], null, 2);
-    }
-  }, true);
-
-  window.addEventListener("pointerup", function(){
-    if(typeof editorMode !== "undefined" && editorMode) refreshEditorOutput();
-  }, true);
-
-  // Force buttons to use the fixed functions.
-  setTimeout(function(){
-    document.querySelectorAll("button").forEach(btn=>{
-      const t = (btn.textContent || "").trim().toLowerCase();
-      if(t.includes("add safe ledge")) btn.onclick = addPlatformBox;
-      if(t.includes("save to browser")) btn.onclick = saveEditedLevel;
-      if(t.includes("clear saved")) btn.onclick = clearEditedLevel;
-      if(t.includes("copy level")) btn.onclick = copyLevelCode;
-    });
-  }, 300);
 })();
 </script>
 
