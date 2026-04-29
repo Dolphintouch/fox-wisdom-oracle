@@ -2,98 +2,180 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fairy Garden Game</title>
+<title>The Fairy Garden</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Georgia, serif;
-    background:
-      radial-gradient(circle at top, rgba(255,255,255,0.35), transparent 35%),
-      linear-gradient(#8166a8, #405f51 45%, #203b2e);
-    color: white;
-    overflow: hidden;
-  }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Georgia, serif;
+  background: #1f3328;
+  color: white;
+  overflow: hidden;
+}
 
-  #gameWrap {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-  }
+#gameWrap {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
 
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 
+/* MAGICAL START SCREEN */
+#startScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 230, 255, 0.35), transparent 24%),
+    radial-gradient(circle at 20% 75%, rgba(180, 255, 220, 0.18), transparent 28%),
+    linear-gradient(rgba(50, 34, 75, 0.92), rgba(20, 45, 33, 0.95));
+  transition: opacity 1s ease;
+}
+
+.startBox {
+  width: min(90%, 560px);
+  text-align: center;
+  padding: 34px 28px;
+  border-radius: 30px;
+  background: rgba(22, 34, 30, 0.78);
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow:
+    0 0 45px rgba(255, 230, 255, 0.42),
+    inset 0 0 35px rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+}
+
+.startBox h1 {
+  margin: 0 0 12px;
+  font-size: 42px;
+  text-shadow: 0 0 18px rgba(255,230,255,0.9);
+}
+
+.startBox p {
+  font-size: 19px;
+  line-height: 1.55;
+  opacity: 0.95;
+}
+
+.startHint {
+  font-size: 15px;
+  opacity: 0.8;
+  margin-top: 12px;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #f8dfff, #d7fff0);
+  color: #35402f;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(255,255,255,0.6);
+}
+
+button:hover {
+  transform: scale(1.04);
+}
+
+#startBtn {
+  margin-top: 14px;
+  font-size: 17px;
+  padding: 14px 24px;
+}
+
+#ui {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.panel {
+  background: rgba(38, 29, 55, 0.65);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 18px;
+  padding: 12px 16px;
+  box-shadow: 0 0 25px rgba(255, 220, 255, 0.25);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+#message {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(90%, 650px);
+  text-align: center;
+  background: rgba(22, 35, 28, 0.78);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 22px;
+  padding: 16px;
+  font-size: 18px;
+  box-shadow: 0 0 30px rgba(255, 230, 255, 0.35);
+  z-index: 4;
+}
+
+@media (max-width: 700px) {
   #ui {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    pointer-events: none;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .panel {
-    background: rgba(38, 29, 55, 0.65);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 18px;
-    padding: 12px 16px;
-    box-shadow: 0 0 25px rgba(255, 220, 255, 0.25);
-    backdrop-filter: blur(6px);
-    pointer-events: auto;
-  }
-
-  button {
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 16px;
-    background: linear-gradient(135deg, #f8dfff, #d7fff0);
-    color: #35402f;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 18px rgba(255,255,255,0.6);
-  }
-
-  button:hover {
-    transform: scale(1.04);
+  .startBox h1 {
+    font-size: 32px;
   }
 
   #message {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(90%, 650px);
-    text-align: center;
-    background: rgba(22, 35, 28, 0.75);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 22px;
-    padding: 16px;
-    font-size: 18px;
-    box-shadow: 0 0 30px rgba(255, 230, 255, 0.35);
+    font-size: 15px;
   }
+}
 </style>
 </head>
 
 <body>
 <div id="gameWrap">
+
+  <div id="startScreen">
+    <div class="startBox">
+      <h1>🧚‍♀️ The Fairy Garden</h1>
+      <p>
+        The garden has fallen quiet beneath the moonlight.<br>
+        Only the soft fairy bells can wake the sleeping flowers.
+      </p>
+      <button id="startBtn">✨ Enter the Fairy Garden ✨</button>
+      <div class="startHint">
+        Turn sound on, then tap the sleeping plants to grow the magic.
+      </div>
+    </div>
+  </div>
+
   <canvas id="game"></canvas>
 
   <div id="ui">
     <div class="panel">
       🌸 Garden Magic: <span id="score">0</span><br>
-      🌱 Plants Restored: <span id="restored">0</span>/6
+      🌱 Plants Bloomed: <span id="restored">0</span>/6
     </div>
 
     <div class="panel">
@@ -103,9 +185,10 @@
   </div>
 
   <div id="message">
-    Restore the meadow before your reading…  
-    Tap or click near the sleeping plants and let the fairy bells wake them.
+    Let the fairy bells wake the sleeping garden…  
+    Tap or click near the sleeping plants and watch the magic grow.
   </div>
+
 </div>
 
 <script>
@@ -124,6 +207,8 @@ const restoredEl = document.getElementById("restored");
 const messageEl = document.getElementById("message");
 const soundBtn = document.getElementById("soundBtn");
 const singBtn = document.getElementById("singBtn");
+const startScreen = document.getElementById("startScreen");
+const startBtn = document.getElementById("startBtn");
 
 let soundOn = false;
 let score = 0;
@@ -131,7 +216,7 @@ let restored = 0;
 let particles = [];
 let fireflies = [];
 
-// 🌿 YOUR UPLOADED SOUNDS
+// YOUR UPLOADED SOUNDS
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
@@ -165,25 +250,35 @@ soundBtn.addEventListener("click", () => {
   unlockSounds();
 });
 
+startBtn.addEventListener("click", () => {
+  unlockSounds();
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  setTimeout(() => {
+    startScreen.style.display = "none";
+  }, 1000);
+});
+
 document.addEventListener("click", unlockSounds, { once: true });
 document.addEventListener("touchstart", unlockSounds, { once: true });
 
 const fairy = {
   x: 140,
-  y: 260,
+  y: 430,
   glow: 0
 };
 
 const plants = [
-  { x: 280, y: 0.78, stage: 0 },
-  { x: 470, y: 0.72, stage: 0 },
-  { x: 650, y: 0.80, stage: 0 },
-  { x: 850, y: 0.70, stage: 0 },
-  { x: 1040, y: 0.78, stage: 0 },
-  { x: 1220, y: 0.74, stage: 0 }
+  { x: 250, y: 0.63, stage: 0 },
+  { x: 420, y: 0.60, stage: 0 },
+  { x: 610, y: 0.65, stage: 0 },
+  { x: 800, y: 0.59, stage: 0 },
+  { x: 980, y: 0.64, stage: 0 },
+  { x: 1160, y: 0.61, stage: 0 }
 ];
 
-for (let i = 0; i < 45; i++) {
+for (let i = 0; i < 60; i++) {
   fireflies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -208,13 +303,11 @@ function addParticles(x, y, amount = 18) {
 
 function fairySing(targetPlant = null) {
   playSound(sounds.fairy);
-  fairy.glow = 40;
+  fairy.glow = 42;
   addParticles(fairy.x, fairy.y, 28);
 
   if (targetPlant) {
-    setTimeout(() => {
-      growPlant(targetPlant);
-    }, 350);
+    setTimeout(() => growPlant(targetPlant), 350);
   }
 }
 
@@ -234,6 +327,7 @@ function growPlant(plant) {
   }
 
   playSound(sounds.sparkle);
+
   score += 10;
   scoreEl.textContent = score;
 
@@ -242,7 +336,7 @@ function growPlant(plant) {
 
   if (restored >= plants.length) {
     messageEl.innerHTML =
-      "🌸 The garden is restored.<br>Oracle Message: The smallest song can wake a sleeping world.";
+      "🌸 The fairy garden is blooming again.<br>Message: The smallest song can wake a sleeping world.";
   } else {
     messageEl.textContent = "The fairy bells drift through the garden… something begins to grow.";
   }
@@ -271,7 +365,7 @@ canvas.addEventListener("click", e => {
     }
   });
 
-  if (closest && closestDist < 120) {
+  if (closest && closestDist < 150) {
     fairy.x += (closest.x - fairy.x) * 0.45;
     fairy.y += ((canvas.height * closest.y) - 120 - fairy.y) * 0.45;
     fairySing(closest);
@@ -281,18 +375,16 @@ canvas.addEventListener("click", e => {
 function drawBackground() {
   const grd = ctx.createLinearGradient(0, 0, 0, canvas.height);
   grd.addColorStop(0, "#8d74b8");
-  grd.addColorStop(0.45, "#577868");
+  grd.addColorStop(0.45, "#587869");
   grd.addColorStop(1, "#203b2e");
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // moon glow
   ctx.beginPath();
   ctx.arc(canvas.width - 140, 110, 70, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(255,245,220,0.45)";
+  ctx.fillStyle = "rgba(255,245,230,0.45)";
   ctx.fill();
 
-  // hills
   ctx.fillStyle = "rgba(30, 71, 50, 0.65)";
   ctx.beginPath();
   ctx.moveTo(0, canvas.height * 0.72);
@@ -302,7 +394,6 @@ function drawBackground() {
   ctx.lineTo(0, canvas.height);
   ctx.fill();
 
-  // ground
   ctx.fillStyle = "#243f2d";
   ctx.fillRect(0, canvas.height * 0.82, canvas.width, canvas.height * 0.18);
 }
@@ -340,14 +431,12 @@ function drawFairy() {
     fairy.glow *= 0.92;
   }
 
-  // wings
   ctx.fillStyle = "rgba(220, 255, 255, 0.45)";
   ctx.beginPath();
   ctx.ellipse(-24, -8, 22, 42, -0.5, 0, Math.PI * 2);
   ctx.ellipse(24, -8, 22, 42, 0.5, 0, Math.PI * 2);
   ctx.fill();
 
-  // dress/body
   ctx.fillStyle = "#f5d4ff";
   ctx.beginPath();
   ctx.moveTo(0, -18);
@@ -356,19 +445,16 @@ function drawFairy() {
   ctx.closePath();
   ctx.fill();
 
-  // head
   ctx.beginPath();
   ctx.arc(0, -34, 14, 0, Math.PI * 2);
   ctx.fillStyle = "#ffe7cf";
   ctx.fill();
 
-  // hair
   ctx.beginPath();
   ctx.arc(0, -42, 15, Math.PI, 0);
   ctx.fillStyle = "#f6e1a8";
   ctx.fill();
 
-  // wand
   ctx.strokeStyle = "#fff9bf";
   ctx.lineWidth = 3;
   ctx.beginPath();
@@ -482,11 +568,9 @@ function drawParticles() {
 function gameLoop() {
   drawBackground();
   drawFireflies();
-
   plants.forEach(drawPlant);
   drawFairy();
   drawParticles();
-
   requestAnimationFrame(gameLoop);
 }
 
