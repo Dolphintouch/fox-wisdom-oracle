@@ -1,4 +1,4 @@
-<!-- FULL FINAL CODE: UI fixed with Home button + Treasure Room level card -->
+<!-- CLEAN PLAY VERSION: editor removed, saved layouts disabled, Misty Meadows restored -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -997,6 +997,36 @@ body.editorOn #editorPanel{
   box-shadow:0 0 24px #fff7a8!important;
 }
 
+
+/* ===== CLEAN PLAY VERSION: hide editor UI and editor outlines ===== */
+#editorPanel,
+#safeEditorMiniBar,
+#platformEditorPanel,
+#platformEditBtn,
+#editorToggleBtn{
+  display:none!important;
+}
+body.editorOn,
+body.platformEditorOn{
+  cursor:default!important;
+}
+.hitbox::after{
+  display:none!important;
+}
+.editorOn .hitbox,
+.editorOn .treasure,
+.editorOn .boulder,
+.editorOn .rock,
+.editorOn .wish,
+.editorOn .sheep,
+.editorOn .chicken,
+.editorOn .egg,
+.editorOn .mushroom,
+.editorOn .portal{
+  outline:none!important;
+  cursor:default!important;
+}
+
 </style>
 
 </head>
@@ -1005,21 +1035,7 @@ body.editorOn #editorPanel{
 
 
 
-<script>
-/* ===== ONE TIME CLEANER: remove old editor saves so exact built-in Treasure Room loads ===== */
-try{
-  [
-    "foxfire_custom_level_layouts_v1",
-    "foxfire_editor_levels_backup",
-    "foxfire_custom_level_layouts_v2_exact_treasure",
-    "foxfire_editor_levels_backup_v2_exact_treasure",
-    "foxfire_custom_level_layouts_v3_your_saved_treasure",
-    "foxfire_editor_levels_backup_v3_your_saved_treasure",
-    "foxfire_editor_save_final_fixed_v5",
-    "foxfire_editor_backup_final_fixed_v5"
-  ].forEach(k=>localStorage.removeItem(k));
-}catch(e){}
-</script>
+
 
 
 
@@ -1044,7 +1060,6 @@ try{
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
-<button onclick="toggleEditor()" id="editorToggleBtn">Editor: Off</button>
 <button onclick="resetLevel()">Restart</button>
 <button onclick="goHome()">🏡 Home</button>
 </div>  <div id="sidePanel">
@@ -1115,19 +1130,6 @@ try{
 </div>
 
 
-<div id="editorPanel">
-  <b>🌿 Ledge & Chest Editor</b><br>
-  <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
-  <button onclick="saveCurrentLevelLayout()">Save To Browser</button>
-  <button onclick="loadEditorFromBrowser()">Load Saved</button>
-  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
-  <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorOutput" placeholder="Level data will appear here."></textarea>
-  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
-  </div>
-</div>
 <div id="endingScreen">
   <div class="endingBox">
     <h1>✨ You Completed the Forest ✨</h1>
@@ -2297,714 +2299,25 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
-<script>
-/* ===== RESTORED SIMPLE EDITOR HELPERS ===== */
-(function(){
-  if (window.__foxfireEditorRestored) return;
-  window.__foxfireEditorRestored = true;
 
-  window.toggleEditor = window.toggleEditor || function(){
-    document.body.classList.toggle("editorOn");
-    const btn = document.getElementById("editorToggleBtn");
-    if (btn) btn.textContent = document.body.classList.contains("editorOn") ? "Editor: On" : "Editor: Off";
-  };
 
-  window.copyCurrentLevelData = window.copyCurrentLevelData || function(){
-    const box = document.getElementById("editorOutput");
-    if (!box) return;
 
-    let levelData = null;
-    try {
-      if (typeof levels !== "undefined" && typeof currentLevel !== "undefined") {
-        levelData = levels[currentLevel];
-      }
-    } catch(e) {}
 
-    box.value = levelData ? JSON.stringify(levelData, null, 2) : "Could not find current level data.";
-    box.select();
-    try { document.execCommand("copy"); } catch(e) {}
-  };
 
-  window.saveEditorToBrowser = window.saveEditorToBrowser || function(){
-    try {
-      if (typeof levels === "undefined") return alert("Could not find levels.");
-      localStorage.setItem("foxfire_editor_backup_final_exact_treasure_v6", JSON.stringify(levels));
-      alert("Saved ledges/chest/level data to this browser.");
-    } catch(e) {
-      alert("Save failed: " + e.message);
-    }
-  };
 
-  window.loadEditorFromBrowser = window.loadEditorFromBrowser || function(){
-    try {
-      const saved = localStorage.getItem("foxfire_editor_backup_final_exact_treasure_v6");
-      if (!saved) return alert("No saved editor data found in this browser.");
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && typeof levels !== "undefined") {
-        for (let i = 0; i < parsed.length; i++) levels[i] = parsed[i];
-        if (typeof changeLevel === "function" && typeof currentLevel !== "undefined") changeLevel(currentLevel);
-        else location.reload();
-        alert("Loaded saved editor data.");
-      }
-    } catch(e) {
-      alert("Load failed: " + e.message);
-    }
-  };
 
-  window.resetEditorBrowserSave = window.resetEditorBrowserSave || function(){
-    localStorage.removeItem("foxfire_editor_backup_final_exact_treasure_v6");
-    alert("Browser editor save removed.");
-  };
-})();
-</script>
 
 
-<script>
-/* ===== EDITOR BUTTON SAFETY PATCH ===== */
-(function(){
-  if(window.__editorButtonSafetyPatch) return;
-  window.__editorButtonSafetyPatch = true;
 
-  window.addPlatformBox = window.addPlatformBox || function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
-    levels[currentLevel].platforms.push({x: Math.round((cameraX||0)+350), y: 420, w: 220, h: 30});
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
-  };
 
-  window.addHazardBox = window.addHazardBox || function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
-    levels[currentLevel].hazards = levels[currentLevel].hazards || [];
-    levels[currentLevel].hazards.push({x: Math.round((cameraX||0)+420), y: 500, w: 180, h: 40});
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
-  };
 
-  window.saveCurrentLevelLayout = window.saveCurrentLevelLayout || function(){
-    try{
-      const key = "foxfire_editor_save_final_exact_treasure_v6";
-      const saved = JSON.parse(localStorage.getItem(key)||"{}");
-      saved[currentLevel] = {
-        platforms: levels[currentLevel].platforms,
-        hazards: levels[currentLevel].hazards || [],
-        treasure: levels[currentLevel].treasure || null
-      };
-      localStorage.setItem(key, JSON.stringify(saved));
-      alert("Saved this level layout to this browser.");
-    }catch(e){ alert("Save failed: " + e.message); }
-  };
 
-  window.clearSavedLevelLayout = window.clearSavedLevelLayout || function(){
-    try{
-      const key = "foxfire_editor_save_final_exact_treasure_v6";
-      const saved = JSON.parse(localStorage.getItem(key)||"{}");
-      delete saved[currentLevel];
-      localStorage.setItem(key, JSON.stringify(saved));
-      alert("Cleared saved layout for this level.");
-    }catch(e){ alert("Clear failed: " + e.message); }
-  };
 
-  window.copyLevelCode = window.copyLevelCode || function(){
-    const box = document.getElementById("editorCode");
-    if(!box) return;
-    box.value = JSON.stringify(levels[currentLevel], null, 2);
-    box.select();
-    try{ document.execCommand("copy"); }catch(e){}
-  };
-})();
-</script>
 
 
-<script>
-/* ===== ADD LEDGES FIX - STRONG PATCH ===== */
-(function(){
-  if(window.__addLedgesStrongPatch) return;
-  window.__addLedgesStrongPatch = true;
 
-  function getActiveLevel(){
-    if(typeof levels !== "undefined" && typeof currentLevel !== "undefined") return levels[currentLevel];
-    return null;
-  }
 
-  function refreshLevelSafely(){
-    try{
-      if(typeof buildLevel === "function"){
-        buildLevel(currentLevel);
-      }else if(typeof renderLevel === "function"){
-        renderLevel(currentLevel);
-      }else if(typeof changeLevel === "function"){
-        changeLevel(currentLevel);
-      }else{
-        // Manual fallback: create visible hitbox for the newest platform
-        const lvl = getActiveLevel();
-        if(!lvl || !lvl.platforms || !world) return;
-        const p = lvl.platforms[lvl.platforms.length - 1];
-        const div = document.createElement("div");
-        div.className = "hitbox editorGeneratedLedge";
-        div.dataset.editorIndex = String(lvl.platforms.length - 1);
-        div.style.left = p.x + "px";
-        div.style.top = p.y + "px";
-        div.style.width = p.w + "px";
-        div.style.height = p.h + "px";
-        world.appendChild(div);
-      }
-    }catch(e){
-      console.warn("Refresh failed, using manual ledge fallback", e);
-      const lvl = getActiveLevel();
-      if(!lvl || !lvl.platforms || !world) return;
-      const p = lvl.platforms[lvl.platforms.length - 1];
-      const div = document.createElement("div");
-      div.className = "hitbox editorGeneratedLedge";
-      div.dataset.editorIndex = String(lvl.platforms.length - 1);
-      div.style.left = p.x + "px";
-      div.style.top = p.y + "px";
-      div.style.width = p.w + "px";
-      div.style.height = p.h + "px";
-      world.appendChild(div);
-    }
-  }
 
-  window.addPlatformBox = function(){
-    const lvl = getActiveLevel();
-    if(!lvl){
-      alert("Could not find the current level.");
-      return;
-    }
-
-    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
-
-    const newLedge = {
-      x: Math.round((typeof cameraX !== "undefined" ? cameraX : 0) + 420),
-      y: 420,
-      w: 260,
-      h: 32
-    };
-
-    lvl.platforms.push(newLedge);
-
-    refreshLevelSafely();
-
-    // Keep editor open after redraw
-    document.body.classList.add("editorOn");
-    if(typeof world !== "undefined" && world) {
-      world.classList.add("editorOn");
-      world.classList.add("showHitboxes");
-    }
-    if(typeof editorMode !== "undefined") editorMode = true;
-    if(typeof showHitboxes !== "undefined") showHitboxes = true;
-
-    const panel = document.getElementById("editorPanel");
-    if(panel) panel.style.display = "block";
-
-    const btn = document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent = "Editor: On";
-
-    const ledgeBtn = document.getElementById("ledgeBtn");
-    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
-
-    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
-    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
-    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save this level.");
-
-    console.log("Added ledge:", newLedge);
-  };
-
-  window.copyLevelCode = function(){
-    const box = document.getElementById("editorCode");
-    const lvl = getActiveLevel();
-    if(!box || !lvl) return;
-    box.value = JSON.stringify(lvl, null, 2);
-    box.select();
-    try{ document.execCommand("copy"); }catch(e){}
-  };
-})();
-</script>
-
-
-<script>
-/* ===== EMERGENCY ADD LEDGE BUTTON FIX ===== */
-(function(){
-  if(window.__emergencyAddLedgeFix) return;
-  window.__emergencyAddLedgeFix = true;
-
-  function currentLvl(){
-    if(typeof levels === "undefined") return null;
-    if(typeof currentLevel === "undefined") return levels[0];
-    return levels[currentLevel];
-  }
-
-  function drawOneLedge(p, index){
-    if(typeof world === "undefined" || !world) return;
-
-    const ledge = document.createElement("div");
-    ledge.className = "hitbox editorMadeLedge";
-    ledge.dataset.platformIndex = index;
-    ledge.style.left = p.x + "px";
-    ledge.style.top = p.y + "px";
-    ledge.style.width = p.w + "px";
-    ledge.style.height = p.h + "px";
-    ledge.style.position = "absolute";
-    ledge.style.zIndex = "999";
-    ledge.style.background = "rgba(80,255,130,.35)";
-    ledge.style.outline = "3px solid rgba(255,245,130,.95)";
-    ledge.style.borderRadius = "12px";
-    ledge.style.pointerEvents = "auto";
-    ledge.style.cursor = "move";
-    ledge.innerHTML = '<span style="position:absolute;top:-22px;left:0;color:#fff8b8;text-shadow:0 0 6px #000;font-size:12px;">new ledge</span>';
-
-    let dragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    ledge.addEventListener("pointerdown", function(e){
-      if(!document.body.classList.contains("editorOn")) return;
-      dragging = true;
-      offsetX = e.clientX - ledge.getBoundingClientRect().left;
-      offsetY = e.clientY - ledge.getBoundingClientRect().top;
-      ledge.setPointerCapture(e.pointerId);
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    ledge.addEventListener("pointermove", function(e){
-      if(!dragging) return;
-      const gameRect = game.getBoundingClientRect();
-      const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-      p.x = Math.round(e.clientX - gameRect.left + cam - offsetX);
-      p.y = Math.round(e.clientY - gameRect.top - offsetY);
-      ledge.style.left = p.x + "px";
-      ledge.style.top = p.y + "px";
-      if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    ledge.addEventListener("pointerup", function(e){
-      dragging = false;
-      try{ ledge.releasePointerCapture(e.pointerId); }catch(err){}
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    world.appendChild(ledge);
-  }
-
-  window.addNewLedgeNow = function(){
-    const lvl = currentLvl();
-    if(!lvl){
-      alert("Could not find the current level.");
-      return;
-    }
-
-    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
-
-    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-    const p = {
-      x: Math.round(cam + 520),
-      y: 360,
-      w: 260,
-      h: 34
-    };
-
-    lvl.platforms.push(p);
-
-    // Try normal game redraw first
-    let redrawn = false;
-    try{
-      if(typeof buildLevel === "function"){
-        buildLevel(currentLevel);
-        redrawn = true;
-      }else if(typeof changeLevel === "function"){
-        changeLevel(currentLevel);
-        redrawn = true;
-      }
-    }catch(e){
-      console.warn("Normal redraw failed, drawing ledge manually", e);
-    }
-
-    // Always draw a visible ledge so the button visibly works
-    drawOneLedge(p, lvl.platforms.length - 1);
-
-    document.body.classList.add("editorOn");
-    if(typeof world !== "undefined" && world){
-      world.classList.add("editorOn");
-      world.classList.add("showHitboxes");
-    }
-    if(typeof editorMode !== "undefined") editorMode = true;
-    if(typeof showHitboxes !== "undefined") showHitboxes = true;
-
-    const panel = document.getElementById("editorPanel");
-    if(panel) panel.style.display = "block";
-    const btn = document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent = "Editor: On";
-    const ledgeBtn = document.getElementById("ledgeBtn");
-    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
-
-    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save.");
-  };
-
-  // Force all visible Add Safe Ledge buttons to use the fixed function
-  setTimeout(function(){
-    document.querySelectorAll("button").forEach(function(btn){
-      if((btn.textContent || "").trim().toLowerCase().includes("add safe ledge")){
-        btn.onclick = window.addNewLedgeNow;
-      }
-    });
-  }, 500);
-})();
-</script>
-
-
-<script>
-/* ===== FINAL EDITOR SAVE FIX: save actual dragged positions ===== */
-(function(){
-  window.saveCurrentLevelLayout = function(){
-    if(typeof saveEditedLevel === "function"){
-      saveEditedLevel();
-      return;
-    }
-    alert("Save function was not found.");
-  };
-
-  window.loadEditorFromBrowser = function(){
-    try{
-      const saved=getSavedLayouts();
-      if(!saved[currentLevel]) return alert("No saved layout found for this level.");
-      applySavedLayoutForLevel();
-      if(typeof buildLevel==="function") buildLevel(currentLevel);
-      if(!document.body.classList.contains("editorOn") && typeof toggleEditor==="function") toggleEditor();
-      alert("Loaded saved ledges and chest for this level.");
-    }catch(e){
-      alert("Load failed: "+e.message);
-    }
-  };
-
-  window.resetEditorBrowserSave = function(){
-    try{
-      const saved=getSavedLayouts();
-      delete saved[currentLevel];
-      saveLayouts(saved);
-      alert("Reset saved layout for this level.");
-      if(typeof buildLevel==="function") buildLevel(currentLevel);
-    }catch(e){
-      alert("Reset failed: "+e.message);
-    }
-  };
-})();
-</script>
-
-
-<script>
-/* ===== FINAL ADD LEDGE FIX: adds to real platform data, then redraws ===== */
-(function(){
-  window.addNewLedgeNow = function(){
-    if(typeof levels==="undefined" || typeof currentLevel==="undefined"){
-      alert("Could not find current level.");
-      return;
-    }
-
-    const L=levels[currentLevel];
-    if(!Array.isArray(L.platforms)) L.platforms=[];
-
-    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-    L.platforms.push({
-      x: Math.round(cam + 520),
-      y: 360,
-      w: 260,
-      h: 34
-    });
-
-    if(typeof buildLevel==="function") buildLevel(currentLevel);
-
-    document.body.classList.add("editorOn");
-    if(typeof world!=="undefined" && world){
-      world.classList.add("editorOn");
-      world.classList.add("showHitboxes");
-    }
-    if(typeof editorMode!=="undefined") editorMode=true;
-    if(typeof showHitboxes!=="undefined") showHitboxes=true;
-
-    const panel=document.getElementById("editorPanel");
-    if(panel) panel.style.display="block";
-    const btn=document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent="Editor: On";
-    const ledgeBtn=document.getElementById("ledgeBtn");
-    if(ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
-
-    if(typeof attachResizeHandlesToAll==="function") attachResizeHandlesToAll();
-    if(typeof makeObjectsEditable==="function") makeObjectsEditable();
-    if(typeof refreshEditorOutput==="function") refreshEditorOutput();
-    if(typeof setMessage==="function") setMessage("New real ledge added. Drag it, then click Save To Browser.");
-  };
-
-  setTimeout(function(){
-    document.querySelectorAll("button").forEach(function(btn){
-      if((btn.textContent||"").trim().toLowerCase().includes("add safe ledge")){
-        btn.onclick=window.addNewLedgeNow;
-      }
-    });
-  },300);
-})();
-</script>
-
-
-<script>
-/* ===== FINAL OVERRIDE: editor saves exact dragged positions and add ledge does not get overwritten ===== */
-(function(){
-  const FINAL_KEY = "foxfire_editor_save_final_exact_treasure_v6";
-
-  function deepClone(obj){
-    return JSON.parse(JSON.stringify(obj));
-  }
-
-  function savedLayouts(){
-    try{return JSON.parse(localStorage.getItem(FINAL_KEY)||"{}");}
-    catch(e){return{};}
-  }
-
-  function writeLayouts(obj){
-    localStorage.setItem(FINAL_KEY, JSON.stringify(obj));
-  }
-
-  function num(v, fallback=0){
-    const n = parseFloat(v);
-    return Number.isFinite(n) ? n : fallback;
-  }
-
-  function levelBoxFromEl(el){
-    return {
-      x: Math.round(num(el.style.left, num(el.dataset.x))),
-      y: Math.round(num(el.style.bottom, num(el.dataset.y))),
-      w: Math.round(num(el.style.width, num(el.dataset.w, 220))),
-      h: Math.round(num(el.style.height, num(el.dataset.h, 32)))
-    };
-  }
-
-  function objectPointFromEl(el){
-    const visual = num(el.dataset.visualOffset, 0);
-    return {
-      x: Math.round(num(el.style.left, 0)),
-      y: Math.round(num(el.style.bottom, 0) - visual)
-    };
-  }
-
-  function groupName(el){
-    if(el.classList.contains("wish"))return "wishes";
-    if(el.classList.contains("sheep"))return "sheep";
-    if(el.classList.contains("chicken"))return "chickens";
-    if(el.classList.contains("egg"))return "eggs";
-    if(el.classList.contains("mushroom"))return "mushrooms";
-    if(el.classList.contains("rock"))return "rocks";
-    return "";
-  }
-
-  window.syncCurrentLevelFromEditorScreen = function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined" || !levels[currentLevel]) return null;
-    const L = levels[currentLevel];
-
-    L.platforms = Array.from(world.querySelectorAll(".hitbox"))
-      .filter(el => !el.classList.contains("resize-handle") && el.style.display !== "none")
-      .map(levelBoxFromEl);
-
-    L.hazards = Array.from(world.querySelectorAll(".hazardBox"))
-      .filter(el => el.style.display !== "none")
-      .map(levelBoxFromEl);
-
-    const groups = {wishes:[], sheep:[], chickens:[], eggs:[], mushrooms:[], rocks:[]};
-
-    world.querySelectorAll(".wish,.sheep,.chicken,.egg,.mushroom,.rock").forEach(el=>{
-      if(el.dataset.done === "yes") return;
-      if(el.dataset.hidden === "yes") return;
-      const g = groupName(el);
-      if(g) groups[g].push(objectPointFromEl(el));
-    });
-
-    Object.assign(L, groups);
-
-    const portal = document.getElementById("levelPortal");
-    if(portal) L.portal = objectPointFromEl(portal);
-
-    const chest = document.getElementById("finalTreasure") || world.querySelector(".treasure");
-    if(chest) L.treasure = objectPointFromEl(chest);
-
-    return L;
-  };
-
-  window.getSavedLayouts = function(){
-    return savedLayouts();
-  };
-
-  window.saveLayouts = function(obj){
-    writeLayouts(obj);
-  };
-
-  window.applySavedLayoutForLevel = function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
-    const saved = savedLayouts();
-    const layout = saved[currentLevel];
-    if(!layout) return;
-
-    const L = levels[currentLevel];
-    ["platforms","hazards","wishes","sheep","chickens","eggs","mushrooms","rocks"].forEach(k=>{
-      if(Array.isArray(layout[k])) L[k] = deepClone(layout[k]);
-    });
-    if(layout.portal) L.portal = deepClone(layout.portal);
-    if(layout.treasure) L.treasure = deepClone(layout.treasure);
-  };
-
-  window.saveEditedLevel = function(){
-    const L = window.syncCurrentLevelFromEditorScreen();
-    if(!L){
-      alert("Save failed: could not read this level.");
-      return;
-    }
-
-    const saved = savedLayouts();
-    saved[currentLevel] = {
-      platforms: deepClone(L.platforms || []),
-      hazards: deepClone(L.hazards || []),
-      wishes: deepClone(L.wishes || []),
-      sheep: deepClone(L.sheep || []),
-      chickens: deepClone(L.chickens || []),
-      eggs: deepClone(L.eggs || []),
-      mushrooms: deepClone(L.mushrooms || []),
-      rocks: deepClone(L.rocks || []),
-      portal: L.portal ? deepClone(L.portal) : null,
-      treasure: L.treasure ? deepClone(L.treasure) : null
-    };
-    writeLayouts(saved);
-
-    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-    if(typeof setMessage === "function") setMessage("Saved exactly where you placed the ledges and chest.");
-    alert("Saved exactly where you placed the ledges and chest.");
-  };
-
-  window.saveCurrentLevelLayout = function(){
-    window.saveEditedLevel();
-  };
-
-  window.loadEditorFromBrowser = function(){
-    const saved = savedLayouts();
-    if(!saved[currentLevel]){
-      alert("No saved layout found for this level.");
-      return;
-    }
-    window.applySavedLayoutForLevel();
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-    turnEditorBackOn();
-    alert("Loaded saved layout.");
-  };
-
-  window.resetEditorBrowserSave = function(){
-    const saved = savedLayouts();
-    delete saved[currentLevel];
-    writeLayouts(saved);
-    alert("Reset saved layout for this level.");
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-    turnEditorBackOn();
-  };
-
-  function storeCurrentLevelToFinalSave(){
-    const saved = savedLayouts();
-    const L = levels[currentLevel];
-    saved[currentLevel] = {
-      platforms: deepClone(L.platforms || []),
-      hazards: deepClone(L.hazards || []),
-      wishes: deepClone(L.wishes || []),
-      sheep: deepClone(L.sheep || []),
-      chickens: deepClone(L.chickens || []),
-      eggs: deepClone(L.eggs || []),
-      mushrooms: deepClone(L.mushrooms || []),
-      rocks: deepClone(L.rocks || []),
-      portal: L.portal ? deepClone(L.portal) : null,
-      treasure: L.treasure ? deepClone(L.treasure) : null
-    };
-    writeLayouts(saved);
-  }
-
-  function turnEditorBackOn(){
-    document.body.classList.add("editorOn");
-    if(typeof world !== "undefined" && world){
-      world.classList.add("editorOn");
-      world.classList.add("showHitboxes");
-    }
-    if(typeof editorMode !== "undefined") editorMode = true;
-    if(typeof showHitboxes !== "undefined") showHitboxes = true;
-
-    const panel = document.getElementById("editorPanel");
-    if(panel) panel.style.display = "block";
-
-    const btn = document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent = "Editor: On";
-
-    const ledgeBtn = document.getElementById("ledgeBtn");
-    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
-
-    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
-    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
-    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
-  }
-
-  window.addNewLedgeNow = function(){
-    if(typeof levels === "undefined" || typeof currentLevel === "undefined" || !levels[currentLevel]){
-      alert("Could not find current level.");
-      return;
-    }
-
-    // First capture whatever is already on screen, so the rebuild cannot revert it.
-    window.syncCurrentLevelFromEditorScreen();
-
-    const L = levels[currentLevel];
-    if(!Array.isArray(L.platforms)) L.platforms = [];
-
-    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
-    L.platforms.push({
-      x: Math.round(cam + 520),
-      y: 360,
-      w: 260,
-      h: 34
-    });
-
-    // Save immediately BEFORE buildLevel, because buildLevel applies saved layouts.
-    storeCurrentLevelToFinalSave();
-
-    if(typeof buildLevel === "function") buildLevel(currentLevel);
-    turnEditorBackOn();
-
-    if(typeof setMessage === "function") setMessage("New ledge added. Drag it, then click Save To Browser.");
-  };
-
-  window.copyLevelCode = function(){
-    window.syncCurrentLevelFromEditorScreen();
-    const box = document.getElementById("editorOutput") || document.getElementById("editorCode");
-    if(!box) return;
-    box.value = JSON.stringify(levels[currentLevel], null, 2);
-    box.focus();
-    box.select();
-    try{document.execCommand("copy");}catch(e){}
-  };
-
-  window.refreshEditorOutput = function(){
-    const box = document.getElementById("editorOutput") || document.getElementById("editorCode");
-    if(!box || typeof levels === "undefined" || typeof currentLevel === "undefined") return;
-    const L = window.syncCurrentLevelFromEditorScreen() || levels[currentLevel];
-    box.value = JSON.stringify(L, null, 2);
-  };
-
-  setTimeout(function(){
-    document.querySelectorAll("button").forEach(btn=>{
-      const text = (btn.textContent || "").trim().toLowerCase();
-      if(text.includes("add safe ledge")) btn.onclick = window.addNewLedgeNow;
-      if(text.includes("save to browser")) btn.onclick = window.saveCurrentLevelLayout;
-      if(text.includes("load saved")) btn.onclick = window.loadEditorFromBrowser;
-      if(text.includes("reset browser save")) btn.onclick = window.resetEditorBrowserSave;
-      if(text.includes("copy level")) btn.onclick = window.copyLevelCode;
-    });
-  }, 500);
-})();
-</script>
 
 
 <script>
@@ -3050,6 +2363,45 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
     }
     window.updateLevelCards();
   }, 200);
+})();
+</script>
+
+
+<script>
+/* ===== CLEAN PLAY VERSION: editor and saved browser layouts disabled ===== */
+(function(){
+  try{
+    [
+      "foxfire_custom_level_layouts_v1",
+      "foxfire_editor_levels_backup",
+      "foxfire_custom_level_layouts_v2_exact_treasure",
+      "foxfire_editor_levels_backup_v2_exact_treasure",
+      "foxfire_custom_level_layouts_v3_your_saved_treasure",
+      "foxfire_editor_levels_backup_v3_your_saved_treasure",
+      "foxfire_editor_save_final_fixed_v5",
+      "foxfire_editor_backup_final_fixed_v5",
+      "foxfire_editor_save_final_exact_treasure_v6",
+      "foxfire_editor_backup_final_exact_treasure_v6"
+    ].forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+
+  window.getSavedLayouts = function(){ return {}; };
+  window.saveLayouts = function(){};
+  window.applySavedLayoutForLevel = function(){};
+  window.saveEditedLevel = function(){};
+  window.saveCurrentLevelLayout = function(){};
+  window.loadEditorFromBrowser = function(){ alert("Editor removed in clean play version."); };
+  window.resetEditorBrowserSave = function(){ alert("Editor removed in clean play version."); };
+  window.copyLevelCode = function(){};
+  window.addNewLedgeNow = function(){ alert("Editor removed in clean play version."); };
+
+  window.toggleEditor = function(){
+    document.body.classList.remove("editorOn");
+    if(typeof world !== "undefined" && world){
+      world.classList.remove("editorOn");
+    }
+    alert("Editor removed in clean play version.");
+  };
 })();
 </script>
 
