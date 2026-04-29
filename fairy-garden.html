@@ -6,13 +6,14 @@
 <title>Fairy Garden</title>
 
 <style>
-body{margin:0;overflow:hidden;font-family:Georgia}
+body{margin:0;overflow:hidden;font-family:Georgia;background:black}
 
+/* START SCREEN */
 #startScreen{
   position:absolute;
   width:100%;
   height:100%;
-  background:url("fairy-start.png") center/cover no-repeat;
+  background:url("fairy-start.png") center center / 100% 100% no-repeat;
   display:flex;
   justify-content:center;
   align-items:flex-end;
@@ -28,23 +29,31 @@ body{margin:0;overflow:hidden;font-family:Georgia}
   cursor:pointer;
 }
 
+/* GAME */
 #game{
   display:none;
   width:100vw;
   height:100vh;
-  background:url("level1-whispering-meadow.png") center/cover no-repeat;
+  background:url("level1-whispering-meadow.png") center center / 100% 100% no-repeat;
   position:relative;
 }
 
+/* FAIRY */
 #fairy{
   position:absolute;
   width:130px;
   height:130px;
   left:45%;
   top:60%;
-  background:url("fairy-idle.png") center/contain no-repeat;
+  background:center/contain no-repeat;
+  background-color:transparent;
+  transform-origin:center;
+  mix-blend-mode:multiply;
+  filter:drop-shadow(0 0 12px gold) brightness(1.05) contrast(1.05);
+  z-index:10;
 }
 
+/* UI */
 #ui{
   position:absolute;
   top:10px;
@@ -83,18 +92,28 @@ button{
 <script>
 let fairy=document.getElementById("fairy");
 let score=0;
+
 let x=window.innerWidth*0.45;
 let y=window.innerHeight*0.6;
 
+let facing=1;
+
+/* SPRITE FUNCTION */
 function sprite(img){
   fairy.style.backgroundImage=`url("${img}")`;
+  fairy.style.backgroundSize="contain";
+  fairy.style.backgroundRepeat="no-repeat";
+  fairy.style.backgroundPosition="center";
 }
 
+/* UPDATE POSITION + FLIP */
 function update(){
   fairy.style.left=x+"px";
   fairy.style.top=y+"px";
+  fairy.style.transform=`scaleX(${facing})`;
 }
 
+/* SING */
 function sing(){
   sprite("fairy-sing.png");
   score+=10;
@@ -103,26 +122,59 @@ function sing(){
   setTimeout(()=>{
     if(score>50){
       sprite("fairy-happy.png");
-    } else {
+    }else{
       sprite("fairy-idle.png");
     }
   },800);
 }
 
+/* CONTROLS */
 document.addEventListener("keydown",e=>{
-  if(e.key==="ArrowRight"){x+=10;sprite("fairy-run.png")}
-  if(e.key==="ArrowLeft"){x-=10;sprite("fairy-run.png")}
-  if(e.key==="ArrowUp"){y-=10;sprite("fairy-jump.png")}
-  if(e.key==="ArrowDown"){y+=10;sprite("fairy-fly.png")}
-  if(e.key==="s"){sing()}
+
+  if(e.key==="ArrowRight"){
+    x+=10;
+    facing=1;
+    sprite("fairy-run.png");
+  }
+
+  if(e.key==="ArrowLeft"){
+    x-=10;
+    facing=-1;
+    sprite("fairy-run.png");
+  }
+
+  if(e.key==="ArrowUp"){
+    y-=10;
+    sprite("fairy-jump.png");
+  }
+
+  if(e.key==="ArrowDown"){
+    y+=10;
+    sprite("fairy-fly.png");
+  }
+
+  if(e.key.toLowerCase()==="s"){
+    sing();
+  }
+
   update();
 });
 
+/* RESET TO IDLE */
+document.addEventListener("keyup",()=>{
+  if(score<50){
+    sprite("fairy-idle.png");
+  }
+});
+
+/* START BUTTON */
 document.getElementById("startBtn").onclick=()=>{
   document.getElementById("startScreen").style.display="none";
   document.getElementById("game").style.display="block";
+  sprite("fairy-idle.png");
 };
 
+/* INIT */
 update();
 </script>
 
