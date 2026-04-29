@@ -1,4 +1,4 @@
-<!-- FULL CODE: includes your latest saved Treasure Room layout -->
+<!-- FULL FINAL CODE: editor save fixed so ledges/chest keep exact dragged positions -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -1005,12 +1005,16 @@ body.editorOn #editorPanel{
 
 
 <script>
-/* ===== ONE TIME CLEANER: load this saved Treasure Room as built-in ===== */
+/* ===== ONE TIME CLEANER: remove old broken editor saves only ===== */
 try{
-  localStorage.removeItem("foxfire_custom_level_layouts_v1");
-  localStorage.removeItem("foxfire_editor_levels_backup");
-  localStorage.removeItem("foxfire_custom_level_layouts_v2_exact_treasure");
-  localStorage.removeItem("foxfire_editor_levels_backup_v2_exact_treasure");
+  [
+    "foxfire_custom_level_layouts_v1",
+    "foxfire_editor_levels_backup",
+    "foxfire_custom_level_layouts_v2_exact_treasure",
+    "foxfire_editor_levels_backup_v2_exact_treasure",
+    "foxfire_custom_level_layouts_v3_your_saved_treasure",
+    "foxfire_editor_levels_backup_v3_your_saved_treasure"
+  ].forEach(k=>localStorage.removeItem(k));
 }catch(e){}
 </script>
 
@@ -1105,7 +1109,7 @@ try{
   <button onclick="loadEditorFromBrowser()">Load Saved</button>
   <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
   <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorCode" placeholder="Level data will appear here."></textarea>
+  <textarea id="editorOutput" placeholder="Level data will appear here."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
     Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
   </div>
@@ -1148,7 +1152,7 @@ try{
 </audio>
 
 <script>
-const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"Treasure Room challenge: collect 5 golden wishes, cross the ledges, then open the chest.",startX:90,startY:120,wishGoal:5,sheepGoal:0,platforms:[{x:0,y:70,w:300,h:46},{x:380,y:155,w:235,h:34},{x:710,y:255,w:235,h:34},{x:1045,y:355,w:245,h:34},{x:1375,y:470,w:300,h:38},{x:1080,y:590,w:220,h:34},{x:720,y:690,w:230,h:34},{x:360,y:780,w:230,h:34},{x:40,y:885,w:265,h:38},{x:39,y:555,w:260,h:34},{x:520,y:360,w:260,h:34},{x:520,y:360,w:260,h:34},{x:430,y:477,w:260,h:34}],hazards:[{x:305,y:62,w:70,h:58},{x:620,y:62,w:80,h:58},{x:960,y:62,w:75,h:58},{x:1310,y:62,w:65,h:58}],wishes:[{x:460,y:198},{x:780,y:298},{x:1140,y:398},{x:1465,y:515},{x:800,y:735}],sheep:[],chickens:[{x:1128,y:592}],eggs:[{x:1195,y:592},{x:430,y:782}],mushrooms:[{x:745,y:258},{x:390,y:783}],rocks:[{x:520,y:158},{x:1110,y:358},{x:780,y:690}],portal:{x:70,y:920},treasure:{x:1425,y:505}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){
+const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"Treasure Room challenge: collect 5 golden wishes, cross the ledges, then open the chest.",startX:90,startY:120,wishGoal:5,sheepGoal:0,platforms:[{x:0,y:70,w:300,h:46},{x:380,y:155,w:235,h:34},{x:710,y:255,w:235,h:34},{x:1045,y:355,w:245,h:34},{x:1375,y:470,w:300,h:38},{x:1080,y:590,w:220,h:34},{x:720,y:690,w:230,h:34},{x:360,y:780,w:230,h:34},{x:40,y:885,w:265,h:38},{x:39,y:555,w:260,h:34},{x:520,y:360,w:260,h:34},{x:430,y:477,w:260,h:34}],hazards:[{x:305,y:62,w:70,h:58},{x:620,y:62,w:80,h:58},{x:960,y:62,w:75,h:58},{x:1310,y:62,w:65,h:58}],wishes:[{x:460,y:198},{x:780,y:298},{x:1140,y:398},{x:1465,y:515},{x:800,y:735}],sheep:[],chickens:[{x:1128,y:592}],eggs:[{x:1195,y:592},{x:430,y:782}],mushrooms:[{x:745,y:258},{x:390,y:783}],rocks:[{x:520,y:158},{x:1110,y:358},{x:780,y:690}],portal:{x:70,y:920},treasure:{x:1425,y:505}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){
   const cleaned=await cleanImageURL(url);
   el.style.setProperty("background-image",`url("${cleaned}")`,"important");
   el.style.setProperty("background","transparent url(\"" + cleaned + "\") center/contain no-repeat","important");
@@ -1580,7 +1584,7 @@ function resetLevel(){buildLevel(currentLevel);gameStarted=true;choiceScreen.sty
 let editorMode=false;
 let selectedEditorBox=null;
 let dragData=null;
-const EDITOR_SAVE_KEY="foxfire_custom_level_layouts_v3_your_saved_treasure";
+const EDITOR_SAVE_KEY="foxfire_editor_save_final_fixed_v5";
 
 function getSavedLayouts(){
   try{return JSON.parse(localStorage.getItem(EDITOR_SAVE_KEY)||"{}")}
@@ -2310,7 +2314,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
   window.saveEditorToBrowser = window.saveEditorToBrowser || function(){
     try {
       if (typeof levels === "undefined") return alert("Could not find levels.");
-      localStorage.setItem("foxfire_editor_levels_backup_v3_your_saved_treasure", JSON.stringify(levels));
+      localStorage.setItem("foxfire_editor_backup_final_fixed_v5", JSON.stringify(levels));
       alert("Saved ledges/chest/level data to this browser.");
     } catch(e) {
       alert("Save failed: " + e.message);
@@ -2319,7 +2323,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
   window.loadEditorFromBrowser = window.loadEditorFromBrowser || function(){
     try {
-      const saved = localStorage.getItem("foxfire_editor_levels_backup_v3_your_saved_treasure");
+      const saved = localStorage.getItem("foxfire_editor_backup_final_fixed_v5");
       if (!saved) return alert("No saved editor data found in this browser.");
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && typeof levels !== "undefined") {
@@ -2334,7 +2338,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
   };
 
   window.resetEditorBrowserSave = window.resetEditorBrowserSave || function(){
-    localStorage.removeItem("foxfire_editor_levels_backup_v3_your_saved_treasure");
+    localStorage.removeItem("foxfire_editor_backup_final_fixed_v5");
     alert("Browser editor save removed.");
   };
 })();
@@ -2364,7 +2368,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
   window.saveCurrentLevelLayout = window.saveCurrentLevelLayout || function(){
     try{
-      const key = "foxfire_custom_level_layouts_v3_your_saved_treasure";
+      const key = "foxfire_editor_save_final_fixed_v5";
       const saved = JSON.parse(localStorage.getItem(key)||"{}");
       saved[currentLevel] = {
         platforms: levels[currentLevel].platforms,
@@ -2378,7 +2382,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 
   window.clearSavedLevelLayout = window.clearSavedLevelLayout || function(){
     try{
-      const key = "foxfire_custom_level_layouts_v3_your_saved_treasure";
+      const key = "foxfire_editor_save_final_fixed_v5";
       const saved = JSON.parse(localStorage.getItem(key)||"{}");
       delete saved[currentLevel];
       localStorage.setItem(key, JSON.stringify(saved));
@@ -2728,6 +2732,263 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
       }
     });
   },300);
+})();
+</script>
+
+
+<script>
+/* ===== FINAL OVERRIDE: editor saves exact dragged positions and add ledge does not get overwritten ===== */
+(function(){
+  const FINAL_KEY = "foxfire_editor_save_final_fixed_v5";
+
+  function deepClone(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function savedLayouts(){
+    try{return JSON.parse(localStorage.getItem(FINAL_KEY)||"{}");}
+    catch(e){return{};}
+  }
+
+  function writeLayouts(obj){
+    localStorage.setItem(FINAL_KEY, JSON.stringify(obj));
+  }
+
+  function num(v, fallback=0){
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function levelBoxFromEl(el){
+    return {
+      x: Math.round(num(el.style.left, num(el.dataset.x))),
+      y: Math.round(num(el.style.bottom, num(el.dataset.y))),
+      w: Math.round(num(el.style.width, num(el.dataset.w, 220))),
+      h: Math.round(num(el.style.height, num(el.dataset.h, 32)))
+    };
+  }
+
+  function objectPointFromEl(el){
+    const visual = num(el.dataset.visualOffset, 0);
+    return {
+      x: Math.round(num(el.style.left, 0)),
+      y: Math.round(num(el.style.bottom, 0) - visual)
+    };
+  }
+
+  function groupName(el){
+    if(el.classList.contains("wish"))return "wishes";
+    if(el.classList.contains("sheep"))return "sheep";
+    if(el.classList.contains("chicken"))return "chickens";
+    if(el.classList.contains("egg"))return "eggs";
+    if(el.classList.contains("mushroom"))return "mushrooms";
+    if(el.classList.contains("rock"))return "rocks";
+    return "";
+  }
+
+  window.syncCurrentLevelFromEditorScreen = function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined" || !levels[currentLevel]) return null;
+    const L = levels[currentLevel];
+
+    L.platforms = Array.from(world.querySelectorAll(".hitbox"))
+      .filter(el => !el.classList.contains("resize-handle") && el.style.display !== "none")
+      .map(levelBoxFromEl);
+
+    L.hazards = Array.from(world.querySelectorAll(".hazardBox"))
+      .filter(el => el.style.display !== "none")
+      .map(levelBoxFromEl);
+
+    const groups = {wishes:[], sheep:[], chickens:[], eggs:[], mushrooms:[], rocks:[]};
+
+    world.querySelectorAll(".wish,.sheep,.chicken,.egg,.mushroom,.rock").forEach(el=>{
+      if(el.dataset.done === "yes") return;
+      if(el.dataset.hidden === "yes") return;
+      const g = groupName(el);
+      if(g) groups[g].push(objectPointFromEl(el));
+    });
+
+    Object.assign(L, groups);
+
+    const portal = document.getElementById("levelPortal");
+    if(portal) L.portal = objectPointFromEl(portal);
+
+    const chest = document.getElementById("finalTreasure") || world.querySelector(".treasure");
+    if(chest) L.treasure = objectPointFromEl(chest);
+
+    return L;
+  };
+
+  window.getSavedLayouts = function(){
+    return savedLayouts();
+  };
+
+  window.saveLayouts = function(obj){
+    writeLayouts(obj);
+  };
+
+  window.applySavedLayoutForLevel = function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    const saved = savedLayouts();
+    const layout = saved[currentLevel];
+    if(!layout) return;
+
+    const L = levels[currentLevel];
+    ["platforms","hazards","wishes","sheep","chickens","eggs","mushrooms","rocks"].forEach(k=>{
+      if(Array.isArray(layout[k])) L[k] = deepClone(layout[k]);
+    });
+    if(layout.portal) L.portal = deepClone(layout.portal);
+    if(layout.treasure) L.treasure = deepClone(layout.treasure);
+  };
+
+  window.saveEditedLevel = function(){
+    const L = window.syncCurrentLevelFromEditorScreen();
+    if(!L){
+      alert("Save failed: could not read this level.");
+      return;
+    }
+
+    const saved = savedLayouts();
+    saved[currentLevel] = {
+      platforms: deepClone(L.platforms || []),
+      hazards: deepClone(L.hazards || []),
+      wishes: deepClone(L.wishes || []),
+      sheep: deepClone(L.sheep || []),
+      chickens: deepClone(L.chickens || []),
+      eggs: deepClone(L.eggs || []),
+      mushrooms: deepClone(L.mushrooms || []),
+      rocks: deepClone(L.rocks || []),
+      portal: L.portal ? deepClone(L.portal) : null,
+      treasure: L.treasure ? deepClone(L.treasure) : null
+    };
+    writeLayouts(saved);
+
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("Saved exactly where you placed the ledges and chest.");
+    alert("Saved exactly where you placed the ledges and chest.");
+  };
+
+  window.saveCurrentLevelLayout = function(){
+    window.saveEditedLevel();
+  };
+
+  window.loadEditorFromBrowser = function(){
+    const saved = savedLayouts();
+    if(!saved[currentLevel]){
+      alert("No saved layout found for this level.");
+      return;
+    }
+    window.applySavedLayoutForLevel();
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    turnEditorBackOn();
+    alert("Loaded saved layout.");
+  };
+
+  window.resetEditorBrowserSave = function(){
+    const saved = savedLayouts();
+    delete saved[currentLevel];
+    writeLayouts(saved);
+    alert("Reset saved layout for this level.");
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    turnEditorBackOn();
+  };
+
+  function storeCurrentLevelToFinalSave(){
+    const saved = savedLayouts();
+    const L = levels[currentLevel];
+    saved[currentLevel] = {
+      platforms: deepClone(L.platforms || []),
+      hazards: deepClone(L.hazards || []),
+      wishes: deepClone(L.wishes || []),
+      sheep: deepClone(L.sheep || []),
+      chickens: deepClone(L.chickens || []),
+      eggs: deepClone(L.eggs || []),
+      mushrooms: deepClone(L.mushrooms || []),
+      rocks: deepClone(L.rocks || []),
+      portal: L.portal ? deepClone(L.portal) : null,
+      treasure: L.treasure ? deepClone(L.treasure) : null
+    };
+    writeLayouts(saved);
+  }
+
+  function turnEditorBackOn(){
+    document.body.classList.add("editorOn");
+    if(typeof world !== "undefined" && world){
+      world.classList.add("editorOn");
+      world.classList.add("showHitboxes");
+    }
+    if(typeof editorMode !== "undefined") editorMode = true;
+    if(typeof showHitboxes !== "undefined") showHitboxes = true;
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+
+    const ledgeBtn = document.getElementById("ledgeBtn");
+    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
+    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+  }
+
+  window.addNewLedgeNow = function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined" || !levels[currentLevel]){
+      alert("Could not find current level.");
+      return;
+    }
+
+    // First capture whatever is already on screen, so the rebuild cannot revert it.
+    window.syncCurrentLevelFromEditorScreen();
+
+    const L = levels[currentLevel];
+    if(!Array.isArray(L.platforms)) L.platforms = [];
+
+    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+    L.platforms.push({
+      x: Math.round(cam + 520),
+      y: 360,
+      w: 260,
+      h: 34
+    });
+
+    // Save immediately BEFORE buildLevel, because buildLevel applies saved layouts.
+    storeCurrentLevelToFinalSave();
+
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    turnEditorBackOn();
+
+    if(typeof setMessage === "function") setMessage("New ledge added. Drag it, then click Save To Browser.");
+  };
+
+  window.copyLevelCode = function(){
+    window.syncCurrentLevelFromEditorScreen();
+    const box = document.getElementById("editorOutput") || document.getElementById("editorCode");
+    if(!box) return;
+    box.value = JSON.stringify(levels[currentLevel], null, 2);
+    box.focus();
+    box.select();
+    try{document.execCommand("copy");}catch(e){}
+  };
+
+  window.refreshEditorOutput = function(){
+    const box = document.getElementById("editorOutput") || document.getElementById("editorCode");
+    if(!box || typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    const L = window.syncCurrentLevelFromEditorScreen() || levels[currentLevel];
+    box.value = JSON.stringify(L, null, 2);
+  };
+
+  setTimeout(function(){
+    document.querySelectorAll("button").forEach(btn=>{
+      const text = (btn.textContent || "").trim().toLowerCase();
+      if(text.includes("add safe ledge")) btn.onclick = window.addNewLedgeNow;
+      if(text.includes("save to browser")) btn.onclick = window.saveCurrentLevelLayout;
+      if(text.includes("load saved")) btn.onclick = window.loadEditorFromBrowser;
+      if(text.includes("reset browser save")) btn.onclick = window.resetEditorBrowserSave;
+      if(text.includes("copy level")) btn.onclick = window.copyLevelCode;
+    });
+  }, 500);
 })();
 </script>
 
