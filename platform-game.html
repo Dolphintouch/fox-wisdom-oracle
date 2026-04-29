@@ -1130,6 +1130,21 @@ body:not(.editorOn) #safeEditorMiniBar {
 </div>
 </div>
 
+
+<div id="editorPanel">
+  <b>🌿 Forest Ledge Editor</b><br>
+  <button onclick="toggleEditor()">Editor On/Off</button>
+  <button onclick="addPlatformBox()">Add Safe Ledge</button>
+  <button onclick="addHazardBox()">Add Red Danger Area</button>
+  <button onclick="saveCurrentLevelLayout()">Save This Level</button>
+  <button onclick="clearSavedLevelLayout()">Clear Saved Level</button>
+  <button onclick="copyLevelCode()">Copy Level Code</button>
+  <textarea id="editorCode" placeholder="Copied level code appears here."></textarea>
+  <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
+    Drag green ledges and chest while Editor is on. Use white side handles to resize ledges.
+  </div>
+</div>
+
 <div id="endingScreen">
   <div class="endingBox">
     <h1>✨ You Completed the Forest ✨</h1>
@@ -1621,18 +1636,30 @@ function applySavedLayoutForLevel(){
 
 function toggleEditor(){
   editorMode=!editorMode;
+
+  document.body.classList.toggle("editorOn", editorMode);
   world.classList.toggle("editorOn",editorMode);
-  document.getElementById("editorPanel").style.display=editorMode?"block":"none";
+
+  const panel=document.getElementById("editorPanel");
+  if(panel) panel.style.display=editorMode?"block":"none";
+
+  const mini=document.getElementById("safeEditorMiniBar");
+  if(mini) mini.style.display=editorMode?"block":"none";
+
+  const btn=document.getElementById("editorToggleBtn");
+  if(btn) btn.textContent=editorMode?"Editor: On":"Editor: Off";
+
   if(editorMode){
     showHitboxes=true;
     world.classList.add("showHitboxes");
-    ledgeBtn.textContent="Ledges: Shown";
+    if(ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
     attachResizeHandlesToAll();
     makeObjectsEditable();
     refreshEditorOutput();
-    setMessage("Editor mode: drag ledges, resize with white handles, then save this level.");
+    setMessage("Editor mode: drag ledges and chest. Save this level when finished.");
   }else{
     removeAllResizeHandles();
+    setMessage("Editor off.");
   }
 }
 
@@ -2275,6 +2302,62 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
   window.resetEditorBrowserSave = window.resetEditorBrowserSave || function(){
     localStorage.removeItem("foxfire_editor_levels_backup");
     alert("Browser editor save removed.");
+  };
+})();
+</script>
+
+
+<script>
+/* ===== EDITOR BUTTON SAFETY PATCH ===== */
+(function(){
+  if(window.__editorButtonSafetyPatch) return;
+  window.__editorButtonSafetyPatch = true;
+
+  window.addPlatformBox = window.addPlatformBox || function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    levels[currentLevel].platforms.push({x: Math.round((cameraX||0)+350), y: 420, w: 220, h: 30});
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
+  };
+
+  window.addHazardBox = window.addHazardBox || function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    levels[currentLevel].hazards = levels[currentLevel].hazards || [];
+    levels[currentLevel].hazards.push({x: Math.round((cameraX||0)+420), y: 500, w: 180, h: 40});
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
+  };
+
+  window.saveCurrentLevelLayout = window.saveCurrentLevelLayout || function(){
+    try{
+      const key = "foxfire_custom_level_layouts_v1";
+      const saved = JSON.parse(localStorage.getItem(key)||"{}");
+      saved[currentLevel] = {
+        platforms: levels[currentLevel].platforms,
+        hazards: levels[currentLevel].hazards || [],
+        treasure: levels[currentLevel].treasure || null
+      };
+      localStorage.setItem(key, JSON.stringify(saved));
+      alert("Saved this level layout to this browser.");
+    }catch(e){ alert("Save failed: " + e.message); }
+  };
+
+  window.clearSavedLevelLayout = window.clearSavedLevelLayout || function(){
+    try{
+      const key = "foxfire_custom_level_layouts_v1";
+      const saved = JSON.parse(localStorage.getItem(key)||"{}");
+      delete saved[currentLevel];
+      localStorage.setItem(key, JSON.stringify(saved));
+      alert("Cleared saved layout for this level.");
+    }catch(e){ alert("Clear failed: " + e.message); }
+  };
+
+  window.copyLevelCode = window.copyLevelCode || function(){
+    const box = document.getElementById("editorCode") || document.getElementById("editorOutput");
+    if(!box) return;
+    box.value = JSON.stringify(levels[currentLevel], null, 2);
+    box.select();
+    try{ document.execCommand("copy"); }catch(e){}
   };
 })();
 </script>
