@@ -1,6 +1,4 @@
-<!-- STRICT LEDGE EDITOR VERSION: old editor handlers blocked so ledges do not snap back -->
-<!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
-<!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
+<!-- RESTORED OLD WORKING EDITOR VERSION: one editor panel, add/resize ledges, Home goes to Fox Oracle hub -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +7,7 @@
 <title>Foxfire Forest Platform Adventure</title>
 <!-- Boulder asset filename to upload: boulder-big.png -->
 <!-- VERSION: public-final-misty-safe-areas -->
-<style>*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#06110b;color:#ffe8a8;font-family:Georgia,"Times New Roman",serif}#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}#world{position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;background:url("level-misty-meadows.png") no-repeat left bottom;background-size:1792px 100vh;transform:translateX(0)}#world::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);background-size:150px 170px,240px 260px;opacity:.36;animation:fireflies 20s linear infinite}@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}.top-ui{position:absolute;top:12px;left:12px;z-index:120;display:flex;gap:8px;flex-wrap:wrap;max-width:470px}.pill,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}.top-ui button{cursor:pointer}#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:110;display:flex;flex-direction:column;gap:12px}.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}.card p{margin:0;color:#fff0cc;line-height:1.35}.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}#thumb0{background-image:url("level-misty-meadows.png")}#thumb1{background-image:url("level-twilight-hollow.png")}#thumb2{background-image:url("level-moonlit-canopy.png")}#thumb3{background-image:url("treasure-room-bg.jpg")}.sprite{position:absolute;z-index:35;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain}#fox{width:190px;height:190px;z-index:55;background-repeat:no-repeat;background-position:center bottom;background-size:160px auto;overflow:visible;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite}#fox.left{transform:scaleX(-1)}#fox.running{animation:foxRunBounce .35s ease-in-out infinite}#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}#fox.landing{animation:foxLanding .22s ease-out}@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}@keyframes foxLanding{0%{scale:1.06 .92}70%{scale:.98 1.04}100%{scale:1}}#puppy{width:88px;height:88px;z-index:50;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}.wish{width:44px;height:64px;z-index:45;filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));animation:dandelionFloat 2.8s ease-in-out infinite alternate}@keyframes dandelionFloat{from{translate:0 -4px;rotate:-4deg}to{translate:0 7px;rotate:4deg}}.sheep{width:120px;height:120px;z-index:42;filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45))}.chicken{width:125px;height:125px;z-index:42;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35))}.egg{width:40px;height:46px;z-index:43;filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45))}.rock{width:70px;height:70px;z-index:43;filter:drop-shadow(0 12px 9px rgba(0,0,0,.65))}.mushroom{width:145px;height:145px;z-index:41;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));transition:opacity .25s ease}.portal{width:100px;height:130px;z-index:46;border-radius:50%;background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);animation:portalPulse 1.25s ease-in-out infinite alternate;display:none}@keyframes portalPulse{from{scale:.95;opacity:.82}to{scale:1.06;opacity:1}}.hitbox{position:absolute;z-index:30;pointer-events:none;border-radius:999px;height:28px;background:rgba(255,232,120,0)}.showHitboxes .hitbox{background:rgba(165,255,118,.18);outline:2px solid rgba(255,236,150,.58);box-shadow:0 0 16px rgba(255,236,150,.24)}.showHitboxes .hitbox::after{content:"safe ledge";position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:12px;color:#fff0b4;text-shadow:0 0 7px black;white-space:nowrap}.hazardBox{position:absolute;z-index:34;pointer-events:none;border-radius:8px;background:rgba(255,80,80,0);filter:none}.showHitboxes .hazardBox{outline:2px solid rgba(255,80,80,.6);background-color:rgba(255,50,50,.12)}#choiceScreen{position:absolute;inset:0;z-index:9990;display:flex;pointer-events:auto;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64)}.choiceBox{width:min(820px,92vw);position:relative;z-index:9998;pointer-events:auto;position:relative;z-index:9998;pointer-events:auto;border-radius:26px;border:1px solid rgba(255,230,150,.56);background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);padding:24px;text-align:center}.choiceBox h1{margin:0;color:#ffe7a6;font-size:2rem;text-shadow:0 0 16px rgba(255,220,120,.55)}.choiceCards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:16px}.foxCard{width:210px;min-height:230px;border-radius:22px;pointer-events:auto;position:relative;z-index:9999;border:1px solid rgba(255,230,150,.38);background:rgba(255,255,255,.06);padding:14px;cursor:pointer;color:#ffe8a8;font-size:1.15rem;font-weight:bold}.foxCard:hover{background:rgba(255,230,150,.12);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,220,120,.28)}.foxCard.chosen{background:rgba(255,230,150,.16);box-shadow:0 0 28px rgba(255,220,120,.45);animation:chosenPulse .75s ease-in-out infinite alternate}@keyframes chosenPulse{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.02)}}.foxPreview{width:130px;height:130px;margin:0 auto 8px;background-repeat:no-repeat;background-position:center bottom;background-size:110%;background-color:rgba(5,18,10,.58);border-radius:18px;box-shadow:inset 0 0 18px rgba(255,220,120,.08),0 0 18px rgba(255,220,120,.18);filter:drop-shadow(0 0 12px rgba(255,220,120,.7))}#femalePreview{background-image:url("female-foxy-player-idle.png")}#malePreview{background-image:url("foxy-player-idle.png")}.sparkle-pop{position:absolute;width:18px;height:18px;z-index:160;border-radius:50%;background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);pointer-events:none;animation:sparklePop .8s ease-out forwards}@keyframes sparklePop{0%{opacity:1;scale:.35}100%{opacity:0;scale:2.2;translate:0 -24px}}.floatText{position:absolute;z-index:165;color:#fff0ad;font-weight:bold;font-size:18px;text-shadow:0 0 8px #000;pointer-events:none;animation:floatTextUp .9s ease-out forwards}@keyframes floatTextUp{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -38px}}.dust{position:absolute;width:9px;height:9px;border-radius:50%;z-index:70;background:rgba(255,226,156,.85);box-shadow:0 0 12px rgba(255,226,156,.6);pointer-events:none;animation:dustPoof .7s ease-out forwards}@keyframes dustPoof{from{opacity:.9;transform:translate(-50%,-50%) scale(.35)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
+<style>*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#06110b;color:#ffe8a8;font-family:Georgia,"Times New Roman",serif}#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#06110b}#world{position:absolute;left:0;bottom:0;width:1792px;height:100vh;overflow:hidden;background:url("level-misty-meadows.png") no-repeat left bottom;background-size:1792px 100vh;transform:translateX(0)}#world::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle,rgba(255,231,150,.65) 0 2px,transparent 3px),radial-gradient(circle,rgba(255,255,220,.35) 0 1px,transparent 3px);background-size:150px 170px,240px 260px;opacity:.36;animation:fireflies 20s linear infinite}@keyframes fireflies{from{background-position:0 0,80px 50px}to{background-position:160px -220px,280px -180px}}.title{position:absolute;top:14px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(2.1rem,5vw,4.5rem);color:#ffe7a6;text-shadow:0 0 18px rgba(255,220,120,.7),0 6px 18px #000;pointer-events:none}.subtitle{position:absolute;top:88px;left:0;width:calc(100vw - 390px);z-index:90;text-align:center;font-size:clamp(1rem,2vw,1.45rem);color:#cfeea2;text-shadow:0 4px 12px #000;pointer-events:none}.top-ui{position:absolute;top:12px;left:12px;z-index:120;display:flex;gap:8px;flex-wrap:wrap;max-width:470px}.pill,.top-ui button{padding:8px 13px;border-radius:999px;background:rgba(5,18,10,.86);color:#ffe8a8;border:1px solid rgba(255,225,150,.42);font-family:Georgia,serif;font-size:.95rem;box-shadow:0 0 12px rgba(255,220,120,.12),inset 0 0 18px rgba(255,230,150,.05)}.top-ui button{cursor:pointer}#sidePanel{position:absolute;top:12px;right:12px;width:370px;height:calc(100vh - 24px);z-index:110;display:flex;flex-direction:column;gap:12px}.card{border-radius:20px;border:1px solid rgba(255,225,150,.36);background:linear-gradient(rgba(10,27,16,.91),rgba(3,12,8,.9));box-shadow:inset 0 0 22px rgba(255,220,120,.06),0 0 24px rgba(0,0,0,.35);padding:15px}.card h2{margin:0 0 6px;color:#ffe7a6;font-size:1.25rem}.card p{margin:0;color:#fff0cc;line-height:1.35}.levelCard{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;cursor:pointer}.levelCard.active{border-color:rgba(255,230,130,.9);box-shadow:0 0 22px rgba(255,220,120,.18)}.thumb{height:68px;border-radius:12px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.16)}#thumb0{background-image:url("level-misty-meadows.png")}#thumb1{background-image:url("level-twilight-hollow.png")}#thumb2{background-image:url("level-moonlit-canopy.png")}.sprite{position:absolute;z-index:35;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain}#fox{width:190px;height:190px;z-index:55;background-repeat:no-repeat;background-position:center bottom;background-size:160px auto;overflow:visible;filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(255,205,90,.55));transform-origin:50% 90%;animation:foxTailWag 1.25s ease-in-out infinite}#fox.left{transform:scaleX(-1)}#fox.running{animation:foxRunBounce .35s ease-in-out infinite}#fox.jumping{animation:foxJumpFloat .55s ease-in-out infinite}#fox.landing{animation:foxLanding .22s ease-out}@keyframes foxTailWag{0%,100%{translate:0 0;rotate:-.7deg}50%{translate:0 -1px;rotate:.9deg}}@keyframes foxRunBounce{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -6px;rotate:2deg}}@keyframes foxJumpFloat{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}@keyframes foxLanding{0%{scale:1.06 .92}70%{scale:.98 1.04}100%{scale:1}}#puppy{width:88px;height:88px;z-index:50;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,220,120,.45))}.wish{width:44px;height:64px;z-index:45;filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 18px rgba(255,236,150,.55));animation:dandelionFloat 2.8s ease-in-out infinite alternate}@keyframes dandelionFloat{from{translate:0 -4px;rotate:-4deg}to{translate:0 7px;rotate:4deg}}.sheep{width:120px;height:120px;z-index:42;filter:drop-shadow(0 10px 8px rgba(0,0,0,.45)) drop-shadow(0 0 14px rgba(255,255,255,.45))}.chicken{width:125px;height:125px;z-index:42;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(255,230,120,.35))}.egg{width:40px;height:46px;z-index:43;filter:drop-shadow(0 8px 7px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(255,225,130,.45))}.rock{width:70px;height:70px;z-index:43;filter:drop-shadow(0 12px 9px rgba(0,0,0,.65))}.mushroom{width:145px;height:145px;z-index:41;filter:drop-shadow(0 9px 8px rgba(0,0,0,.45)) drop-shadow(0 0 12px rgba(180,120,255,.55));transition:opacity .25s ease}.portal{width:100px;height:130px;z-index:46;border-radius:50%;background:radial-gradient(circle,rgba(255,255,230,.95) 0 8%,rgba(151,255,189,.78) 22%,rgba(38,181,122,.55) 45%,rgba(0,0,0,0) 72%);box-shadow:0 0 18px rgba(255,245,160,.9),0 0 36px rgba(110,255,150,.65),inset 0 0 24px rgba(255,255,255,.65);animation:portalPulse 1.25s ease-in-out infinite alternate;display:none}@keyframes portalPulse{from{scale:.95;opacity:.82}to{scale:1.06;opacity:1}}.hitbox{position:absolute;z-index:30;pointer-events:none;border-radius:999px;height:28px;background:rgba(255,232,120,0)}.showHitboxes .hitbox{background:rgba(165,255,118,.18);outline:2px solid rgba(255,236,150,.58);box-shadow:0 0 16px rgba(255,236,150,.24)}.showHitboxes .hitbox::after{content:"safe ledge";position:absolute;top:-23px;left:50%;transform:translateX(-50%);font-size:12px;color:#fff0b4;text-shadow:0 0 7px black;white-space:nowrap}.hazardBox{position:absolute;z-index:34;pointer-events:none;border-radius:8px;background:rgba(255,80,80,0);filter:none}.showHitboxes .hazardBox{outline:2px solid rgba(255,80,80,.6);background-color:rgba(255,50,50,.12)}#choiceScreen{position:absolute;inset:0;z-index:9990;display:flex;pointer-events:auto;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(255,225,130,.18),transparent 36%),rgba(2,8,5,.64)}.choiceBox{width:min(820px,92vw);position:relative;z-index:9998;pointer-events:auto;position:relative;z-index:9998;pointer-events:auto;border-radius:26px;border:1px solid rgba(255,230,150,.56);background:radial-gradient(circle at 50% 0%,rgba(255,220,130,.12),transparent 36%),rgba(7,23,13,.92);box-shadow:0 0 34px rgba(0,0,0,.55),inset 0 0 22px rgba(255,230,150,.08);padding:24px;text-align:center}.choiceBox h1{margin:0;color:#ffe7a6;font-size:2rem;text-shadow:0 0 16px rgba(255,220,120,.55)}.choiceCards{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:16px}.foxCard{width:210px;min-height:230px;border-radius:22px;pointer-events:auto;position:relative;z-index:9999;border:1px solid rgba(255,230,150,.38);background:rgba(255,255,255,.06);padding:14px;cursor:pointer;color:#ffe8a8;font-size:1.15rem;font-weight:bold}.foxCard:hover{background:rgba(255,230,150,.12);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,220,120,.28)}.foxCard.chosen{background:rgba(255,230,150,.16);box-shadow:0 0 28px rgba(255,220,120,.45);animation:chosenPulse .75s ease-in-out infinite alternate}@keyframes chosenPulse{from{transform:translateY(0) scale(1)}to{transform:translateY(-3px) scale(1.02)}}.foxPreview{width:130px;height:130px;margin:0 auto 8px;background-repeat:no-repeat;background-position:center bottom;background-size:110%;background-color:rgba(5,18,10,.58);border-radius:18px;box-shadow:inset 0 0 18px rgba(255,220,120,.08),0 0 18px rgba(255,220,120,.18);filter:drop-shadow(0 0 12px rgba(255,220,120,.7))}#femalePreview{background-image:url("female-foxy-player-idle.png")}#malePreview{background-image:url("foxy-player-idle.png")}.sparkle-pop{position:absolute;width:18px;height:18px;z-index:160;border-radius:50%;background:radial-gradient(circle,#fff7bd,rgba(255,220,120,.3),transparent 70%);box-shadow:0 0 12px #fff0a8,0 0 24px rgba(255,225,120,.8);pointer-events:none;animation:sparklePop .8s ease-out forwards}@keyframes sparklePop{0%{opacity:1;scale:.35}100%{opacity:0;scale:2.2;translate:0 -24px}}.floatText{position:absolute;z-index:165;color:#fff0ad;font-weight:bold;font-size:18px;text-shadow:0 0 8px #000;pointer-events:none;animation:floatTextUp .9s ease-out forwards}@keyframes floatTextUp{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -38px}}.dust{position:absolute;width:9px;height:9px;border-radius:50%;z-index:70;background:rgba(255,226,156,.85);box-shadow:0 0 12px rgba(255,226,156,.6);pointer-events:none;animation:dustPoof .7s ease-out forwards}@keyframes dustPoof{from{opacity:.9;transform:translate(-50%,-50%) scale(.35)}to{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 24px)) scale(2.2)}}
 #choiceScreen.hidden{display:none!important}
 
 .editorOn .sheep,
@@ -997,109 +995,12 @@ body.editorOn #editorPanel{
   box-shadow:0 0 24px #fff7a8!important;
 }
 
-
-
-
-/* ===== STRICT LEDGE EDITOR - NO SNAPBACK ===== */
-#editorPanel{
-  position:absolute;
-  left:12px;
-  bottom:12px;
-  width:410px;
-  max-width:94vw;
-  max-height:58vh;
-  overflow:auto;
-  z-index:999999!important;
-  display:none;
-  background:rgba(3,12,8,.96);
-  border:1px solid rgba(255,225,150,.6);
-  border-radius:18px;
-  padding:12px;
-  color:#ffe8a8;
-  box-shadow:0 0 28px rgba(0,0,0,.65);
-  font-size:13px;
-}
-body.strictEditorOn #editorPanel{display:block!important;}
-#editorPanel button{
-  margin:3px;
-  padding:6px 9px;
-  border-radius:999px;
-  border:1px solid rgba(255,225,150,.45);
-  background:rgba(255,225,130,.14);
-  color:#ffe8a8;
-  cursor:pointer;
-  font-family:Georgia,serif;
-}
-#editorPanel textarea{
-  width:100%;
-  height:170px;
-  margin-top:7px;
-  border-radius:10px;
-  border:1px solid rgba(255,225,150,.35);
-  background:#07130b;
-  color:#fff0c2;
-  padding:8px;
-  font-family:Consolas,monospace;
-  font-size:12px;
-}
-body.strictEditorOn .hitbox{
-  background:rgba(80,255,130,.33)!important;
-  outline:2px solid rgba(255,245,130,.95)!important;
-  pointer-events:auto!important;
-  cursor:move!important;
-}
-body.strictEditorOn .hitbox.strictSelected{
-  outline:4px solid #fff!important;
-  box-shadow:0 0 24px #fff7a8!important;
-}
-.strictResizeDot{
-  position:absolute;
-  right:-9px;
-  bottom:-9px;
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  background:#fff3a8;
-  border:2px solid #2b1b05;
-  box-shadow:0 0 12px #fff7b8;
-  cursor:nwse-resize;
-  pointer-events:auto;
-}
-body.strictEditorOn .hitbox::after{
-  content:"drag me";
-  position:absolute;
-  top:-23px;
-  left:50%;
-  transform:translateX(-50%);
-  color:#fff8b8;
-  font-size:12px;
-  text-shadow:0 0 7px #000;
-  white-space:nowrap;
-  display:block!important;
-}
-
+#thumb3{background-image:url("treasure-room-bg.jpg")}
 </style>
 
 </head>
 
 <body>
-
-
-<script>
-/* ===== PUBLIC BUILD CLEANER: clear old saves before game starts ===== */
-try{
-  ["foxfire_custom_level_layouts_v1", "foxfire_editor_levels_backup", "foxfire_custom_level_layouts_v2_exact_treasure", "foxfire_editor_levels_backup_v2_exact_treasure", "foxfire_custom_level_layouts_v3_your_saved_treasure", "foxfire_editor_levels_backup_v3_your_saved_treasure", "foxfire_editor_save_final_fixed_v5", "foxfire_editor_backup_final_fixed_v5", "foxfire_editor_save_final_exact_treasure_v6", "foxfire_editor_backup_final_exact_treasure_v6", "foxfireForestSave_fullSmoothFox_v4"].forEach(k=>localStorage.removeItem(k));
-}catch(e){}
-</script>
-
-
-
-
-
-
-
-
-
 
 <div id="game">  <div id="world">
 <div id="fox" class="sprite">
@@ -1121,7 +1022,7 @@ try{
 <button onclick="toggleSound()" id="soundBtn">Music: Off</button>
 <button onclick="openChoice()">Choose Fox</button>
 <button onclick="toggleHitboxes()" id="ledgeBtn">Ledges: Hidden</button>
-<button id="editorToggleBtn" onclick="toggleEditor()">Editor: Off</button>
+<button onclick="toggleEditor()" id="editorToggleBtn">Editor: Off</button>
 <button onclick="resetLevel()">Restart</button>
 <button type="button" onclick="window.location.href='https://dolphintouch.github.io/fox-wisdom-oracle/'">🏡 Home</button>
 </div>  <div id="sidePanel">
@@ -1166,16 +1067,15 @@ try{
 <p>Higher jumps under moonlight.</p>
 </div>
 </div>
-
+</div>  
 <div class="card levelCard" id="levelCard3" onclick="changeLevel(3)">
-<div class="thumb" id="thumb3">
-</div>
+<div class="thumb" id="thumb3"></div>
 <div>
 <h2>Treasure Room</h2>
 <p>Collect 5 golden wishes and open the hidden chest.</p>
 </div>
 </div>
-</div>  <div id="choiceScreen">
+<div id="choiceScreen">
 <div class="choiceBox">
 <h1>Choose Your Fox</h1>
 <p>Who will follow the glowing path?</p>
@@ -1192,17 +1092,17 @@ try{
 </div>
 
 
-
-
 <div id="editorPanel">
-  <b>🌿 Strict Ledge Editor - No Snapback</b><br>
+  <b>🌿 Ledge & Chest Editor</b><br>
   <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="strictAddLedge()">Add Safe Ledge</button>
-  <button onclick="strictDeleteSelected()">Delete Selected Ledge</button>
-  <button onclick="strictCopyLevel()">Copy Level Data</button>
-  <textarea id="editorOutput" placeholder="After moving ledges, click Copy Level Data."></textarea>
+  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
+  <button onclick="saveCurrentLevelLayout()">Save To Browser</button>
+  <button onclick="loadEditorFromBrowser()">Load Saved</button>
+  <button onclick="resetEditorBrowserSave()">Reset Browser Save</button>
+  <button onclick="copyLevelCode()">Copy Level Data</button>
+  <textarea id="editorCode" placeholder="Level data will appear here."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    This version blocks the old drag handlers. Move the green boxes, copy the data, and paste it to me.
+    Drag green safe ledges and treasure chest while Editor is on. Save to browser when finished.
   </div>
 </div>
 <div id="endingScreen">
@@ -1243,7 +1143,7 @@ try{
 </audio>
 
 <script>
-const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"Treasure Room challenge: collect 5 golden wishes, cross the ledges, then open the chest.",startX:90,startY:120,wishGoal:5,sheepGoal:0,platforms:[{x:0,y:70,w:300,h:46},{x:78,y:155,w:522,h:34},{x:601,y:295,w:235,h:34},{x:1045,y:355,w:245,h:34},{x:1364,y:395,w:300,h:38},{x:960,y:570,w:220,h:34},{x:796,y:512,w:230,h:34},{x:8,y:687,w:799,h:34},{x:40,y:885,w:265,h:38},{x:96,y:376,w:211,h:34},{x:399,y:363,w:193,h:34},{x:482,y:446,w:150,h:34},{x:724,y:154,w:219,h:34},{x:1052,y:160,w:260,h:34},{x:1403,y:166,w:260,h:34},{x:1244,y:263,w:144,h:34}],hazards:[{x:305,y:62,w:70,h:58},{x:620,y:62,w:80,h:58},{x:960,y:62,w:75,h:58},{x:1310,y:62,w:65,h:58}],wishes:[{x:450,y:373},{x:743,y:437},{x:1161,y:246},{x:1472,y:654},{x:739,y:213}],sheep:[],chickens:[{x:1014,y:592}],eggs:[{x:1029,y:576},{x:92,y:696}],mushrooms:[{x:767,y:203},{x:487,y:734}],rocks:[{x:532,y:158},{x:1099,y:358},{x:293,y:700}],portal:{x:70,y:920},treasure:{x:1431,y:400}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){
+const game=document.getElementById("game"),world=document.getElementById("world"),foxEl=document.getElementById("fox"),puppyEl=document.getElementById("puppy"),choiceScreen=document.getElementById("choiceScreen"),mistLayer=document.getElementById("mistLayer"),sparkleLayer=document.getElementById("sparkleLayer"),moonCloudLayer=document.getElementById("moonCloudLayer"),darknessLayer=document.getElementById("darknessLayer"),endingScreen=document.getElementById("endingScreen"),endingScore=document.getElementById("endingScore"),boulderWarning=document.getElementById("boulderWarning");const heartCountEl=document.getElementById("heartCount"),wishCountEl=document.getElementById("wishCount"),wishGoalEl=document.getElementById("wishGoal"),sheepCountEl=document.getElementById("sheepCount"),sheepGoalEl=document.getElementById("sheepGoal"),scoreCountEl=document.getElementById("scoreCount"),chickenCountEl=document.getElementById("chickenCount"),messageEl=document.getElementById("message"),soundBtn=document.getElementById("soundBtn"),ledgeBtn=document.getElementById("ledgeBtn");const ambientAudio=document.getElementById("ambientAudio"),ambientBackupAudio=document.getElementById("ambientBackupAudio"),collectAudio=document.getElementById("collectAudio"),sheepAudio=document.getElementById("sheepAudio"),jumpAudio=document.getElementById("jumpAudio"),hitAudio=document.getElementById("hitAudio"),shimmerAudio=document.getElementById("shimmerAudio");const WORLD_WIDTH=1792,SAVE_KEY="foxfireForestSave_fullSmoothFox_v4";let mobileLeft=false,mobileRight=false,mobileJump=false,mobileDrop=false;let keys={},currentLevel=0,cameraX=0,gameStarted=false,soundOn=false,showHitboxes=false,foxType="female";let x=120,y=210,vx=0,vy=0,facing="right",puppyX=60,puppyY=170,onGround=false,wasOnGround=false,doubleJumpReady=true;const FOX_VISUAL_DROP=58;let hearts=3,wishes=0,sheep=0,chickens=0,score=0,eggs=0,dizzyTimer=0,hurtCooldown=0,clearCooldown=0,lastSafeX=120,lastSafeY=210,portalOpen=false,activeWishTotal=0,wishPool=[],dropTimer=0,coyoteTimer=0,jumpBuffer=0,boulderTimer=260,boulderActive=false;boulderWarningActive=false,boulderWarningActive=false,boulderRumbleCooldown=0,treasureOpened=false,saveTick=0,atmoRefreshTick=0;const foxImages={female:{idle:"female-foxy-player-idle.png",run:"female-foxy-player-run.png",jump:"foxy-player-jump.png"},male:{idle:"foxy-player-idle.png",run:"foxy-player-run.png",jump:"foxy-player-jump.png"}};const levels=[{name:"Misty Meadows",bg:"level-misty-meadows.png",wishGoal:0,sheepGoal:2,startX:135,startY:385,portal:{x:1515,y:590},message:"Misty Meadows begins. Follow the painted ledges.",platforms:[{x:47,y:79,w:543,h:32},{x:1324,y:72,w:271,h:32},{x:6,y:185,w:832,h:32},{x:1328,y:180,w:380,h:32},{x:666,y:295,w:172,h:30},{x:875,y:354,w:260,h:30},{x:1273,y:333,w:208,h:30},{x:53,y:403,w:563,h:30},{x:812,y:480,w:180,h:28},{x:1152,y:519,w:189,h:28},{x:349,y:635,w:249,h:28},{x:1000,y:646,w:200,h:30},{x:1411,y:613,w:466,h:30}],hazards:[{x:844,y:102,w:479,h:55},{x:609,y:77,w:156,h:50}],wishes:[],sheep:[{x:1322,y:336},{x:1520,y:655}],chickens:[{x:356,y:637},{x:1074,y:639}],eggs:[{x:478,y:635},{x:1107,y:642}],mushrooms:[{x:846,y:486},{x:1177,y:527}],rocks:[{x:974,y:352},{x:1447,y:95}]},{name:"Twilight Hollow",bg:"level-twilight-hollow.png",wishGoal:0,sheepGoal:2,startX:120,startY:240,portal:{x:1510,y:565},message:"Twilight Hollow glows with hidden paths.",platforms:[{x:-4,y:178,w:777,h:50},{x:288,y:583,w:264,h:34},{x:101,y:499,w:230,h:34},{x:605,y:424,w:230,h:34},{x:965,y:767,w:250,h:34},{x:1080,y:381,w:330,h:36},{x:784,y:550,w:176,h:34},{x:1069,y:561,w:185,h:34},{x:1100,y:475,w:375,h:36},{x:1345,y:610,w:489,h:36},{x:1228,y:218,w:520,h:36},{x:448,y:64,w:989,h:50},{x:862,y:143,w:220,h:32},{x:350,y:306,w:118,h:32}],hazards:[{x:441,y:196,w:264,h:62},{x:642,y:87,w:120,h:55},{x:1196,y:402,w:185,h:52}],wishes:[],sheep:[{x:689,y:430},{x:1545,y:565}],chickens:[{x:805,y:553},{x:1397,y:601}],eggs:[{x:788,y:553},{x:1366,y:604}],mushrooms:[{x:393,y:589},{x:290,y:208}],rocks:[{x:1113,y:567},{x:1352,y:227}]},{name:"Moonlit Canopy",bg:"level-moonlit-canopy.png",wishGoal:0,sheepGoal:3,startX:105,startY:230,portal:{x:1515,y:635},message:"Moonlit Canopy is higher, softer, and full of secrets.",platforms:[{x:216,y:115,w:548,h:38},{x:740,y:35,w:980,h:38},{x:-74,y:169,w:549,h:34},{x:865,y:169,w:188,h:34},{x:628,y:289,w:241,h:34},{x:1025,y:475,w:295,h:34},{x:1225,y:251,w:616,h:36},{x:294,y:778,w:270,h:34},{x:624,y:597,w:232,h:34},{x:927,y:769,w:220,h:34},{x:1310,y:610,w:435,h:34},{x:145,y:384,w:220,h:32},{x:254,y:512,w:376,h:32},{x:64,y:439,w:220,h:32},{x:1128,y:109,w:220,h:32},{x:1346,y:141,w:220,h:32},{x:675,y:385,w:220,h:32}],hazards:[{x:400,y:528,w:171,h:38}],wishes:[],sheep:[{x:611,y:304},{x:1271,y:634},{x:1556,y:635}],chickens:[{x:614,y:596},{x:325,y:784}],eggs:[{x:1372,y:626},{x:1350,y:622},{x:324,y:786},{x:791,y:605},{x:976,y:782},{x:1175,y:510},{x:1406,y:620},{x:1515,y:285}],mushrooms:[{x:9,y:452},{x:1152,y:492}],rocks:[{x:1238,y:248},{x:1542,y:635},{x:410,y:781},{x:848,y:286},{x:1003,y:478},{x:1098,y:53},{x:1528,y:285}]},{name:"Treasure Room",bg:"treasure-room-bg.jpg",thumb:"treasure-room-bg.jpg",sign:"You found the hidden Foxfire treasure.",message:"Treasure Room challenge: collect 5 golden wishes, cross the ledges, then open the chest.",startX:90,startY:120,wishGoal:5,sheepGoal:0,platforms:[{x:0,y:70,w:300,h:46},{x:380,y:155,w:235,h:34},{x:710,y:255,w:235,h:34},{x:1045,y:355,w:245,h:34},{x:1375,y:470,w:300,h:38},{x:1080,y:590,w:220,h:34},{x:720,y:690,w:230,h:34},{x:360,y:780,w:230,h:34},{x:40,y:885,w:265,h:38}],hazards:[{x:305,y:62,w:70,h:58},{x:620,y:62,w:80,h:58},{x:960,y:62,w:75,h:58},{x:1310,y:62,w:65,h:58}],wishes:[{x:460,y:198},{x:780,y:298},{x:1140,y:398},{x:1465,y:515},{x:800,y:735}],sheep:[],chickens:[{x:1128,y:592}],eggs:[{x:1195,y:592},{x:430,y:782}],mushrooms:[{x:745,y:258},{x:390,y:783}],rocks:[{x:520,y:158},{x:1110,y:358},{x:780,y:690}],portal:{x:70,y:920},treasure:{x:1425,y:505}}];const cleanedImageCache={};function cleanImageURL(url){if(cleanedImageCache[url])return cleanedImageCache[url];const promise=new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>{try{const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d",{willReadFrequently:true});canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data,w=canvas.width,h=canvas.height;const seen=new Uint8Array(w*h);const queue=[];function idx(x,y){return y*w+x}function bgAt(x,y){const i=idx(x,y)*4,r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];const max=Math.max(r,g,b),min=Math.min(r,g,b);const lowSaturation=(max-min)<65;const veryWhite=r>245&&g>245&&b>245;const checkerWhite=max>215&&lowSaturation;const checkerGrey=max>145&&max<230&&lowSaturation;return a>0&&(veryWhite||checkerWhite||checkerGrey)}function push(x,y){if(x<0||y<0||x>=w||y>=h)return;const n=idx(x,y);if(seen[n])return;if(!bgAt(x,y))return;seen[n]=1;queue.push([x,y])}for(let x=0;x<w;x++){push(x,0);push(x,h-1)}for(let y=0;y<h;y++){push(0,y);push(w-1,y)}while(queue.length){const p=queue.pop(),x=p[0],y=p[1],i=idx(x,y)*4;d[i+3]=0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1)}ctx.putImageData(imageData,0,0);resolve(canvas.toDataURL("image/png"))}catch(err){resolve(url)}};img.onerror=()=>resolve(url);img.src=url});cleanedImageCache[url]=promise;return promise}async function setCleanBackground(el,url){
   const cleaned=await cleanImageURL(url);
   el.style.setProperty("background-image",`url("${cleaned}")`,"important");
   el.style.setProperty("background","transparent url(\"" + cleaned + "\") center/contain no-repeat","important");
@@ -1253,16 +1153,19 @@ const game=document.getElementById("game"),world=document.getElementById("world"
   el.style.setProperty("background-color","transparent","important");
   el.classList.add("cleanedImage");
 }function init(){bindControls();setupMobileControls();tuneForMobile();setVolume();loadSave();buildLevel(currentLevel);saveTick++;atmoRefreshTick++;if(atmoRefreshTick>60){atmoRefreshTick=0;setAtmosphereForLevel()}if(saveTick>240){saveTick=0;saveGame()}requestAnimationFrame(gameLoop)}function loadSave(){
-  currentLevel = 0;
   try{
     const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
     if(saved.foxType)foxType=saved.foxType;
+    if(typeof saved.currentLevel==="number")currentLevel=Math.max(0,Math.min(levels.length-1,saved.currentLevel));
+    if(typeof saved.score==="number")score=saved.score;
+    if(typeof saved.hearts==="number")hearts=saved.hearts;
+    scoreCountEl.textContent=score;
+    heartCountEl.textContent=hearts;
   }catch(err){}
   choiceScreen.style.display="flex";
   choiceScreen.style.pointerEvents="auto";
   gameStarted=false;
 }
-
 function saveGame(){
   try{
     localStorage.setItem(SAVE_KEY,JSON.stringify({foxType,currentLevel,score,hearts}));
@@ -1672,16 +1575,24 @@ function resetLevel(){buildLevel(currentLevel);gameStarted=true;choiceScreen.sty
 let editorMode=false;
 let selectedEditorBox=null;
 let dragData=null;
-const EDITOR_SAVE_KEY="foxfire_editor_save_final_exact_treasure_v6";
+const EDITOR_SAVE_KEY="foxfire_custom_level_layouts_v1";
 
-function getSavedLayouts(){ return {}; }
+function getSavedLayouts(){
+  try{return JSON.parse(localStorage.getItem(EDITOR_SAVE_KEY)||"{}")}
+  catch(e){return{}}
+}
 
+function saveLayouts(obj){
+  localStorage.setItem(EDITOR_SAVE_KEY,JSON.stringify(obj));
+}
 
-function saveLayouts(obj){}
-
-
-function applySavedLayoutForLevel(){ return; }
-
+function applySavedLayoutForLevel(){
+  const saved=getSavedLayouts();
+  const layout=saved[currentLevel];
+  if(!layout)return;
+  levels[currentLevel].platforms=layout.platforms||levels[currentLevel].platforms;
+  levels[currentLevel].hazards=layout.hazards||levels[currentLevel].hazards;
+}
 
 function toggleEditor(){
   editorMode=!editorMode;
@@ -1897,85 +1808,22 @@ function deleteSelectedEditorBox(){
 }
 
 function getEditorPlatforms(){
-  return [...world.querySelectorAll(".hitbox")]
-    .filter(el=>!el.classList.contains("resize-handle"))
-    .map(screenBoxToLevelBox);
+  return [...world.querySelectorAll(".hitbox")].map(el=>({
+    x:Math.round(parseFloat(el.style.left)||0),
+    y:Math.round(parseFloat(el.style.bottom)||0),
+    w:Math.round(parseFloat(el.style.width)||0),
+    h:Math.round(parseFloat(el.style.height)||0)
+  }));
 }
 
 function getEditorHazards(){
-  return [...world.querySelectorAll(".hazardBox")].map(screenBoxToLevelBox);
+  return [...world.querySelectorAll(".hazardBox")].map(el=>({
+    x:Math.round(parseFloat(el.style.left)||0),
+    y:Math.round(parseFloat(el.style.bottom)||0),
+    w:Math.round(parseFloat(el.style.width)||0),
+    h:Math.round(parseFloat(el.style.height)||0)
+  }));
 }
-
-
-function screenBoxToLevelBox(el){
-  const left=Math.round(parseFloat(el.style.left)||0);
-  const width=Math.round(parseFloat(el.style.width)||0);
-  const height=Math.round(parseFloat(el.style.height)||0);
-
-  let bottom=0;
-
-  if(el.style.bottom && el.style.bottom !== "auto"){
-    bottom=Math.round(parseFloat(el.style.bottom)||0);
-  }else if(el.style.top && el.style.top !== "auto"){
-    const top=Math.round(parseFloat(el.style.top)||0);
-    bottom=Math.round(window.innerHeight - top - height);
-  }else{
-    bottom=Math.round(parseFloat(el.dataset.y)||0);
-  }
-
-  return {x:left,y:bottom,w:width,h:height};
-}
-
-function screenObjectToLevelPoint(el){
-  const left=Math.round(parseFloat(el.style.left)||0);
-  const visual=parseFloat(el.dataset.visualOffset||0);
-
-  let bottom=0;
-  if(el.style.bottom && el.style.bottom !== "auto"){
-    bottom=Math.round((parseFloat(el.style.bottom)||0)-visual);
-  }else if(el.style.top && el.style.top !== "auto"){
-    const top=Math.round(parseFloat(el.style.top)||0);
-    const height=Math.round(parseFloat(el.style.height)||0);
-    bottom=Math.round(window.innerHeight - top - height - visual);
-  }else{
-    bottom=Math.round(parseFloat(el.dataset.y)||0);
-  }
-
-  return {x:left,y:bottom};
-}
-
-function syncCurrentLevelFromEditorScreen(){
-  const L=levels[currentLevel];
-
-  L.platforms=[...world.querySelectorAll(".hitbox")]
-    .filter(el=>!el.classList.contains("resize-handle"))
-    .map(screenBoxToLevelBox);
-
-  L.hazards=[...world.querySelectorAll(".hazardBox")]
-    .map(screenBoxToLevelBox);
-
-  const groups={wishes:[],sheep:[],chickens:[],eggs:[],mushrooms:[],rocks:[]};
-
-  world.querySelectorAll(".wish,.sheep,.chicken,.egg,.mushroom,.rock").forEach(el=>{
-    if(el.dataset.done==="yes"||el.dataset.hidden==="yes")return;
-    const group=objectGroupName(el);
-    if(groups[group]) groups[group].push(screenObjectToLevelPoint(el));
-  });
-
-  L.wishes=groups.wishes;
-  L.sheep=groups.sheep;
-  L.chickens=groups.chickens;
-  L.eggs=groups.eggs;
-  L.mushrooms=groups.mushrooms;
-  L.rocks=groups.rocks;
-
-  const portal=document.getElementById("levelPortal");
-  if(portal) L.portal=screenObjectToLevelPoint(portal);
-
-  const chest=document.getElementById("finalTreasure");
-  if(chest) L.treasure=screenObjectToLevelPoint(chest);
-}
-
 
 function refreshEditorOutput(){
   const out=document.getElementById("editorOutput");
@@ -1997,28 +1845,16 @@ function copyLevelCode(){
 }
 
 function saveEditedLevel(){
-  syncCurrentLevelFromEditorScreen();
-
   const saved=getSavedLayouts();
-  const L=levels[currentLevel];
-
   saved[currentLevel]={
-    platforms:L.platforms,
-    hazards:L.hazards||[],
-    wishes:L.wishes||[],
-    sheep:L.sheep||[],
-    chickens:L.chickens||[],
-    eggs:L.eggs||[],
-    mushrooms:L.mushrooms||[],
-    rocks:L.rocks||[],
-    portal:L.portal||null,
-    treasure:L.treasure||null
+    platforms:getEditorPlatforms(),
+    hazards:getEditorHazards()
   };
-
   saveLayouts(saved);
+  levels[currentLevel].platforms=saved[currentLevel].platforms;
+  levels[currentLevel].hazards=saved[currentLevel].hazards;
   refreshEditorOutput();
-  setMessage("Saved ledges, chest, and objects for "+levels[currentLevel].name+".");
-  alert("Saved ledges and treasure chest positions to this browser.");
+  setMessage("Saved ledges for "+levels[currentLevel].name+".");
 }
 
 function resetEditedLevel(){
@@ -2352,76 +2188,368 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
-/* ===== CLEAN UI FIX: Treasure Room card support only ===== */
+/* ===== RESTORED SIMPLE EDITOR HELPERS ===== */
 (function(){
-  window.updateLevelCards = function(){
-    if(typeof currentLevel === "undefined") return;
-    document.querySelectorAll(".levelCard").forEach(card=>card.classList.remove("active"));
-    const active = document.getElementById("levelCard" + currentLevel);
-    if(active) active.classList.add("active");
+  if (window.__foxfireEditorRestored) return;
+  window.__foxfireEditorRestored = true;
+
+  window.toggleEditor = window.toggleEditor || function(){
+    document.body.classList.toggle("editorOn");
+    const btn = document.getElementById("editorToggleBtn");
+    if (btn) btn.textContent = document.body.classList.contains("editorOn") ? "Editor: On" : "Editor: Off";
   };
 
-  const oldChangeLevel = window.changeLevel;
-  if(typeof oldChangeLevel === "function" && !oldChangeLevel.__cleanUiFixed){
-    const wrapped = function(i){
-      oldChangeLevel(i);
-      setTimeout(window.updateLevelCards, 30);
-    };
-    wrapped.__cleanUiFixed = true;
-    window.changeLevel = wrapped;
-  }
+  window.copyCurrentLevelData = window.copyCurrentLevelData || function(){
+    const box = document.getElementById("editorOutput");
+    if (!box) return;
 
-  setTimeout(function(){
-    if(!document.getElementById("levelCard3")){
-      const side = document.getElementById("sidePanel");
-      if(side){
-        const card = document.createElement("div");
-        card.className = "card levelCard";
-        card.id = "levelCard3";
-        card.onclick = function(){ changeLevel(3); };
-        card.innerHTML = '<div class="thumb" id="thumb3"></div><div><h2>Treasure Room</h2><p>Collect 5 golden wishes and open the hidden chest.</p></div>';
-        side.appendChild(card);
+    let levelData = null;
+    try {
+      if (typeof levels !== "undefined" && typeof currentLevel !== "undefined") {
+        levelData = levels[currentLevel];
       }
+    } catch(e) {}
+
+    box.value = levelData ? JSON.stringify(levelData, null, 2) : "Could not find current level data.";
+    box.select();
+    try { document.execCommand("copy"); } catch(e) {}
+  };
+
+  window.saveEditorToBrowser = window.saveEditorToBrowser || function(){
+    try {
+      if (typeof levels === "undefined") return alert("Could not find levels.");
+      localStorage.setItem("foxfire_editor_levels_backup", JSON.stringify(levels));
+      alert("Saved ledges/chest/level data to this browser.");
+    } catch(e) {
+      alert("Save failed: " + e.message);
     }
-    window.updateLevelCards();
-  }, 200);
+  };
+
+  window.loadEditorFromBrowser = window.loadEditorFromBrowser || function(){
+    try {
+      const saved = localStorage.getItem("foxfire_editor_levels_backup");
+      if (!saved) return alert("No saved editor data found in this browser.");
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && typeof levels !== "undefined") {
+        for (let i = 0; i < parsed.length; i++) levels[i] = parsed[i];
+        if (typeof changeLevel === "function" && typeof currentLevel !== "undefined") changeLevel(currentLevel);
+        else location.reload();
+        alert("Loaded saved editor data.");
+      }
+    } catch(e) {
+      alert("Load failed: " + e.message);
+    }
+  };
+
+  window.resetEditorBrowserSave = window.resetEditorBrowserSave || function(){
+    localStorage.removeItem("foxfire_editor_levels_backup");
+    alert("Browser editor save removed.");
+  };
 })();
 </script>
 
 
 <script>
-/* ===== FINAL HOME FIX: direct link to Fox Oracle hub ===== */
+/* ===== EDITOR BUTTON SAFETY PATCH ===== */
+(function(){
+  if(window.__editorButtonSafetyPatch) return;
+  window.__editorButtonSafetyPatch = true;
+
+  window.addPlatformBox = window.addPlatformBox || function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    levels[currentLevel].platforms.push({x: Math.round((cameraX||0)+350), y: 420, w: 220, h: 30});
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
+  };
+
+  window.addHazardBox = window.addHazardBox || function(){
+    if(typeof levels === "undefined" || typeof currentLevel === "undefined") return;
+    levels[currentLevel].hazards = levels[currentLevel].hazards || [];
+    levels[currentLevel].hazards.push({x: Math.round((cameraX||0)+420), y: 500, w: 180, h: 40});
+    if(typeof buildLevel === "function") buildLevel(currentLevel);
+    if(typeof toggleEditor === "function" && !document.body.classList.contains("editorOn")) toggleEditor();
+  };
+
+  window.saveCurrentLevelLayout = window.saveCurrentLevelLayout || function(){
+    try{
+      const key = "foxfire_custom_level_layouts_v1";
+      const saved = JSON.parse(localStorage.getItem(key)||"{}");
+      saved[currentLevel] = {
+        platforms: levels[currentLevel].platforms,
+        hazards: levels[currentLevel].hazards || [],
+        treasure: levels[currentLevel].treasure || null
+      };
+      localStorage.setItem(key, JSON.stringify(saved));
+      alert("Saved this level layout to this browser.");
+    }catch(e){ alert("Save failed: " + e.message); }
+  };
+
+  window.clearSavedLevelLayout = window.clearSavedLevelLayout || function(){
+    try{
+      const key = "foxfire_custom_level_layouts_v1";
+      const saved = JSON.parse(localStorage.getItem(key)||"{}");
+      delete saved[currentLevel];
+      localStorage.setItem(key, JSON.stringify(saved));
+      alert("Cleared saved layout for this level.");
+    }catch(e){ alert("Clear failed: " + e.message); }
+  };
+
+  window.copyLevelCode = window.copyLevelCode || function(){
+    const box = document.getElementById("editorCode");
+    if(!box) return;
+    box.value = JSON.stringify(levels[currentLevel], null, 2);
+    box.select();
+    try{ document.execCommand("copy"); }catch(e){}
+  };
+})();
+</script>
+
+
+<script>
+/* ===== ADD LEDGES FIX - STRONG PATCH ===== */
+(function(){
+  if(window.__addLedgesStrongPatch) return;
+  window.__addLedgesStrongPatch = true;
+
+  function getActiveLevel(){
+    if(typeof levels !== "undefined" && typeof currentLevel !== "undefined") return levels[currentLevel];
+    return null;
+  }
+
+  function refreshLevelSafely(){
+    try{
+      if(typeof buildLevel === "function"){
+        buildLevel(currentLevel);
+      }else if(typeof renderLevel === "function"){
+        renderLevel(currentLevel);
+      }else if(typeof changeLevel === "function"){
+        changeLevel(currentLevel);
+      }else{
+        // Manual fallback: create visible hitbox for the newest platform
+        const lvl = getActiveLevel();
+        if(!lvl || !lvl.platforms || !world) return;
+        const p = lvl.platforms[lvl.platforms.length - 1];
+        const div = document.createElement("div");
+        div.className = "hitbox editorGeneratedLedge";
+        div.dataset.editorIndex = String(lvl.platforms.length - 1);
+        div.style.left = p.x + "px";
+        div.style.top = p.y + "px";
+        div.style.width = p.w + "px";
+        div.style.height = p.h + "px";
+        world.appendChild(div);
+      }
+    }catch(e){
+      console.warn("Refresh failed, using manual ledge fallback", e);
+      const lvl = getActiveLevel();
+      if(!lvl || !lvl.platforms || !world) return;
+      const p = lvl.platforms[lvl.platforms.length - 1];
+      const div = document.createElement("div");
+      div.className = "hitbox editorGeneratedLedge";
+      div.dataset.editorIndex = String(lvl.platforms.length - 1);
+      div.style.left = p.x + "px";
+      div.style.top = p.y + "px";
+      div.style.width = p.w + "px";
+      div.style.height = p.h + "px";
+      world.appendChild(div);
+    }
+  }
+
+  window.addPlatformBox = function(){
+    const lvl = getActiveLevel();
+    if(!lvl){
+      alert("Could not find the current level.");
+      return;
+    }
+
+    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
+
+    const newLedge = {
+      x: Math.round((typeof cameraX !== "undefined" ? cameraX : 0) + 420),
+      y: 420,
+      w: 260,
+      h: 32
+    };
+
+    lvl.platforms.push(newLedge);
+
+    refreshLevelSafely();
+
+    // Keep editor open after redraw
+    document.body.classList.add("editorOn");
+    if(typeof world !== "undefined" && world) {
+      world.classList.add("editorOn");
+      world.classList.add("showHitboxes");
+    }
+    if(typeof editorMode !== "undefined") editorMode = true;
+    if(typeof showHitboxes !== "undefined") showHitboxes = true;
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+
+    const ledgeBtn = document.getElementById("ledgeBtn");
+    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
+    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save this level.");
+
+    console.log("Added ledge:", newLedge);
+  };
+
+  window.copyLevelCode = function(){
+    const box = document.getElementById("editorCode");
+    const lvl = getActiveLevel();
+    if(!box || !lvl) return;
+    box.value = JSON.stringify(lvl, null, 2);
+    box.select();
+    try{ document.execCommand("copy"); }catch(e){}
+  };
+})();
+</script>
+
+
+<script>
+/* ===== EMERGENCY ADD LEDGE BUTTON FIX ===== */
+(function(){
+  if(window.__emergencyAddLedgeFix) return;
+  window.__emergencyAddLedgeFix = true;
+
+  function currentLvl(){
+    if(typeof levels === "undefined") return null;
+    if(typeof currentLevel === "undefined") return levels[0];
+    return levels[currentLevel];
+  }
+
+  function drawOneLedge(p, index){
+    if(typeof world === "undefined" || !world) return;
+
+    const ledge = document.createElement("div");
+    ledge.className = "hitbox editorMadeLedge";
+    ledge.dataset.platformIndex = index;
+    ledge.style.left = p.x + "px";
+    ledge.style.top = p.y + "px";
+    ledge.style.width = p.w + "px";
+    ledge.style.height = p.h + "px";
+    ledge.style.position = "absolute";
+    ledge.style.zIndex = "999";
+    ledge.style.background = "rgba(80,255,130,.35)";
+    ledge.style.outline = "3px solid rgba(255,245,130,.95)";
+    ledge.style.borderRadius = "12px";
+    ledge.style.pointerEvents = "auto";
+    ledge.style.cursor = "move";
+    ledge.innerHTML = '<span style="position:absolute;top:-22px;left:0;color:#fff8b8;text-shadow:0 0 6px #000;font-size:12px;">new ledge</span>';
+
+    let dragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    ledge.addEventListener("pointerdown", function(e){
+      if(!document.body.classList.contains("editorOn")) return;
+      dragging = true;
+      offsetX = e.clientX - ledge.getBoundingClientRect().left;
+      offsetY = e.clientY - ledge.getBoundingClientRect().top;
+      ledge.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    ledge.addEventListener("pointermove", function(e){
+      if(!dragging) return;
+      const gameRect = game.getBoundingClientRect();
+      const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+      p.x = Math.round(e.clientX - gameRect.left + cam - offsetX);
+      p.y = Math.round(e.clientY - gameRect.top - offsetY);
+      ledge.style.left = p.x + "px";
+      ledge.style.top = p.y + "px";
+      if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    ledge.addEventListener("pointerup", function(e){
+      dragging = false;
+      try{ ledge.releasePointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    world.appendChild(ledge);
+  }
+
+  window.addNewLedgeNow = function(){
+    const lvl = currentLvl();
+    if(!lvl){
+      alert("Could not find the current level.");
+      return;
+    }
+
+    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
+
+    const cam = typeof cameraX !== "undefined" ? cameraX : 0;
+    const p = {
+      x: Math.round(cam + 520),
+      y: 360,
+      w: 260,
+      h: 34
+    };
+
+    lvl.platforms.push(p);
+
+    // Try normal game redraw first
+    let redrawn = false;
+    try{
+      if(typeof buildLevel === "function"){
+        buildLevel(currentLevel);
+        redrawn = true;
+      }else if(typeof changeLevel === "function"){
+        changeLevel(currentLevel);
+        redrawn = true;
+      }
+    }catch(e){
+      console.warn("Normal redraw failed, drawing ledge manually", e);
+    }
+
+    // Always draw a visible ledge so the button visibly works
+    drawOneLedge(p, lvl.platforms.length - 1);
+
+    document.body.classList.add("editorOn");
+    if(typeof world !== "undefined" && world){
+      world.classList.add("editorOn");
+      world.classList.add("showHitboxes");
+    }
+    if(typeof editorMode !== "undefined") editorMode = true;
+    if(typeof showHitboxes !== "undefined") showHitboxes = true;
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+    const ledgeBtn = document.getElementById("ledgeBtn");
+    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save.");
+  };
+
+  // Force all visible Add Safe Ledge buttons to use the fixed function
+  setTimeout(function(){
+    document.querySelectorAll("button").forEach(function(btn){
+      if((btn.textContent || "").trim().toLowerCase().includes("add safe ledge")){
+        btn.onclick = window.addNewLedgeNow;
+      }
+    });
+  }, 500);
+})();
+</script>
+
+
+<script>
+/* ===== HOME ONLY: return to Fox Oracle hub ===== */
 (function(){
   window.goHome = function(){
     window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
@@ -2432,194 +2560,7 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
         btn.onclick = function(){ window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/"; };
       }
     });
-  }, 100);
-})();
-</script>
-
-
-
-
-
-<script>
-/* ===== STRICT LEDGE EDITOR SCRIPT - NO SNAPBACK ===== */
-(function(){
-  let editorOn=false;
-  let selected=null;
-  let mode=null;
-  let sx=0, sy=0, startLeft=0, startBottom=0, startW=0, startH=0;
-
-  function L(){
-    if(typeof levels==="undefined" || typeof currentLevel==="undefined") return null;
-    return levels[currentLevel];
-  }
-
-  function n(v,f=0){
-    const x=parseFloat(v);
-    return Number.isFinite(x)?x:f;
-  }
-
-  function getBox(el){
-    return {
-      x:Math.round(n(el.style.left,n(el.dataset.x))),
-      y:Math.round(n(el.style.bottom,n(el.dataset.y))),
-      w:Math.round(n(el.style.width,n(el.dataset.w,220))),
-      h:Math.round(n(el.style.height,n(el.dataset.h,30)))
-    };
-  }
-
-  function sync(){
-    const level=L();
-    if(!level) return;
-    level.platforms=[...world.querySelectorAll(".hitbox")].map(getBox);
-    refreshBox();
-  }
-
-  function refreshBox(){
-    const box=document.getElementById("editorOutput");
-    const level=L();
-    if(box && level) box.value=JSON.stringify(level,null,2);
-  }
-
-  function blockOldHandlers(el){
-    const clone=el.cloneNode(false);
-    clone.className=el.className;
-    clone.style.cssText=el.style.cssText;
-    clone.dataset.x = n(el.style.left,n(el.dataset.x));
-    clone.dataset.y = n(el.style.bottom,n(el.dataset.y));
-    clone.dataset.w = n(el.style.width,n(el.dataset.w,220));
-    clone.dataset.h = n(el.style.height,n(el.dataset.h,30));
-    el.parentNode.replaceChild(clone, el);
-    return clone;
-  }
-
-  function rebuildStrictHandles(){
-    document.querySelectorAll(".strictResizeDot").forEach(d=>d.remove());
-
-    const old=[...world.querySelectorAll(".hitbox")];
-    const clean=old.map(blockOldHandlers);
-
-    clean.forEach((el)=>{
-      el.style.pointerEvents="auto";
-      el.style.position="absolute";
-
-      const dot=document.createElement("div");
-      dot.className="strictResizeDot";
-      el.appendChild(dot);
-
-      el.addEventListener("pointerdown",function(e){
-        if(!editorOn || e.target.classList.contains("strictResizeDot")) return;
-        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-        selected=el; mode="move";
-        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("strictSelected"));
-        el.classList.add("strictSelected");
-        sx=e.clientX; sy=e.clientY;
-        startLeft=n(el.style.left);
-        startBottom=n(el.style.bottom);
-        el.setPointerCapture(e.pointerId);
-      },true);
-
-      dot.addEventListener("pointerdown",function(e){
-        if(!editorOn) return;
-        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-        selected=el; mode="resize";
-        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("strictSelected"));
-        el.classList.add("strictSelected");
-        sx=e.clientX; sy=e.clientY;
-        startW=n(el.style.width,220);
-        startH=n(el.style.height,30);
-        el.setPointerCapture(e.pointerId);
-      },true);
-
-      el.addEventListener("pointermove",function(e){
-        if(!editorOn || selected!==el || !mode) return;
-        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-
-        const dx=e.clientX-sx;
-        const dy=e.clientY-sy;
-
-        if(mode==="move"){
-          el.style.left=Math.round(startLeft+dx)+"px";
-          el.style.bottom=Math.round(startBottom-dy)+"px";
-        }else if(mode==="resize"){
-          el.style.width=Math.max(30,Math.round(startW+dx))+"px";
-          el.style.height=Math.max(12,Math.round(startH-dy))+"px";
-        }
-        sync();
-      },true);
-
-      el.addEventListener("pointerup",function(e){
-        if(selected===el){
-          e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-          mode=null;
-          try{el.releasePointerCapture(e.pointerId);}catch(err){}
-          sync();
-        }
-      },true);
-    });
-  }
-
-  window.toggleEditor=function(){
-    editorOn=!editorOn;
-    document.body.classList.toggle("strictEditorOn",editorOn);
-    document.body.classList.toggle("editorOn",false);
-    if(typeof editorMode!=="undefined") editorMode=false;
-
-    const panel=document.getElementById("editorPanel");
-    if(panel) panel.style.display=editorOn?"block":"none";
-
-    const btn=document.getElementById("editorToggleBtn");
-    if(btn) btn.textContent=editorOn?"Editor: On":"Editor: Off";
-
-    if(world){
-      world.classList.toggle("showHitboxes",editorOn);
-      world.classList.remove("editorOn");
-    }
-
-    if(editorOn){
-      if(typeof showHitboxes!=="undefined") showHitboxes=true;
-      if(typeof ledgeBtn!=="undefined" && ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
-      rebuildStrictHandles();
-      refreshBox();
-      if(typeof setMessage==="function") setMessage("Strict editor on: old drag code is blocked. Move ledges, then copy level data.");
-    }else{
-      sync();
-      document.querySelectorAll(".strictResizeDot").forEach(d=>d.remove());
-    }
-  };
-
-  window.strictAddLedge=function(){
-    const level=L();
-    if(!level) return alert("No level found.");
-    sync();
-    if(!Array.isArray(level.platforms)) level.platforms=[];
-    const cam=typeof cameraX!=="undefined"?cameraX:0;
-    level.platforms.push({x:Math.round(cam+420),y:360,w:240,h:32});
-    if(typeof buildLevel==="function") buildLevel(currentLevel);
-    editorOn=false;
-    toggleEditor();
-  };
-
-  window.strictDeleteSelected=function(){
-    if(!selected) return alert("Click a green ledge first.");
-    selected.remove();
-    selected=null;
-    sync();
-    rebuildStrictHandles();
-  };
-
-  window.strictCopyLevel=function(){
-    sync();
-    const box=document.getElementById("editorOutput");
-    if(!box) return;
-    box.focus(); box.select();
-    try{document.execCommand("copy");}catch(e){}
-    alert("Copied. Paste the level data to me.");
-  };
-
-  // Make normal Copy/Add button names work too
-  window.addNewLedgeNow=window.strictAddLedge;
-  window.deleteSelectedLedge=window.strictDeleteSelected;
-  window.copyLevelCode=window.strictCopyLevel;
+  }, 200);
 })();
 </script>
 
