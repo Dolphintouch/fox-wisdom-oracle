@@ -1,4 +1,4 @@
-<!-- TEMP EDITOR VERSION: use this to fix ledges, copy level data, then send it back -->
+<!-- STRICT LEDGE EDITOR VERSION: old editor handlers blocked so ledges do not snap back -->
 <!-- FULL REPLACEMENT VERSION: exact Treasure Room positions + old save override cleared -->
 <!-- FULL REPLACEMENT VERSION: one editor fixed + updated Treasure Room layout -->
 <!DOCTYPE html>
@@ -999,14 +999,15 @@ body.editorOn #editorPanel{
 
 
 
-/* ===== TEMP LEDGE FIX EDITOR ===== */
+
+/* ===== STRICT LEDGE EDITOR - NO SNAPBACK ===== */
 #editorPanel{
   position:absolute;
   left:12px;
   bottom:12px;
-  width:390px;
+  width:410px;
   max-width:94vw;
-  max-height:55vh;
+  max-height:58vh;
   overflow:auto;
   z-index:999999!important;
   display:none;
@@ -1018,7 +1019,7 @@ body.editorOn #editorPanel{
   box-shadow:0 0 28px rgba(0,0,0,.65);
   font-size:13px;
 }
-body.editorOn #editorPanel{display:block!important;}
+body.strictEditorOn #editorPanel{display:block!important;}
 #editorPanel button{
   margin:3px;
   padding:6px 9px;
@@ -1031,7 +1032,7 @@ body.editorOn #editorPanel{display:block!important;}
 }
 #editorPanel textarea{
   width:100%;
-  height:150px;
+  height:170px;
   margin-top:7px;
   border-radius:10px;
   border:1px solid rgba(255,225,150,.35);
@@ -1041,17 +1042,17 @@ body.editorOn #editorPanel{display:block!important;}
   font-family:Consolas,monospace;
   font-size:12px;
 }
-body.editorOn .hitbox{
-  background:rgba(80,255,130,.32)!important;
+body.strictEditorOn .hitbox{
+  background:rgba(80,255,130,.33)!important;
   outline:2px solid rgba(255,245,130,.95)!important;
   pointer-events:auto!important;
   cursor:move!important;
 }
-body.editorOn .hitbox.selectedLedge{
+body.strictEditorOn .hitbox.strictSelected{
   outline:4px solid #fff!important;
   box-shadow:0 0 24px #fff7a8!important;
 }
-.resizeDot{
+.strictResizeDot{
   position:absolute;
   right:-9px;
   bottom:-9px;
@@ -1063,6 +1064,18 @@ body.editorOn .hitbox.selectedLedge{
   box-shadow:0 0 12px #fff7b8;
   cursor:nwse-resize;
   pointer-events:auto;
+}
+body.strictEditorOn .hitbox::after{
+  content:"drag me";
+  position:absolute;
+  top:-23px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff8b8;
+  font-size:12px;
+  text-shadow:0 0 7px #000;
+  white-space:nowrap;
+  display:block!important;
 }
 
 </style>
@@ -1180,18 +1193,18 @@ try{
 
 
 
+
 <div id="editorPanel">
-  <b>🌿 Ledge Fix Editor</b><br>
+  <b>🌿 Strict Ledge Editor - No Snapback</b><br>
   <button onclick="toggleEditor()">Editor On/Off</button>
-  <button onclick="addNewLedgeNow()">Add Safe Ledge</button>
-  <button onclick="deleteSelectedLedge()">Delete Selected Ledge</button>
-  <button onclick="copyLevelCode()">Copy Level Data</button>
-  <textarea id="editorOutput" placeholder="Click Copy Level Data after you fix the ledges."></textarea>
+  <button onclick="strictAddLedge()">Add Safe Ledge</button>
+  <button onclick="strictDeleteSelected()">Delete Selected Ledge</button>
+  <button onclick="strictCopyLevel()">Copy Level Data</button>
+  <textarea id="editorOutput" placeholder="After moving ledges, click Copy Level Data."></textarea>
   <div style="font-size:12px;margin-top:6px;color:#fff0cc;">
-    Click a green ledge to select it. Drag it where it should be. Resize using the white handle. Then Copy Level Data and paste it to me.
+    This version blocks the old drag handlers. Move the green boxes, copy the data, and paste it to me.
   </div>
 </div>
-
 <div id="endingScreen">
   <div class="endingBox">
     <h1>✨ You Completed the Forest ✨</h1>
@@ -2424,160 +2437,189 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 </script>
 
 
+
+
+
 <script>
-/* ===== TEMP LEDGE FIX EDITOR SCRIPT ===== */
+/* ===== STRICT LEDGE EDITOR SCRIPT - NO SNAPBACK ===== */
 (function(){
   let editorOn=false;
-  let selectedLedge=null;
-  let dragMode=null;
-  let startX=0,startY=0,startLeft=0,startBottom=0,startW=0,startH=0;
+  let selected=null;
+  let mode=null;
+  let sx=0, sy=0, startLeft=0, startBottom=0, startW=0, startH=0;
 
-  function currentLevelObj(){
+  function L(){
     if(typeof levels==="undefined" || typeof currentLevel==="undefined") return null;
     return levels[currentLevel];
   }
 
-  function getWorldRect(){
-    return world.getBoundingClientRect();
+  function n(v,f=0){
+    const x=parseFloat(v);
+    return Number.isFinite(x)?x:f;
   }
 
-  function ledgeToData(el){
+  function getBox(el){
     return {
-      x:Math.round(parseFloat(el.style.left)||0),
-      y:Math.round(parseFloat(el.style.bottom)||0),
-      w:Math.round(parseFloat(el.style.width)||0),
-      h:Math.round(parseFloat(el.style.height)||0)
+      x:Math.round(n(el.style.left,n(el.dataset.x))),
+      y:Math.round(n(el.style.bottom,n(el.dataset.y))),
+      w:Math.round(n(el.style.width,n(el.dataset.w,220))),
+      h:Math.round(n(el.style.height,n(el.dataset.h,30)))
     };
   }
 
-  function syncPlatformsFromScreen(){
-    const L=currentLevelObj();
-    if(!L) return;
-    L.platforms=[...world.querySelectorAll(".hitbox")].map(ledgeToData);
+  function sync(){
+    const level=L();
+    if(!level) return;
+    level.platforms=[...world.querySelectorAll(".hitbox")].map(getBox);
+    refreshBox();
   }
 
-  function addHandles(){
-    document.querySelectorAll(".resizeDot").forEach(d=>d.remove());
-    world.querySelectorAll(".hitbox").forEach((el,i)=>{
-      el.dataset.platformIndex=i;
+  function refreshBox(){
+    const box=document.getElementById("editorOutput");
+    const level=L();
+    if(box && level) box.value=JSON.stringify(level,null,2);
+  }
+
+  function blockOldHandlers(el){
+    const clone=el.cloneNode(false);
+    clone.className=el.className;
+    clone.style.cssText=el.style.cssText;
+    clone.dataset.x = n(el.style.left,n(el.dataset.x));
+    clone.dataset.y = n(el.style.bottom,n(el.dataset.y));
+    clone.dataset.w = n(el.style.width,n(el.dataset.w,220));
+    clone.dataset.h = n(el.style.height,n(el.dataset.h,30));
+    el.parentNode.replaceChild(clone, el);
+    return clone;
+  }
+
+  function rebuildStrictHandles(){
+    document.querySelectorAll(".strictResizeDot").forEach(d=>d.remove());
+
+    const old=[...world.querySelectorAll(".hitbox")];
+    const clean=old.map(blockOldHandlers);
+
+    clean.forEach((el)=>{
       el.style.pointerEvents="auto";
+      el.style.position="absolute";
 
       const dot=document.createElement("div");
-      dot.className="resizeDot";
+      dot.className="strictResizeDot";
       el.appendChild(dot);
 
-      el.onpointerdown=function(e){
-        if(!editorOn) return;
-        if(e.target.classList.contains("resizeDot")) return;
-        selectedLedge=el;
-        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("selectedLedge"));
-        el.classList.add("selectedLedge");
-        dragMode="move";
-        startX=e.clientX;
-        startY=e.clientY;
-        startLeft=parseFloat(el.style.left)||0;
-        startBottom=parseFloat(el.style.bottom)||0;
+      el.addEventListener("pointerdown",function(e){
+        if(!editorOn || e.target.classList.contains("strictResizeDot")) return;
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+        selected=el; mode="move";
+        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("strictSelected"));
+        el.classList.add("strictSelected");
+        sx=e.clientX; sy=e.clientY;
+        startLeft=n(el.style.left);
+        startBottom=n(el.style.bottom);
         el.setPointerCapture(e.pointerId);
-        e.preventDefault();
-        e.stopPropagation();
-      };
+      },true);
 
-      dot.onpointerdown=function(e){
+      dot.addEventListener("pointerdown",function(e){
         if(!editorOn) return;
-        selectedLedge=el;
-        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("selectedLedge"));
-        el.classList.add("selectedLedge");
-        dragMode="resize";
-        startX=e.clientX;
-        startY=e.clientY;
-        startW=parseFloat(el.style.width)||100;
-        startH=parseFloat(el.style.height)||30;
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+        selected=el; mode="resize";
+        world.querySelectorAll(".hitbox").forEach(h=>h.classList.remove("strictSelected"));
+        el.classList.add("strictSelected");
+        sx=e.clientX; sy=e.clientY;
+        startW=n(el.style.width,220);
+        startH=n(el.style.height,30);
         el.setPointerCapture(e.pointerId);
-        e.preventDefault();
-        e.stopPropagation();
-      };
+      },true);
 
-      el.onpointermove=function(e){
-        if(!editorOn || selectedLedge!==el || !dragMode) return;
-        const dx=e.clientX-startX;
-        const dy=e.clientY-startY;
-        if(dragMode==="move"){
+      el.addEventListener("pointermove",function(e){
+        if(!editorOn || selected!==el || !mode) return;
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+
+        const dx=e.clientX-sx;
+        const dy=e.clientY-sy;
+
+        if(mode==="move"){
           el.style.left=Math.round(startLeft+dx)+"px";
           el.style.bottom=Math.round(startBottom-dy)+"px";
-        }else if(dragMode==="resize"){
+        }else if(mode==="resize"){
           el.style.width=Math.max(30,Math.round(startW+dx))+"px";
           el.style.height=Math.max(12,Math.round(startH-dy))+"px";
         }
-        syncPlatformsFromScreen();
-        refreshEditorBox();
-        e.preventDefault();
-        e.stopPropagation();
-      };
+        sync();
+      },true);
 
-      el.onpointerup=function(e){
-        dragMode=null;
-        try{el.releasePointerCapture(e.pointerId);}catch(err){}
-        syncPlatformsFromScreen();
-        refreshEditorBox();
-        e.preventDefault();
-        e.stopPropagation();
-      };
+      el.addEventListener("pointerup",function(e){
+        if(selected===el){
+          e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+          mode=null;
+          try{el.releasePointerCapture(e.pointerId);}catch(err){}
+          sync();
+        }
+      },true);
     });
-  }
-
-  function refreshEditorBox(){
-    const box=document.getElementById("editorOutput");
-    const L=currentLevelObj();
-    if(box && L) box.value=JSON.stringify(L,null,2);
   }
 
   window.toggleEditor=function(){
     editorOn=!editorOn;
-    document.body.classList.toggle("editorOn",editorOn);
-    if(world) world.classList.toggle("showHitboxes",editorOn);
+    document.body.classList.toggle("strictEditorOn",editorOn);
+    document.body.classList.toggle("editorOn",false);
+    if(typeof editorMode!=="undefined") editorMode=false;
+
     const panel=document.getElementById("editorPanel");
     if(panel) panel.style.display=editorOn?"block":"none";
+
     const btn=document.getElementById("editorToggleBtn");
     if(btn) btn.textContent=editorOn?"Editor: On":"Editor: Off";
+
+    if(world){
+      world.classList.toggle("showHitboxes",editorOn);
+      world.classList.remove("editorOn");
+    }
+
     if(editorOn){
       if(typeof showHitboxes!=="undefined") showHitboxes=true;
-      if(ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
-      addHandles();
-      refreshEditorBox();
-      if(typeof setMessage==="function") setMessage("Editor on: drag ledges into place, then Copy Level Data.");
+      if(typeof ledgeBtn!=="undefined" && ledgeBtn) ledgeBtn.textContent="Ledges: Shown";
+      rebuildStrictHandles();
+      refreshBox();
+      if(typeof setMessage==="function") setMessage("Strict editor on: old drag code is blocked. Move ledges, then copy level data.");
+    }else{
+      sync();
+      document.querySelectorAll(".strictResizeDot").forEach(d=>d.remove());
     }
   };
 
-  window.addNewLedgeNow=function(){
-    const L=currentLevelObj();
-    if(!L) return alert("No current level found.");
-    if(!Array.isArray(L.platforms)) L.platforms=[];
+  window.strictAddLedge=function(){
+    const level=L();
+    if(!level) return alert("No level found.");
+    sync();
+    if(!Array.isArray(level.platforms)) level.platforms=[];
     const cam=typeof cameraX!=="undefined"?cameraX:0;
-    L.platforms.push({x:Math.round(cam+400),y:360,w:240,h:32});
+    level.platforms.push({x:Math.round(cam+420),y:360,w:240,h:32});
     if(typeof buildLevel==="function") buildLevel(currentLevel);
     editorOn=false;
     toggleEditor();
   };
 
-  window.deleteSelectedLedge=function(){
-    if(!selectedLedge) return alert("Click a ledge first, then delete.");
-    selectedLedge.remove();
-    selectedLedge=null;
-    syncPlatformsFromScreen();
-    refreshEditorBox();
-    addHandles();
+  window.strictDeleteSelected=function(){
+    if(!selected) return alert("Click a green ledge first.");
+    selected.remove();
+    selected=null;
+    sync();
+    rebuildStrictHandles();
   };
 
-  window.copyLevelCode=function(){
-    syncPlatformsFromScreen();
-    refreshEditorBox();
+  window.strictCopyLevel=function(){
+    sync();
     const box=document.getElementById("editorOutput");
     if(!box) return;
-    box.focus();
-    box.select();
+    box.focus(); box.select();
     try{document.execCommand("copy");}catch(e){}
-    alert("Level data copied. Paste it to me.");
+    alert("Copied. Paste the level data to me.");
   };
+
+  // Make normal Copy/Add button names work too
+  window.addNewLedgeNow=window.strictAddLedge;
+  window.deleteSelectedLedge=window.strictDeleteSelected;
+  window.copyLevelCode=window.strictCopyLevel;
 })();
 </script>
 
