@@ -2362,5 +2362,115 @@ setCleanBackground(document.getElementById("femalePreview"),"female-foxy-player-
 })();
 </script>
 
+
+<script>
+/* ===== ADD LEDGES FIX - STRONG PATCH ===== */
+(function(){
+  if(window.__addLedgesStrongPatch) return;
+  window.__addLedgesStrongPatch = true;
+
+  function getActiveLevel(){
+    if(typeof levels !== "undefined" && typeof currentLevel !== "undefined") return levels[currentLevel];
+    return null;
+  }
+
+  function refreshLevelSafely(){
+    try{
+      if(typeof buildLevel === "function"){
+        buildLevel(currentLevel);
+      }else if(typeof renderLevel === "function"){
+        renderLevel(currentLevel);
+      }else if(typeof changeLevel === "function"){
+        changeLevel(currentLevel);
+      }else{
+        // Manual fallback: create visible hitbox for the newest platform
+        const lvl = getActiveLevel();
+        if(!lvl || !lvl.platforms || !world) return;
+        const p = lvl.platforms[lvl.platforms.length - 1];
+        const div = document.createElement("div");
+        div.className = "hitbox editorGeneratedLedge";
+        div.dataset.editorIndex = String(lvl.platforms.length - 1);
+        div.style.left = p.x + "px";
+        div.style.top = p.y + "px";
+        div.style.width = p.w + "px";
+        div.style.height = p.h + "px";
+        world.appendChild(div);
+      }
+    }catch(e){
+      console.warn("Refresh failed, using manual ledge fallback", e);
+      const lvl = getActiveLevel();
+      if(!lvl || !lvl.platforms || !world) return;
+      const p = lvl.platforms[lvl.platforms.length - 1];
+      const div = document.createElement("div");
+      div.className = "hitbox editorGeneratedLedge";
+      div.dataset.editorIndex = String(lvl.platforms.length - 1);
+      div.style.left = p.x + "px";
+      div.style.top = p.y + "px";
+      div.style.width = p.w + "px";
+      div.style.height = p.h + "px";
+      world.appendChild(div);
+    }
+  }
+
+  window.addPlatformBox = function(){
+    const lvl = getActiveLevel();
+    if(!lvl){
+      alert("Could not find the current level.");
+      return;
+    }
+
+    if(!Array.isArray(lvl.platforms)) lvl.platforms = [];
+
+    const newLedge = {
+      x: Math.round((typeof cameraX !== "undefined" ? cameraX : 0) + 420),
+      y: 420,
+      w: 260,
+      h: 32
+    };
+
+    lvl.platforms.push(newLedge);
+
+    refreshLevelSafely();
+
+    // Keep editor open after redraw
+    document.body.classList.add("editorOn");
+    if(typeof world !== "undefined" && world) {
+      world.classList.add("editorOn");
+      world.classList.add("showHitboxes");
+    }
+    if(typeof editorMode !== "undefined") editorMode = true;
+    if(typeof showHitboxes !== "undefined") showHitboxes = true;
+
+    const panel = document.getElementById("editorPanel");
+    if(panel) panel.style.display = "block";
+
+    const mini = document.getElementById("safeEditorMiniBar");
+    if(mini) mini.style.display = "block";
+
+    const btn = document.getElementById("editorToggleBtn");
+    if(btn) btn.textContent = "Editor: On";
+
+    const ledgeBtn = document.getElementById("ledgeBtn");
+    if(ledgeBtn) ledgeBtn.textContent = "Ledges: Shown";
+
+    if(typeof attachResizeHandlesToAll === "function") attachResizeHandlesToAll();
+    if(typeof makeObjectsEditable === "function") makeObjectsEditable();
+    if(typeof refreshEditorOutput === "function") refreshEditorOutput();
+    if(typeof setMessage === "function") setMessage("New ledge added. Drag it into place, then save this level.");
+
+    console.log("Added ledge:", newLedge);
+  };
+
+  window.copyLevelCode = function(){
+    const box = document.getElementById("editorCode") || document.getElementById("editorOutput");
+    const lvl = getActiveLevel();
+    if(!box || !lvl) return;
+    box.value = JSON.stringify(lvl, null, 2);
+    box.select();
+    try{ document.execCommand("copy"); }catch(e){}
+  };
+})();
+</script>
+
 </body>
 </html>
