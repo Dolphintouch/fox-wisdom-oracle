@@ -851,12 +851,38 @@ const treeStages = [
 
 function chooseGrowthType(){
   /*
-  This decides what kind of life begins.
-  Mostly plants first, then ferns/trees begin appearing later.
+  WEIGHTED GROWTH SYSTEM
+  This keeps the garden feeling natural:
+  - early game mostly small plants
+  - then ferns begin appearing
+  - trees arrive later
+  - still has a little surprise
   */
-  if(score < 40) return "plant";
-  if(score < 80) return Math.random() < 0.65 ? "plant" : "fern";
-  return Math.random() < 0.45 ? "plant" : Math.random() < 0.75 ? "fern" : "tree";
+
+  const plantedCount = plantedGrowth.length;
+  const roll = Math.random();
+
+  // First 3 growths are always tiny plants
+  if(plantedCount < 3){
+    return "plant";
+  }
+
+  // Growths 4-6: mostly plants, some ferns
+  if(plantedCount < 6){
+    return roll < 0.75 ? "plant" : "fern";
+  }
+
+  // Growths 7-9: ferns become common, plants still appear
+  if(plantedCount < 9){
+    if(roll < 0.45) return "plant";
+    if(roll < 0.90) return "fern";
+    return "tree"; // rare early tree
+  }
+
+  // Growths 10+: full forest mix
+  if(roll < 0.30) return "plant";
+  if(roll < 0.65) return "fern";
+  return "tree";
 }
 
 function getStagesForType(type){
