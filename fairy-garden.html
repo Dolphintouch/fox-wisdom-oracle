@@ -84,20 +84,11 @@ body{
   width:105px;
   height:115px;
   margin:0 auto 8px auto;
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center;
+  object-fit:contain;
+  display:block;
   filter:
     drop-shadow(0 0 10px gold)
     brightness(1.08);
-}
-
-#fairyPreview{
-  background-image:url("fairy-idle.png");
-}
-
-#elfPreview{
-  background-image:url("elf-idle.png");
 }
 
 /* PLAYER */
@@ -326,12 +317,12 @@ button{
 <div id="startScreen">
   <div id="characterChoice">
     <button class="characterBtn" id="chooseFairy">
-      <div class="characterPreview" id="fairyPreview"></div>
+      <img class="characterPreview" id="fairyPreview" src="fairy-idle.png" alt="Fairy">
       Play as Fairy
     </button>
 
     <button class="characterBtn" id="chooseElf">
-      <div class="characterPreview" id="elfPreview"></div>
+      <img class="characterPreview" id="elfPreview" src="elf-idle.png" alt="Elf">
       Play as Elf
     </button>
   </div>
@@ -345,6 +336,7 @@ const soundBtn = document.getElementById("soundBtn");
 const singBtn = document.getElementById("singBtn");
 const scoreBox = document.getElementById("score");
 const message = document.getElementById("message");
+const elfPreview = document.getElementById("elfPreview");
 
 let x = window.innerWidth * 0.45;
 let y = window.innerHeight * 0.55;
@@ -411,6 +403,12 @@ function cleanWhiteBackground(src){
     img.src = src;
   });
 }
+
+
+/* CLEAN ELF PREVIEW ON START SCREEN TOO */
+cleanWhiteBackground("elf-idle.png").then(cleaned => {
+  elfPreview.src = cleaned;
+});
 
 /* SPRITE SETS */
 const characterSprites = {
