@@ -573,6 +573,10 @@ let singing = false;
 let facing = 1;
 let currentCharacter = "fairy";
 let eggs = [];
+let lastBirdSound = 0;
+let lastMagicSound = 0;
+let lastGrowSound = 0;
+let lastBloomSound = 0;
 
 let ledgeEditMode = false;
 let plantingSpots = [];
@@ -806,15 +810,17 @@ const sounds = {
   grow: new Audio("plant-grow.mp3"),
   bloom: new Audio("plant-bloom.mp3"),
   sparkle: new Audio("magic-sparkle.mp3"),
-  music: new Audio("fairy-music.mp3")
+  music: new Audio("fairy-music.mp3"),
+  bird: new Audio("fae-bird.mp3")
 };
 
 sounds.music.loop = true;
-sounds.music.volume = 0.28;
-sounds.fairy.volume = 0.65;
-sounds.grow.volume = 0.55;
-sounds.bloom.volume = 0.7;
-sounds.sparkle.volume = 0.5;
+sounds.music.volume = 0.14;
+sounds.fairy.volume = 0.38;
+sounds.grow.volume = 0.28;
+sounds.bloom.volume = 0.42;
+sounds.sparkle.volume = 0.18;
+if(sounds.bird) sounds.bird.volume = 0.22;
 
 function unlockSounds(){
   Object.values(sounds).forEach(s => {
@@ -830,6 +836,51 @@ function playSound(s){
   s.currentTime = 0;
   s.play().catch(()=>{});
 }
+
+function playLimitedSound(sound, limiterName, delayMs, volumeOverride){
+  if(!soundOn) return;
+
+  const now = Date.now();
+
+  if(limiterName === "bird" && now - lastBirdSound < delayMs) return;
+  if(limiterName === "magic" && now - lastMagicSound < delayMs) return;
+  if(limiterName === "grow" && now - lastGrowSound < delayMs) return;
+  if(limiterName === "bloom" && now - lastBloomSound < delayMs) return;
+
+  if(limiterName === "bird") lastBirdSound = now;
+  if(limiterName === "magic") lastMagicSound = now;
+  if(limiterName === "grow") lastGrowSound = now;
+  if(limiterName === "bloom") lastBloomSound = now;
+
+  try{
+    const s = sound.cloneNode();
+    s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;
+    s.play().catch(()=>{});
+  }catch(e){
+    playSound(sound);
+  }
+}
+
+function playSoftBirdSound(){
+  if(!sounds.bird) return;
+  playLimitedSound(sounds.bird, "bird", 1400, 0.18 + Math.random() * 0.12);
+}
+
+function playSoftMagicSound(){
+  if(Math.random() < 0.28){
+    playLimitedSound(sounds.sparkle, "magic", 900, 0.14);
+  }
+}
+
+function playSoftGrowSound(){
+  playLimitedSound(sounds.grow, "grow", 700, 0.24);
+}
+
+function playSoftBloomSound(){
+  playLimitedSound(sounds.bloom, "bloom", 1200, 0.36);
+}
+
+
 
 function startMusic(){
   if(!soundOn) return;
@@ -883,7 +934,7 @@ async function chooseCharacter(characterName){
   unlockSounds();
 
   setTimeout(() => {
-    playSound(sounds.fairy);
+    playLimitedSound(sounds.fairy, "magic", 700, 0.28);
     startMusic();
   }, 200);
 
@@ -913,7 +964,7 @@ soundBtn.onclick = () => {
 
   if(soundOn){
     startMusic();
-    playSound(sounds.fairy);
+    playLimitedSound(sounds.fairy, "magic", 700, 0.28);
   } else {
     sounds.music.pause();
     message.innerText = "Sound is off.";
@@ -959,7 +1010,7 @@ function magicSurround(){
   game.appendChild(aura);
   setTimeout(()=>aura.remove(),1200);
 
-  for(let i=0;i<10;i++){
+  for(let i=0;i<6;i++){
     const p = document.createElement("div");
     p.className = "particle";
     p.style.left = (x + fairy.offsetWidth/2 + (Math.random()*80-40)) + "px";
@@ -1063,7 +1114,7 @@ function unlockLevelOneForest(){
 
   message.innerText="Level One complete — the full forest has awakened!";
   setTimeout(showLevelComplete,1200);
-  playSound(sounds.bloom);
+  playSoftBloomSound();
 
   for(let i=0;i<30;i++){
     setTimeout(sparkle, i*55);
@@ -1118,6 +1169,7 @@ function spawnFaeSongbird(px,py){
   birdImg.style.top=py+"px";
 
   game.appendChild(birdImg);
+  playSoftBirdSound();
 
   const dirX=(Math.random()*2-1)*260;
   const dirY=-(Math.random()*130+50);
@@ -1149,7 +1201,7 @@ function spawnFaeSongbird(px,py){
 function spawnBirdCelebration(px,py){
   spawnFaeSongbird(px,py);
 
-  if(Math.random()<0.35){
+  if(Math.random()<0.22){
     setTimeout(()=>spawnFaeSongbird(px+Math.random()*80-40,py+Math.random()*40-20),350);
   }
 }
@@ -1188,7 +1240,7 @@ function createNestAndEgg(spot){
 
   message.innerText="A fae bird has made a glowing nest...";
 
-  for(let i=0;i<12;i++){
+  for(let i=0;i<7;i++){
     setTimeout(()=>sparkleAt(spot.x+Math.random()*40-20,spot.y-40+Math.random()*35),i*80);
   }
 
@@ -1225,9 +1277,9 @@ function hatchEgg(egg,nest,spot){
 
   message.innerText="A new fae bird has hatched and taken flight ✨";
 
-  playSound(sounds.bloom);
+  playSoftBloomSound();
 
-  for(let i=0;i<18;i++){
+  for(let i=0;i<6;i++){
     setTimeout(()=>sparkleAt(spot.x+Math.random()*70-35,spot.y-60+Math.random()*60-30),i*55);
   }
 
@@ -1248,7 +1300,7 @@ function maybeCreateNest(growth){
   */
   if(!growth || !growth.spot) return;
 
-  if(Math.random()<0.35){
+  if(Math.random()<0.22){
     setTimeout(()=>createNestAndEgg(growth.spot),900);
   }
 }
@@ -1296,7 +1348,7 @@ function growPlant(){
     setTimeout(unlockLevelOneForest, 800);
   }
 
-  playSound(sounds.grow);
+  playSoftGrowSound();
 
   if(type === "plant"){
     message.innerText = "A tiny seedling has been planted...";
@@ -1322,13 +1374,13 @@ async function sing(){
   await sprite(getSprite("sing"));
   update();
 
-  playSound(sounds.fairy);
+  playLimitedSound(sounds.fairy, "magic", 700, 0.28);
   magicSurround();
 
   score += 10;
   scoreBox.innerText = score;
 
-  for(let i = 0; i < 10; i++){
+  for(let i = 0; i < 6; i++){
     setTimeout(sparkle, i * 80);
   }
 
@@ -1338,7 +1390,7 @@ async function sing(){
 
   setTimeout(() => {
     growPlant();
-    playSound(sounds.sparkle);
+    playSoftMagicSound();
   }, 350);
 
   if(score % 20 === 0){
