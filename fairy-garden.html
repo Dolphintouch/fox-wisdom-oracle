@@ -462,6 +462,30 @@ button{
   100%{transform:translateX(180px) translateY(-70px) scale(.9);opacity:0}
 }
 
+
+.nestSprite,
+.eggSprite{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:8;
+  filter:
+    drop-shadow(0 0 14px rgba(255,230,120,.9))
+    brightness(1.05);
+  animation:plantGrow .8s ease forwards;
+}
+
+.nestSprite{
+  width:120px;
+  height:90px;
+}
+
+.eggSprite{
+  width:70px;
+  height:90px;
+  z-index:9;
+}
+
 @media(max-width:700px){
   #fairy{
     width:165px;
@@ -548,6 +572,7 @@ let soundOn = false;
 let singing = false;
 let facing = 1;
 let currentCharacter = "fairy";
+let eggs = [];
 
 let ledgeEditMode = false;
 let plantingSpots = [];
@@ -905,6 +930,17 @@ function sparkle(){
   setTimeout(() => s.remove(), 1000);
 }
 
+
+function sparkleAt(px,py){
+  const s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=px+"px";
+  s.style.top=py+"px";
+  game.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+
 function note(){
   const n = document.createElement("div");
   n.className = "note";
@@ -1123,6 +1159,98 @@ function celebrateGrowthWithBird(growth){
   const px=growth.spot.x;
   const py=growth.spot.y;
   spawnBirdCelebration(px,py);
+  maybeCreateNest(growth);
+}
+
+
+
+function createNestAndEgg(spot){
+  /*
+  Bird life cycle:
+  nest appears -> egg glows -> egg sparkles -> hatches -> new bird + points
+  */
+
+  const nest=document.createElement("img");
+  nest.src="fae-nest.png";
+  nest.className="nestSprite";
+  nest.style.left=(spot.x-60)+"px";
+  nest.style.top=(spot.y-52)+"px";
+  game.appendChild(nest);
+
+  const egg=document.createElement("img");
+  egg.src="fae-egg-glow.png";
+  egg.className="eggSprite";
+  egg.style.left=(spot.x-35)+"px";
+  egg.style.top=(spot.y-92)+"px";
+  game.appendChild(egg);
+
+  eggs.push({egg:egg,nest:nest,spot:spot,hatched:false});
+
+  message.innerText="A fae bird has made a glowing nest...";
+
+  for(let i=0;i<12;i++){
+    setTimeout(()=>sparkleAt(spot.x+Math.random()*40-20,spot.y-40+Math.random()*35),i*80);
+  }
+
+  setTimeout(()=>{
+    if(egg && egg.parentNode){
+      egg.src="fae-egg-sparkle.png";
+      message.innerText="The egg begins to shimmer...";
+    }
+  },1800);
+
+  setTimeout(()=>{
+    hatchEgg(egg,nest,spot);
+  },7500);
+}
+
+function hatchEgg(egg,nest,spot){
+  if(!egg || !egg.parentNode) return;
+
+  egg.remove();
+
+  const glow=document.createElement("img");
+  glow.src="fae-egg-sparkle.png";
+  glow.className="eggSprite";
+  glow.style.left=(spot.x-35)+"px";
+  glow.style.top=(spot.y-92)+"px";
+  game.appendChild(glow);
+
+  setTimeout(()=>glow.remove(),1200);
+
+  spawnBirdCelebration(spot.x,spot.y-90);
+
+  score += 15;
+  scoreBox.innerText = score;
+
+  message.innerText="A new fae bird has hatched and taken flight ✨";
+
+  playSound(sounds.bloom);
+
+  for(let i=0;i<18;i++){
+    setTimeout(()=>sparkleAt(spot.x+Math.random()*70-35,spot.y-60+Math.random()*60-30),i*55);
+  }
+
+  // Nest stays for a while, then gently disappears so the level doesn't get too crowded
+  setTimeout(()=>{
+    if(nest && nest.parentNode){
+      nest.style.transition="opacity 1.5s ease";
+      nest.style.opacity="0";
+      setTimeout(()=>nest.remove(),1600);
+    }
+  },6000);
+}
+
+function maybeCreateNest(growth){
+  /*
+  Not every bird makes a nest.
+  This keeps it magical and surprising, not too busy.
+  */
+  if(!growth || !growth.spot) return;
+
+  if(Math.random()<0.35){
+    setTimeout(()=>createNestAndEgg(growth.spot),900);
+  }
 }
 
 
