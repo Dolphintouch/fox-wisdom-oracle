@@ -207,6 +207,49 @@ button{
 }
 
 
+
+.plantedItem{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+.plantImage,
+.fernImage,
+.treeImage{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+.plantImage{
+  width:115px;
+  height:115px;
+  filter:
+    drop-shadow(0 0 12px rgba(255,230,120,.9))
+    brightness(1.05);
+}
+
+.fernImage{
+  width:135px;
+  height:135px;
+  filter:
+    drop-shadow(0 0 12px rgba(180,255,150,.85))
+    brightness(1.05);
+}
+
+.treeImage{
+  width:190px;
+  height:230px;
+  filter:
+    drop-shadow(0 0 16px rgba(255,230,120,.95))
+    brightness(1.04);
+}
+
 /* MAGIC EFFECTS */
 .sparkle{
   position:absolute;
@@ -428,6 +471,7 @@ let currentCharacter = "fairy";
 
 let ledgeEditMode = false;
 let plantingSpots = [];
+let plantedGrowth = [];
 
 const defaultPlantingSpots = [
   {x:250,y:610},
@@ -804,40 +848,89 @@ const treeStages = [
   "tree-stage-3.png"
 ];
 
-function growPlant(){
 
-  let type = "plant";
-  let file = "";
-  let className = "plantImage";
-
+function chooseGrowthType(){
   /*
-  Growth order:
-  score 0-30   = plant stages
-  score 40-70  = fern stages
-  score 80+    = tree stages
+  This decides what kind of life begins.
+  Mostly plants first, then ferns/trees begin appearing later.
   */
+  if(score < 40) return "plant";
+  if(score < 80) return Math.random() < 0.65 ? "plant" : "fern";
+  return Math.random() < 0.45 ? "plant" : Math.random() < 0.75 ? "fern" : "tree";
+}
 
-  if(score < 40){
-    const i = Math.min(Math.floor(score / 10), plantStages.length - 1);
-    file = plantStages[i];
-    type = "plant";
-    className = "plantImage";
-  } else if(score < 80){
-    const i = Math.min(Math.floor((score - 40) / 10), fernStages.length - 1);
-    file = fernStages[i];
-    type = "fern";
-    className = "fernImage";
-  } else {
-    const i = Math.min(Math.floor((score - 80) / 15), treeStages.length - 1);
-    file = treeStages[i];
-    type = "tree";
-    className = "treeImage";
-  }
+function getStagesForType(type){
+  if(type === "fern") return fernStages;
+  if(type === "tree") return treeStages;
+  return plantStages;
+}
 
-  const p = document.createElement("img");
-  p.className = className;
-  p.src = file;
+function getClassForType(type){
+  if(type === "fern") return "fernImage";
+  if(type === "tree") return "treeImage";
+  return "plantImage";
+}
 
+function getTopOffsetForType(type){
+  if(type === "tree") return 170;
+  if(type === "fern") return 105;
+  return 85;
+}
+
+async function setCleanImage(imgElement, src){
+  /*
+  Uses the same cleanup idea as the elf:
+  if an image has a white/checker-looking background baked in,
+  the browser tries to remove it before showing the sprite.
+  */
+  const cleaned = await cleanWhiteBackground(src);
+  imgElement.src = cleaned;
+}
+
+function findPlantedAtSpot(spot){
+  return plantedGrowth.find(g => g.spot === spot);
+}
+
+async function updatePlantedImage(growth){
+  const stages = getStagesForType(growth.type);
+  const src = stages[Math.min(growth.stage, stages.length - 1)];
+
+  growth.img.className = "plantedItem " + getClassForType(growth.type);
+  await setCleanImage(growth.img, src);
+
+  growth.img.style.left = (growth.spot.x - growth.img.offsetWidth / 2) + "px";
+  growth.img.style.top = (growth.spot.y - getTopOffsetForType(growth.type)) + "px";
+}
+
+function startGrowthTimer(growth){
+  /*
+  This is the important change:
+  plants do NOT become older because the player keeps singing.
+  They grow older over time by themselves.
+  */
+  growth.timer = setInterval(async () => {
+    const stages = getStagesForType(growth.type);
+
+    if(growth.stage < stages.length - 1){
+      growth.stage++;
+      await updatePlantedImage(growth);
+      playSound(growth.stage === stages.length - 1 ? sounds.bloom : sounds.grow);
+
+      if(growth.type === "plant"){
+        message.innerText = "A little plant grows older in the meadow...";
+      }else if(growth.type === "fern"){
+        message.innerText = "A fern slowly unfurls...";
+      }else{
+        message.innerText = "A young tree reaches toward the light...";
+      }
+    }else{
+      clearInterval(growth.timer);
+    }
+  }, 5000);
+}
+
+
+function growPlant(){
   const spot = getNearestPlantingSpot();
 
   if(!spot){
@@ -845,36 +938,40 @@ function growPlant(){
     return;
   }
 
-  const px = spot.x + Math.random() * 26 - 13;
-  const py = spot.y - (type === "tree" ? 170 : type === "fern" ? 105 : 85);
+  const existing = findPlantedAtSpot(spot);
 
-  p.style.left = px + "px";
-  p.style.top = py + "px";
-
-  p.onerror = () => {
-    const fallback = document.createElement("div");
-    fallback.className = "plantFallback";
-    fallback.innerHTML = type === "plant" ? "🌱" : type === "fern" ? "🌿" : "🌳";
-    fallback.style.left = px + "px";
-    fallback.style.top = py + "px";
-    game.appendChild(fallback);
-    p.remove();
-  };
-
-  game.appendChild(p);
-
-  if(type === "tree" || file === "plant-stage-4.png" || file === "fern-stage-4.png"){
-    playSound(sounds.bloom);
-  } else {
-    playSound(sounds.grow);
+  if(existing){
+    message.innerText = "This little one is already growing. Give it time...";
+    magicSurround();
+    return;
   }
 
+  const type = chooseGrowthType();
+  const img = document.createElement("img");
+  img.className = "plantedItem " + getClassForType(type);
+
+  const growth = {
+    spot: spot,
+    type: type,
+    stage: 0,
+    img: img,
+    timer: null
+  };
+
+  plantedGrowth.push(growth);
+  game.appendChild(img);
+
+  updatePlantedImage(growth);
+  startGrowthTimer(growth);
+
+  playSound(sounds.grow);
+
   if(type === "plant"){
-    message.innerText = "A seedling rises from the earth...";
-  } else if(type === "fern"){
-    message.innerText = "Ferns uncurl in the golden light...";
-  } else {
-    message.innerText = "A young tree awakens in the meadow...";
+    message.innerText = "A tiny seedling has been planted...";
+  }else if(type === "fern"){
+    message.innerText = "A curled fern begins to wake...";
+  }else{
+    message.innerText = "A tiny tree sapling takes root...";
   }
 }
 
