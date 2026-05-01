@@ -100,7 +100,7 @@ body{
   background-image:url("elf-idle.png");
 }
 
-/* FAIRY / ELF PLAYER */
+/* PLAYER */
 #fairy{
   position:absolute;
   width:220px;
@@ -319,7 +319,7 @@ button{
     <button id="soundBtn">Sound: Off</button>
   </div>
 
-  <div id="message">The meadow is waiting for your song...</div>
+  <div id="message">Choose Fairy or Elf to begin...</div>
   <button id="singBtn">✨ Sing ✨</button>
 </div>
 
@@ -353,6 +353,64 @@ let soundOn = false;
 let singing = false;
 let facing = 1;
 let currentCharacter = "fairy";
+
+/*
+WHITE BACKGROUND CLEANUP:
+This tries to remove white or near-white backgrounds from sprite PNGs in the browser.
+It is mainly for your elf images, because they seem to have white baked into the PNG.
+If the image file is properly transparent later, this still works fine.
+*/
+const cleanedSpriteCache = {};
+
+function cleanWhiteBackground(src){
+  return new Promise(resolve => {
+    if(cleanedSpriteCache[src]){
+      resolve(cleanedSpriteCache[src]);
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      try{
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = data.data;
+
+        for(let i = 0; i < pixels.length; i += 4){
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+
+          /* remove white / very pale background */
+          if(r > 225 && g > 225 && b > 225){
+            pixels[i + 3] = 0;
+          }
+
+          /* soften light grey background edges */
+          if(r > 210 && g > 210 && b > 210){
+            pixels[i + 3] = Math.min(pixels[i + 3], 60);
+          }
+        }
+
+        ctx.putImageData(data, 0, 0);
+        const cleaned = canvas.toDataURL("image/png");
+        cleanedSpriteCache[src] = cleaned;
+        resolve(cleaned);
+      } catch(err){
+        resolve(src);
+      }
+    };
+
+    img.onerror = () => resolve(src);
+    img.src = src;
+  });
+}
 
 /* SPRITE SETS */
 const characterSprites = {
@@ -388,11 +446,11 @@ const sounds = {
 };
 
 sounds.music.loop = true;
-sounds.music.volume = 0.2;
-sounds.fairy.volume = 0.55;
-sounds.grow.volume = 0.5;
-sounds.bloom.volume = 0.65;
-sounds.sparkle.volume = 0.45;
+sounds.music.volume = 0.28;
+sounds.fairy.volume = 0.65;
+sounds.grow.volume = 0.55;
+sounds.bloom.volume = 0.7;
+sounds.sparkle.volume = 0.5;
 
 function unlockSounds(){
   Object.values(sounds).forEach(s => {
@@ -410,13 +468,22 @@ function playSound(s){
 }
 
 function startMusic(){
-  if(soundOn){
-    sounds.music.play().catch(()=>{});
-  }
+  if(!soundOn) return;
+
+  sounds.music.play().then(() => {
+    message.innerText = "The meadow is waiting for your song...";
+  }).catch(() => {
+    message.innerText = "Music could not start. Check fairy-music.mp3 is in the same folder.";
+  });
 }
 
-function sprite(img){
-  fairy.style.backgroundImage = `url("${img}")`;
+async function sprite(img){
+  if(currentCharacter === "elf"){
+    const cleaned = await cleanWhiteBackground(img);
+    fairy.style.backgroundImage = `url("${cleaned}")`;
+  } else {
+    fairy.style.backgroundImage = `url("${img}")`;
+  }
 }
 
 function update(){
@@ -440,18 +507,21 @@ for(let i=0;i<25;i++){
 }
 
 /* CHOOSE CHARACTER */
-function chooseCharacter(characterName){
+async function chooseCharacter(characterName){
   currentCharacter = characterName;
   localStorage.setItem("fairyGardenCharacter", currentCharacter);
 
-  sprite(getSprite("idle"));
+  await sprite(getSprite("idle"));
 
   soundOn = true;
   soundBtn.innerText = "Sound: On";
 
   unlockSounds();
-  playSound(sounds.fairy);
-  startMusic();
+
+  setTimeout(() => {
+    playSound(sounds.fairy);
+    startMusic();
+  }, 200);
 
   startScreen.style.opacity = "0";
   startScreen.style.pointerEvents = "none";
@@ -479,8 +549,10 @@ soundBtn.onclick = () => {
 
   if(soundOn){
     startMusic();
+    playSound(sounds.fairy);
   } else {
     sounds.music.pause();
+    message.innerText = "Sound is off.";
   }
 };
 
@@ -558,13 +630,13 @@ function bird(){
 }
 
 /* SING */
-function sing(){
+async function sing(){
   if(singing) return;
 
   singing = true;
   fairy.classList.add("singing");
 
-  sprite(getSprite("sing"));
+  await sprite(getSprite("sing"));
   update();
 
   playSound(sounds.fairy);
@@ -600,16 +672,16 @@ function sing(){
     message.innerText = "The forest is alive with magic!";
   }
 
-  setTimeout(() => {
+  setTimeout(async () => {
     singing = false;
     fairy.classList.remove("singing");
-    sprite(getSprite("idle"));
+    await sprite(getSprite("idle"));
     update();
   }, 850);
 }
 
 /* MOVEMENT */
-function moveFairy(dx, dy, moveSprite){
+async function moveFairy(dx, dy, moveSprite){
   if(dx > 0) facing = 1;
   if(dx < 0) facing = -1;
 
@@ -617,7 +689,7 @@ function moveFairy(dx, dy, moveSprite){
   y += dy;
 
   if(!singing){
-    sprite(moveSprite);
+    await sprite(moveSprite);
   }
 
   update();
