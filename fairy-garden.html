@@ -146,6 +146,41 @@ body{
   max-width:250px;
 }
 
+
+#levelCompleteOverlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+}
+
+#levelCompleteCard{
+  background:rgba(255,245,200,0.95);
+  padding:30px 40px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 40px gold;
+  max-width:400px;
+}
+
+#levelCompleteCard h2{
+  margin-top:0;
+  color:#5a3d00;
+}
+
+#levelCompleteCard button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:gold;
+  cursor:pointer;
+  font-weight:bold;
+}
+
 #message{
   position:absolute;
   bottom:20px;
@@ -418,7 +453,6 @@ button{
     drop-shadow(0 0 12px rgba(180,240,255,.9))
     drop-shadow(0 0 20px rgba(255,230,120,.65))
     brightness(1.08);
-  animation:birdFloatAcross 5s ease-in-out forwards;
 }
 
 @keyframes birdFloatAcross{
@@ -976,15 +1010,31 @@ async function updatePlantedImage(growth){
 }
 
 
+
+function showLevelComplete(){
+  const overlay=document.getElementById("levelCompleteOverlay");
+  overlay.style.display="flex";
+}
+
+function closeLevelComplete(){
+  const overlay=document.getElementById("levelCompleteOverlay");
+  overlay.style.display="none";
+}
+
 function unlockLevelOneForest(){
   if(window.levelOneComplete) return;
   window.levelOneComplete=true;
 
   message.innerText="Level One complete — the full forest has awakened!";
+  setTimeout(showLevelComplete,1200);
   playSound(sounds.bloom);
 
   for(let i=0;i<30;i++){
     setTimeout(sparkle, i*55);
+  }
+
+  for(let i=0;i<4;i++){
+    setTimeout(()=>spawnFaeSongbird(window.innerWidth*0.25+Math.random()*window.innerWidth*0.5, window.innerHeight*0.65), i*500);
   }
 
   if(typeof game !== "undefined"){
@@ -1027,26 +1077,52 @@ function spawnFaeSongbird(px,py){
   const birdImg=document.createElement("img");
   birdImg.className="faeSongbird";
   birdImg.src=birdFrames[0];
-  birdImg.style.left=(px+30)+"px";
-  birdImg.style.top=(py-90)+"px";
+
+  birdImg.style.left=px+"px";
+  birdImg.style.top=py+"px";
+
   game.appendChild(birdImg);
+
+  const dirX=(Math.random()*2-1)*260;
+  const dirY=-(Math.random()*130+50);
+  const startScale=0.75+Math.random()*0.2;
+  const duration=4200+Math.random()*1800;
+
+  birdImg.animate([
+    {transform:`translate(0px,0px) scale(${startScale})`,opacity:0},
+    {transform:`translate(${dirX*0.35}px,${dirY*0.35}px) scale(1)`,opacity:1},
+    {transform:`translate(${dirX}px,${dirY}px) scale(.9)`,opacity:0}
+  ],{
+    duration:duration,
+    easing:"ease-out",
+    fill:"forwards"
+  });
 
   let frame=0;
   const anim=setInterval(()=>{
     frame=(frame+1)%birdFrames.length;
     birdImg.src=birdFrames[frame];
-  },220);
+  },180);
 
   setTimeout(()=>{
     clearInterval(anim);
     birdImg.remove();
-  },5000);
+  },duration);
 }
+
+function spawnBirdCelebration(px,py){
+  spawnFaeSongbird(px,py);
+
+  if(Math.random()<0.35){
+    setTimeout(()=>spawnFaeSongbird(px+Math.random()*80-40,py+Math.random()*40-20),350);
+  }
+}
+
 
 function celebrateGrowthWithBird(growth){
   const px=growth.spot.x;
   const py=growth.spot.y;
-  spawnFaeSongbird(px,py);
+  spawnBirdCelebration(px,py);
 }
 
 
@@ -1104,18 +1180,8 @@ function growPlant(){
 }
 
 function bird(){
-  const b = document.createElement("div");
-  b.className = "bird";
-  b.innerHTML = "🐦";
-  b.style.left = (x + fairy.offsetWidth * .45) + "px";
-  b.style.top = (y - 45) + "px";
-  game.appendChild(b);
-
-  for(let i = 0; i < 4; i++){
-    setTimeout(note, i * 300);
-  }
-
-  setTimeout(() => b.remove(), 3000);
+  // Old emoji bird replaced with fae songbird animation
+  spawnFaeSongbird(x + fairy.offsetWidth * .45, y - 45);
 }
 
 /* SING */
