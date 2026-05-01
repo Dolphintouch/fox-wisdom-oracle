@@ -21,7 +21,7 @@ body{
   overflow:hidden;
 }
 
-/* CLEAN START SCREEN - IMAGE DOES THE TALKING */
+/* START SCREEN */
 #startScreen{
   position:absolute;
   inset:0;
@@ -29,24 +29,78 @@ body{
   display:flex;
   justify-content:center;
   align-items:flex-end;
-  padding-bottom:50px;
+  padding-bottom:55px;
   z-index:100;
   transition:opacity 1.2s ease;
+  overflow:hidden;
 }
 
-#startBtn{
-  padding:16px 40px;
-  font-size:18px;
-  border-radius:30px;
+#startScreen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at center, rgba(255,230,150,0.20), transparent 45%),
+    rgba(0,0,0,0.10);
+  pointer-events:none;
+}
+
+#characterChoice{
+  position:relative;
+  z-index:10;
+  display:flex;
+  gap:18px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.characterBtn{
+  width:150px;
+  min-height:170px;
   border:none;
-  background:linear-gradient(#fff3a8,#ffd45a);
-  color:#4a3210;
-  font-weight:bold;
+  border-radius:28px;
+  background:rgba(255,240,170,0.86);
+  box-shadow:
+    0 0 16px gold,
+    0 0 35px rgba(255,230,120,0.75);
   cursor:pointer;
-  box-shadow:0 0 18px gold,0 0 35px rgba(255,230,120,.75);
+  font-family:Georgia, serif;
+  color:#4d3510;
+  font-weight:bold;
+  font-size:17px;
+  padding:10px;
+  transition:transform .25s ease, box-shadow .25s ease;
 }
 
-/* FAIRY */
+.characterBtn:hover{
+  transform:scale(1.06);
+  box-shadow:
+    0 0 22px gold,
+    0 0 45px rgba(255,240,150,0.95);
+}
+
+.characterPreview{
+  width:105px;
+  height:115px;
+  margin:0 auto 8px auto;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
+  filter:
+    drop-shadow(0 0 10px gold)
+    brightness(1.08);
+}
+
+#fairyPreview{
+  background-image:url("fairy-idle.png");
+}
+
+#elfPreview{
+  background-image:url("elf-idle.png");
+}
+
+/* FAIRY / ELF PLAYER */
 #fairy{
   position:absolute;
   width:220px;
@@ -81,6 +135,8 @@ body{
   padding:12px;
   border-radius:15px;
   z-index:30;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
 }
 
 #message{
@@ -94,6 +150,8 @@ body{
   color:#fff4c2;
   z-index:30;
   text-align:center;
+  max-width:86vw;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
 }
 
 #singBtn{
@@ -114,7 +172,7 @@ button{
   font-family:Georgia, serif;
 }
 
-/* SIMPLE MAGIC EFFECTS */
+/* MAGIC EFFECTS */
 .sparkle{
   position:absolute;
   width:8px;
@@ -135,12 +193,55 @@ button{
   z-index:20;
 }
 
+.particle{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff6a8;
+  box-shadow:0 0 10px gold, 0 0 20px white;
+  animation:floatUp 2s ease-out forwards;
+  pointer-events:none;
+  z-index:20;
+}
+
+.fairyAura{
+  position:absolute;
+  width:150px;
+  height:65px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,240,150,0.5), transparent 70%);
+  filter:blur(6px);
+  pointer-events:none;
+  animation:auraFade 1.2s ease-out forwards;
+  z-index:8;
+}
+
 .plantFallback{
   position:absolute;
   font-size:58px;
   filter:drop-shadow(0 0 14px #eaff8a);
   animation:plantGrow .8s ease forwards;
   z-index:7;
+}
+
+.bird{
+  position:absolute;
+  font-size:34px;
+  animation:birdFloat 3s ease forwards;
+  z-index:18;
+}
+
+.firefly{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff6a8;
+  box-shadow:0 0 12px gold, 0 0 25px #fff6a8;
+  animation:floatFirefly linear infinite;
+  opacity:0.8;
+  z-index:5;
 }
 
 @keyframes sparkleFloat{
@@ -151,9 +252,57 @@ button{
   to{transform:translateY(-90px);opacity:0}
 }
 
+@keyframes floatUp{
+  0%{transform:translateY(10px);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateY(-60px);opacity:0}
+}
+
+@keyframes auraFade{
+  from{opacity:0.9;transform:scale(0.8)}
+  to{opacity:0;transform:scale(1.4)}
+}
+
 @keyframes plantGrow{
   from{transform:scale(.2);opacity:.2}
   to{transform:scale(1);opacity:1}
+}
+
+@keyframes birdFloat{
+  to{transform:translateX(120px) translateY(-20px);opacity:0}
+}
+
+@keyframes floatFirefly{
+  0%{transform:translateY(40px) translateX(0);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateY(-110vh) translateX(60px);opacity:0}
+}
+
+@media(max-width:700px){
+  #fairy{
+    width:165px;
+    height:205px;
+  }
+
+  #message{
+    font-size:14px;
+    bottom:12px;
+  }
+
+  #singBtn{
+    right:12px;
+    bottom:82px;
+  }
+
+  .characterBtn{
+    width:135px;
+    min-height:155px;
+  }
+
+  .characterPreview{
+    width:92px;
+    height:100px;
+  }
 }
 </style>
 </head>
@@ -175,14 +324,23 @@ button{
 </div>
 
 <div id="startScreen">
-  <button id="startBtn">✨ Enter the Fairy Garden ✨</button>
+  <div id="characterChoice">
+    <button class="characterBtn" id="chooseFairy">
+      <div class="characterPreview" id="fairyPreview"></div>
+      Play as Fairy
+    </button>
+
+    <button class="characterBtn" id="chooseElf">
+      <div class="characterPreview" id="elfPreview"></div>
+      Play as Elf
+    </button>
+  </div>
 </div>
 
 <script>
 const fairy = document.getElementById("fairy");
 const game = document.getElementById("game");
 const startScreen = document.getElementById("startScreen");
-const startBtn = document.getElementById("startBtn");
 const soundBtn = document.getElementById("soundBtn");
 const singBtn = document.getElementById("singBtn");
 const scoreBox = document.getElementById("score");
@@ -193,16 +351,34 @@ let y = window.innerHeight * 0.55;
 let score = 0;
 let soundOn = false;
 let singing = false;
-
-/*
-IMPORTANT:
-Most fairy sprites face RIGHT by default.
-facing = 1 means right.
-facing = -1 means left.
-This fixes the backwards walking/flying problem.
-*/
 let facing = 1;
+let currentCharacter = "fairy";
 
+/* SPRITE SETS */
+const characterSprites = {
+  fairy: {
+    idle: "fairy-idle.png",
+    run: "fairy-run.png",
+    jump: "fairy-jump.png",
+    fly: "fairy-fly.png",
+    sing: "fairy-fly.png"
+  },
+
+  elf: {
+    idle: "elf-idle.png",
+    run: "elf-run.png",
+    jump: "elf-jump.png",
+    fly: "elf-jump.png",
+    sing: "elf-sing.png",
+    collect: "elf-collect.png"
+  }
+};
+
+function getSprite(action){
+  return characterSprites[currentCharacter][action] || characterSprites[currentCharacter].idle;
+}
+
+/* SOUNDS */
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
@@ -233,6 +409,12 @@ function playSound(s){
   s.play().catch(()=>{});
 }
 
+function startMusic(){
+  if(soundOn){
+    sounds.music.play().catch(()=>{});
+  }
+}
+
 function sprite(img){
   fairy.style.backgroundImage = `url("${img}")`;
 }
@@ -243,18 +425,27 @@ function update(){
 
   fairy.style.left = x + "px";
   fairy.style.top = y + "px";
-
-  /* THIS IS THE TURNING FIX */
   fairy.style.transform = `scaleX(${facing})`;
 }
 
-function startMusic(){
-  if(soundOn){
-    sounds.music.play().catch(()=>{});
-  }
+/* FIREFLIES ON START SCREEN */
+for(let i=0;i<25;i++){
+  const f=document.createElement("div");
+  f.className="firefly";
+  f.style.left=Math.random()*100+"vw";
+  f.style.top=(80+Math.random()*40)+"vh";
+  f.style.animationDuration=(6+Math.random()*6)+"s";
+  f.style.animationDelay=(Math.random()*6)+"s";
+  startScreen.appendChild(f);
 }
 
-startBtn.onclick = () => {
+/* CHOOSE CHARACTER */
+function chooseCharacter(characterName){
+  currentCharacter = characterName;
+  localStorage.setItem("fairyGardenCharacter", currentCharacter);
+
+  sprite(getSprite("idle"));
+
   soundOn = true;
   soundBtn.innerText = "Sound: On";
 
@@ -263,12 +454,24 @@ startBtn.onclick = () => {
   startMusic();
 
   startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
   setTimeout(() => {
     startScreen.style.display = "none";
     update();
   }, 1000);
-};
+}
 
+document.getElementById("chooseFairy").onclick = () => chooseCharacter("fairy");
+document.getElementById("chooseElf").onclick = () => chooseCharacter("elf");
+
+const savedCharacter = localStorage.getItem("fairyGardenCharacter");
+if(savedCharacter === "fairy" || savedCharacter === "elf"){
+  currentCharacter = savedCharacter;
+  sprite(getSprite("idle"));
+}
+
+/* SOUND BUTTON */
 soundBtn.onclick = () => {
   soundOn = !soundOn;
   soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
@@ -281,7 +484,7 @@ soundBtn.onclick = () => {
   }
 };
 
-/* SPARKLES */
+/* MAGIC EFFECTS */
 function sparkle(){
   const s = document.createElement("div");
   s.className = "sparkle";
@@ -299,6 +502,24 @@ function note(){
   n.style.top = (y + fairy.offsetHeight * .25 + Math.random() * 30) + "px";
   game.appendChild(n);
   setTimeout(() => n.remove(), 1600);
+}
+
+function magicSurround(){
+  const aura = document.createElement("div");
+  aura.className = "fairyAura";
+  aura.style.left = (x + fairy.offsetWidth/2 - 75) + "px";
+  aura.style.top = (y + fairy.offsetHeight - 20) + "px";
+  game.appendChild(aura);
+  setTimeout(()=>aura.remove(),1200);
+
+  for(let i=0;i<10;i++){
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = (x + fairy.offsetWidth/2 + (Math.random()*80-40)) + "px";
+    p.style.top = (y + fairy.offsetHeight/2 + (Math.random()*60-30)) + "px";
+    game.appendChild(p);
+    setTimeout(()=>p.remove(),2000);
+  }
 }
 
 function growPlant(){
@@ -321,20 +542,33 @@ function growPlant(){
   game.appendChild(p);
 }
 
+function bird(){
+  const b = document.createElement("div");
+  b.className = "bird";
+  b.innerHTML = "🐦";
+  b.style.left = (x + fairy.offsetWidth * .45) + "px";
+  b.style.top = (y - 45) + "px";
+  game.appendChild(b);
+
+  for(let i = 0; i < 4; i++){
+    setTimeout(note, i * 300);
+  }
+
+  setTimeout(() => b.remove(), 3000);
+}
+
+/* SING */
 function sing(){
   if(singing) return;
 
   singing = true;
   fairy.classList.add("singing");
 
-  /*
-  Uses fairy-fly.png instead of fairy-sing.png because fairy-sing had the white square.
-  It still faces the correct direction because update() keeps scaleX(facing).
-  */
-  sprite("fairy-fly.png");
+  sprite(getSprite("sing"));
   update();
 
   playSound(sounds.fairy);
+  magicSurround();
 
   score += 10;
   scoreBox.innerText = score;
@@ -352,6 +586,10 @@ function sing(){
     playSound(sounds.sparkle);
   }, 350);
 
+  if(score % 20 === 0){
+    setTimeout(bird, 700);
+  }
+
   if(score < 40){
     message.innerText = "A tiny song wakes the earth...";
   } else if(score < 80){
@@ -365,11 +603,12 @@ function sing(){
   setTimeout(() => {
     singing = false;
     fairy.classList.remove("singing");
-    sprite("fairy-idle.png");
+    sprite(getSprite("idle"));
     update();
   }, 850);
 }
 
+/* MOVEMENT */
 function moveFairy(dx, dy, moveSprite){
   if(dx > 0) facing = 1;
   if(dx < 0) facing = -1;
@@ -384,26 +623,25 @@ function moveFairy(dx, dy, moveSprite){
   update();
 }
 
-/* KEYBOARD CONTROLS */
 document.addEventListener("keydown", e => {
   if(e.key === "ArrowRight"){
     e.preventDefault();
-    moveFairy(16, 0, "fairy-run.png");
+    moveFairy(16, 0, getSprite("run"));
   }
 
   if(e.key === "ArrowLeft"){
     e.preventDefault();
-    moveFairy(-16, 0, "fairy-run.png");
+    moveFairy(-16, 0, getSprite("run"));
   }
 
   if(e.key === "ArrowUp"){
     e.preventDefault();
-    moveFairy(0, -16, "fairy-fly.png");
+    moveFairy(0, -16, getSprite("fly"));
   }
 
   if(e.key === "ArrowDown"){
     e.preventDefault();
-    moveFairy(0, 16, "fairy-fly.png");
+    moveFairy(0, 16, getSprite("fly"));
   }
 
   if(e.key.toLowerCase() === "s"){
@@ -414,7 +652,7 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("keyup", () => {
   if(!singing){
-    sprite("fairy-idle.png");
+    sprite(getSprite("idle"));
     update();
   }
 });
