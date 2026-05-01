@@ -130,6 +130,22 @@ body{
   line-height:1.5;
 }
 
+
+#levelHint{
+  position:absolute;
+  top:15px;
+  right:15px;
+  color:#fff6c9;
+  background:rgba(0,0,0,.5);
+  padding:12px;
+  border-radius:15px;
+  z-index:30;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
+  text-align:center;
+  max-width:250px;
+}
+
 #message{
   position:absolute;
   bottom:20px;
@@ -390,6 +406,28 @@ button{
   100%{transform:translateY(-110vh) translateX(60px);opacity:0}
 }
 
+
+.faeSongbird{
+  position:absolute;
+  width:95px;
+  height:95px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:18;
+  filter:
+    drop-shadow(0 0 12px rgba(180,240,255,.9))
+    drop-shadow(0 0 20px rgba(255,230,120,.65))
+    brightness(1.08);
+  animation:birdFloatAcross 5s ease-in-out forwards;
+}
+
+@keyframes birdFloatAcross{
+  0%{transform:translateX(0) translateY(10px) scale(.85);opacity:0}
+  12%{opacity:1}
+  55%{transform:translateX(90px) translateY(-35px) scale(1)}
+  100%{transform:translateX(180px) translateY(-70px) scale(.9);opacity:0}
+}
+
 @media(max-width:700px){
   #fairy{
     width:165px;
@@ -432,6 +470,12 @@ button{
     <button id="soundBtn">Sound: Off</button>
   </div>
 
+  <div id="levelHint">
+    Level One<br>
+    Tend <span id="neededCount">12</span> garden spots to awaken the forest.<br>
+    Grown: <span id="tendedCount">0</span>/12
+  </div>
+
   <div id="message">Choose Fairy or Elf to begin...</div>
   <button id="singBtn">✨ Sing ✨</button>
   <div id="editNotice">Planting Ledge Mode<br>Click = add spot<br>Right-click = remove spot<br>Press L = finish</div>
@@ -461,6 +505,7 @@ const scoreBox = document.getElementById("score");
 const message = document.getElementById("message");
 const elfPreview = document.getElementById("elfPreview");
 const editNotice = document.getElementById("editNotice");
+const tendedCountBox = document.getElementById("tendedCount");
 
 let x = window.innerWidth * 0.45;
 let y = window.innerHeight * 0.55;
@@ -473,6 +518,7 @@ let currentCharacter = "fairy";
 let ledgeEditMode = false;
 let plantingSpots = [];
 let plantedGrowth = [];
+const levelOneTarget = 12;
 
 const defaultPlantingSpots = [
   {x:280,y:570},
@@ -688,6 +734,14 @@ function getSprite(action){
 }
 
 /* SOUNDS */
+
+const birdFrames=[
+  "fae-songbird-idle.png",
+  "fae-songbird-flap-1.png",
+  "fae-songbird-flap-2.png",
+  "fae-songbird-glide.png"
+];
+
 const sounds = {
   fairy: new Audio("fairy-bells.mp3"),
   grow: new Audio("plant-grow.mp3"),
@@ -921,6 +975,24 @@ async function updatePlantedImage(growth){
   growth.img.style.top = (growth.spot.y - getTopOffsetForType(growth.type)) + "px";
 }
 
+
+function unlockLevelOneForest(){
+  if(window.levelOneComplete) return;
+  window.levelOneComplete=true;
+
+  message.innerText="Level One complete — the full forest has awakened!";
+  playSound(sounds.bloom);
+
+  for(let i=0;i<30;i++){
+    setTimeout(sparkle, i*55);
+  }
+
+  if(typeof game !== "undefined"){
+    game.style.backgroundImage='url("level1-forest-full.png")';
+  }
+}
+
+
 function startGrowthTimer(growth){
   /*
   This is the important change:
@@ -933,6 +1005,7 @@ function startGrowthTimer(growth){
     if(growth.stage < stages.length - 1){
       growth.stage++;
       await updatePlantedImage(growth);
+      celebrateGrowthWithBird(growth);
       playSound(growth.stage === stages.length - 1 ? sounds.bloom : sounds.grow);
 
       if(growth.type === "plant"){
@@ -946,6 +1019,34 @@ function startGrowthTimer(growth){
       clearInterval(growth.timer);
     }
   }, 5000);
+}
+
+
+
+function spawnFaeSongbird(px,py){
+  const birdImg=document.createElement("img");
+  birdImg.className="faeSongbird";
+  birdImg.src=birdFrames[0];
+  birdImg.style.left=(px+30)+"px";
+  birdImg.style.top=(py-90)+"px";
+  game.appendChild(birdImg);
+
+  let frame=0;
+  const anim=setInterval(()=>{
+    frame=(frame+1)%birdFrames.length;
+    birdImg.src=birdFrames[frame];
+  },220);
+
+  setTimeout(()=>{
+    clearInterval(anim);
+    birdImg.remove();
+  },5000);
+}
+
+function celebrateGrowthWithBird(growth){
+  const px=growth.spot.x;
+  const py=growth.spot.y;
+  spawnFaeSongbird(px,py);
 }
 
 
@@ -979,10 +1080,17 @@ function growPlant(){
   };
 
   plantedGrowth.push(growth);
+  if(tendedCountBox) tendedCountBox.innerText = Math.min(plantedGrowth.length, levelOneTarget);
   game.appendChild(img);
 
   updatePlantedImage(growth);
   startGrowthTimer(growth);
+
+  celebrateGrowthWithBird(growth);
+
+  if(plantedGrowth.length >= levelOneTarget){
+    setTimeout(unlockLevelOneForest, 800);
+  }
 
   playSound(sounds.grow);
 
