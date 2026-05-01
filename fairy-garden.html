@@ -130,6 +130,22 @@ body{
   line-height:1.5;
 }
 
+
+#levelHint{
+  position:absolute;
+  top:15px;
+  right:15px;
+  color:#fff6c9;
+  background:rgba(0,0,0,.5);
+  padding:12px;
+  border-radius:15px;
+  z-index:30;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
+  text-align:center;
+  max-width:240px;
+}
+
 #message{
   position:absolute;
   bottom:20px;
@@ -243,8 +259,10 @@ button{
 }
 
 .treeImage{
-  width:190px;
-  height:230px;
+  width:320px;
+  height:380px;
+  transform-origin:bottom center;
+  transform-origin:bottom center;
   filter:
     drop-shadow(0 0 16px rgba(255,230,120,.95))
     brightness(1.04);
@@ -431,6 +449,12 @@ button{
     <button id="soundBtn">Sound: Off</button>
   </div>
 
+  <div id="levelHint">
+    Level One<br>
+    Tend <span id="neededCount">12</span> garden spots to awaken the forest.<br>
+    Grown: <span id="tendedCount">0</span>/12
+  </div>
+
   <div id="message">Choose Fairy or Elf to begin...</div>
   <button id="singBtn">✨ Sing ✨</button>
   <div id="editNotice">Planting Ledge Mode<br>Click = add spot<br>Right-click = remove spot<br>Press L = finish</div>
@@ -472,6 +496,7 @@ let currentCharacter = "fairy";
 let ledgeEditMode = false;
 let plantingSpots = [];
 let plantedGrowth = [];
+const levelOneTarget = 12;
 
 const defaultPlantingSpots = [
   {x:250,y:610},
@@ -928,6 +953,22 @@ async function updatePlantedImage(growth){
   growth.img.style.top = (growth.spot.y - getTopOffsetForType(growth.type)) + "px";
 }
 
+
+function unlockLevelOneForest(){
+  if(typeof forestUnlocked !== "undefined" && forestUnlocked) return;
+  window.forestUnlocked = true;
+
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
+
+  message.innerText = "Level One complete — the full forest has awakened!";
+
+  playSound(sounds.bloom);
+
+  for(let i=0;i<30;i++){
+    setTimeout(sparkle, i * 55);
+  }
+}
+
 function startGrowthTimer(growth){
   /*
   This is the important change:
@@ -985,10 +1026,15 @@ function growPlant(){
   };
 
   plantedGrowth.push(growth);
+  if(tendedCountBox) tendedCountBox.innerText = plantedGrowth.length;
   game.appendChild(img);
 
   updatePlantedImage(growth);
   startGrowthTimer(growth);
+
+  if(plantedGrowth.length >= levelOneTarget){
+    setTimeout(unlockLevelOneForest, 800);
+  }
 
   playSound(sounds.grow);
 
