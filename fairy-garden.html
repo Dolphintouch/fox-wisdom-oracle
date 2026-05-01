@@ -216,6 +216,40 @@ button{
   z-index:7;
 }
 
+.plantImage,
+.fernImage,
+.treeImage{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  animation:plantGrow .8s ease forwards;
+  z-index:7;
+}
+
+.plantImage{
+  width:115px;
+  height:115px;
+  filter:
+    drop-shadow(0 0 12px rgba(255,230,120,.9))
+    brightness(1.05);
+}
+
+.fernImage{
+  width:135px;
+  height:135px;
+  filter:
+    drop-shadow(0 0 12px rgba(180,255,150,.85))
+    brightness(1.05);
+}
+
+.treeImage{
+  width:190px;
+  height:230px;
+  filter:
+    drop-shadow(0 0 16px rgba(255,230,120,.95))
+    brightness(1.04);
+}
+
 .bird{
   position:absolute;
   font-size:34px;
@@ -592,24 +626,93 @@ function magicSurround(){
   }
 }
 
+
+/* UPLOADED GROWTH IMAGE STAGES */
+const plantStages = [
+  "plant-stage-1.png",
+  "plant-stage-2.png",
+  "plant-stage-3.png",
+  "plant-stage-4.png"
+];
+
+const fernStages = [
+  "fern-stage-1.png",
+  "fern-stage-2.png",
+  "fern-stage-3.png",
+  "fern-stage-4.png"
+];
+
+const treeStages = [
+  "tree-stage-1.png",
+  "tree-stage-2.png",
+  "tree-stage-3.png"
+];
+
 function growPlant(){
-  const p = document.createElement("div");
-  p.className = "plantFallback";
+
+  let type = "plant";
+  let file = "";
+  let className = "plantImage";
+
+  /*
+  Growth order:
+  score 0-30   = plant stages
+  score 40-70  = fern stages
+  score 80+    = tree stages
+  */
 
   if(score < 40){
-    p.innerHTML = "🌱";
-    playSound(sounds.grow);
-  } else if(score < 90){
-    p.innerHTML = "🌿";
-    playSound(sounds.grow);
+    const i = Math.min(Math.floor(score / 10), plantStages.length - 1);
+    file = plantStages[i];
+    type = "plant";
+    className = "plantImage";
+  } else if(score < 80){
+    const i = Math.min(Math.floor((score - 40) / 10), fernStages.length - 1);
+    file = fernStages[i];
+    type = "fern";
+    className = "fernImage";
   } else {
-    p.innerHTML = "🌸";
-    playSound(sounds.bloom);
+    const i = Math.min(Math.floor((score - 80) / 15), treeStages.length - 1);
+    file = treeStages[i];
+    type = "tree";
+    className = "treeImage";
   }
 
-  p.style.left = (x + fairy.offsetWidth * .45 + Math.random() * 130 - 65) + "px";
-  p.style.top = (y + fairy.offsetHeight - 45 + Math.random() * 30) + "px";
+  const p = document.createElement("img");
+  p.className = className;
+  p.src = file;
+
+  const px = x + fairy.offsetWidth * .45 + Math.random() * 150 - 75;
+  const py = y + fairy.offsetHeight - 70 + Math.random() * 25;
+
+  p.style.left = px + "px";
+  p.style.top = py + "px";
+
+  p.onerror = () => {
+    const fallback = document.createElement("div");
+    fallback.className = "plantFallback";
+    fallback.innerHTML = type === "plant" ? "🌱" : type === "fern" ? "🌿" : "🌳";
+    fallback.style.left = px + "px";
+    fallback.style.top = py + "px";
+    game.appendChild(fallback);
+    p.remove();
+  };
+
   game.appendChild(p);
+
+  if(type === "tree" || file === "plant-stage-4.png" || file === "fern-stage-4.png"){
+    playSound(sounds.bloom);
+  } else {
+    playSound(sounds.grow);
+  }
+
+  if(type === "plant"){
+    message.innerText = "A seedling rises from the earth...";
+  } else if(type === "fern"){
+    message.innerText = "Ferns uncurl in the golden light...";
+  } else {
+    message.innerText = "A young tree awakens in the meadow...";
+  }
 }
 
 function bird(){
