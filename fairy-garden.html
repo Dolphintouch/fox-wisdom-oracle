@@ -130,22 +130,6 @@ body{
   line-height:1.5;
 }
 
-
-#levelHint{
-  position:absolute;
-  top:15px;
-  right:15px;
-  color:#fff6c9;
-  background:rgba(0,0,0,.5);
-  padding:12px;
-  border-radius:15px;
-  z-index:30;
-  box-shadow:0 0 18px rgba(255,230,120,.35);
-  line-height:1.5;
-  text-align:center;
-  max-width:240px;
-}
-
 #message{
   position:absolute;
   bottom:20px;
@@ -259,10 +243,8 @@ button{
 }
 
 .treeImage{
-  width:320px;
-  height:380px;
-  transform-origin:bottom center;
-  transform-origin:bottom center;
+  width:190px;
+  height:230px;
   filter:
     drop-shadow(0 0 16px rgba(255,230,120,.95))
     brightness(1.04);
@@ -446,13 +428,8 @@ button{
     Points: <span id="score">0</span><br>
     Move: Arrow Keys<br>
     Sing: S or button<br>
+    Set ledges: Press L<br>
     <button id="soundBtn">Sound: Off</button>
-  </div>
-
-  <div id="levelHint">
-    Level One<br>
-    Tend <span id="neededCount">12</span> garden spots to awaken the forest.<br>
-    Grown: <span id="tendedCount">0</span>/12
   </div>
 
   <div id="message">Choose Fairy or Elf to begin...</div>
@@ -496,14 +473,15 @@ let currentCharacter = "fairy";
 let ledgeEditMode = false;
 let plantingSpots = [];
 let plantedGrowth = [];
-const levelOneTarget = 12;
 
 const defaultPlantingSpots = [
-  {x:250,y:610},
-  {x:420,y:575},
-  {x:1070,y:315},
-  {x:1240,y:500},
-  {x:1360,y:495}
+  {x:280,y:570},
+  {x:390,y:585},
+  {x:650,y:720},
+  {x:830,y:705},
+  {x:1050,y:420},
+  {x:1240,y:530},
+  {x:1390,y:520}
 ];
 
 function loadPlantingSpots(){
@@ -546,6 +524,22 @@ function toggleLedgeEditMode(){
   }
 }
 
+
+function flashPlantingSpots(){
+  document.querySelectorAll(".plantSpot").forEach(s=>{
+    s.classList.remove("hidden");
+    s.style.opacity="1";
+  });
+
+  setTimeout(()=>{
+    if(!ledgeEditMode){
+      document.querySelectorAll(".plantSpot").forEach(s=>{
+        s.classList.add("hidden");
+      });
+    }
+  },1800);
+}
+
 function getNearestPlantingSpot(){
   let nearest = null;
   let nearestDistance = 999999;
@@ -562,7 +556,7 @@ function getNearestPlantingSpot(){
     }
   });
 
-  return nearestDistance < 150 ? nearest : null;
+  return nearestDistance < 260 ? nearest : null;
 }
 
 game.addEventListener("click", e => {
@@ -876,38 +870,12 @@ const treeStages = [
 
 function chooseGrowthType(){
   /*
-  WEIGHTED GROWTH SYSTEM
-  This keeps the garden feeling natural:
-  - early game mostly small plants
-  - then ferns begin appearing
-  - trees arrive later
-  - still has a little surprise
+  This decides what kind of life begins.
+  Mostly plants first, then ferns/trees begin appearing later.
   */
-
-  const plantedCount = plantedGrowth.length;
-  const roll = Math.random();
-
-  // First 3 growths are always tiny plants
-  if(plantedCount < 3){
-    return "plant";
-  }
-
-  // Growths 4-6: mostly plants, some ferns
-  if(plantedCount < 6){
-    return roll < 0.75 ? "plant" : "fern";
-  }
-
-  // Growths 7-9: ferns become common, plants still appear
-  if(plantedCount < 9){
-    if(roll < 0.45) return "plant";
-    if(roll < 0.90) return "fern";
-    return "tree"; // rare early tree
-  }
-
-  // Growths 10+: full forest mix
-  if(roll < 0.30) return "plant";
-  if(roll < 0.65) return "fern";
-  return "tree";
+  if(score < 40) return "plant";
+  if(score < 80) return Math.random() < 0.65 ? "plant" : "fern";
+  return Math.random() < 0.45 ? "plant" : Math.random() < 0.75 ? "fern" : "tree";
 }
 
 function getStagesForType(type){
@@ -953,22 +921,6 @@ async function updatePlantedImage(growth){
   growth.img.style.top = (growth.spot.y - getTopOffsetForType(growth.type)) + "px";
 }
 
-
-function unlockLevelOneForest(){
-  if(typeof forestUnlocked !== "undefined" && forestUnlocked) return;
-  window.forestUnlocked = true;
-
-  game.style.backgroundImage = 'url("level1-forest-full.png")';
-
-  message.innerText = "Level One complete — the full forest has awakened!";
-
-  playSound(sounds.bloom);
-
-  for(let i=0;i<30;i++){
-    setTimeout(sparkle, i * 55);
-  }
-}
-
 function startGrowthTimer(growth){
   /*
   This is the important change:
@@ -1001,7 +953,8 @@ function growPlant(){
   const spot = getNearestPlantingSpot();
 
   if(!spot){
-    message.innerText = "The magic needs a ledge or planting shelf to grow...";
+    message.innerText = "Move closer to a glowing planting ledge, then sing again...";
+    flashPlantingSpots();
     return;
   }
 
@@ -1026,15 +979,10 @@ function growPlant(){
   };
 
   plantedGrowth.push(growth);
-  if(tendedCountBox) tendedCountBox.innerText = plantedGrowth.length;
   game.appendChild(img);
 
   updatePlantedImage(growth);
   startGrowthTimer(growth);
-
-  if(plantedGrowth.length >= levelOneTarget){
-    setTimeout(unlockLevelOneForest, 800);
-  }
 
   playSound(sounds.grow);
 
