@@ -1,30 +1,10 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fairy Garden Keeper</title>
-
-<style>
-body{
-  margin:0;
-  overflow:hidden;
-  font-family:Georgia, serif;
-  background:black;
-
-}
-#game{
-  width:100vw;
-  height:100vh;
-  background:url("level1-whispering-meadow.png") center/cover no-repeat;
-  position:relative;
-  overflow:hidden;
-
-}
-/* START SCREEN */#startScreen{
+<style>body{  margin:0;  overflow:hidden;  font-family:Georgia, serif;  background:black;}#game{  width:100vw;  height:100vh;  background:url("level1-whispering-meadow.png") center/cover no-repeat;  position:relative;  overflow:hidden;}/* START SCREEN */#startScreen{
   position:absolute;
   inset:0;
   background:url("fairy-start.png") center/cover no-repeat;
@@ -32,836 +12,85 @@ body{
   justify-content:center;
   align-items:flex-end;
   padding-bottom:55px;
-  z-index:100;
+  z-index:1000;
   transition:opacity 1.2s ease;
   overflow:hidden;
-
-}
-#startScreen::after{
-
+  pointer-events:auto;
+}#startScreen::after{
   content:"";
-
   position:absolute;
-
   inset:0;
-
   background:
     radial-gradient(circle at center, rgba(255,230,150,0.20), transparent 45%),
     rgba(0,0,0,0.10);
-
   pointer-events:none;
-
   z-index:1;
-
-}
-#characterChoice{
-
+}#characterChoice{
   position:relative;
-
-  z-index:200;
-
+  z-index:2000;
   display:flex;
-
   gap:18px;
-
   justify-content:center;
-
   align-items:center;
-
   flex-wrap:wrap;
-
   pointer-events:auto;
-
-}
-.characterBtn{
-
-  width:180px;
-
-  min-height:75px;
-
+}.characterBtn{
+  width:160px;
+  min-height:155px;
   border:none;
-
-  border-radius:30px;
-
-  background:rgba(255,240,170,0.93);
-
-  box-shadow:0 0 18px gold,0 0 38px rgba(255,230,120,0.9);
-
+  border-radius:28px;
+  background:rgba(255,240,170,0.92);
+  box-shadow:
+    0 0 18px gold,
+    0 0 38px rgba(255,230,120,0.9);
   cursor:pointer;
-
-  font-family:Georgia,serif;
-
-  color:#4d3510;
-
-  font-weight:bold;
-
-  font-size:20px;
-
-  padding:16px;
-
-  transition:transform .25s ease,box-shadow .25s ease;
-
-  position:relative;
-
-  z-index:220;
-
-  pointer-events:auto;
-
-}
-.characterBtn:hover{
-  transform:scale(1.06);
-  box-shadow:    0 0 22px gold,    0 0 45px rgba(255,240,150,0.95);
-
-}
-.characterPreview{
-  width:105px;
-  height:115px;
-  margin:0 auto 8px auto;
-  object-fit:contain;
-  display:block;
-  filter:    drop-shadow(0 0 10px gold)    brightness(1.08);
-
-}
-/* PLAYER */#fairy{
-  position:absolute;
-  width:220px;
-  height:260px;
-  background:url("fairy-idle.png") center/contain no-repeat;
-  background-color:transparent;
-  filter:    drop-shadow(0 0 12px gold)    drop-shadow(0 0 24px rgba(255,230,120,.75))    brightness(1.12)    contrast(1.15);
-  z-index:10;
-  pointer-events:none;
-  transform-origin:center center;
-
-}
-#fairy.singing{
-  filter:    drop-shadow(0 0 18px gold)    drop-shadow(0 0 35px rgba(255,240,150,.95))    brightness(1.25)    contrast(1.18);
-
-}
-/* UI */#ui{
-  position:absolute;
-  top:15px;
-  left:15px;
-  color:#fff6c9;
-  background:rgba(0,0,0,.5);
-  padding:12px;
-  border-radius:15px;
-  z-index:30;
-  box-shadow:0 0 18px rgba(255,230,120,.35);
-  line-height:1.5;
-
-}
-#levelHint{
-  position:absolute;
-  top:15px;
-  right:15px;
-  color:#fff6c9;
-  background:rgba(0,0,0,.5);
-  padding:12px;
-  border-radius:15px;
-  z-index:30;
-  box-shadow:0 0 18px rgba(255,230,120,.35);
-  line-height:1.5;
-  text-align:center;
-  max-width:250px;
-
-}
-#levelCompleteOverlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.65);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:100;
-
-}
-#levelCompleteCard{
-  background:rgba(255,245,200,0.95);
-  padding:30px 40px;
-  border-radius:25px;
-  text-align:center;
-  box-shadow:0 0 40px gold;
-  max-width:400px;
-
-}
-#levelCompleteCard h2{
-  margin-top:0;
-  color:#5a3d00;
-
-}
-#levelCompleteCard button{
-  margin-top:15px;
-  padding:10px 20px;
-  border:none;
-  border-radius:20px;
-  background:gold;
-  cursor:pointer;
-  font-weight:bold;
-
-}
-#message{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.5);
-  padding:12px 20px;
-  border-radius:20px;
-  color:#fff4c2;
-  z-index:30;
-  text-align:center;
-  max-width:86vw;
-  box-shadow:0 0 18px rgba(255,230,120,.35);
-
-}
-#singBtn{
-  position:absolute;
-  right:20px;
-  bottom:20px;
-  padding:12px 25px;
-  border:none;
-  border-radius:25px;
-  background:gold;
-  font-weight:bold;
-  cursor:pointer;
-  z-index:30;
-  box-shadow:0 0 18px gold;
-
-}
-button{
   font-family:Georgia, serif;
-
-}
-/* PLANTING LEDGE EDIT MODE */.plantSpot{
-  position:absolute;
-  width:90px;
-  height:16px;
-  border-radius:20px;
-  background:rgba(255,235,120,.25);
-  border:1px solid rgba(255,245,170,.65);
-  box-shadow:0 0 14px rgba(255,230,120,.65);
-  z-index:6;
-  pointer-events:none;
-
-}
-.plantSpot.hidden{
-  display:none;
-
-}
-.plantSpot::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  background:rgba(255,245,170,.8);
-  box-shadow:0 0 14px gold;
-
-}
-#editNotice{
-  position:absolute;
-  top:15px;
-  right:15px;
-  z-index:60;
-  color:#fff6c9;
-  background:rgba(0,0,0,.55);
-  padding:10px 14px;
-  border-radius:15px;
-  box-shadow:0 0 18px rgba(255,230,120,.45);
-  display:none;
-
-}
-.plantedItem{
-  position:absolute;
-  object-fit:contain;
-  pointer-events:none;
-  animation:plantGrow .8s ease forwards;
-  z-index:7;
-
-}
-.plantImage,.fernImage,.treeImage{
-  position:absolute;
-  object-fit:contain;
-  pointer-events:none;
-  animation:plantGrow .8s ease forwards;
-  z-index:7;
-
-}
-.plantImage{
-  width:115px;
-  height:115px;
-  filter:    drop-shadow(0 0 12px rgba(255,230,120,.9))    brightness(1.05);
-
-}
-.fernImage{
-  width:135px;
-  height:135px;
-  filter:    drop-shadow(0 0 12px rgba(180,255,150,.85))    brightness(1.05);
-
-}
-.treeImage{
-  width:360px;
-  height:440px;
-  transform-origin:bottom center;
-  filter:    drop-shadow(0 0 16px rgba(255,230,120,.95))    brightness(1.04);
-
-}
-/* MAGIC EFFECTS */.sparkle{
-  position:absolute;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:gold;
-  box-shadow:0 0 14px white;
-  animation:sparkleFloat 1s ease-out forwards;
-  z-index:20;
-
-}
-.note{
-  position:absolute;
-  font-size:32px;
-  color:#fff6a8;
-  text-shadow:0 0 12px gold;
-  animation:noteFloat 1.6s ease-out forwards;
-  z-index:20;
-
-}
-.particle{
-  position:absolute;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#fff6a8;
-  box-shadow:0 0 10px gold, 0 0 20px white;
-  animation:floatUp 2s ease-out forwards;
-  pointer-events:none;
-  z-index:20;
-
-}
-.fairyAura{
-  position:absolute;
-  width:150px;
-  height:65px;
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(255,240,150,0.5), transparent 70%);
-  filter:blur(6px);
-  pointer-events:none;
-  animation:auraFade 1.2s ease-out forwards;
-  z-index:8;
-
-}
-.plantFallback{
-  position:absolute;
-  font-size:58px;
-  filter:drop-shadow(0 0 14px #eaff8a);
-  animation:plantGrow .8s ease forwards;
-  z-index:7;
-
-}
-.plantImage,.fernImage,.treeImage{
-  position:absolute;
-  object-fit:contain;
-  pointer-events:none;
-  animation:plantGrow .8s ease forwards;
-  z-index:7;
-
-}
-.plantImage{
-  width:115px;
-  height:115px;
-  filter:    drop-shadow(0 0 12px rgba(255,230,120,.9))    brightness(1.05);
-
-}
-.fernImage{
-  width:135px;
-  height:135px;
-  filter:    drop-shadow(0 0 12px rgba(180,255,150,.85))    brightness(1.05);
-
-}
-.treeImage{
-  width:360px;
-  height:440px;
-  transform-origin:bottom center;
-  filter:    drop-shadow(0 0 16px rgba(255,230,120,.95))    brightness(1.04);
-
-}
-.bird{
-  position:absolute;
-  font-size:34px;
-  animation:birdFloat 3s ease forwards;
-  z-index:18;
-
-}
-.firefly{
-  position:absolute;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#fff6a8;
-  box-shadow:0 0 12px gold, 0 0 25px #fff6a8;
-  animation:floatFirefly linear infinite;
-  opacity:0.8;
-  z-index:5;
-
-}
-@keyframes sparkleFloat{
-  to{
-transform:translateY(-45px) scale(2);
-opacity:0
-}
-
-}
-@keyframes noteFloat{
-  to{
-transform:translateY(-90px);
-opacity:0
-}
-
-}
-@keyframes floatUp{
-  0%{
-transform:translateY(10px);
-opacity:0
-}
-  30%{
-opacity:1
-}
-  100%{
-transform:translateY(-60px);
-opacity:0
-}
-
-}
-@keyframes auraFade{
-  from{
-opacity:0.9;
-transform:scale(0.8)
-}
-  to{
-opacity:0;
-transform:scale(1.4)
-}
-
-}
-@keyframes plantGrow{
-  from{
-transform:scale(.2);
-opacity:.2
-}
-  to{
-transform:scale(1);
-opacity:1
-}
-
-}
-@keyframes birdFloat{
-  to{
-transform:translateX(120px) translateY(-20px);
-opacity:0
-}
-
-}
-@keyframes floatFirefly{
-  0%{
-transform:translateY(40px) translateX(0);
-opacity:0
-}
-  30%{
-opacity:1
-}
-  100%{
-transform:translateY(-110vh) translateX(60px);
-opacity:0
-}
-
-}
-.faeSongbird{
-  position:absolute;
-  width:95px;
+  color:#4d3510;
+  font-weight:bold;
+  font-size:17px;
+  padding:10px;
+  transition:transform .25s ease, box-shadow .25s ease;
+  position:relative;
+  z-index:2100;
+  pointer-events:auto;
+}.characterBtn:hover{  transform:scale(1.06);  box-shadow:    0 0 22px gold,    0 0 45px rgba(255,240,150,0.95);}.characterPreview{  width:105px;  height:115px;  margin:0 auto 8px auto;  object-fit:contain;  display:block;  filter:    drop-shadow(0 0 10px gold)    brightness(1.08);}
+.charImg{
+  width:85px;
   height:95px;
   object-fit:contain;
+  display:block;
+  margin:0 auto 8px auto;
+  filter:
+    drop-shadow(0 0 10px gold)
+    brightness(1.08);
   pointer-events:none;
-  z-index:18;
-  filter:    drop-shadow(0 0 12px rgba(180,240,255,.9))    drop-shadow(0 0 20px rgba(255,230,120,.65))    brightness(1.08);
-
-}
-@keyframes birdFloatAcross{
-  0%{
-transform:translateX(0) translateY(10px) scale(.85);
-opacity:0
-}
-  12%{
-opacity:1
-}
-  55%{
-transform:translateX(90px) translateY(-35px) scale(1)
-}
-  100%{
-transform:translateX(180px) translateY(-70px) scale(.9);
-opacity:0
 }
 
-}
-.nestSprite,.eggSprite{
-  position:absolute;
-  object-fit:contain;
-  pointer-events:none;
-  z-index:8;
-  filter:    drop-shadow(0 0 14px rgba(255,230,120,.9))    brightness(1.05);
-  animation:plantGrow .8s ease forwards;
-
-}
-.nestSprite{
-  width:120px;
-  height:90px;
-
-}
-.eggSprite{
-  width:70px;
-  height:90px;
-  z-index:9;
-
-}
-@media(max-width:700px){
-  #fairy{
-    width:165px;
-    height:205px;
-  
-}
-  #message{
-    font-size:14px;
-    bottom:12px;
-  
-}
-  #singBtn{
-    right:12px;
-    bottom:82px;
-  
-}
-  .characterBtn{
-    width:135px;
-    min-height:155px;
-  
-}
-  .characterPreview{
-    width:92px;
-    height:100px;
-  
-}
-
-}
-
-</style>
-
+/* PLAYER */#fairy{  position:absolute;  width:220px;  height:260px;  background:url("fairy-idle.png") center/contain no-repeat;  background-color:transparent;  filter:    drop-shadow(0 0 12px gold)    drop-shadow(0 0 24px rgba(255,230,120,.75))    brightness(1.12)    contrast(1.15);  z-index:10;  pointer-events:none;  transform-origin:center center;}#fairy.singing{  filter:    drop-shadow(0 0 18px gold)    drop-shadow(0 0 35px rgba(255,240,150,.95))    brightness(1.25)    contrast(1.18);}/* UI */#ui{  position:absolute;  top:15px;  left:15px;  color:#fff6c9;  background:rgba(0,0,0,.5);  padding:12px;  border-radius:15px;  z-index:30;  box-shadow:0 0 18px rgba(255,230,120,.35);  line-height:1.5;}#levelHint{  position:absolute;  top:15px;  right:15px;  color:#fff6c9;  background:rgba(0,0,0,.5);  padding:12px;  border-radius:15px;  z-index:30;  box-shadow:0 0 18px rgba(255,230,120,.35);  line-height:1.5;  text-align:center;  max-width:250px;}#levelCompleteOverlay{  position:absolute;  inset:0;  background:rgba(0,0,0,0.65);  display:none;  justify-content:center;  align-items:center;  z-index:100;}#levelCompleteCard{  background:rgba(255,245,200,0.95);  padding:30px 40px;  border-radius:25px;  text-align:center;  box-shadow:0 0 40px gold;  max-width:400px;}#levelCompleteCard h2{  margin-top:0;  color:#5a3d00;}#levelCompleteCard button{  margin-top:15px;  padding:10px 20px;  border:none;  border-radius:20px;  background:gold;  cursor:pointer;  font-weight:bold;}#message{  position:absolute;  bottom:20px;  left:50%;  transform:translateX(-50%);  background:rgba(0,0,0,.5);  padding:12px 20px;  border-radius:20px;  color:#fff4c2;  z-index:30;  text-align:center;  max-width:86vw;  box-shadow:0 0 18px rgba(255,230,120,.35);}#singBtn{  position:absolute;  right:20px;  bottom:20px;  padding:12px 25px;  border:none;  border-radius:25px;  background:gold;  font-weight:bold;  cursor:pointer;  z-index:30;  box-shadow:0 0 18px gold;}button{  font-family:Georgia, serif;}/* PLANTING LEDGE EDIT MODE */.plantSpot{  position:absolute;  width:90px;  height:16px;  border-radius:20px;  background:rgba(255,235,120,.25);  border:1px solid rgba(255,245,170,.65);  box-shadow:0 0 14px rgba(255,230,120,.65);  z-index:6;  pointer-events:none;}.plantSpot.hidden{  display:none;}.plantSpot::after{  content:"";  position:absolute;  left:50%;  top:50%;  width:12px;  height:12px;  border-radius:50%;  transform:translate(-50%,-50%);  background:rgba(255,245,170,.8);  box-shadow:0 0 14px gold;}#editNotice{  position:absolute;  top:15px;  right:15px;  z-index:60;  color:#fff6c9;  background:rgba(0,0,0,.55);  padding:10px 14px;  border-radius:15px;  box-shadow:0 0 18px rgba(255,230,120,.45);  display:none;}.plantedItem{  position:absolute;  object-fit:contain;  pointer-events:none;  animation:plantGrow .8s ease forwards;  z-index:7;}.plantImage,.fernImage,.treeImage{  position:absolute;  object-fit:contain;  pointer-events:none;  animation:plantGrow .8s ease forwards;  z-index:7;}.plantImage{  width:115px;  height:115px;  filter:    drop-shadow(0 0 12px rgba(255,230,120,.9))    brightness(1.05);}.fernImage{  width:135px;  height:135px;  filter:    drop-shadow(0 0 12px rgba(180,255,150,.85))    brightness(1.05);}.treeImage{  width:360px;  height:440px;  transform-origin:bottom center;  filter:    drop-shadow(0 0 16px rgba(255,230,120,.95))    brightness(1.04);}/* MAGIC EFFECTS */.sparkle{  position:absolute;  width:8px;  height:8px;  border-radius:50%;  background:gold;  box-shadow:0 0 14px white;  animation:sparkleFloat 1s ease-out forwards;  z-index:20;}.note{  position:absolute;  font-size:32px;  color:#fff6a8;  text-shadow:0 0 12px gold;  animation:noteFloat 1.6s ease-out forwards;  z-index:20;}.particle{  position:absolute;  width:6px;  height:6px;  border-radius:50%;  background:#fff6a8;  box-shadow:0 0 10px gold, 0 0 20px white;  animation:floatUp 2s ease-out forwards;  pointer-events:none;  z-index:20;}.fairyAura{  position:absolute;  width:150px;  height:65px;  border-radius:50%;  background:radial-gradient(circle, rgba(255,240,150,0.5), transparent 70%);  filter:blur(6px);  pointer-events:none;  animation:auraFade 1.2s ease-out forwards;  z-index:8;}.plantFallback{  position:absolute;  font-size:58px;  filter:drop-shadow(0 0 14px #eaff8a);  animation:plantGrow .8s ease forwards;  z-index:7;}.plantImage,.fernImage,.treeImage{  position:absolute;  object-fit:contain;  pointer-events:none;  animation:plantGrow .8s ease forwards;  z-index:7;}.plantImage{  width:115px;  height:115px;  filter:    drop-shadow(0 0 12px rgba(255,230,120,.9))    brightness(1.05);}.fernImage{  width:135px;  height:135px;  filter:    drop-shadow(0 0 12px rgba(180,255,150,.85))    brightness(1.05);}.treeImage{  width:360px;  height:440px;  transform-origin:bottom center;  filter:    drop-shadow(0 0 16px rgba(255,230,120,.95))    brightness(1.04);}.bird{  position:absolute;  font-size:34px;  animation:birdFloat 3s ease forwards;  z-index:18;}.firefly{  position:absolute;  width:6px;  height:6px;  border-radius:50%;  background:#fff6a8;  box-shadow:0 0 12px gold, 0 0 25px #fff6a8;  animation:floatFirefly linear infinite;  opacity:0.8;  z-index:5;}@keyframes sparkleFloat{  to{transform:translateY(-45px) scale(2);opacity:0}}@keyframes noteFloat{  to{transform:translateY(-90px);opacity:0}}@keyframes floatUp{  0%{transform:translateY(10px);opacity:0}  30%{opacity:1}  100%{transform:translateY(-60px);opacity:0}}@keyframes auraFade{  from{opacity:0.9;transform:scale(0.8)}  to{opacity:0;transform:scale(1.4)}}@keyframes plantGrow{  from{transform:scale(.2);opacity:.2}  to{transform:scale(1);opacity:1}}@keyframes birdFloat{  to{transform:translateX(120px) translateY(-20px);opacity:0}}@keyframes floatFirefly{  0%{transform:translateY(40px) translateX(0);opacity:0}  30%{opacity:1}  100%{transform:translateY(-110vh) translateX(60px);opacity:0}}.faeSongbird{  position:absolute;  width:95px;  height:95px;  object-fit:contain;  pointer-events:none;  z-index:18;  filter:    drop-shadow(0 0 12px rgba(180,240,255,.9))    drop-shadow(0 0 20px rgba(255,230,120,.65))    brightness(1.08);}@keyframes birdFloatAcross{  0%{transform:translateX(0) translateY(10px) scale(.85);opacity:0}  12%{opacity:1}  55%{transform:translateX(90px) translateY(-35px) scale(1)}  100%{transform:translateX(180px) translateY(-70px) scale(.9);opacity:0}}.nestSprite,.eggSprite{  position:absolute;  object-fit:contain;  pointer-events:none;  z-index:8;  filter:    drop-shadow(0 0 14px rgba(255,230,120,.9))    brightness(1.05);  animation:plantGrow .8s ease forwards;}.nestSprite{  width:120px;  height:90px;}.eggSprite{  width:70px;  height:90px;  z-index:9;}@media(max-width:700px){  #fairy{    width:165px;    height:205px;  }  #message{    font-size:14px;    bottom:12px;  }  #singBtn{    right:12px;    bottom:82px;  }  .characterBtn{    width:135px;    min-height:155px;  }  .characterPreview{    width:92px;    height:100px;  }}</style>
 </head>
-
 <body>
-
 <div id="game">  <div id="fairy">
 </div>  <div id="ui">    Points: <span id="score">0</span>
 <br>    Move: Arrow Keys<br>    Sing: S or button<br>    Set ledges: Press L<br>    <button id="soundBtn">Sound: Off</button>  </div>  <div id="levelHint">    Level One<br>    Tend <span id="neededCount">12</span> garden spots to awaken the forest.<br>    Grown: <span id="tendedCount">0</span>/12  </div>  <div id="message">Choose Fairy or Elf to begin...</div>  <button id="singBtn">✨ Sing ✨</button>  <div id="editNotice">Planting Ledge Mode<br>Click = add spot<br>Right-click = remove spot<br>Press L = finish</div>
 </div>
-<div id="startScreen">  <div id="characterChoice">    <button class="characterBtn" id="chooseFairy" type="button" onclick="directStartGame('fairy')">      🧚 Play as Fairy    </button>    <button class="characterBtn" id="chooseElf" type="button" onclick="directStartGame('elf')">      🧝 Play as Elf    </button>  </div>
+<div id="startScreen">
+  <div id="characterChoice">
+    <button class="characterBtn" id="chooseFairy" type="button" onclick="directStartGame('fairy')">
+      <img class="charImg" id="fairyStartImg" src="fairy-idle.png" alt="Fairy">
+      Play as Fairy
+    </button>
+
+    <button class="characterBtn" id="chooseElf" type="button" onclick="directStartGame('elf')">
+      <img class="charImg" id="elfStartImg" src="elf-idle.png" alt="Elf">
+      Play as Elf
+    </button>
+  </div>
 </div>
-
 <script>
-
-const fairy = document.getElementById("fairy");
-
-const game = document.getElementById("game");
-
-const startScreen = document.getElementById("startScreen");
-
-const soundBtn = document.getElementById("soundBtn");
-
-const singBtn = document.getElementById("singBtn");
-
-const scoreBox = document.getElementById("score");
-
-const message = document.getElementById("message");
-
-const elfPreview = document.getElementById("elfPreview");
-
-const editNotice = document.getElementById("editNotice");
-
-const tendedCountBox = document.getElementById("tendedCount");
-
-let x = window.innerWidth * 0.45;
-
-let y = window.innerHeight * 0.55;
-
-let score = 0;
-
-let soundOn = false;
-
-let singing = false;
-
-let facing = 1;
-
-let currentCharacter = "fairy";
-
-let eggs = [];
-
-let lastBirdSound = 0;
-
-let lastMagicSound = 0;
-
-let lastGrowSound = 0;
-
-let lastBloomSound = 0;
-
-let ledgeEditMode = false;
-
-let plantingSpots = [];
-  grow: new Audio("plant-grow.mp3"),  bloom: new Audio("plant-bloom.mp3"),  sparkle: new Audio("magic-sparkle.mp3"),  music: new Audio("fairy-music.mp3"),  bird: new Audio("fae-bird.mp3")
-}
-;
-
-sounds.music.loop = true;
-sounds.music.volume = 0.14;
-
-sounds.fairy.volume = 0.38;
-
-sounds.grow.volume = 0.28;
-
-sounds.bloom.volume = 0.42;
-
-sounds.sparkle.volume = 0.18;
-
-if(sounds.bird) sounds.bird.volume = 0.22;
-sounds.music.volume = 0.14;
+function closeLevelComplete(){document.getElementById('levelCompleteOverlay').style.display='none';}
+const fairy = document.getElementById("fairy");const game = document.getElementById("game");const startScreen = document.getElementById("startScreen");const soundBtn = document.getElementById("soundBtn");const singBtn = document.getElementById("singBtn");const scoreBox = document.getElementById("score");const message = document.getElementById("message");const elfPreview = document.getElementById("elfPreview");const editNotice = document.getElementById("editNotice");const tendedCountBox = document.getElementById("tendedCount");let x = window.innerWidth * 0.45;let y = window.innerHeight * 0.55;let score = 0;let soundOn = false;let singing = false;let facing = 1;let currentCharacter = "fairy";let eggs = [];let lastBirdSound = 0;let lastMagicSound = 0;let lastGrowSound = 0;let lastBloomSound = 0;let ledgeEditMode = false;let plantingSpots = [];  grow: new Audio("plant-grow.mp3"),  bloom: new Audio("plant-bloom.mp3"),  sparkle: new Audio("magic-sparkle.mp3"),  music: new Audio("fairy-music.mp3")  music: new Audio("fairy-music.mp3"),  bird: new Audio("fae-bird.mp3")};sounds.music.loop = true;sounds.music.volume = 0.14;
 sounds.fairy.volume = 0.38;
 sounds.grow.volume = 0.28;
 sounds.bloom.volume = 0.42;
 sounds.sparkle.volume = 0.18;
-
-if(sounds.bird) sounds.bird.volume = 0.22;
-
-function unlockSounds(){
-  Object.values(sounds).forEach(s => {
-  s.play().catch(()=>{
-
-}
-);
-
-}
-
-function playLimitedSound(sound, limiterName, delayMs, volumeOverride){
-  
-if(!soundOn) return;
-  
-const now = Date.now();
-  
-if(limiterName === "bird" && now - lastBirdSound < delayMs) return;
-  
-if(limiterName === "magic" && now - lastMagicSound < delayMs) return;
-  
-if(limiterName === "grow" && now - lastGrowSound < delayMs) return;
-  
-if(limiterName === "bloom" && now - lastBloomSound < delayMs) return;
-  
-if(limiterName === "bird") lastBirdSound = now;
-  
-if(limiterName === "magic") lastMagicSound = now;
-  
-if(limiterName === "grow") lastGrowSound = now;
-  
-if(limiterName === "bloom") lastBloomSound = now;
-  try{
-    
-const s = sound.cloneNode();
-    s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;
-    s.play().catch(()=>{
-
-}
-);
-  
-}
-catch(e){
-    playSound(sound);
-  
-}
-
-}
-
-function playSoftBirdSound(){
-  
-if(!sounds.bird) return;
-  playLimitedSound(sounds.bird, "bird", 1400, 0.18 + Math.random() * 0.12);
-
-}
-
-function playSoftMagicSound(){
-  
-if(Math.random() < 0.28){
-    playLimitedSound(sounds.sparkle, "magic", 900, 0.14);
-  
-}
-
-}
-
-function playSoftGrowSound(){
-  playLimitedSound(sounds.grow, "grow", 700, 0.24);
-
-}
-
-function playSoftBloomSound(){
-  playLimitedSound(sounds.bloom, "bloom", 1200, 0.36);
-
-}
-
-function startMusic(){
-  
-if(!soundOn) return;
-  unlockSounds();
-  
-setTimeout(() => {
-    playSound(sounds.fairy);
-    playLimitedSound(sounds.fairy, "magic", 700, 0.28);
-    startMusic();
-  
-}
-, 200);
-  
-if(soundOn){
-    startMusic();
-    playSound(sounds.fairy);
-    playLimitedSound(sounds.fairy, "magic", 700, 0.28);
-  
-}
- 
-else {
-    sounds.music.pause();
-    message.innerText = "Sound is off.";
-  game.appendChild(aura);
-  
-setTimeout(()=>aura.remove(),1200);
-  
-for(
-let i=0;
-i<6;
-i++){
-    
-const p = document.createElement("div");
-    p.className = "particle";
-    p.style.left = (x + fairy.offsetWidth/2 + (Math.random()*80-40)) + "px";
-  message.innerText="Level One complete — the full forest has awakened!";
-  
-setTimeout(showLevelComplete,1200);
-  playSound(sounds.bloom);
-  playSoftBloomSound();
-  
-for(
-let i=0;
-i<30;
-i++){
-    
-setTimeout(sparkle, i*55);
-  birdImg.style.top=py+"px";
-  game.appendChild(birdImg);
-  playSoftBirdSound();
-  
-const dirX=(Math.random()*2-1)*260;
-  
-const dirY=-(Math.random()*130+50);
-
-function spawnBirdCelebration(px,py){
-  spawnFaeSongbird(px,py);
-  
-if(Math.random()<0.35){
-  
-if(Math.random()<0.22){
-    
-setTimeout(()=>spawnFaeSongbird(px+Math.random()*80-40,py+Math.random()*40-20),350);
-  
-}
-
-}
-  message.innerText="A fae bird has made a glowing nest...";
-  
-for(
-let i=0;
-i<12;
-i++){
-  
-for(
-let i=0;
-i<7;
-i++){
-    
-setTimeout(()=>sparkleAt(spot.x+Math.random()*40-20,spot.y-40+Math.random()*35),i*80);
-  
-}
-  message.innerText="A new fae bird has hatched and taken flight ✨";
-  playSound(sounds.bloom);
-  playSoftBloomSound();
-  
-for(
-let i=0;
-i<18;
-i++){
-  
-for(
-let i=0;
-i<6;
-i++){
-    
-setTimeout(()=>sparkleAt(spot.x+Math.random()*70-35,spot.y-60+Math.random()*60-30),i*55);
-  
-}
-  */  
-if(!growth || !growth.spot) return;
-  
-if(Math.random()<0.35){
-  
-if(Math.random()<0.22){
-    
-setTimeout(()=>createNestAndEgg(growth.spot),900);
-  
-}
-
-}
-    
-setTimeout(unlockLevelOneForest, 800);
-  
-}
-  playSound(sounds.grow);
-  playSoftGrowSound();
-  
-if(type === "plant"){
-    message.innerText = "A tiny seedling has been planted...";
-  await sprite(getSprite("sing"));
-  update();
-  playSound(sounds.fairy);
-  playLimitedSound(sounds.fairy, "magic", 700, 0.28);
-  magicSurround();
-  score += 10;
-  scoreBox.innerText = score;
-  
-for(
-let i = 0;
- i < 10;
- i++){
-  
-for(
-let i = 0;
- i < 6;
- i++){
-    
-setTimeout(sparkle, i * 80);
-  
-}
-  
-setTimeout(() => {
-    growPlant();
-    playSound(sounds.sparkle);
-    playSoftMagicSound();
-  
-}
-, 350);
-  
-if(score % 20 === 0){
+if(sounds.bird) sounds.bird.volume = 0.22;sounds.music.volume = 0.14;sounds.fairy.volume = 0.38;sounds.grow.volume = 0.28;sounds.bloom.volume = 0.42;sounds.sparkle.volume = 0.18;if(sounds.bird) sounds.bird.volume = 0.22;function unlockSounds(){  Object.values(sounds).forEach(s => {  s.play().catch(()=>{});}function playLimitedSound(sound, limiterName, delayMs, volumeOverride){  if(!soundOn) return;  const now = Date.now();  if(limiterName === "bird" && now - lastBirdSound < delayMs) return;  if(limiterName === "magic" && now - lastMagicSound < delayMs) return;  if(limiterName === "grow" && now - lastGrowSound < delayMs) return;  if(limiterName === "bloom" && now - lastBloomSound < delayMs) return;  if(limiterName === "bird") lastBirdSound = now;  if(limiterName === "magic") lastMagicSound = now;  if(limiterName === "grow") lastGrowSound = now;  if(limiterName === "bloom") lastBloomSound = now;  try{    const s = sound.cloneNode();    s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;    s.play().catch(()=>{});  }catch(e){    playSound(sound);  }}function playSoftBirdSound(){  if(!sounds.bird) return;  playLimitedSound(sounds.bird, "bird", 1400, 0.18 + Math.random() * 0.12);}function playSoftMagicSound(){  if(Math.random() < 0.28){    playLimitedSound(sounds.sparkle, "magic", 900, 0.14);  }}function playSoftGrowSound(){  playLimitedSound(sounds.grow, "grow", 700, 0.24);}function playSoftBloomSound(){  playLimitedSound(sounds.bloom, "bloom", 1200, 0.36);}function startMusic(){  if(!soundOn) return;  unlockSounds();  setTimeout(() => {    playSound(sounds.fairy);    playLimitedSound(sounds.fairy, "magic", 700, 0.28);    startMusic();  }, 200);  if(soundOn){    startMusic();    playSound(sounds.fairy);    playLimitedSound(sounds.fairy, "magic", 700, 0.28);  } else {    sounds.music.pause();    message.innerText = "Sound is off.";  game.appendChild(aura);  setTimeout(()=>aura.remove(),1200);  for(let i=0;i<6;i++){    const p = document.createElement("div");    p.className = "particle";    p.style.left = (x + fairy.offsetWidth/2 + (Math.random()*80-40)) + "px";  message.innerText="Level One complete — the full forest has awakened!";  setTimeout(showLevelComplete,1200);  playSound(sounds.bloom);  playSoftBloomSound();  for(let i=0;i<30;i++){    setTimeout(sparkle, i*55);  birdImg.style.top=py+"px";  game.appendChild(birdImg);  playSoftBirdSound();  const dirX=(Math.random()*2-1)*260;  const dirY=-(Math.random()*130+50);function spawnBirdCelebration(px,py){  spawnFaeSongbird(px,py);  if(Math.random()<0.35){  if(Math.random()<0.22){    setTimeout(()=>spawnFaeSongbird(px+Math.random()*80-40,py+Math.random()*40-20),350);  }}  message.innerText="A fae bird has made a glowing nest...";  for(let i=0;i<12;i++){  for(let i=0;i<7;i++){    setTimeout(()=>sparkleAt(spot.x+Math.random()*40-20,spot.y-40+Math.random()*35),i*80);  }  message.innerText="A new fae bird has hatched and taken flight ✨";  playSound(sounds.bloom);  playSoftBloomSound();  for(let i=0;i<18;i++){  for(let i=0;i<6;i++){    setTimeout(()=>sparkleAt(spot.x+Math.random()*70-35,spot.y-60+Math.random()*60-30),i*55);  }  */  if(!growth || !growth.spot) return;  if(Math.random()<0.35){  if(Math.random()<0.22){    setTimeout(()=>createNestAndEgg(growth.spot),900);  }}    setTimeout(unlockLevelOneForest, 800);  }  playSound(sounds.grow);  playSoftGrowSound();  if(type === "plant"){    message.innerText = "A tiny seedling has been planted...";  await sprite(getSprite("sing"));  update();  playSound(sounds.fairy);  playLimitedSound(sounds.fairy, "magic", 700, 0.28);  magicSurround();  score += 10;  scoreBox.innerText = score;  for(let i = 0; i < 10; i++){  for(let i = 0; i < 6; i++){    setTimeout(sparkle, i * 80);  }  setTimeout(() => {    growPlant();    playSound(sounds.sparkle);    playSoftMagicSound();  }, 350);  if(score % 20 === 0){
