@@ -294,8 +294,9 @@ button{
 }
 
 .treeImage{
-  width:190px;
-  height:230px;
+  width:360px;
+  height:440px;
+  transform-origin:bottom center;
   filter:
     drop-shadow(0 0 16px rgba(255,230,120,.95))
     brightness(1.04);
@@ -522,6 +523,7 @@ button{
 
   <div id="ui">
     Points: <span id="score">0</span><br>
+    Nests: <span id="nestCount">0</span>/5<br>
     Move: Arrow Keys<br>
     Sing: S or button<br>
     Set ledges: Press L<br>
@@ -530,7 +532,7 @@ button{
 
   <div id="levelHint">
     Level One<br>
-    Tend <span id="neededCount">12</span> garden spots to awaken the forest.<br>
+    Tend <span id="neededCount">12</span> garden spots and help 5 nests appear.<br>
     Grown: <span id="tendedCount">0</span>/12
   </div>
 
@@ -562,6 +564,8 @@ const singBtn = document.getElementById("singBtn");
 const scoreBox = document.getElementById("score");
 const message = document.getElementById("message");
 const elfPreview = document.getElementById("elfPreview");
+const nestCountBox = document.getElementById("nestCount");
+const hintNestCountBox = document.getElementById("hintNestCount");
 const editNotice = document.getElementById("editNotice");
 const tendedCountBox = document.getElementById("tendedCount");
 
@@ -573,6 +577,9 @@ let singing = false;
 let facing = 1;
 let currentCharacter = "fairy";
 let eggs = [];
+let nestCount = 0;
+const nestTarget = 5;
+const levelOneTarget = 12;
 let lastBirdSound = 0;
 let lastMagicSound = 0;
 let lastGrowSound = 0;
@@ -1108,6 +1115,24 @@ function closeLevelComplete(){
   overlay.style.display="none";
 }
 
+
+function updateNestCounters(){
+  if(nestCountBox) nestCountBox.innerText = nestCount;
+  if(hintNestCountBox) hintNestCountBox.innerText = nestCount;
+}
+
+function checkLevelOneComplete(){
+  const growthDone = (typeof plantedGrowth !== "undefined" && plantedGrowth.length >= levelOneTarget);
+  const nestsDone = nestCount >= nestTarget;
+
+  if(growthDone && nestsDone){
+    setTimeout(unlockLevelOneForest,800);
+  }else if(growthDone && !nestsDone){
+    const left = nestTarget - nestCount;
+    message.innerText = "The forest is almost ready — help the birds make " + left + " more nest" + (left === 1 ? "" : "s") + ".";
+  }
+}
+
 function unlockLevelOneForest(){
   if(window.levelOneComplete) return;
   window.levelOneComplete=true;
@@ -1142,6 +1167,9 @@ function startGrowthTimer(growth){
     if(growth.stage < stages.length - 1){
       growth.stage++;
       await updatePlantedImage(growth);
+      if(growth.type === "tree" && growth.stage >= 2){
+        maybeCreateNest(growth);
+      }
       celebrateGrowthWithBird(growth);
       playSound(growth.stage === stages.length - 1 ? sounds.bloom : sounds.grow);
 
@@ -1201,17 +1229,24 @@ function spawnFaeSongbird(px,py){
 function spawnBirdCelebration(px,py){
   spawnFaeSongbird(px,py);
 
-  if(Math.random()<0.22){
+  if(Math.random()<0.08){
     setTimeout(()=>spawnFaeSongbird(px+Math.random()*80-40,py+Math.random()*40-20),350);
   }
 }
 
 
 function celebrateGrowthWithBird(growth){
-  const px=growth.spot.x;
-  const py=growth.spot.y;
-  spawnBirdCelebration(px,py);
-  maybeCreateNest(growth);
+  if(!growth || !growth.spot) return;
+
+  let chance = 0.08;
+  if(growth.type === "fern") chance = 0.12;
+  if(growth.type === "tree") chance = 0.25;
+
+  if(Math.random() < chance){
+    const px=growth.spot.x;
+    const py=growth.spot.y;
+    spawnBirdCelebration(px,py);
+  }
 }
 
 
@@ -1237,8 +1272,11 @@ function createNestAndEgg(spot){
   game.appendChild(egg);
 
   eggs.push({egg:egg,nest:nest,spot:spot,hatched:false});
+  nestCount++;
+  updateNestCounters();
 
   message.innerText="A fae bird has made a glowing nest...";
+  checkLevelOneComplete();
 
   for(let i=0;i<7;i++){
     setTimeout(()=>sparkleAt(spot.x+Math.random()*40-20,spot.y-40+Math.random()*35),i*80);
@@ -1295,12 +1333,15 @@ function hatchEgg(egg,nest,spot){
 
 function maybeCreateNest(growth){
   /*
-  Not every bird makes a nest.
-  This keeps it magical and surprising, not too busy.
+  Nests only happen in older tree stages now.
+  Less birds, less noise, and nests feel earned.
   */
   if(!growth || !growth.spot) return;
+  if(growth.type !== "tree") return;
+  if(growth.stage < 2) return;
+  if(nestCount >= nestTarget) return;
 
-  if(Math.random()<0.22){
+  if(Math.random() < 0.45){
     setTimeout(()=>createNestAndEgg(growth.spot),900);
   }
 }
@@ -1343,10 +1384,9 @@ function growPlant(){
   startGrowthTimer(growth);
 
   celebrateGrowthWithBird(growth);
+  checkLevelOneComplete();
 
-  if(plantedGrowth.length >= levelOneTarget){
-    setTimeout(unlockLevelOneForest, 800);
-  }
+  checkLevelOneComplete();
 
   playSoftGrowSound();
 
