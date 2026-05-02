@@ -39,39 +39,39 @@ body{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    radial-gradient(circle at center, rgba(255,230,150,0.20), transparent 45%),
-    rgba(0,0,0,0.10);
+  background:radial-gradient(circle at center,rgba(255,230,150,.20),transparent 45%),rgba(0,0,0,.10);
   pointer-events:none;
   z-index:1;
 }
 
 #characterChoice{
   position:relative;
-  
+  z-index:200;
   display:flex;
   gap:18px;
   justify-content:center;
   align-items:center;
   flex-wrap:wrap;
-pointer-events:auto;z-index:10;}
+  pointer-events:auto;
+}
 
 .characterBtn{
-  width:150px;
-  min-height:170px;
+  width:180px;
+  min-height:75px;
   border:none;
-  border-radius:28px;
-  background:rgba(255,240,170,0.86);
-  box-shadow:
-    0 0 16px gold,
-    0 0 35px rgba(255,230,120,0.75);
+  border-radius:30px;
+  background:rgba(255,240,170,0.93);
+  box-shadow:0 0 18px gold,0 0 38px rgba(255,230,120,0.9);
   cursor:pointer;
-  font-family:Georgia, serif;
+  font-family:Georgia,serif;
   color:#4d3510;
   font-weight:bold;
-  font-size:17px;
-  padding:10px;
-  transition:transform .25s ease, box-shadow .25s ease;
+  font-size:20px;
+  padding:16px;
+  transition:transform .25s ease,box-shadow .25s ease;
+  position:relative;
+  z-index:200;
+  pointer-events:auto;
 }
 
 .characterBtn:hover{
@@ -544,14 +544,12 @@ button{
 
 <div id="startScreen">
   <div id="characterChoice">
-    <button class="characterBtn" id="chooseFairy">
-      <img class="characterPreview" id="fairyPreview" src="fairy-idle.png" alt="Fairy">
-      Play as Fairy
+    <button class="characterBtn" id="chooseFairy" type="button" onclick="directStartGame('fairy')">
+      🧚 Play as Fairy
     </button>
 
-    <button class="characterBtn" id="chooseElf">
-      <img class="characterPreview" id="elfPreview" src="elf-idle.png" alt="Elf">
-      Play as Elf
+    <button class="characterBtn" id="chooseElf" type="button" onclick="directStartGame('elf')">
+      🧝 Play as Elf
     </button>
   </div>
 </div>
@@ -1518,16 +1516,56 @@ document.addEventListener("click", unlockSounds, { once:true });
 document.addEventListener("touchstart", unlockSounds, { once:true });
 
 
-/* SAFE START BUTTON FALLBACK */
-const fairyButtonSafe=document.getElementById("chooseFairy");
-const elfButtonSafe=document.getElementById("chooseElf");
 
-if(fairyButtonSafe){
-  fairyButtonSafe.addEventListener("click",()=>chooseCharacter("fairy"));
+/* DIRECT START BUTTON FIX */
+function directStartGame(characterName){
+  currentCharacter = characterName;
+  localStorage.setItem("fairyGardenCharacter", currentCharacter);
+
+  sprite(getSprite("idle"));
+
+  soundOn = true;
+  soundBtn.innerText = "Sound: On";
+
+  unlockSounds();
+
+  setTimeout(()=>{
+    try{
+      if(typeof playLimitedSound === "function"){
+        playLimitedSound(sounds.fairy, "magic", 700, 0.28);
+      }else{
+        playSound(sounds.fairy);
+      }
+    }catch(e){}
+    startMusic();
+  },200);
+
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  setTimeout(()=>{
+    startScreen.style.display = "none";
+    update();
+  },650);
 }
 
-if(elfButtonSafe){
-  elfButtonSafe.addEventListener("click",()=>chooseCharacter("elf"));
+const startFairyBtn = document.getElementById("chooseFairy");
+const startElfBtn = document.getElementById("chooseElf");
+
+if(startFairyBtn){
+  startFairyBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    directStartGame("fairy");
+  });
+}
+
+if(startElfBtn){
+  startElfBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    directStartGame("elf");
+  });
 }
 
 update();
