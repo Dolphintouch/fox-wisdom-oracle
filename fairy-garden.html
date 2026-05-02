@@ -43,17 +43,18 @@ body{
     radial-gradient(circle at center, rgba(255,230,150,0.20), transparent 45%),
     rgba(0,0,0,0.10);
   pointer-events:none;
+  z-index:1;
 }
 
 #characterChoice{
   position:relative;
-  z-index:10;
+  
   display:flex;
   gap:18px;
   justify-content:center;
   align-items:center;
   flex-wrap:wrap;
-}
+pointer-events:auto;z-index:10;}
 
 .characterBtn{
   width:150px;
@@ -1515,6 +1516,19 @@ window.addEventListener("resize", update);
 
 document.addEventListener("click", unlockSounds, { once:true });
 document.addEventListener("touchstart", unlockSounds, { once:true });
+
+
+/* SAFE START BUTTON FALLBACK */
+const fairyButtonSafe=document.getElementById("chooseFairy");
+const elfButtonSafe=document.getElementById("chooseElf");
+
+if(fairyButtonSafe){
+  fairyButtonSafe.addEventListener("click",()=>chooseCharacter("fairy"));
+}
+
+if(elfButtonSafe){
+  elfButtonSafe.addEventListener("click",()=>chooseCharacter("elf"));
+}
 
 update();
 </script>
