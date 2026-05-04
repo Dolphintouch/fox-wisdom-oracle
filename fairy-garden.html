@@ -274,8 +274,8 @@ body{
 }
 
 .treeImage{
-  width:260px;
-  height:315px;
+  width:280px;
+  height:340px;
   transform-origin:bottom center;
   transform-origin:bottom center;
   filter:drop-shadow(0 0 16px rgba(255,230,120,.95)) brightness(1.04);
@@ -421,14 +421,15 @@ body{
 
 .recycleStation{
   position:absolute;
-  width:150px;
-  height:150px;
+  width:240px;
+  height:240px;
   object-fit:contain;
   pointer-events:none;
   z-index:11;
   filter:
-    drop-shadow(0 0 16px rgba(255,230,120,.85))
-    brightness(1.05);
+    drop-shadow(0 0 20px rgba(255,230,120,.9))
+    drop-shadow(0 0 40px rgba(180,255,160,.6))
+    brightness(1.1);
 }
 
 .recycleStation.correctGlow{
@@ -702,9 +703,9 @@ const defaultPlantingSpots = [
   {x:390,y:585},
   {x:650,y:720},
   {x:830,y:705},
-  {x:1050,y:420},
-  {x:1240,y:530},
-  {x:1390,y:520}
+  {x:1050,y:500},
+  {x:1240,y:560},
+  {x:1390,y:550}
 ];
 
 const characterSprites = {
@@ -759,9 +760,9 @@ const rubbishTypes = [
 ];
 
 const recycleStationsData = [
-  {type:"glass", file:"recycle-glass.png", x:230, y:650, label:"Glass Shrine"},
-  {type:"paper", file:"recycle-paper.png", x:760, y:650, label:"Paper Shrine"},
-  {type:"crystal", file:"recycle-crystal.png", x:1260, y:650, label:"Crystal Shrine"}
+  {type:"glass", file:"recycle-glass.png", x:120, y:590, label:"Glass Shrine"},
+  {type:"paper", file:"recycle-paper.png", x:620, y:590, label:"Paper Shrine"},
+  {type:"crystal", file:"recycle-crystal.png", x:1120, y:590, label:"Crystal Shrine"}
 ];
 
 const levelTwoRubbishGoal = 9;
@@ -778,12 +779,12 @@ const sounds = {
 };
 
 sounds.music.loop = true;
-sounds.music.volume = 0.14;
-sounds.fairy.volume = 0.38;
-sounds.grow.volume = 0.28;
-sounds.bloom.volume = 0.42;
-sounds.sparkle.volume = 0.18;
-sounds.bird.volume = 0.22;
+sounds.music.volume = 0.10;
+sounds.fairy.volume = 0.14;
+sounds.grow.volume = 0.10;
+sounds.bloom.volume = 0.18;
+sounds.sparkle.volume = 0.06;
+sounds.bird.volume = 0.08;
 
 
 function setupStartImages(){
@@ -950,37 +951,39 @@ function playLimitedSound(sound, limiterName, delayMs, volumeOverride){
 
   const now = Date.now();
 
-  if(limiterName === "bird" && now - lastBirdSound < delayMs) return;
-  if(limiterName === "magic" && now - lastMagicSound < delayMs) return;
-  if(limiterName === "grow" && now - lastGrowSound < delayMs) return;
-  if(limiterName === "bloom" && now - lastBloomSound < delayMs) return;
+  if(!window.soundTimers){
+    window.soundTimers = {};
+  }
 
-  if(limiterName === "bird") lastBirdSound = now;
-  if(limiterName === "magic") lastMagicSound = now;
-  if(limiterName === "grow") lastGrowSound = now;
-  if(limiterName === "bloom") lastBloomSound = now;
+  if(window.soundTimers[limiterName] && now - window.soundTimers[limiterName] < delayMs){
+    return;
+  }
 
-  const s = sound.cloneNode();
-  s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;
-  s.play().catch(()=>{});
+  window.soundTimers[limiterName] = now;
+
+  try{
+    const s = sound.cloneNode();
+    s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;
+    s.play().catch(()=>{});
+  }catch(e){}
 }
 
 function playSoftBirdSound(){
-  playLimitedSound(sounds.bird,"bird",1400,0.18 + Math.random() * 0.12);
+  playLimitedSound(sounds.bird,"bird",2800,0.07 + Math.random() * 0.04);
 }
 
 function playSoftMagicSound(){
-  if(Math.random() < 0.28){
-    playLimitedSound(sounds.sparkle,"magic",900,0.14);
+  if(Math.random() < 0.18){
+    playLimitedSound(sounds.sparkle,"magic",1600,0.05);
   }
 }
 
 function playSoftGrowSound(){
-  playLimitedSound(sounds.grow,"grow",700,0.24);
+  playLimitedSound(sounds.grow,"grow",1800,0.10);
 }
 
 function playSoftBloomSound(){
-  playLimitedSound(sounds.bloom,"bloom",1200,0.36);
+  playLimitedSound(sounds.bloom,"bloom",2200,0.16);
 }
 
 function startMusic(){
@@ -1166,16 +1169,17 @@ function findPlantedAtSpot(spot){
 
 
 function getTreeSizeForSpot(spot){
-  // Smaller trees on high shelves, bigger trees on lower ground.
+  // Smaller trees on high ledges, bigger trees on lower ground.
+  // This keeps Level 1 trees from looking like they are floating in the sky.
   if(spot.y < window.innerHeight * .45){
-    return {width:210, height:255, rootLift:35};
+    return {width:155, height:190, rootLift:42};
   }
 
   if(spot.y < window.innerHeight * .62){
-    return {width:260, height:315, rootLift:42};
+    return {width:210, height:255, rootLift:50};
   }
 
-  return {width:320, height:385, rootLift:48};
+  return {width:300, height:360, rootLift:62};
 }
 
 function getDepthClassForSpot(spot){
@@ -1232,8 +1236,10 @@ async function updatePlantedImage(growth){
 
     if(growth.type === "tree"){
       const treeSize = getTreeSizeForSpot(growth.spot);
+
       growth.img.style.width = treeSize.width + "px";
       growth.img.style.height = treeSize.height + "px";
+
       imgWidth = treeSize.width;
       imgHeight = treeSize.height;
     }
@@ -1248,20 +1254,26 @@ async function updatePlantedImage(growth){
       imgHeight = growth.img.offsetHeight || 115;
     }
 
-    let left = growth.spot.x - imgWidth / 2;
+    const left = growth.spot.x - imgWidth / 2;
     let top;
 
     if(growth.type === "tree"){
       const treeSize = getTreeSizeForSpot(growth.spot);
-      // Root base sits just below the shelf, so it looks planted instead of floating.
+
+      // Tree base/root line is anchored to the actual planting ledge.
+      // The bigger the tree, the more it sinks into the soil so it looks planted.
       top = growth.spot.y - imgHeight + treeSize.rootLift;
 
-      // Important: don't clamp to 20 for trees. Clamping was making high shelf trees look wrong.
-      // Instead, keep the visible roots tied to the ledge.
-      if(top < -40) top = -40;
+      // If a very high ledge would push it too high, shrink-and-ground it instead of clamping.
+      if(top < 5){
+        top = growth.spot.y - imgHeight * .72;
+      }
+
+      // Never let the root point float far above the ledge.
+      top = Math.max(-10, top);
     }else{
-      top = growth.spot.y - imgHeight + 28;
-      if(top < 20) top = 20;
+      top = growth.spot.y - imgHeight + 30;
+      top = Math.max(20, top);
     }
 
     growth.img.style.left = left + "px";
@@ -1671,7 +1683,7 @@ function tryRecycleHeldRubbish(){
     }
   });
 
-  if(!nearest || nearestDistance > 170){
+  if(!nearest || nearestDistance > 260){
     message.innerText = "Carry it to the correct recycling shrine, then press C.";
     return;
   }
@@ -1991,7 +2003,7 @@ async function sing(){
   await sprite(getSprite("sing"));
   update();
 
-  playLimitedSound(sounds.fairy,"magic",700,.28);
+  playLimitedSound(sounds.fairy,"magic",1800,.12);
   magicSurround();
 
   const singPoints = magicWeak ? 5 : 10;
@@ -2002,12 +2014,12 @@ async function sing(){
     message.innerText = "Your magic is weak. Recycle rubbish to restore your strength.";
   }
 
-  for(let i=0;i<6;i++){
-    setTimeout(sparkle, i*80);
+  for(let i=0;i<3;i++){
+    setTimeout(sparkle, i*120);
   }
 
-  for(let i=0;i<5;i++){
-    setTimeout(note, i*150);
+  for(let i=0;i<3;i++){
+    setTimeout(note, i*180);
   }
 
   setTimeout(()=>{
@@ -2096,7 +2108,7 @@ soundBtn.onclick = ()=>{
   if(soundOn){
     startMusic();
     setTimeout(()=>startMusic(),300);
-    playLimitedSound(sounds.fairy,"magic",700,.28);
+    playLimitedSound(sounds.fairy,"magic",1800,.12);
   }else{
     sounds.music.pause();
     message.innerText = "Sound is off.";
