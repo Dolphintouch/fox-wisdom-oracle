@@ -273,8 +273,9 @@ body{
 }
 
 .treeImage{
-  width:360px;
-  height:440px;
+  width:260px;
+  height:315px;
+  transform-origin:bottom center;
   transform-origin:bottom center;
   filter:drop-shadow(0 0 16px rgba(255,230,120,.95)) brightness(1.04);
 }
@@ -472,6 +473,77 @@ body{
 @keyframes mistPulse{
   from{opacity:.25}
   to{opacity:.65}
+}
+
+
+/* TREE MAGIC UPGRADES */
+.treeImage{
+  animation:
+    plantGrow .9s ease forwards,
+    treeSway 5.5s ease-in-out infinite alternate;
+}
+
+.treeBack{
+  z-index:8 !important;
+  opacity:.92;
+  filter:
+    drop-shadow(0 0 12px rgba(255,230,120,.75))
+    brightness(.92)
+    saturate(.9);
+}
+
+.treeFront{
+  z-index:16 !important;
+  filter:
+    drop-shadow(0 0 18px rgba(255,230,120,.95))
+    brightness(1.05);
+}
+
+.rootBurst{
+  position:absolute;
+  width:135px;
+  height:42px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9;
+  background:
+    radial-gradient(ellipse at center, rgba(95,55,18,.75), rgba(70,40,15,.35) 45%, transparent 72%);
+  box-shadow:
+    0 0 12px rgba(255,220,120,.5),
+    inset 0 0 14px rgba(70,35,10,.55);
+  transform:scale(.25);
+  opacity:.1;
+  animation:rootGrow 1.4s ease-out forwards;
+}
+
+.rootLine{
+  position:absolute;
+  height:3px;
+  width:75px;
+  background:linear-gradient(90deg, rgba(90,45,15,.0), rgba(95,50,18,.85), rgba(90,45,15,.0));
+  border-radius:999px;
+  pointer-events:none;
+  z-index:10;
+  transform-origin:center;
+  animation:rootLineGrow 1.3s ease-out forwards;
+  opacity:0;
+}
+
+@keyframes treeSway{
+  from{transform:rotate(-1.2deg)}
+  to{transform:rotate(1.2deg)}
+}
+
+@keyframes rootGrow{
+  0%{transform:scale(.2);opacity:0}
+  30%{opacity:.85}
+  100%{transform:scale(1.25);opacity:0}
+}
+
+@keyframes rootLineGrow{
+  0%{transform:scaleX(.05) rotate(var(--rootRot));opacity:0}
+  25%{opacity:.9}
+  100%{transform:scaleX(1) rotate(var(--rootRot));opacity:0}
 }
 
 @media(max-width:700px){
@@ -729,8 +801,32 @@ function startGame(character){
   soundBtn.innerText = "Sound: On";
 
   sprite(getSprite("idle"));
-  unlockSounds();
-  startMusic();
+
+  // Browser-safe audio unlock: happens directly from the Fairy/Elf click.
+  try{
+    Object.values(sounds).forEach(s=>{
+      s.muted = true;
+      s.play().then(()=>{
+        s.pause();
+        s.currentTime = 0;
+        s.muted = false;
+      }).catch(()=>{
+        s.muted = false;
+      });
+    });
+  }catch(e){}
+
+  setTimeout(()=>{
+    try{
+      sounds.music.muted = false;
+      sounds.music.currentTime = 0;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.14;
+      sounds.music.play().catch(()=>{
+        setTimeout(()=>sounds.music.play().catch(()=>{}),500);
+      });
+    }catch(e){}
+  },150);
 
   startScreen.style.opacity = "0";
   startScreen.style.pointerEvents = "none";
@@ -872,7 +968,19 @@ function playSoftBloomSound(){
 
 function startMusic(){
   if(!soundOn) return;
-  sounds.music.play().catch(()=>{});
+
+  try{
+    sounds.music.loop = true;
+    sounds.music.volume = 0.14;
+
+    if(sounds.music.paused){
+      sounds.music.play().catch(()=>{
+        setTimeout(()=>{
+          sounds.music.play().catch(()=>{});
+        },300);
+      });
+    }
+  }catch(e){}
 }
 
 function loadPlantingSpots(){
@@ -1022,9 +1130,11 @@ function getClassForType(type){
 }
 
 function getTopOffsetForType(type){
-  if(type === "tree") return 390;
-  if(type === "fern") return 105;
-  return 85;
+  // These are now fallback offsets only.
+  // Actual placement is anchored by the image height in updatePlantedImage().
+  if(type === "tree") return 220;
+  if(type === "fern") return 90;
+  return 70;
 }
 
 async function setCleanImage(imgElement, src){
@@ -1036,16 +1146,114 @@ function findPlantedAtSpot(spot){
   return plantedGrowth.find(g=>g.spot === spot);
 }
 
+
+
+function getTreeSizeForSpot(spot){
+  // Smaller trees on high shelves, bigger trees on lower ground.
+  if(spot.y < window.innerHeight * .45){
+    return {width:210, height:255, rootLift:35};
+  }
+
+  if(spot.y < window.innerHeight * .62){
+    return {width:260, height:315, rootLift:42};
+  }
+
+  return {width:320, height:385, rootLift:48};
+}
+
+function getDepthClassForSpot(spot){
+  // Higher shelves appear farther back, lower ground appears closer/front.
+  if(spot.y < window.innerHeight * .55){
+    return "treeBack";
+  }
+  return "treeFront";
+}
+
+function createRootBurst(growth){
+  if(!growth || growth.type !== "tree") return;
+
+  const baseX = growth.spot.x;
+  const baseY = growth.spot.y;
+
+  const burst = document.createElement("div");
+  burst.className = "rootBurst";
+  burst.style.left = (baseX - 67) + "px";
+  burst.style.top = (baseY - 25) + "px";
+  game.appendChild(burst);
+  setTimeout(()=>burst.remove(),1500);
+
+  for(let i=0;i<5;i++){
+    const line = document.createElement("div");
+    line.className = "rootLine";
+
+    const angle = [-28,-14,0,14,28][i];
+    line.style.setProperty("--rootRot", angle + "deg");
+    line.style.left = (baseX - 38 + (i-2)*13) + "px";
+    line.style.top = (baseY - 7 + Math.abs(i-2)*3) + "px";
+
+    game.appendChild(line);
+    setTimeout(()=>line.remove(),1500);
+  }
+
+  for(let i=0;i<8;i++){
+    setTimeout(()=>sparkleAt(baseX + Math.random()*90 - 45, baseY - 20 + Math.random()*35), i*70);
+  }
+}
+
 async function updatePlantedImage(growth){
   const stages = getStagesForType(growth.type);
   const src = stages[Math.min(growth.stage, stages.length - 1)];
 
-  growth.img.className = "plantedItem " + getClassForType(growth.type);
+  const depthClass = growth.type === "tree" ? getDepthClassForSpot(growth.spot) : "";
+  growth.img.className = ("plantedItem " + getClassForType(growth.type) + " " + depthClass).trim();
 
   await setCleanImage(growth.img, src);
 
-  growth.img.style.left = (growth.spot.x - growth.img.offsetWidth / 2) + "px";
-  growth.img.style.top = (growth.spot.y - getTopOffsetForType(growth.type)) + "px";
+  requestAnimationFrame(()=>{
+    let imgWidth = growth.img.offsetWidth || 115;
+    let imgHeight = growth.img.offsetHeight || 115;
+
+    if(growth.type === "tree"){
+      const treeSize = getTreeSizeForSpot(growth.spot);
+      growth.img.style.width = treeSize.width + "px";
+      growth.img.style.height = treeSize.height + "px";
+      imgWidth = treeSize.width;
+      imgHeight = treeSize.height;
+    }
+
+    if(growth.type === "fern"){
+      imgWidth = growth.img.offsetWidth || 135;
+      imgHeight = growth.img.offsetHeight || 135;
+    }
+
+    if(growth.type === "plant"){
+      imgWidth = growth.img.offsetWidth || 115;
+      imgHeight = growth.img.offsetHeight || 115;
+    }
+
+    let left = growth.spot.x - imgWidth / 2;
+    let top;
+
+    if(growth.type === "tree"){
+      const treeSize = getTreeSizeForSpot(growth.spot);
+      // Root base sits just below the shelf, so it looks planted instead of floating.
+      top = growth.spot.y - imgHeight + treeSize.rootLift;
+
+      // Important: don't clamp to 20 for trees. Clamping was making high shelf trees look wrong.
+      // Instead, keep the visible roots tied to the ledge.
+      if(top < -40) top = -40;
+    }else{
+      top = growth.spot.y - imgHeight + 28;
+      if(top < 20) top = 20;
+    }
+
+    growth.img.style.left = left + "px";
+    growth.img.style.top = top + "px";
+
+    if(growth.type === "tree"){
+      createRootBurst(growth);
+    }
+  });
 }
 
 function updateGoalCounters(){
@@ -1843,12 +2051,25 @@ soundBtn.onclick = ()=>{
 
   if(soundOn){
     startMusic();
+    setTimeout(()=>startMusic(),300);
     playLimitedSound(sounds.fairy,"magic",700,.28);
   }else{
     sounds.music.pause();
     message.innerText = "Sound is off.";
   }
 };
+
+
+document.addEventListener("click", ()=>{
+  if(soundOn){
+    try{
+      sounds.music.muted = false;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.14;
+      sounds.music.play().catch(()=>{});
+    }catch(e){}
+  }
+}, {once:true});
 
 window.addEventListener("resize",update);
 
