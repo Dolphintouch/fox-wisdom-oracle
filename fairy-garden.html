@@ -401,6 +401,79 @@ body{
   100%{transform:translateY(-110vh) translateX(60px);opacity:0}
 }
 
+
+/* RUBBISH / RECYCLING / LEVEL 2 */
+.rubbishItem{
+  position:absolute;
+  width:115px;
+  height:115px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:14;
+  filter:
+    brightness(.82)
+    saturate(.75)
+    drop-shadow(0 0 12px rgba(60,60,60,.85));
+  animation:plantGrow .8s ease forwards;
+}
+
+.recycleStation{
+  position:absolute;
+  width:150px;
+  height:150px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:11;
+  filter:
+    drop-shadow(0 0 16px rgba(255,230,120,.85))
+    brightness(1.05);
+}
+
+.recycleStation.correctGlow{
+  filter:
+    drop-shadow(0 0 20px gold)
+    drop-shadow(0 0 35px rgba(180,255,160,.8))
+    brightness(1.15);
+}
+
+#heldItemIcon{
+  position:absolute;
+  left:50%;
+  top:110px;
+  transform:translateX(-50%);
+  z-index:45;
+  display:none;
+  color:#fff6c9;
+  background:rgba(0,0,0,.55);
+  padding:10px 14px;
+  border-radius:16px;
+  box-shadow:0 0 18px rgba(255,230,120,.45);
+  text-align:center;
+}
+
+.weakMagic{
+  filter:
+    drop-shadow(0 0 6px rgba(180,180,120,.6))
+    brightness(.72)
+    saturate(.55) !important;
+}
+
+.level2Mist{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, rgba(120,255,180,.18), transparent 50%),
+    rgba(40,80,55,.18);
+  z-index:4;
+  animation:mistPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes mistPulse{
+  from{opacity:.25}
+  to{opacity:.65}
+}
+
 @media(max-width:700px){
   #fairy{
     width:165px;
@@ -439,7 +512,10 @@ body{
     Points: <span id="score">0</span><br>
     Garden Spots: <span id="tendedCount">0</span>/12<br>
     Nests: <span id="nestCount">0</span>/5<br>
+    Rubbish: <span id="rubbishCount">0</span><br>
+    Magic Strength: <span id="magicStrength">Strong</span><br>
     Move: Arrow Keys<br>
+    Clean/Recycle: C<br>
     Sing: S or button<br>
     Set ledges: Press L<br>
     <button id="soundBtn">Sound: Off</button>
@@ -447,10 +523,12 @@ body{
 
   <div id="levelHint">
     Level One<br>
-    Tend 12 garden spots and help 5 nests appear.<br>
+    Tend 12 garden spots, help 5 nests appear,<br>then restore Level 2 by recycling rubbish.<br>
     Forest magic: <span id="hintTendedCount">0</span>/12<br>
     Nests: <span id="hintNestCount">0</span>/5
   </div>
+
+  <div id="heldItemIcon">Holding: <span id="heldItemName">Nothing</span></div>
 
   <div id="message">Choose Fairy or Elf to begin...</div>
   <button id="singBtn">✨ Sing ✨</button>
@@ -465,7 +543,7 @@ body{
   <div id="levelCompleteOverlay">
     <div id="levelCompleteCard">
       <h2>✨ The Forest Awakens ✨</h2>
-      <p>You have restored life to the meadow,<br>grown the forest, and helped five nests appear.<br>The forest now breathes with magic.</p>
+      <p>You have restored life to the meadow,<br>grown the forest, and helped five nests appear.<br>The forest now breathes with magic.<br><br>Level 2 begins: cleanse the rubbish and restore balance.</p>
       <button onclick="closeLevelComplete()">Continue</button>
     </div>
   </div>
@@ -498,6 +576,10 @@ const tendedCountBox = document.getElementById("tendedCount");
 const hintTendedCountBox = document.getElementById("hintTendedCount");
 const nestCountBox = document.getElementById("nestCount");
 const hintNestCountBox = document.getElementById("hintNestCount");
+const rubbishCountBox = document.getElementById("rubbishCount");
+const magicStrengthBox = document.getElementById("magicStrength");
+const heldItemIcon = document.getElementById("heldItemIcon");
+const heldItemName = document.getElementById("heldItemName");
 
 let x = window.innerWidth * 0.45;
 let y = window.innerHeight * 0.55;
@@ -512,6 +594,13 @@ let plantedGrowth = [];
 let eggs = [];
 let nestCount = 0;
 let levelOneComplete = false;
+let levelTwoStarted = false;
+let levelTwoComplete = false;
+let rubbishItems = [];
+let recycleStations = [];
+let heldRubbish = null;
+let rubbishSpawnTimer = null;
+let magicWeak = false;
 
 const levelOneTarget = 12;
 const nestTarget = 5;
@@ -574,6 +663,23 @@ const birdFrames = [
   "fae-songbird-flap-2.png",
   "fae-songbird-glide.png"
 ];
+
+
+const rubbishTypes = [
+  {type:"glass", file:"rubbish-1.png", label:"Glass bottle"},
+  {type:"paper", file:"rubbish-2.png", label:"Torn pages"},
+  {type:"crystal", file:"rubbish-3.png", label:"Dark crystal"}
+];
+
+const recycleStationsData = [
+  {type:"glass", file:"recycle-glass.png", x:230, y:650, label:"Glass Shrine"},
+  {type:"paper", file:"recycle-paper.png", x:760, y:650, label:"Paper Shrine"},
+  {type:"crystal", file:"recycle-crystal.png", x:1260, y:650, label:"Crystal Shrine"}
+];
+
+const levelTwoRubbishGoal = 9;
+let levelTwoRecycled = 0;
+
 
 const sounds = {
   fairy:new Audio("fairy-bells.mp3"),
@@ -1177,6 +1283,252 @@ function hatchEgg(egg,nest,spot){
   },6000);
 }
 
+
+function updateRubbishUI(){
+  if(rubbishCountBox) rubbishCountBox.innerText = rubbishItems.length;
+  if(magicStrengthBox){
+    magicStrengthBox.innerText = magicWeak ? "Weak" : "Strong";
+  }
+
+  if(heldItemIcon && heldItemName){
+    if(heldRubbish){
+      heldItemIcon.style.display = "block";
+      heldItemName.innerText = heldRubbish.label;
+    }else{
+      heldItemIcon.style.display = "none";
+      heldItemName.innerText = "Nothing";
+    }
+  }
+}
+
+async function createCleanImageElement(file, className){
+  const img = document.createElement("img");
+  img.className = className;
+  const cleaned = await cleanWhiteBackground(file);
+  img.src = cleaned;
+  return img;
+}
+
+function getDistanceToPlayer(px,py){
+  const fx = x + fairy.offsetWidth * .5;
+  const fy = y + fairy.offsetHeight * .55;
+  const dx = fx - px;
+  const dy = fy - py;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+function updateMagicWeakness(){
+  const tooMuchRubbish = rubbishItems.length >= 5;
+
+  if(tooMuchRubbish && !magicWeak){
+    magicWeak = true;
+    fairy.classList.add("weakMagic");
+    message.innerText = "The rubbish is weakening your magic...";
+  }
+
+  if(!tooMuchRubbish && magicWeak){
+    magicWeak = false;
+    fairy.classList.remove("weakMagic");
+    message.innerText = "Your magic feels stronger again...";
+  }
+
+  updateRubbishUI();
+}
+
+async function spawnRubbish(){
+  if(!levelTwoStarted || levelTwoComplete) return;
+  if(rubbishItems.length >= 7) return;
+
+  const data = rubbishTypes[Math.floor(Math.random() * rubbishTypes.length)];
+  const img = await createCleanImageElement(data.file, "rubbishItem");
+
+  const rx = 150 + Math.random() * (window.innerWidth - 300);
+  const ry = window.innerHeight * .68 + Math.random() * 110;
+
+  img.style.left = rx + "px";
+  img.style.top = ry + "px";
+
+  game.appendChild(img);
+
+  rubbishItems.push({
+    el:img,
+    x:rx,
+    y:ry,
+    type:data.type,
+    label:data.label,
+    file:data.file
+  });
+
+  updateMagicWeakness();
+}
+
+async function createRecycleStations(){
+  recycleStations.forEach(s=>{
+    if(s.el && s.el.parentNode) s.el.remove();
+  });
+
+  recycleStations = [];
+
+  for(const data of recycleStationsData){
+    const img = await createCleanImageElement(data.file, "recycleStation");
+    img.style.left = data.x + "px";
+    img.style.top = data.y + "px";
+    game.appendChild(img);
+
+    recycleStations.push({
+      el:img,
+      x:data.x,
+      y:data.y,
+      type:data.type,
+      label:data.label
+    });
+  }
+}
+
+function pickUpNearbyRubbish(){
+  if(heldRubbish){
+    tryRecycleHeldRubbish();
+    return;
+  }
+
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  rubbishItems.forEach(item=>{
+    const d = getDistanceToPlayer(item.x, item.y);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = item;
+    }
+  });
+
+  if(!nearest || nearestDistance > 145){
+    message.innerText = "Move closer to rubbish, then press C to pick it up.";
+    return;
+  }
+
+  heldRubbish = nearest;
+  rubbishItems = rubbishItems.filter(item=>item !== nearest);
+
+  if(nearest.el && nearest.el.parentNode){
+    nearest.el.style.opacity = "0";
+    nearest.el.remove();
+  }
+
+  message.innerText = "You picked up " + nearest.label + ". Take it to the right shrine.";
+  updateMagicWeakness();
+  updateRubbishUI();
+}
+
+function tryRecycleHeldRubbish(){
+  if(!heldRubbish) return;
+
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  recycleStations.forEach(station=>{
+    const d = getDistanceToPlayer(station.x + 75, station.y + 75);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = station;
+    }
+  });
+
+  if(!nearest || nearestDistance > 170){
+    message.innerText = "Carry it to the correct recycling shrine, then press C.";
+    return;
+  }
+
+  recycleStations.forEach(s=>s.el.classList.remove("correctGlow"));
+
+  if(nearest.type === heldRubbish.type){
+    nearest.el.classList.add("correctGlow");
+
+    score += 20;
+    scoreBox.innerText = score;
+
+    levelTwoRecycled++;
+
+    message.innerText = "Correct! The " + nearest.label + " transforms the rubbish into clean magic ✨";
+
+    sparkleAt(nearest.x + 75, nearest.y + 60);
+    sparkleAt(nearest.x + 45, nearest.y + 90);
+    sparkleAt(nearest.x + 105, nearest.y + 90);
+
+    playSoftBloomSound();
+
+    heldRubbish = null;
+    updateMagicWeakness();
+    updateRubbishUI();
+    checkLevelTwoComplete();
+  }else{
+    score = Math.max(0, score - 5);
+    scoreBox.innerText = score;
+    message.innerText = "Wrong shrine. Try matching the rubbish to its correct place.";
+    playSoftMagicSound();
+  }
+}
+
+function startLevelTwo(){
+  if(levelTwoStarted) return;
+
+  levelTwoStarted = true;
+  levelTwoComplete = false;
+  levelTwoRecycled = 0;
+
+  message.innerText = "Level 2 begins — rubbish has crept into the forest. Recycle 9 pieces to restore balance.";
+
+  const mist = document.createElement("div");
+  mist.className = "level2Mist";
+  mist.id = "level2Mist";
+  game.appendChild(mist);
+
+  createRecycleStations();
+
+  for(let i=0;i<4;i++){
+    setTimeout(spawnRubbish, i * 900);
+  }
+
+  rubbishSpawnTimer = setInterval(spawnRubbish, 9000);
+
+  if(magicStrengthBox) magicStrengthBox.innerText = "Strong";
+}
+
+function checkLevelTwoComplete(){
+  if(levelTwoComplete) return;
+
+  if(levelTwoRecycled >= levelTwoRubbishGoal){
+    levelTwoComplete = true;
+
+    if(rubbishSpawnTimer){
+      clearInterval(rubbishSpawnTimer);
+      rubbishSpawnTimer = null;
+    }
+
+    const mist = document.getElementById("level2Mist");
+    if(mist){
+      mist.style.transition = "opacity 2s ease";
+      mist.style.opacity = "0";
+      setTimeout(()=>mist.remove(),2200);
+    }
+
+    magicWeak = false;
+    fairy.classList.remove("weakMagic");
+    updateRubbishUI();
+
+    score += 50;
+    scoreBox.innerText = score;
+
+    message.innerText = "Level 2 complete — the forest is cleansed and glowing again!";
+
+    for(let i=0;i<35;i++){
+      setTimeout(sparkle, i*45);
+    }
+
+    playSoftBloomSound();
+  }
+}
+
 function unlockLevelOneForest(){
   if(levelOneComplete) return;
 
@@ -1196,6 +1548,7 @@ function unlockLevelOneForest(){
   }
 
   setTimeout(showLevelComplete,1200);
+  setTimeout(startLevelTwo,2600);
 }
 
 function showLevelComplete(){
@@ -1260,8 +1613,13 @@ async function sing(){
   playLimitedSound(sounds.fairy,"magic",700,.28);
   magicSurround();
 
-  score += 10;
+  const singPoints = magicWeak ? 5 : 10;
+  score += singPoints;
   scoreBox.innerText = score;
+
+  if(magicWeak){
+    message.innerText = "Your magic is weak. Recycle rubbish to restore your strength.";
+  }
 
   for(let i=0;i<6;i++){
     setTimeout(sparkle, i*80);
@@ -1324,6 +1682,11 @@ document.addEventListener("keydown",e=>{
   if(e.key.toLowerCase() === "l"){
     e.preventDefault();
     toggleLedgeEditMode();
+  }
+
+  if(e.key.toLowerCase() === "c"){
+    e.preventDefault();
+    pickUpNearbyRubbish();
   }
 
   if(e.key.toLowerCase() === "s"){
