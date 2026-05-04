@@ -509,10 +509,12 @@ body{
   <div id="fairy"></div>
 
   <div id="ui">
+    Level: <span id="currentLevelLabel">1</span><br>
     Points: <span id="score">0</span><br>
     Garden Spots: <span id="tendedCount">0</span>/12<br>
     Nests: <span id="nestCount">0</span>/5<br>
     Rubbish: <span id="rubbishCount">0</span><br>
+    Recycled: <span id="recycledCount">0</span>/9<br>
     Magic Strength: <span id="magicStrength">Strong</span><br>
     Move: Arrow Keys<br>
     Clean/Recycle: C<br>
@@ -577,6 +579,8 @@ const hintTendedCountBox = document.getElementById("hintTendedCount");
 const nestCountBox = document.getElementById("nestCount");
 const hintNestCountBox = document.getElementById("hintNestCount");
 const rubbishCountBox = document.getElementById("rubbishCount");
+const recycledCountBox = document.getElementById("recycledCount");
+const currentLevelLabel = document.getElementById("currentLevelLabel");
 const magicStrengthBox = document.getElementById("magicStrength");
 const heldItemIcon = document.getElementById("heldItemIcon");
 const heldItemName = document.getElementById("heldItemName");
@@ -601,6 +605,7 @@ let recycleStations = [];
 let heldRubbish = null;
 let rubbishSpawnTimer = null;
 let magicWeak = false;
+let growthTimers = [];
 
 const levelOneTarget = 12;
 const nestTarget = 5;
@@ -738,6 +743,7 @@ function startGame(character){
 
 function closeLevelComplete(){
   document.getElementById("levelCompleteOverlay").style.display = "none";
+  startLevelTwo();
 }
 
 function getSprite(action){
@@ -1065,6 +1071,7 @@ function checkLevelOneComplete(){
 
 function startGrowthTimer(growth){
   growth.timer = setInterval(async()=>{
+
     const stages = getStagesForType(growth.type);
 
     if(growth.stage < stages.length - 1){
@@ -1086,6 +1093,8 @@ function startGrowthTimer(growth){
       clearInterval(growth.timer);
     }
   },5000);
+
+  growthTimers.push(growth.timer);
 }
 
 function growPlant(){
@@ -1286,6 +1295,9 @@ function hatchEgg(egg,nest,spot){
 
 function updateRubbishUI(){
   if(rubbishCountBox) rubbishCountBox.innerText = rubbishItems.length;
+  if(recycledCountBox) recycledCountBox.innerText = levelTwoRecycled;
+  if(currentLevelLabel) currentLevelLabel.innerText = levelTwoStarted ? "2" : "1";
+
   if(magicStrengthBox){
     magicStrengthBox.innerText = magicWeak ? "Weak" : "Strong";
   }
@@ -1343,7 +1355,7 @@ async function spawnRubbish(){
   const img = await createCleanImageElement(data.file, "rubbishItem");
 
   const rx = 150 + Math.random() * (window.innerWidth - 300);
-  const ry = window.innerHeight * .68 + Math.random() * 110;
+  const ry = window.innerHeight * .62 + Math.random() * 180;
 
   img.style.left = rx + "px";
   img.style.top = ry + "px";
@@ -1469,29 +1481,147 @@ function tryRecycleHeldRubbish(){
   }
 }
 
+
+function clearLevelOneObjectsForLevelTwo(){
+  // Stop plant growth timers
+  growthTimers.forEach(t=>clearInterval(t));
+  growthTimers = [];
+
+  // Remove planted plants/ferns/trees
+  plantedGrowth.forEach(g=>{
+    if(g.img && g.img.parentNode) g.img.remove();
+    if(g.timer) clearInterval(g.timer);
+  });
+  plantedGrowth = [];
+
+  // Remove nests and eggs
+  eggs.forEach(e=>{
+    if(e.egg && e.egg.parentNode) e.egg.remove();
+    if(e.nest && e.nest.parentNode) e.nest.remove();
+  });
+  eggs = [];
+
+  // Remove any remaining nest/egg sprites just in case
+  document.querySelectorAll(".nestSprite,.eggSprite").forEach(el=>el.remove());
+
+  // Remove any visible planting guide dots
+  document.querySelectorAll(".plantSpot").forEach(el=>el.remove());
+
+  // Reset level one counters but keep score
+  nestCount = 0;
+  levelOneComplete = true;
+
+  updateGoalCounters();
+}
+
+function clearRubbishObjects(){
+  rubbishItems.forEach(item=>{
+    if(item.el && item.el.parentNode) item.el.remove();
+  });
+  rubbishItems = [];
+
+  recycleStations.forEach(station=>{
+    if(station.el && station.el.parentNode) station.el.remove();
+  });
+  recycleStations = [];
+
+  heldRubbish = null;
+  updateRubbishUI();
+}
+
 function startLevelTwo(){
   if(levelTwoStarted) return;
 
   levelTwoStarted = true;
   levelTwoComplete = false;
   levelTwoRecycled = 0;
+  magicWeak = false;
+
+  if(currentLevelLabel) currentLevelLabel.innerText = "2";
+
+  // Clear old forest objects so Level 2 begins fresh
+  clearLevelOneObjectsForLevelTwo();
+  clearRubbishObjects();
+
+  // Give level 2 a clean start area
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
+
+  // Move player back to a safe starting place
+  x = window.innerWidth * 0.42;
+  y = window.innerHeight * 0.62;
+  update();
 
   message.innerText = "Level 2 begins — rubbish has crept into the forest. Recycle 9 pieces to restore balance.";
 
-  const mist = document.createElement("div");
-  mist.className = "level2Mist";
-  mist.id = "level2Mist";
-  game.appendChild(mist);
+  // Add the soft imbalance mist
+  let mist = document.getElementById("level2Mist");
+  if(!mist){
+    mist = document.createElement("div");
+    mist.className = "level2Mist";
+    mist.id = "level2Mist";
+    game.appendChild(mist);
+  }
 
   createRecycleStations();
 
-  for(let i=0;i<4;i++){
-    setTimeout(spawnRubbish, i * 900);
+  // Spawn rubbish clearly and immediately
+  for(let i=0;i<5;i++){
+    setTimeout(spawnRubbish, i * 650);
   }
 
-  rubbishSpawnTimer = setInterval(spawnRubbish, 9000);
+  if(rubbishSpawnTimer){
+    clearInterval(rubbishSpawnTimer);
+  }
 
-  if(magicStrengthBox) magicStrengthBox.innerText = "Strong";
+  rubbishSpawnTimer = setInterval(spawnRubbish, 7000);
+
+  updateRubbishUI();
+}
+
+
+/* LEVEL 2 RESET OVERRIDE - keeps Level 2 clean and starts rubbish clearly */
+function startLevelTwo(){
+  if(levelTwoStarted) return;
+
+  levelTwoStarted = true;
+  levelTwoComplete = false;
+  levelTwoRecycled = 0;
+  magicWeak = false;
+
+  if(currentLevelLabel) currentLevelLabel.innerText = "2";
+
+  clearLevelOneObjectsForLevelTwo();
+  clearRubbishObjects();
+
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
+
+  x = window.innerWidth * 0.42;
+  y = window.innerHeight * 0.62;
+  update();
+
+  message.innerText = "Level 2 begins — rubbish has crept into the forest. Recycle 9 pieces to restore balance.";
+
+  let mist = document.getElementById("level2Mist");
+  if(!mist){
+    mist = document.createElement("div");
+    mist.className = "level2Mist";
+    mist.id = "level2Mist";
+    game.appendChild(mist);
+  }
+
+  createRecycleStations();
+
+  for(let i=0;i<5;i++){
+    setTimeout(spawnRubbish, i * 650);
+  }
+
+  if(rubbishSpawnTimer){
+    clearInterval(rubbishSpawnTimer);
+  }
+
+  rubbishSpawnTimer = setInterval(spawnRubbish, 7000);
+
+  updateRubbishUI();
 }
 
 function checkLevelTwoComplete(){
@@ -1520,6 +1650,7 @@ function checkLevelTwoComplete(){
     scoreBox.innerText = score;
 
     message.innerText = "Level 2 complete — the forest is cleansed and glowing again!";
+    if(currentLevelLabel) currentLevelLabel.innerText = "2 Complete";
 
     for(let i=0;i<35;i++){
       setTimeout(sparkle, i*45);
@@ -1548,7 +1679,6 @@ function unlockLevelOneForest(){
   }
 
   setTimeout(showLevelComplete,1200);
-  setTimeout(startLevelTwo,2600);
 }
 
 function showLevelComplete(){
