@@ -175,6 +175,7 @@ body{
 }
 
 /* LEVEL COMPLETE */
+#levelTwoCompleteOverlay,
 #levelCompleteOverlay{
   position:absolute;
   inset:0;
@@ -621,6 +622,15 @@ body{
       <button onclick="closeLevelComplete()">Continue</button>
     </div>
   </div>
+
+<div id="levelTwoCompleteOverlay">
+  <div id="levelCompleteCard">
+    <h2>♻️ The Forest is Cleansed ♻️</h2>
+    <p>You recycled the forgotten fragments,<br>restored the fairy magic,<br>and brought balance back to the forest.</p>
+    <button onclick="closeLevelTwoComplete()">Continue</button>
+  </div>
+</div>
+
 </div>
 
 <div id="startScreen">
@@ -835,6 +845,13 @@ function startGame(character){
     startScreen.style.display = "none";
     update();
   },300);
+}
+
+
+function closeLevelTwoComplete(){
+  const overlay = document.getElementById("levelTwoCompleteOverlay");
+  if(overlay) overlay.style.display = "none";
+  message.innerText = "The forest is peaceful again. You completed Level 2 ✨";
 }
 
 function closeLevelComplete(){
@@ -1668,6 +1685,7 @@ function tryRecycleHeldRubbish(){
     scoreBox.innerText = score;
 
     levelTwoRecycled++;
+    updateRubbishUI();
 
     message.innerText = "Correct! The " + nearest.label + " transforms the rubbish into clean magic ✨";
 
@@ -1843,6 +1861,16 @@ function checkLevelTwoComplete(){
       rubbishSpawnTimer = null;
     }
 
+    // Clear remaining rubbish from the level
+    rubbishItems.forEach(item=>{
+      if(item.el && item.el.parentNode) item.el.remove();
+    });
+    rubbishItems = [];
+
+    // Clear held rubbish
+    heldRubbish = null;
+
+    // Remove mist
     const mist = document.getElementById("level2Mist");
     if(mist){
       mist.style.transition = "opacity 2s ease";
@@ -1850,6 +1878,7 @@ function checkLevelTwoComplete(){
       setTimeout(()=>mist.remove(),2200);
     }
 
+    // Restore fairy/elf strength
     magicWeak = false;
     fairy.classList.remove("weakMagic");
     updateRubbishUI();
@@ -1857,14 +1886,28 @@ function checkLevelTwoComplete(){
     score += 50;
     scoreBox.innerText = score;
 
-    message.innerText = "Level 2 complete — the forest is cleansed and glowing again!";
     if(currentLevelLabel) currentLevelLabel.innerText = "2 Complete";
 
-    for(let i=0;i<35;i++){
+    message.innerText = "Level 2 complete — the forest is cleansed and glowing again!";
+
+    for(let i=0;i<40;i++){
       setTimeout(sparkle, i*45);
     }
 
+    for(let i=0;i<5;i++){
+      setTimeout(()=>{
+        spawnFaeSongbird(window.innerWidth*.25 + Math.random()*window.innerWidth*.5, window.innerHeight*.65);
+      }, i*450);
+    }
+
     playSoftBloomSound();
+
+    const overlay = document.getElementById("levelTwoCompleteOverlay");
+    if(overlay){
+      setTimeout(()=>{
+        overlay.style.display = "flex";
+      }, 1000);
+    }
   }
 }
 
@@ -2025,6 +2068,7 @@ document.addEventListener("keydown",e=>{
   if(e.key.toLowerCase() === "c"){
     e.preventDefault();
     pickUpNearbyRubbish();
+    checkLevelTwoComplete();
   }
 
   if(e.key.toLowerCase() === "s"){
