@@ -594,7 +594,7 @@ body{
     Clean/Recycle: C<br>
     Sing: S or button<br>
     Set ledges: Press L<br>
-    <button id="soundBtn">Sound: Off</button>
+    <button id="soundBtn" tabindex="-1">Sound: Off</button>
   </div>
 
   <div id="levelHint">
@@ -607,7 +607,7 @@ body{
   <div id="heldItemIcon">Holding: <span id="heldItemName">Nothing</span></div>
 
   <div id="message">Choose Fairy or Elf to begin...</div>
-  <button id="singBtn">✨ Sing ✨</button>
+  <button id="singBtn" tabindex="-1">✨ Sing ✨</button>
 
   <div id="editNotice">
     Planting Ledge Mode<br>
@@ -929,6 +929,15 @@ function update(){
   fairy.style.left = x + "px";
   fairy.style.top = y + "px";
   fairy.style.transform = `scaleX(${facing})`;
+}
+
+
+function keepGameControlsActive(){
+  try{
+    if(document.activeElement){
+      document.activeElement.blur();
+    }
+  }catch(e){}
 }
 
 function unlockSounds(){
@@ -2050,7 +2059,8 @@ async function moveFairy(dx,dy,moveSprite){
 }
 
 document.addEventListener("keydown",e=>{
-  if(startScreen.style.display !== "none") return;
+  keepGameControlsActive();
+  if(startScreen && startScreen.style.display !== "none") return;
 
   if(e.key === "ArrowRight"){
     e.preventDefault();
@@ -2090,7 +2100,7 @@ document.addEventListener("keydown",e=>{
 });
 
 document.addEventListener("keyup",()=>{
-  if(startScreen.style.display !== "none") return;
+  if(startScreen && startScreen.style.display !== "none") return;
 
   if(!singing){
     sprite(getSprite("idle"));
@@ -2098,21 +2108,46 @@ document.addEventListener("keyup",()=>{
   }
 });
 
-singBtn.onclick = sing;
+singBtn.onclick = (e)=>{
+  if(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  sing();
+  setTimeout(keepGameControlsActive, 50);
+};
 
-soundBtn.onclick = ()=>{
+soundBtn.onclick = (e)=>{
+  if(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
   soundOn = !soundOn;
   soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
-  unlockSounds();
+
+  keepGameControlsActive();
 
   if(soundOn){
-    startMusic();
-    setTimeout(()=>startMusic(),300);
-    playLimitedSound(sounds.fairy,"magic",1800,.12);
+    try{
+      sounds.music.muted = false;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.10;
+      sounds.music.play().catch(()=>{});
+    }catch(err){}
+
+    try{
+      playLimitedSound(sounds.fairy,"magic",2200,.10);
+    }catch(err){}
+    message.innerText = "Sound is on. The fairy can still move.";
   }else{
-    sounds.music.pause();
+    try{
+      sounds.music.pause();
+    }catch(err){}
     message.innerText = "Sound is off.";
   }
+
+  setTimeout(keepGameControlsActive, 50);
 };
 
 
