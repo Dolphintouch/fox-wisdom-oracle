@@ -631,6 +631,7 @@ body{
     <button id="saveBtn" tabindex="-1">Save</button>
     <button id="loadBtn" tabindex="-1">Load</button>
     <button id="resetBtn" tabindex="-1">Reset</button>
+    <button id="restoreLedgesBtn" tabindex="-1">Restore Ledges</button>
   </div>
 
   <div id="levelHint">
@@ -706,6 +707,7 @@ const recycleGoalLabel = document.getElementById("recycleGoalLabel");
 const saveBtn = document.getElementById("saveBtn");
 const loadBtn = document.getElementById("loadBtn");
 const resetBtn = document.getElementById("resetBtn");
+const restoreLedgesBtn = document.getElementById("restoreLedgesBtn");
 const rubbishCountBox = document.getElementById("rubbishCount");
 const currentLevelLabel = document.getElementById("currentLevelLabel");
 const magicStrengthBox = document.getElementById("magicStrength");
@@ -751,13 +753,28 @@ let lastGrowSound = 0;
 let lastBloomSound = 0;
 
 const defaultPlantingSpots = [
+  // Full Level 1 ledges restored — left side
+  {x:130,y:640},
+  {x:220,y:610},
   {x:280,y:570},
+  {x:340,y:635},
   {x:390,y:585},
+  {x:470,y:660},
+
+  // Middle meadow ledges
+  {x:560,y:610},
   {x:650,y:720},
+  {x:735,y:640},
   {x:830,y:705},
+  {x:930,y:625},
+
+  // Right side ledges
   {x:1050,y:500},
+  {x:1125,y:635},
   {x:1240,y:560},
-  {x:1390,y:550}
+  {x:1315,y:670},
+  {x:1390,y:550},
+  {x:1500,y:625}
 ];
 
 const characterSprites = {
@@ -1078,9 +1095,19 @@ function startMusic(){
 function loadPlantingSpots(){
   try{
     const saved = localStorage.getItem("fairyGardenPlantingSpots");
-    plantingSpots = saved ? JSON.parse(saved) : defaultPlantingSpots.slice();
+    const parsed = saved ? JSON.parse(saved) : null;
+
+    // If your old saved ledges are still in the browser, keep them.
+    // If a previous reset wiped them or only a few remain, restore the full ledge set.
+    if(Array.isArray(parsed) && parsed.length >= 12){
+      plantingSpots = parsed;
+    }else{
+      plantingSpots = defaultPlantingSpots.slice();
+      savePlantingSpots();
+    }
   }catch(e){
     plantingSpots = defaultPlantingSpots.slice();
+    savePlantingSpots();
   }
 }
 
@@ -2415,9 +2442,17 @@ async function loadGame(){
   keepGameControlsActive();
 }
 
+function restoreAllLedges(){
+  plantingSpots = defaultPlantingSpots.slice();
+  savePlantingSpots();
+  renderPlantingSpots();
+  message.innerText = "All Level 1 ledges have been restored ✨";
+  keepGameControlsActive();
+}
+
 function resetGame(){
+  // Reset the game progress only. Do NOT delete the ledges.
   localStorage.removeItem("fairyGardenSave");
-  localStorage.removeItem("fairyGardenPlantingSpots");
   location.reload();
 }
 
@@ -2479,6 +2514,14 @@ if(resetBtn){
     e.preventDefault();
     e.stopPropagation();
     resetGame();
+  };
+}
+
+if(restoreLedgesBtn){
+  restoreLedgesBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    restoreAllLedges();
   };
 }
 
