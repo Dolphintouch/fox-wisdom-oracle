@@ -174,6 +174,27 @@ body{
   font-family:Georgia, serif;
 }
 
+#returnDenBtn{
+  position:absolute;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px 20px;
+  border:none;
+  border-radius:25px;
+  background:rgba(255,240,170,.96);
+  color:#4d3510;
+  font-family:Georgia, serif;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:60;
+  box-shadow:0 0 16px gold,0 0 28px rgba(255,220,120,.8);
+}
+
+#returnDenBtn:hover{
+  transform:translateX(-50%) scale(1.05);
+}
+
 /* LEVEL COMPLETE */
 #levelTwoCompleteOverlay,
 #levelCompleteOverlay{
@@ -421,8 +442,8 @@ body{
 
 .recycleStation{
   position:absolute;
-  width:240px;
-  height:240px;
+  width:330px;
+  height:330px;
   object-fit:contain;
   pointer-events:none;
   z-index:11;
@@ -614,7 +635,7 @@ body{
 
   <div id="levelHint">
     Level One<br>
-    Level 1: grow life and nests.<br>Level 2: grow, nest, and recycle.<br>
+    Level 1: grow life and nests.<br>Level 2: recycle only.<br>
     Forest magic: <span id="hintTendedCount">0</span>/12<br>
     Nests: <span id="hintNestCount">0</span>/5
   </div>
@@ -623,6 +644,7 @@ body{
 
   <div id="message">Choose Fairy or Elf to begin...</div>
   <button id="singBtn" tabindex="-1">✨ Sing ✨</button>
+  <button id="returnDenBtn" type="button">🦊 Return to the Den</button>
 
   <div id="editNotice">
     Planting Ledge Mode<br>
@@ -669,6 +691,7 @@ const game = document.getElementById("game");
 const startScreen = document.getElementById("startScreen");
 const soundBtn = document.getElementById("soundBtn");
 const singBtn = document.getElementById("singBtn");
+const returnDenBtn = document.getElementById("returnDenBtn");
 const scoreBox = document.getElementById("score");
 const message = document.getElementById("message");
 const editNotice = document.getElementById("editNotice");
@@ -715,7 +738,8 @@ let growthTimers = [];
 
 const levelGoals = {
   1:{growth:12,nests:5,recycle:0},
-  2:{growth:8,nests:4,recycle:6}
+  // Level 2 is recycling only now. No new trees, plants, or nests needed.
+  2:{growth:0,nests:0,recycle:9}
 };
 
 const levelOneTarget = 12;
@@ -788,9 +812,9 @@ const rubbishTypes = [
 ];
 
 const recycleStationsData = [
-  {type:"glass", file:"recycle-glass.png", x:120, y:590, label:"Glass Shrine"},
-  {type:"paper", file:"recycle-paper.png", x:620, y:590, label:"Paper Shrine"},
-  {type:"crystal", file:"recycle-crystal.png", x:1120, y:590, label:"Crystal Shrine"}
+  {type:"glass", file:"recycle-glass.png", x:70, y:520, label:"Glass Shrine"},
+  {type:"paper", file:"recycle-paper.png", x:560, y:520, label:"Paper Shrine"},
+  {type:"crystal", file:"recycle-crystal.png", x:1050, y:520, label:"Crystal Shrine"}
 ];
 
 const levelTwoRubbishGoal = 9;
@@ -878,6 +902,12 @@ function startGame(character){
   },300);
 }
 
+
+function returnToDen(){
+  const answer = confirm("Return to the Den? This will restart the game screen.");
+  if(!answer) return;
+  location.reload();
+}
 
 function closeLevelTwoComplete(){
   const overlay = document.getElementById("levelTwoCompleteOverlay");
@@ -1450,6 +1480,11 @@ function isRubbishBlockingSpot(spot){
 }
 
 function growPlant(){
+  if(currentLevel === 2){
+    message.innerText = "Level 2 is recycling only now — collect rubbish with C and take it to the matching shrine.";
+    return;
+  }
+
   const spot = getNearestPlantingSpot();
 
   if(!spot){
@@ -1785,14 +1820,14 @@ function tryRecycleHeldRubbish(){
   let nearestDistance = 999999;
 
   recycleStations.forEach(station=>{
-    const d = getDistanceToPlayer(station.x + 75, station.y + 75);
+    const d = getDistanceToPlayer(station.x + 165, station.y + 165);
     if(d < nearestDistance){
       nearestDistance = d;
       nearest = station;
     }
   });
 
-  if(!nearest || nearestDistance > 260){
+  if(!nearest || nearestDistance > 390){
     message.innerText = "Carry it to the correct recycling shrine, then press C.";
     return;
   }
@@ -1811,9 +1846,9 @@ function tryRecycleHeldRubbish(){
 
     message.innerText = "Correct! The " + nearest.label + " transforms the rubbish into clean magic ✨";
 
-    sparkleAt(nearest.x + 75, nearest.y + 60);
-    sparkleAt(nearest.x + 45, nearest.y + 90);
-    sparkleAt(nearest.x + 105, nearest.y + 90);
+    sparkleAt(nearest.x + 165, nearest.y + 120);
+    sparkleAt(nearest.x + 110, nearest.y + 180);
+    sparkleAt(nearest.x + 220, nearest.y + 180);
 
     playSoftBloomSound();
 
@@ -1891,17 +1926,17 @@ function startLevelTwo(){
 
   if(currentLevelLabel) currentLevelLabel.innerText = "2";
 
-  // Keep Level 1 forest alive. Level 2 is a harder continuation, not a blank new game.
-  game.style.backgroundImage = 'url("level1-forest-full.png")';
-
-  // Clear old rubbish only, not plants/birds/nests.
+  // Level 2 is recycling only, so clear old plants, trees, nests, and ledges out of the way.
+  clearLevelOneObjectsForLevelTwo();
   clearRubbishObjects();
+
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
 
   x = window.innerWidth * 0.42;
   y = window.innerHeight * 0.62;
   update();
 
-  message.innerText = "Level 2 begins — keep growing the forest, help birds nest, and recycle the rubbish.";
+  message.innerText = "Level 2 begins — recycling only. Pick up rubbish with C and take it to the matching shrine.";
 
   let mist = document.getElementById("level2Mist");
   if(!mist){
@@ -1990,10 +2025,8 @@ function checkLevelTwoComplete(){
       }, 1000);
     }
   }else if(currentLevel === 2){
-    const leftGrowth = Math.max(0, goals.growth - levelTwoGrowthCount);
-    const leftNests = Math.max(0, goals.nests - levelTwoNestCount);
     const leftRecycle = Math.max(0, goals.recycle - levelTwoRecycled);
-    message.innerText = "Level 2 goals — Grow: " + leftGrowth + ", Nests: " + leftNests + ", Recycle: " + leftRecycle + ".";
+    message.innerText = "Level 2 recycling goal — " + leftRecycle + " more to recycle.";
   }
 }
 
@@ -2182,6 +2215,14 @@ singBtn.onclick = (e)=>{
   sing();
   setTimeout(keepGameControlsActive, 50);
 };
+
+if(returnDenBtn){
+  returnDenBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    returnToDen();
+  };
+}
 
 soundBtn.onclick = (e)=>{
   if(e){
