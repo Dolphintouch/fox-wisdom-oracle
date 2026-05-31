@@ -651,12 +651,12 @@ body{
 
 <div id="startScreen">
   <div id="characterChoice">
-    <button class="startChoiceBtn" type="button" onclick="startGame('fairy')">
+    <button id="fairyStartBtn" class="startChoiceBtn" type="button">
       <img id="fairyStartImg" class="startImg" src="fairy-idle.png" alt="Fairy">
       Play as Fairy
     </button>
 
-    <button class="startChoiceBtn" type="button" onclick="startGame('elf')">
+    <button id="elfStartBtn" class="startChoiceBtn" type="button">
       <img id="elfStartImg" class="startImg" src="elf-idle.png" alt="Elf">
       Play as Elf
     </button>
@@ -684,7 +684,6 @@ const saveBtn = document.getElementById("saveBtn");
 const loadBtn = document.getElementById("loadBtn");
 const resetBtn = document.getElementById("resetBtn");
 const rubbishCountBox = document.getElementById("rubbishCount");
-const recycledCountBox = document.getElementById("recycledCount");
 const currentLevelLabel = document.getElementById("currentLevelLabel");
 const magicStrengthBox = document.getElementById("magicStrength");
 const heldItemIcon = document.getElementById("heldItemIcon");
@@ -911,78 +910,25 @@ function cleanWhiteBackground(src){
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
 
-      const ctx = canvas.getContext("2d", {willReadFrequently:true});
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img,0,0);
 
       try{
         const data = ctx.getImageData(0,0,canvas.width,canvas.height);
         const pixels = data.data;
-        const w = canvas.width;
-        const h = canvas.height;
 
-        function isWhiteish(index){
-          const r = pixels[index];
-          const g = pixels[index+1];
-          const b = pixels[index+2];
-          const a = pixels[index+3];
-          if(a === 0) return true;
+        for(let i=0;i<pixels.length;i+=4){
+          const r = pixels[i];
+          const g = pixels[i+1];
+          const b = pixels[i+2];
 
-          // Removes the flat white background and pale grey/cream halo around the male fairy/elf.
           const brightness = (r + g + b) / 3;
-          const colourSpread = Math.max(r,g,b) - Math.min(r,g,b);
-          return brightness > 188 && colourSpread < 45;
-        }
 
-        // Flood-fill from the outside edges, so only the BACKGROUND is removed.
-        // This is safer than deleting every white pixel inside the character.
-        const visited = new Uint8Array(w*h);
-        const queue = [];
-
-        function addPixel(px,py){
-          if(px < 0 || py < 0 || px >= w || py >= h) return;
-          const pos = py*w + px;
-          if(visited[pos]) return;
-          const i = pos*4;
-          if(!isWhiteish(i)) return;
-          visited[pos] = 1;
-          queue.push([px,py]);
-        }
-
-        for(let xx=0; xx<w; xx++){
-          addPixel(xx,0);
-          addPixel(xx,h-1);
-        }
-        for(let yy=0; yy<h; yy++){
-          addPixel(0,yy);
-          addPixel(w-1,yy);
-        }
-
-        while(queue.length){
-          const [px,py] = queue.shift();
-          const i = (py*w + px)*4;
-          pixels[i+3] = 0;
-          addPixel(px+1,py);
-          addPixel(px-1,py);
-          addPixel(px,py+1);
-          addPixel(px,py-1);
-        }
-
-        // Soften remaining pale edge pixels next to the removed background.
-        for(let yy=1; yy<h-1; yy++){
-          for(let xx=1; xx<w-1; xx++){
-            const pos = yy*w + xx;
-            const i = pos*4;
-            if(pixels[i+3] === 0) continue;
-
-            const nearTransparent =
-              pixels[((yy-1)*w+xx)*4+3] === 0 ||
-              pixels[((yy+1)*w+xx)*4+3] === 0 ||
-              pixels[(yy*w+xx-1)*4+3] === 0 ||
-              pixels[(yy*w+xx+1)*4+3] === 0;
-
-            if(nearTransparent && isWhiteish(i)){
-              pixels[i+3] = Math.min(pixels[i+3], 35);
-            }
+          // Removes white or near-white backgrounds from fairy/elf sprites.
+          if(brightness > 190 && Math.abs(r - g) < 35 && Math.abs(g - b) < 35){
+            pixels[i+3] = 0;
+          }else if(brightness > 175 && Math.abs(r - g) < 45 && Math.abs(g - b) < 45){
+            pixels[i+3] = Math.min(pixels[i+3],45);
           }
         }
 
@@ -1445,6 +1391,7 @@ function checkCurrentLevelComplete(){
 
   if(currentLevel === 2){
     checkLevelTwoComplete();
+    return;
   }
 }
 
@@ -2439,6 +2386,29 @@ for(let i=0;i<25;i++){
   startScreen.appendChild(f);
 }
 
+
+function setupStartButtons(){
+  const fairyBtn = document.getElementById("fairyStartBtn");
+  const elfBtn = document.getElementById("elfStartBtn");
+
+  if(fairyBtn){
+    fairyBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      startGame("fairy");
+    });
+  }
+
+  if(elfBtn){
+    elfBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      startGame("elf");
+    });
+  }
+}
+
+setupStartButtons();
 setupStartImages();
 
 if(saveBtn){
