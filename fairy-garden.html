@@ -639,6 +639,7 @@ body{
     <button id="homeScreenBtn" class="navBtn" type="button" tabindex="-1">🏠 Home Screen</button>
     <button id="levelOneBtn" class="navBtn" type="button" tabindex="-1">🌿 Level 1</button>
     <button id="levelTwoBtn" class="navBtn" type="button" tabindex="-1">♻️ Level 2</button>
+    <button id="levelThreeBtn" class="navBtn" type="button" tabindex="-1">🦊 Level 3</button>
   </div>
   <div id="fairy"></div>
 
@@ -2606,6 +2607,15 @@ if(levelTwoBtn){
     e.preventDefault();
     e.stopPropagation();
     goToLevelTwo();
+  };
+}
+
+const levelThreeBtn = document.getElementById("levelThreeBtn");
+if(levelThreeBtn){
+  levelThreeBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = "level3-fox-spirits.html";
   };
 }
 
