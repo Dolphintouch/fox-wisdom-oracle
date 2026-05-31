@@ -576,12 +576,21 @@ body{
 }
 
 
-#homeBtn{
+#navButtons{
   position:absolute;
   top:15px;
   left:50%;
   transform:translateX(-50%);
-  padding:10px 20px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  z-index:9999;
+  max-width:92vw;
+}
+
+.navBtn{
+  padding:9px 15px;
   border:none;
   border-radius:25px;
   background:rgba(255,240,170,.96);
@@ -589,10 +598,24 @@ body{
   font-family:Georgia,serif;
   font-weight:bold;
   cursor:pointer;
-  z-index:9999;
   box-shadow:0 0 14px gold,0 0 28px rgba(255,220,120,.8);
 }
-#homeBtn:hover{ filter:brightness(1.08); }
+
+.navBtn:hover{
+  filter:brightness(1.08);
+  transform:scale(1.03);
+}
+
+@media(max-width:700px){
+  #navButtons{
+    top:8px;
+    gap:5px;
+  }
+  .navBtn{
+    padding:7px 10px;
+    font-size:12px;
+  }
+}
 
 #saveBtn,#loadBtn,#resetBtn{
   margin-top:6px;
@@ -611,7 +634,12 @@ body{
 <body>
 
 <div id="game">
-  <button id="homeBtn" type="button" tabindex="-1">🦊 Return to the Den</button>
+  <div id="navButtons">
+    <button id="foxCardsBtn" class="navBtn" type="button" tabindex="-1">🦊 Fox Cards</button>
+    <button id="homeScreenBtn" class="navBtn" type="button" tabindex="-1">🏠 Home Screen</button>
+    <button id="levelOneBtn" class="navBtn" type="button" tabindex="-1">🌿 Level 1</button>
+    <button id="levelTwoBtn" class="navBtn" type="button" tabindex="-1">♻️ Level 2</button>
+  </div>
   <div id="fairy"></div>
 
   <div id="ui">
@@ -2433,12 +2461,151 @@ if(resetBtn){
   };
 }
 
-const homeBtn = document.getElementById("homeBtn");
-if(homeBtn){
-  homeBtn.onclick = (e)=>{
+function stopLevelTimers(){
+  growthTimers.forEach(t=>clearInterval(t));
+  growthTimers = [];
+
+  if(rubbishSpawnTimer){
+    clearInterval(rubbishSpawnTimer);
+    rubbishSpawnTimer = null;
+  }
+}
+
+function clearPlantsNestsAndRubbish(){
+  stopLevelTimers();
+
+  plantedGrowth.forEach(g=>{
+    if(g.img && g.img.parentNode) g.img.remove();
+    if(g.timer) clearInterval(g.timer);
+  });
+  plantedGrowth = [];
+
+  eggs.forEach(e=>{
+    if(e.egg && e.egg.parentNode) e.egg.remove();
+    if(e.nest && e.nest.parentNode) e.nest.remove();
+  });
+  eggs = [];
+
+  document.querySelectorAll(".nestSprite,.eggSprite,.rubbishItem,.recycleStation,.level2Mist").forEach(el=>el.remove());
+  rubbishItems = [];
+  recycleStations = [];
+  heldRubbish = null;
+}
+
+function goToLevelOne(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = false;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+  magicWeak = false;
+  fairy.classList.remove("weakMagic");
+
+  game.style.backgroundImage = 'url("level1-whispering-meadow.png")';
+  x = window.innerWidth * 0.45;
+  y = window.innerHeight * 0.55;
+
+  startScreen.style.display = "none";
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  renderPlantingSpots();
+  update();
+  updateGoalCounters();
+  updateRubbishUI();
+  message.innerText = "Level 1 — grow life and help the fae birds make nests.";
+}
+
+function goToLevelTwo(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = true;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+
+  startScreen.style.display = "none";
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  startLevelTwo();
+}
+
+function showHomeScreen(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = false;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+  magicWeak = false;
+  fairy.classList.remove("weakMagic");
+
+  game.style.backgroundImage = 'url("level1-whispering-meadow.png")';
+  x = window.innerWidth * 0.45;
+  y = window.innerHeight * 0.55;
+
+  try{ sounds.music.pause(); }catch(e){}
+  soundOn = false;
+  soundBtn.innerText = "Sound: Off";
+
+  startScreen.style.display = "flex";
+  startScreen.style.opacity = "1";
+  startScreen.style.pointerEvents = "auto";
+
+  renderPlantingSpots();
+  update();
+  updateGoalCounters();
+  updateRubbishUI();
+  message.innerText = "Choose Fairy or Elf to begin...";
+}
+
+const foxCardsBtn = document.getElementById("foxCardsBtn");
+if(foxCardsBtn){
+  foxCardsBtn.onclick = (e)=>{
     e.preventDefault();
     e.stopPropagation();
-    window.location.href = "fox-den.html";
+    window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
+  };
+}
+
+const homeScreenBtn = document.getElementById("homeScreenBtn");
+if(homeScreenBtn){
+  homeScreenBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    showHomeScreen();
+  };
+}
+
+const levelOneBtn = document.getElementById("levelOneBtn");
+if(levelOneBtn){
+  levelOneBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    goToLevelOne();
+  };
+}
+
+const levelTwoBtn = document.getElementById("levelTwoBtn");
+if(levelTwoBtn){
+  levelTwoBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    goToLevelTwo();
   };
 }
 
