@@ -1,1 +1,3045 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fairy Garden Keeper</title>
 
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Georgia, serif;
+  background:black;
+}
+
+#game{
+  width:100vw;
+  height:100vh;
+  background:url("level1-whispering-meadow.png") center/cover no-repeat;
+  position:relative;
+  overflow:hidden;
+}
+
+/* START SCREEN */
+#startScreen{
+  position:absolute;
+  inset:0;
+  background:url("fairy-start.png") center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  padding-bottom:55px;
+  z-index:9999;
+  pointer-events:auto;
+}
+
+#startScreen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center, rgba(255,230,150,.18), transparent 45%);
+  z-index:1;
+  pointer-events:none;
+}
+
+#characterChoice{
+  position:relative;
+  z-index:10000;
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  pointer-events:auto;
+}
+
+.startChoiceBtn{
+  width:200px;
+  min-height:185px;
+  border:none;
+  border-radius:30px;
+  background:rgba(255,240,170,.95);
+  box-shadow:0 0 18px gold,0 0 42px rgba(255,230,120,.9);
+  cursor:pointer;
+  font-family:Georgia, serif;
+  color:#4d3510;
+  font-weight:bold;
+  font-size:18px;
+  padding:14px;
+  pointer-events:auto;
+}
+
+.startChoiceBtn:hover{
+  transform:scale(1.05);
+}
+
+
+.startImg{
+  width:130px;
+  height:135px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 8px auto;
+  pointer-events:none;
+  filter:
+    drop-shadow(0 0 12px gold)
+    brightness(1.08);
+}
+
+/* PLAYER */
+#fairy{
+  position:absolute;
+  width:220px;
+  height:260px;
+  left:45vw;
+  top:55vh;
+  background:url("fairy-idle.png") center/contain no-repeat;
+  filter:
+    drop-shadow(0 0 12px gold)
+    drop-shadow(0 0 24px rgba(255,230,120,.75))
+    brightness(1.12);
+  z-index:20;
+  pointer-events:none;
+  transform-origin:center center;
+}
+
+#fairy.singing{
+  filter:
+    drop-shadow(0 0 20px gold)
+    drop-shadow(0 0 40px rgba(255,240,150,.95))
+    brightness(1.25);
+}
+
+/* UI */
+#ui{
+  position:absolute;
+  top:15px;
+  left:15px;
+  color:#fff6c9;
+  background:rgba(0,0,0,.5);
+  padding:12px;
+  border-radius:15px;
+  z-index:40;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
+}
+
+#levelHint{
+  position:absolute;
+  top:15px;
+  right:15px;
+  color:#fff6c9;
+  background:rgba(0,0,0,.5);
+  padding:12px;
+  border-radius:15px;
+  z-index:40;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+  line-height:1.5;
+  text-align:center;
+  max-width:260px;
+}
+
+#message{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.5);
+  padding:12px 20px;
+  border-radius:20px;
+  color:#fff4c2;
+  z-index:40;
+  text-align:center;
+  max-width:86vw;
+  box-shadow:0 0 18px rgba(255,230,120,.35);
+}
+
+#singBtn{
+  position:absolute;
+  right:20px;
+  bottom:20px;
+  padding:12px 25px;
+  border:none;
+  border-radius:25px;
+  background:gold;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:40;
+  box-shadow:0 0 18px gold;
+  font-family:Georgia, serif;
+}
+
+#soundBtn{
+  font-family:Georgia, serif;
+}
+
+/* LEVEL COMPLETE */
+#levelTwoCompleteOverlay,
+#levelCompleteOverlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:5000;
+}
+
+#levelCompleteCard{
+  background:rgba(255,245,200,.96);
+  padding:30px 40px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 40px gold;
+  max-width:430px;
+  color:#4d3510;
+}
+
+#levelCompleteCard button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:gold;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* PLANTING LEDGES */
+.plantSpot{
+  position:absolute;
+  width:90px;
+  height:16px;
+  border-radius:20px;
+  background:rgba(255,235,120,.25);
+  border:1px solid rgba(255,245,170,.65);
+  box-shadow:0 0 14px rgba(255,230,120,.65);
+  z-index:6;
+  pointer-events:none;
+}
+
+.plantSpot.hidden{
+  display:none;
+}
+
+.plantSpot::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(255,245,170,.8);
+  box-shadow:0 0 14px gold;
+}
+
+#editNotice{
+  position:absolute;
+  top:130px;
+  right:15px;
+  z-index:60;
+  color:#fff6c9;
+  background:rgba(0,0,0,.55);
+  padding:10px 14px;
+  border-radius:15px;
+  box-shadow:0 0 18px rgba(255,230,120,.45);
+  display:none;
+}
+
+/* GROWTH */
+.plantedItem,
+.plantImage,
+.fernImage,
+.treeImage{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  animation:plantGrow .8s ease forwards;
+  z-index:10;
+}
+
+.plantImage{
+  width:115px;
+  height:115px;
+  filter:drop-shadow(0 0 12px rgba(255,230,120,.9)) brightness(1.05);
+}
+
+.fernImage{
+  width:135px;
+  height:135px;
+  filter:drop-shadow(0 0 12px rgba(180,255,150,.85)) brightness(1.05);
+}
+
+.treeImage{
+  width:280px;
+  height:340px;
+  transform-origin:bottom center;
+  transform-origin:bottom center;
+  filter:drop-shadow(0 0 16px rgba(255,230,120,.95)) brightness(1.04);
+}
+
+/* BIRDS / NESTS / EGGS */
+.faeSongbird{
+  position:absolute;
+  width:95px;
+  height:95px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:18;
+  filter:
+    drop-shadow(0 0 12px rgba(180,240,255,.9))
+    drop-shadow(0 0 20px rgba(255,230,120,.65))
+    brightness(1.08);
+}
+
+.nestSprite,
+.eggSprite{
+  position:absolute;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:12;
+  filter:drop-shadow(0 0 14px rgba(255,230,120,.9)) brightness(1.05);
+  animation:plantGrow .8s ease forwards;
+}
+
+.nestSprite{
+  width:120px;
+  height:90px;
+}
+
+.eggSprite{
+  width:70px;
+  height:90px;
+  z-index:13;
+}
+
+/* MAGIC EFFECTS */
+.sparkle{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:gold;
+  box-shadow:0 0 14px white;
+  animation:sparkleFloat 1s ease-out forwards;
+  z-index:30;
+}
+
+.note{
+  position:absolute;
+  font-size:32px;
+  color:#fff6a8;
+  text-shadow:0 0 12px gold;
+  animation:noteFloat 1.6s ease-out forwards;
+  z-index:30;
+}
+
+.particle{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff6a8;
+  box-shadow:0 0 10px gold,0 0 20px white;
+  animation:floatUp 2s ease-out forwards;
+  pointer-events:none;
+  z-index:30;
+}
+
+.fairyAura{
+  position:absolute;
+  width:150px;
+  height:65px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,240,150,.5), transparent 70%);
+  filter:blur(6px);
+  pointer-events:none;
+  animation:auraFade 1.2s ease-out forwards;
+  z-index:8;
+}
+
+.firefly{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff6a8;
+  box-shadow:0 0 12px gold,0 0 25px #fff6a8;
+  animation:floatFirefly linear infinite;
+  opacity:.8;
+  z-index:5;
+}
+
+@keyframes plantGrow{
+  from{transform:scale(.2);opacity:.2}
+  to{transform:scale(1);opacity:1}
+}
+
+@keyframes sparkleFloat{
+  to{transform:translateY(-45px) scale(2);opacity:0}
+}
+
+@keyframes noteFloat{
+  to{transform:translateY(-90px);opacity:0}
+}
+
+@keyframes floatUp{
+  0%{transform:translateY(10px);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateY(-60px);opacity:0}
+}
+
+@keyframes auraFade{
+  from{opacity:.9;transform:scale(.8)}
+  to{opacity:0;transform:scale(1.4)}
+}
+
+@keyframes floatFirefly{
+  0%{transform:translateY(40px) translateX(0);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateY(-110vh) translateX(60px);opacity:0}
+}
+
+
+/* RUBBISH / RECYCLING / LEVEL 2 */
+.rubbishItem{
+  position:absolute;
+  width:115px;
+  height:115px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:14;
+  filter:
+    brightness(.82)
+    saturate(.75)
+    drop-shadow(0 0 12px rgba(60,60,60,.85));
+  animation:plantGrow .8s ease forwards;
+}
+
+.recycleStation{
+  position:absolute;
+  width:320px;
+  height:320px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:11;
+  filter:
+    drop-shadow(0 0 20px rgba(255,230,120,.9))
+    drop-shadow(0 0 40px rgba(180,255,160,.6))
+    brightness(1.1);
+}
+
+.recycleStation.correctGlow{
+  filter:
+    drop-shadow(0 0 20px gold)
+    drop-shadow(0 0 35px rgba(180,255,160,.8))
+    brightness(1.15);
+}
+
+#heldItemIcon{
+  position:absolute;
+  left:50%;
+  top:110px;
+  transform:translateX(-50%);
+  z-index:45;
+  display:none;
+  color:#fff6c9;
+  background:rgba(0,0,0,.55);
+  padding:10px 14px;
+  border-radius:16px;
+  box-shadow:0 0 18px rgba(255,230,120,.45);
+  text-align:center;
+}
+
+.weakMagic{
+  filter:
+    drop-shadow(0 0 6px rgba(180,180,120,.6))
+    brightness(.72)
+    saturate(.55) !important;
+}
+
+.level2Mist{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, rgba(120,255,180,.18), transparent 50%),
+    rgba(40,80,55,.18);
+  z-index:4;
+  animation:mistPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes mistPulse{
+  from{opacity:.25}
+  to{opacity:.65}
+}
+
+
+/* TREE MAGIC UPGRADES */
+.treeImage{
+  animation:
+    plantGrow .9s ease forwards,
+    treeSway 5.5s ease-in-out infinite alternate;
+}
+
+.treeBack{
+  z-index:8 !important;
+  opacity:.92;
+  filter:
+    drop-shadow(0 0 12px rgba(255,230,120,.75))
+    brightness(.92)
+    saturate(.9);
+}
+
+.treeFront{
+  z-index:16 !important;
+  filter:
+    drop-shadow(0 0 18px rgba(255,230,120,.95))
+    brightness(1.05);
+}
+
+.rootBurst{
+  position:absolute;
+  width:135px;
+  height:42px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9;
+  background:
+    radial-gradient(ellipse at center, rgba(95,55,18,.75), rgba(70,40,15,.35) 45%, transparent 72%);
+  box-shadow:
+    0 0 12px rgba(255,220,120,.5),
+    inset 0 0 14px rgba(70,35,10,.55);
+  transform:scale(.25);
+  opacity:.1;
+  animation:rootGrow 1.4s ease-out forwards;
+}
+
+.rootLine{
+  position:absolute;
+  height:3px;
+  width:75px;
+  background:linear-gradient(90deg, rgba(90,45,15,.0), rgba(95,50,18,.85), rgba(90,45,15,.0));
+  border-radius:999px;
+  pointer-events:none;
+  z-index:10;
+  transform-origin:center;
+  animation:rootLineGrow 1.3s ease-out forwards;
+  opacity:0;
+}
+
+@keyframes treeSway{
+  from{transform:rotate(-1.2deg)}
+  to{transform:rotate(1.2deg)}
+}
+
+@keyframes rootGrow{
+  0%{transform:scale(.2);opacity:0}
+  30%{opacity:.85}
+  100%{transform:scale(1.25);opacity:0}
+}
+
+@keyframes rootLineGrow{
+  0%{transform:scaleX(.05) rotate(var(--rootRot));opacity:0}
+  25%{opacity:.9}
+  100%{transform:scaleX(1) rotate(var(--rootRot));opacity:0}
+}
+
+@media(max-width:700px){
+  #fairy{
+    width:165px;
+    height:205px;
+  }
+
+  #message{
+    font-size:14px;
+    bottom:12px;
+  }
+
+  #singBtn{
+    right:12px;
+    bottom:82px;
+  }
+
+  #levelHint{
+    font-size:13px;
+    max-width:210px;
+  }
+
+  .treeImage{
+    width:230px;
+    height:280px;
+  }
+}
+
+
+#navButtons{
+  position:absolute;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  z-index:9999;
+  max-width:92vw;
+}
+
+.navBtn{
+  padding:9px 15px;
+  border:none;
+  border-radius:25px;
+  background:rgba(255,240,170,.96);
+  color:#4d3510;
+  font-family:Georgia,serif;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 14px gold,0 0 28px rgba(255,220,120,.8);
+}
+
+.navBtn:hover{
+  filter:brightness(1.08);
+  transform:scale(1.03);
+}
+
+@media(max-width:700px){
+  #navButtons{
+    top:8px;
+    gap:5px;
+  }
+  .navBtn{
+    padding:7px 10px;
+    font-size:12px;
+  }
+}
+
+
+/* LEVEL 3 FOX SPIRITS */
+.foxSpiritSprite{
+  position:absolute;
+  width:180px;
+  height:130px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:18;
+  filter:
+    drop-shadow(0 0 18px rgba(255,190,80,.95))
+    drop-shadow(0 0 34px rgba(255,220,120,.75))
+    brightness(1.08);
+  animation:foxGlow 2.5s ease-in-out infinite alternate;
+}
+
+.foxSpiritSprite.following{
+  z-index:19;
+}
+
+.foxDenSprite{
+  position:absolute;
+  width:250px;
+  height:170px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:12;
+  filter:drop-shadow(0 0 22px rgba(255,190,80,.85)) brightness(1.05);
+}
+
+.greatFoxGuardian{
+  position:absolute;
+  width:480px;
+  height:330px;
+  object-fit:contain;
+  pointer-events:none;
+  z-index:21;
+  filter:drop-shadow(0 0 30px gold) brightness(1.08);
+  animation:guardianRise 1.6s ease forwards;
+}
+
+.foxWisdomPopup{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(255,245,205,.96);
+  color:#4d3510;
+  padding:22px 28px;
+  border-radius:26px;
+  box-shadow:0 0 35px gold,0 0 65px rgba(255,210,90,.8);
+  z-index:6000;
+  text-align:center;
+  max-width:430px;
+  font-family:Georgia,serif;
+}
+
+.foxWisdomPopup h2{margin:0 0 10px 0;}
+.foxWisdomPopup button{
+  margin-top:12px;
+  padding:9px 18px;
+  border:none;
+  border-radius:20px;
+  background:gold;
+  color:#4d3510;
+  font-weight:bold;
+  cursor:pointer;
+  font-family:Georgia,serif;
+}
+
+@keyframes foxGlow{
+  from{transform:translateY(0);opacity:.92}
+  to{transform:translateY(-5px);opacity:1}
+}
+
+@keyframes guardianRise{
+  from{opacity:0;transform:translateY(35px) scale(.88)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+#saveBtn,#loadBtn,#resetBtn{
+  margin-top:6px;
+  padding:5px 8px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,240,170,.95);
+  color:#4d3510;
+  font-family:Georgia,serif;
+  cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game">
+  <div id="navButtons">
+    <button id="foxCardsBtn" class="navBtn" type="button" tabindex="-1">🦊 Fox Cards</button>
+    <button id="homeScreenBtn" class="navBtn" type="button" tabindex="-1">🏠 Home Screen</button>
+    <button id="levelOneBtn" class="navBtn" type="button" tabindex="-1">🌿 Level 1</button>
+    <button id="levelTwoBtn" class="navBtn" type="button" tabindex="-1">♻️ Level 2</button>
+    <button id="levelThreeBtn" class="navBtn" type="button" tabindex="-1">🦊 Level 3</button>
+  </div>
+  <div id="fairy"></div>
+
+  <div id="ui">
+    Level: <span id="currentLevelLabel">1</span><br>
+    Points: <span id="score">0</span><br>
+    Garden Spots: <span id="tendedCount">0</span>/<span id="growthGoalLabel">12</span><br>
+    Nests: <span id="nestCount">0</span>/<span id="nestGoalLabel">5</span><br>
+    Rubbish: <span id="rubbishCount">0</span><br>
+    Recycled: <span id="recycledCount">0</span>/<span id="recycleGoalLabel">9</span><br>
+    Fox Spirits: <span id="foxRescueCount">0</span>/<span id="foxGoalLabel">5</span><br>
+    Magic Strength: <span id="magicStrength">Strong</span><br>
+    Move: Arrow Keys<br>
+    Clean/Recycle: C<br>
+    Befriend/Return Fox: F<br>
+    Sing: S or button<br>
+    <button id="soundBtn" tabindex="-1">Sound: Off</button><br>
+    <button id="saveBtn" tabindex="-1">Save</button>
+    <button id="loadBtn" tabindex="-1">Load</button>
+    <button id="resetBtn" tabindex="-1">Reset</button>
+  </div>
+
+  <div id="levelHint">
+    Level One<br>
+    Level 1: grow life and nests.<br>Level 2: recycle rubbish.<br>Level 3: rescue fox spirits.<br>
+    Forest magic: <span id="hintTendedCount">0</span>/12<br>
+    Nests: <span id="hintNestCount">0</span>/5
+  </div>
+
+  <div id="heldItemIcon">Holding: <span id="heldItemName">Nothing</span></div>
+
+  <div id="message">Choose Fairy or Elf to begin...</div>
+  <button id="singBtn" tabindex="-1">✨ Sing ✨</button>
+
+  <div id="editNotice">
+    Planting Ledge Mode<br>
+    Click = add spot<br>
+    Right-click = remove spot<br>
+    Press L = finish
+  </div>
+
+  <div id="levelCompleteOverlay">
+    <div id="levelCompleteCard">
+      <h2>✨ The Forest Awakens ✨</h2>
+      <p>You have restored life to the meadow,<br>grown the forest, and helped five nests appear.<br>The forest now breathes with magic.<br><br>Level 2 begins: cleanse the rubbish and restore balance.</p>
+      <button onclick="closeLevelComplete()">Continue</button>
+    </div>
+  </div>
+
+<div id="levelTwoCompleteOverlay">
+  <div id="levelCompleteCard">
+    <h2>♻️ The Forest is Cleansed ♻️</h2>
+    <p>You recycled the forgotten fragments,<br>restored the fairy magic,<br>and brought balance back to the forest.</p>
+    <button onclick="closeLevelTwoComplete()">Continue</button>
+  </div>
+</div>
+
+</div>
+
+<div id="startScreen">
+  <div id="characterChoice">
+    <button class="startChoiceBtn" type="button" onclick="startGame('fairy')">
+      <img id="fairyStartImg" class="startImg" src="fairy-idle.png" alt="Fairy">
+      Play as Fairy
+    </button>
+
+    <button class="startChoiceBtn" type="button" onclick="startGame('elf')">
+      <img id="elfStartImg" class="startImg" src="elf-idle.png" alt="Elf">
+      Play as Elf
+    </button>
+  </div>
+</div>
+
+<script>
+const fairy = document.getElementById("fairy");
+const game = document.getElementById("game");
+const startScreen = document.getElementById("startScreen");
+const soundBtn = document.getElementById("soundBtn");
+const singBtn = document.getElementById("singBtn");
+const scoreBox = document.getElementById("score");
+const message = document.getElementById("message");
+const editNotice = document.getElementById("editNotice");
+const tendedCountBox = document.getElementById("tendedCount");
+const hintTendedCountBox = document.getElementById("hintTendedCount");
+const nestCountBox = document.getElementById("nestCount");
+const hintNestCountBox = document.getElementById("hintNestCount");
+const recycledCountBox = document.getElementById("recycledCount");
+const growthGoalLabel = document.getElementById("growthGoalLabel");
+const nestGoalLabel = document.getElementById("nestGoalLabel");
+const recycleGoalLabel = document.getElementById("recycleGoalLabel");
+const foxRescueCountBox = document.getElementById("foxRescueCount");
+const foxGoalLabel = document.getElementById("foxGoalLabel");
+const saveBtn = document.getElementById("saveBtn");
+const loadBtn = document.getElementById("loadBtn");
+const resetBtn = document.getElementById("resetBtn");
+const rubbishCountBox = document.getElementById("rubbishCount");
+const currentLevelLabel = document.getElementById("currentLevelLabel");
+const magicStrengthBox = document.getElementById("magicStrength");
+const heldItemIcon = document.getElementById("heldItemIcon");
+const heldItemName = document.getElementById("heldItemName");
+
+let x = window.innerWidth * 0.45;
+let y = window.innerHeight * 0.55;
+let score = 0;
+let soundOn = false;
+let singing = false;
+let facing = 1;
+let currentCharacter = "fairy";
+let ledgeEditMode = false;
+let plantingSpots = [];
+let plantedGrowth = [];
+let eggs = [];
+let nestCount = 0;
+let levelOneComplete = false;
+let currentLevel = 1;
+let levelTwoStarted = false;
+let levelTwoComplete = false;
+let rubbishItems = [];
+let recycleStations = [];
+let heldRubbish = null;
+let rubbishSpawnTimer = null;
+let magicWeak = false;
+let growthTimers = [];
+let levelThreeStarted = false;
+let levelThreeComplete = false;
+let foxSpirits = [];
+let foxDens = [];
+let activeFox = null;
+let rescuedFoxCount = 0;
+let foxFrameIndex = 0;
+let foxAnimationTimer = null;
+
+
+const levelGoals = {
+  1:{growth:12,nests:5,recycle:0},
+  2:{growth:0,nests:0,recycle:9},
+  3:{growth:0,nests:0,recycle:0,foxes:5}
+};
+
+const levelOneTarget = 12;
+const nestTarget = 5;
+
+let lastBirdSound = 0;
+let lastMagicSound = 0;
+let lastGrowSound = 0;
+let lastBloomSound = 0;
+
+const defaultPlantingSpots = [
+  {x:280,y:570},
+  {x:390,y:585},
+  {x:650,y:720},
+  {x:830,y:705},
+  {x:1050,y:500},
+  {x:1240,y:560},
+  {x:1390,y:550}
+];
+
+const characterSprites = {
+  fairy:{
+    idle:"fairy-idle.png",
+    run:"fairy-run.png",
+    jump:"fairy-jump.png",
+    fly:"fairy-fly.png",
+    sing:"fairy-fly.png"
+  },
+  elf:{
+    idle:"elf-idle.png",
+    run:"elf-run.png",
+    jump:"elf-jump.png",
+    fly:"elf-jump.png",
+    sing:"elf-sing.png"
+  }
+};
+
+const plantStages = [
+  "plant-stage-1.png",
+  "plant-stage-2.png",
+  "plant-stage-3.png",
+  "plant-stage-4.png"
+];
+
+const fernStages = [
+  "fern-stage-1.png",
+  "fern-stage-2.png",
+  "fern-stage-3.png",
+  "fern-stage-4.png"
+];
+
+const treeStages = [
+  "tree-stage-1.png",
+  "tree-stage-2.png",
+  "tree-stage-3.png"
+];
+
+const birdFrames = [
+  "fae-songbird-idle.png",
+  "fae-songbird-flap-1.png",
+  "fae-songbird-flap-2.png",
+  "fae-songbird-glide.png"
+];
+
+
+const rubbishTypes = [
+  {type:"glass", file:"rubbish-1.png", label:"Glass bottle"},
+  {type:"paper", file:"rubbish-2.png", label:"Torn pages"},
+  {type:"crystal", file:"rubbish-3.png", label:"Dark crystal"}
+];
+
+const recycleStationsData = [
+  {type:"glass", file:"recycle-glass.png", x:120, y:590, label:"Glass Shrine"},
+  {type:"paper", file:"recycle-paper.png", x:620, y:590, label:"Paper Shrine"},
+  {type:"crystal", file:"recycle-crystal.png", x:1120, y:590, label:"Crystal Shrine"}
+];
+
+const levelThreeFoxGoal = 5;
+const foxSpiritFrames = [
+  "fox-spirit-walk-1.png",
+  "fox-spirit-walk-2.png",
+  "fox-spirit-walk-3.png"
+];
+
+const foxSpiritStartPositions = [
+  {x:240,y:530},
+  {x:540,y:390},
+  {x:890,y:565},
+  {x:1180,y:410},
+  {x:1360,y:620}
+];
+
+const foxDenPositions = [
+  {x:80,y:500,label:"Oak Hollow Den"},
+  {x:1120,y:500,label:"Moon Fern Den"}
+];
+
+const foxWisdomMessages = [
+  {title:"Trust Your Instincts", text:"The path may be hidden, but your heart remembers the way."},
+  {title:"Follow Hidden Paths", text:"The smallest trail may lead to the greatest treasure."},
+  {title:"Patience Reveals Truth", text:"The fox waits because wisdom often arrives quietly."},
+  {title:"Walk Between Worlds", text:"Not all journeys are seen by the eyes."},
+  {title:"Return to Your Inner Den", text:"Home is the quiet place inside you where your spirit feels safe."}
+];
+
+const levelTwoRubbishGoal = 9;
+let levelTwoRecycled = 0;
+let levelTwoGrowthCount = 0;
+let levelTwoNestCount = 0;
+
+
+const sounds = {
+  fairy:new Audio("fairy-bells.mp3"),
+  grow:new Audio("plant-grow.mp3"),
+  bloom:new Audio("plant-bloom.mp3"),
+  sparkle:new Audio("magic-sparkle.mp3"),
+  music:new Audio("fairy-music.mp3"),
+  bird:new Audio("fae-bird.mp3")
+};
+
+sounds.music.loop = true;
+sounds.music.volume = 0.10;
+sounds.fairy.volume = 0.14;
+sounds.grow.volume = 0.10;
+sounds.bloom.volume = 0.18;
+sounds.sparkle.volume = 0.06;
+sounds.bird.volume = 0.08;
+
+
+function setupStartImages(){
+  const fairyImg = document.getElementById("fairyStartImg");
+  const elfImg = document.getElementById("elfStartImg");
+
+  if(fairyImg){
+    cleanWhiteBackground("fairy-idle.png").then(cleaned=>{
+      fairyImg.src = cleaned;
+    });
+  }
+
+  if(elfImg){
+    cleanWhiteBackground("elf-idle.png").then(cleaned=>{
+      elfImg.src = cleaned;
+    });
+  }
+}
+
+function startGame(character){
+  currentCharacter = character;
+  localStorage.setItem("fairyGardenCharacter", currentCharacter);
+
+  soundOn = true;
+  soundBtn.innerText = "Sound: On";
+
+  sprite(getSprite("idle"));
+
+  // Browser-safe audio unlock: happens directly from the Fairy/Elf click.
+  try{
+    Object.values(sounds).forEach(s=>{
+      s.muted = true;
+      s.play().then(()=>{
+        s.pause();
+        s.currentTime = 0;
+        s.muted = false;
+      }).catch(()=>{
+        s.muted = false;
+      });
+    });
+  }catch(e){}
+
+  setTimeout(()=>{
+    try{
+      sounds.music.muted = false;
+      sounds.music.currentTime = 0;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.14;
+      sounds.music.play().catch(()=>{
+        setTimeout(()=>sounds.music.play().catch(()=>{}),500);
+      });
+    }catch(e){}
+  },150);
+
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  setTimeout(()=>{
+    startScreen.style.display = "none";
+    update();
+  },300);
+}
+
+
+function closeLevelTwoComplete(){
+  const overlay = document.getElementById("levelTwoCompleteOverlay");
+  if(overlay) overlay.style.display = "none";
+  message.innerText = "The forest is peaceful again. You completed Level 2 ✨";
+}
+
+function closeLevelComplete(){
+  document.getElementById("levelCompleteOverlay").style.display = "none";
+  startLevelTwo();
+}
+
+function getSprite(action){
+  return characterSprites[currentCharacter][action] || characterSprites[currentCharacter].idle;
+}
+
+const cleanedSpriteCache = {};
+
+function cleanWhiteBackground(src){
+  return new Promise(resolve=>{
+    if(cleanedSpriteCache[src]){
+      resolve(cleanedSpriteCache[src]);
+      return;
+    }
+
+    const img = new Image();
+
+    img.onload = ()=>{
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img,0,0);
+
+      try{
+        const data = ctx.getImageData(0,0,canvas.width,canvas.height);
+        const pixels = data.data;
+
+        for(let i=0;i<pixels.length;i+=4){
+          const r = pixels[i];
+          const g = pixels[i+1];
+          const b = pixels[i+2];
+
+          if(r>225 && g>225 && b>225){
+            pixels[i+3] = 0;
+          }else if(r>210 && g>210 && b>210){
+            pixels[i+3] = Math.min(pixels[i+3],60);
+          }
+        }
+
+        ctx.putImageData(data,0,0);
+        const cleaned = canvas.toDataURL("image/png");
+        cleanedSpriteCache[src] = cleaned;
+        resolve(cleaned);
+      }catch(e){
+        resolve(src);
+      }
+    };
+
+    img.onerror = ()=>resolve(src);
+    img.src = src;
+  });
+}
+
+async function sprite(img){
+  if(currentCharacter === "elf"){
+    const cleaned = await cleanWhiteBackground(img);
+    fairy.style.backgroundImage = `url("${cleaned}")`;
+  }else{
+    fairy.style.backgroundImage = `url("${img}")`;
+  }
+}
+
+function update(){
+  x = Math.max(0, Math.min(window.innerWidth - fairy.offsetWidth, x));
+  y = Math.max(0, Math.min(window.innerHeight - fairy.offsetHeight, y));
+
+  fairy.style.left = x + "px";
+  fairy.style.top = y + "px";
+  fairy.style.transform = `scaleX(${facing})`;
+  updateFollowingFoxPosition();
+}
+
+
+function keepGameControlsActive(){
+  try{
+    if(document.activeElement){
+      document.activeElement.blur();
+    }
+  }catch(e){}
+}
+
+function unlockSounds(){
+  Object.values(sounds).forEach(s=>{
+    s.play().then(()=>{
+      s.pause();
+      s.currentTime = 0;
+    }).catch(()=>{});
+  });
+}
+
+function playSound(s){
+  if(!soundOn) return;
+  s.currentTime = 0;
+  s.play().catch(()=>{});
+}
+
+function playLimitedSound(sound, limiterName, delayMs, volumeOverride){
+  if(!soundOn) return;
+
+  const now = Date.now();
+
+  if(!window.soundTimers){
+    window.soundTimers = {};
+  }
+
+  if(window.soundTimers[limiterName] && now - window.soundTimers[limiterName] < delayMs){
+    return;
+  }
+
+  window.soundTimers[limiterName] = now;
+
+  try{
+    const s = sound.cloneNode();
+    s.volume = volumeOverride !== undefined ? volumeOverride : sound.volume;
+    s.play().catch(()=>{});
+  }catch(e){}
+}
+
+function playSoftBirdSound(){
+  playLimitedSound(sounds.bird,"bird",2800,0.07 + Math.random() * 0.04);
+}
+
+function playSoftMagicSound(){
+  if(Math.random() < 0.18){
+    playLimitedSound(sounds.sparkle,"magic",1600,0.05);
+  }
+}
+
+function playSoftGrowSound(){
+  playLimitedSound(sounds.grow,"grow",1800,0.10);
+}
+
+function playSoftBloomSound(){
+  playLimitedSound(sounds.bloom,"bloom",2200,0.16);
+}
+
+function startMusic(){
+  if(!soundOn) return;
+
+  try{
+    sounds.music.loop = true;
+    sounds.music.volume = 0.14;
+
+    if(sounds.music.paused){
+      sounds.music.play().catch(()=>{
+        setTimeout(()=>{
+          sounds.music.play().catch(()=>{});
+        },300);
+      });
+    }
+  }catch(e){}
+}
+
+function loadPlantingSpots(){
+  try{
+    const saved = localStorage.getItem("fairyGardenPlantingSpots");
+    if(saved){
+      const parsed = JSON.parse(saved);
+      if(Array.isArray(parsed) && parsed.length > 0){
+        plantingSpots = parsed;
+        return;
+      }
+    }
+    plantingSpots = defaultPlantingSpots.slice();
+  }catch(e){
+    plantingSpots = defaultPlantingSpots.slice();
+  }
+}
+
+function savePlantingSpots(){
+  localStorage.setItem("fairyGardenPlantingSpots", JSON.stringify(plantingSpots));
+}
+
+function renderPlantingSpots(){
+  document.querySelectorAll(".plantSpot").forEach(s=>s.remove());
+
+  plantingSpots.forEach((p,i)=>{
+    const spot = document.createElement("div");
+    spot.className = "plantSpot";
+    if(!ledgeEditMode) spot.classList.add("hidden");
+    spot.style.left = (p.x - 45) + "px";
+    spot.style.top = (p.y - 8) + "px";
+    spot.dataset.index = i;
+    game.appendChild(spot);
+  });
+}
+
+function flashPlantingSpots(){
+  document.querySelectorAll(".plantSpot").forEach(s=>s.classList.remove("hidden"));
+
+  setTimeout(()=>{
+    if(!ledgeEditMode){
+      document.querySelectorAll(".plantSpot").forEach(s=>s.classList.add("hidden"));
+    }
+  },1800);
+}
+
+function toggleLedgeEditMode(){
+  ledgeEditMode = !ledgeEditMode;
+  editNotice.style.display = ledgeEditMode ? "block" : "none";
+  renderPlantingSpots();
+
+  if(ledgeEditMode){
+    message.innerText = "Planting ledge mode is on. Click where plants can grow.";
+  }else{
+    savePlantingSpots();
+    message.innerText = "Planting ledges saved.";
+  }
+}
+
+function getNearestPlantingSpot(){
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  const fairyX = x + fairy.offsetWidth * .5;
+  const fairyY = y + fairy.offsetHeight * .75;
+
+  plantingSpots.forEach(p=>{
+    const dx = fairyX - p.x;
+    const dy = fairyY - p.y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = p;
+    }
+  });
+
+  return nearestDistance < 260 ? nearest : null;
+}
+
+game.addEventListener("click",e=>{
+  if(!ledgeEditMode) return;
+
+  const rect = game.getBoundingClientRect();
+  plantingSpots.push({
+    x:e.clientX - rect.left,
+    y:e.clientY - rect.top
+  });
+
+  savePlantingSpots();
+  renderPlantingSpots();
+});
+
+game.addEventListener("contextmenu",e=>{
+  if(!ledgeEditMode) return;
+  e.preventDefault();
+
+  const rect = game.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+
+  let removeIndex = -1;
+  let nearestDistance = 999999;
+
+  plantingSpots.forEach((p,i)=>{
+    const dx = cx - p.x;
+    const dy = cy - p.y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+
+    if(d < nearestDistance){
+      nearestDistance = d;
+      removeIndex = i;
+    }
+  });
+
+  if(removeIndex > -1 && nearestDistance < 80){
+    plantingSpots.splice(removeIndex,1);
+    savePlantingSpots();
+    renderPlantingSpots();
+  }
+});
+
+function chooseGrowthType(){
+  const plantedCount = plantedGrowth.length;
+  const roll = Math.random();
+
+  if(plantedCount < 3) return "plant";
+
+  if(plantedCount < 6){
+    return roll < .75 ? "plant" : "fern";
+  }
+
+  if(plantedCount < 9){
+    if(roll < .45) return "plant";
+    if(roll < .90) return "fern";
+    return "tree";
+  }
+
+  if(roll < .30) return "plant";
+  if(roll < .65) return "fern";
+  return "tree";
+}
+
+function getStagesForType(type){
+  if(type === "fern") return fernStages;
+  if(type === "tree") return treeStages;
+  return plantStages;
+}
+
+function getClassForType(type){
+  if(type === "fern") return "fernImage";
+  if(type === "tree") return "treeImage";
+  return "plantImage";
+}
+
+function getTopOffsetForType(type){
+  // These are now fallback offsets only.
+  // Actual placement is anchored by the image height in updatePlantedImage().
+  if(type === "tree") return 220;
+  if(type === "fern") return 90;
+  return 70;
+}
+
+async function setCleanImage(imgElement, src){
+  const cleaned = await cleanWhiteBackground(src);
+  imgElement.src = cleaned;
+}
+
+function findPlantedAtSpot(spot){
+  return plantedGrowth.find(g=>g.spot === spot);
+}
+
+
+
+function getTreeSizeForSpot(spot){
+  // Smaller trees on high ledges, bigger trees on lower ground.
+  // This keeps Level 1 trees from looking like they are floating in the sky.
+  if(spot.y < window.innerHeight * .45){
+    return {width:155, height:190, rootLift:42};
+  }
+
+  if(spot.y < window.innerHeight * .62){
+    return {width:210, height:255, rootLift:50};
+  }
+
+  return {width:300, height:360, rootLift:62};
+}
+
+function getDepthClassForSpot(spot){
+  // Higher shelves appear farther back, lower ground appears closer/front.
+  if(spot.y < window.innerHeight * .55){
+    return "treeBack";
+  }
+  return "treeFront";
+}
+
+function createRootBurst(growth){
+  if(!growth || growth.type !== "tree") return;
+
+  const baseX = growth.spot.x;
+  const baseY = growth.spot.y;
+
+  const burst = document.createElement("div");
+  burst.className = "rootBurst";
+  burst.style.left = (baseX - 67) + "px";
+  burst.style.top = (baseY - 25) + "px";
+  game.appendChild(burst);
+  setTimeout(()=>burst.remove(),1500);
+
+  for(let i=0;i<5;i++){
+    const line = document.createElement("div");
+    line.className = "rootLine";
+
+    const angle = [-28,-14,0,14,28][i];
+    line.style.setProperty("--rootRot", angle + "deg");
+    line.style.left = (baseX - 38 + (i-2)*13) + "px";
+    line.style.top = (baseY - 7 + Math.abs(i-2)*3) + "px";
+
+    game.appendChild(line);
+    setTimeout(()=>line.remove(),1500);
+  }
+
+  for(let i=0;i<8;i++){
+    setTimeout(()=>sparkleAt(baseX + Math.random()*90 - 45, baseY - 20 + Math.random()*35), i*70);
+  }
+}
+
+async function updatePlantedImage(growth){
+  const stages = getStagesForType(growth.type);
+  const src = stages[Math.min(growth.stage, stages.length - 1)];
+
+  const depthClass = growth.type === "tree" ? getDepthClassForSpot(growth.spot) : "";
+  growth.img.className = ("plantedItem " + getClassForType(growth.type) + " " + depthClass).trim();
+
+  await setCleanImage(growth.img, src);
+
+  requestAnimationFrame(()=>{
+    let imgWidth = growth.img.offsetWidth || 115;
+    let imgHeight = growth.img.offsetHeight || 115;
+
+    if(growth.type === "tree"){
+      const treeSize = getTreeSizeForSpot(growth.spot);
+
+      growth.img.style.width = treeSize.width + "px";
+      growth.img.style.height = treeSize.height + "px";
+
+      imgWidth = treeSize.width;
+      imgHeight = treeSize.height;
+    }
+
+    if(growth.type === "fern"){
+      imgWidth = growth.img.offsetWidth || 135;
+      imgHeight = growth.img.offsetHeight || 135;
+    }
+
+    if(growth.type === "plant"){
+      imgWidth = growth.img.offsetWidth || 115;
+      imgHeight = growth.img.offsetHeight || 115;
+    }
+
+    const left = growth.spot.x - imgWidth / 2;
+    let top;
+
+    if(growth.type === "tree"){
+      const treeSize = getTreeSizeForSpot(growth.spot);
+
+      // Tree base/root line is anchored to the actual planting ledge.
+      // The bigger the tree, the more it sinks into the soil so it looks planted.
+      top = growth.spot.y - imgHeight + treeSize.rootLift;
+
+      // If a very high ledge would push it too high, shrink-and-ground it instead of clamping.
+      if(top < 5){
+        top = growth.spot.y - imgHeight * .72;
+      }
+
+      // Never let the root point float far above the ledge.
+      top = Math.max(-10, top);
+    }else{
+      top = growth.spot.y - imgHeight + 30;
+      top = Math.max(20, top);
+    }
+
+    growth.img.style.left = left + "px";
+    growth.img.style.top = top + "px";
+
+    if(growth.type === "tree"){
+      createRootBurst(growth);
+    }
+  });
+}
+
+
+function getActiveGoals(){
+  if(currentLevel === 3) return levelGoals[3];
+  return currentLevel === 2 ? levelGoals[2] : levelGoals[1];
+}
+
+function updateGoalLabels(){
+  const goals = getActiveGoals();
+  if(growthGoalLabel) growthGoalLabel.innerText = goals.growth;
+  if(nestGoalLabel) nestGoalLabel.innerText = goals.nests;
+  if(recycleGoalLabel) recycleGoalLabel.innerText = goals.recycle;
+  if(foxGoalLabel) foxGoalLabel.innerText = goals.foxes || levelThreeFoxGoal;
+}
+
+function getActiveGrowthCount(){
+  return currentLevel === 2 ? levelTwoGrowthCount : plantedGrowth.length;
+}
+
+function getActiveNestCount(){
+  return currentLevel === 2 ? levelTwoNestCount : nestCount;
+}
+
+function updateGoalCounters(){
+  const goals = getActiveGoals();
+
+  if(tendedCountBox) tendedCountBox.innerText = Math.min(getActiveGrowthCount(), goals.growth);
+  if(hintTendedCountBox) hintTendedCountBox.innerText = Math.min(getActiveGrowthCount(), goals.growth);
+
+  if(nestCountBox) nestCountBox.innerText = Math.min(getActiveNestCount(), goals.nests);
+  if(hintNestCountBox) hintNestCountBox.innerText = Math.min(getActiveNestCount(), goals.nests);
+
+  if(recycledCountBox) recycledCountBox.innerText = Math.min(levelTwoRecycled || 0, goals.recycle);
+  if(foxRescueCountBox) foxRescueCountBox.innerText = Math.min(rescuedFoxCount || 0, goals.foxes || levelThreeFoxGoal);
+
+  updateGoalLabels();
+}
+
+function updateRubbishUI(){
+  if(rubbishCountBox) rubbishCountBox.innerText = rubbishItems.length;
+  if(recycledCountBox) recycledCountBox.innerText = Math.min(levelTwoRecycled || 0, getActiveGoals().recycle);
+  if(currentLevelLabel) currentLevelLabel.innerText = currentLevel;
+
+  if(magicStrengthBox){
+    magicStrengthBox.innerText = magicWeak ? "Weak" : "Strong";
+  }
+
+  if(heldItemIcon && heldItemName){
+    if(heldRubbish){
+      heldItemIcon.style.display = "block";
+      heldItemName.innerText = heldRubbish.label;
+    }else{
+      heldItemIcon.style.display = "none";
+      heldItemName.innerText = "Nothing";
+    }
+  }
+
+  updateGoalLabels();
+}
+
+function checkCurrentLevelComplete(){
+  if(currentLevel === 1){
+    checkLevelOneComplete();
+    return;
+  }
+
+  if(currentLevel === 2){
+    checkLevelTwoComplete();
+    return;
+  }
+}
+
+
+function checkLevelOneComplete(){
+  if(levelOneComplete) return;
+
+  const growthDone = plantedGrowth.length >= levelOneTarget;
+  const nestsDone = nestCount >= nestTarget;
+
+  if(growthDone && nestsDone){
+    unlockLevelOneForest();
+  }else if(growthDone && !nestsDone){
+    const left = nestTarget - nestCount;
+    message.innerText = "The forest is almost ready — help the birds make " + left + " more nest" + (left === 1 ? "" : "s") + ".";
+  }
+}
+
+function startGrowthTimer(growth){
+  growth.timer = setInterval(async()=>{
+
+    const stages = getStagesForType(growth.type);
+
+    if(growth.stage < stages.length - 1){
+      growth.stage++;
+      await updatePlantedImage(growth);
+
+      if(growth.type === "tree" && growth.stage >= 2){
+        maybeCreateNest(growth);
+      }
+
+      celebrateGrowthWithBird(growth);
+
+      if(growth.stage === stages.length - 1){
+        playSoftBloomSound();
+      }else{
+        playSoftGrowSound();
+      }
+    }else{
+      clearInterval(growth.timer);
+    }
+  },5000);
+
+  growthTimers.push(growth.timer);
+}
+
+
+function isRubbishBlockingSpot(spot){
+  if(currentLevel !== 2) return false;
+
+  return rubbishItems.some(item=>{
+    const dx = item.x - spot.x;
+    const dy = item.y - spot.y;
+    return Math.sqrt(dx*dx + dy*dy) < 150;
+  });
+}
+
+function growPlant(){
+  const spot = getNearestPlantingSpot();
+
+  if(!spot){
+    message.innerText = "Move closer to a glowing planting ledge, then sing again...";
+    flashPlantingSpots();
+    return;
+  }
+
+  if(isRubbishBlockingSpot(spot)){
+    message.innerText = "Rubbish is blocking this place. Clean or recycle it before planting here.";
+    flashPlantingSpots();
+    return;
+  }
+
+  const existing = findPlantedAtSpot(spot);
+
+  if(existing){
+    message.innerText = "This little one is already growing. Give it time...";
+    magicSurround();
+    return;
+  }
+
+  const type = chooseGrowthType();
+  const img = document.createElement("img");
+
+  const growth = {
+    spot:spot,
+    type:type,
+    stage:0,
+    img:img,
+    timer:null
+  };
+
+  plantedGrowth.push(growth);
+  if(currentLevel === 2){
+    levelTwoGrowthCount++;
+  }
+  updateGoalCounters();
+
+  game.appendChild(img);
+  updatePlantedImage(growth);
+  startGrowthTimer(growth);
+  celebrateGrowthWithBird(growth);
+  checkCurrentLevelComplete();
+
+  playSoftGrowSound();
+
+  if(type === "plant"){
+    message.innerText = "A tiny seedling has been planted...";
+  }else if(type === "fern"){
+    message.innerText = "A curled fern begins to wake...";
+  }else{
+    message.innerText = "A tiny tree sapling takes root...";
+  }
+}
+
+function spawnFaeSongbird(px,py){
+  const birdImg = document.createElement("img");
+  birdImg.className = "faeSongbird";
+  birdImg.src = birdFrames[0];
+
+  birdImg.style.left = px + "px";
+  birdImg.style.top = py + "px";
+
+  game.appendChild(birdImg);
+  playSoftBirdSound();
+
+  const dirX = (Math.random() * 2 - 1) * 260;
+  const dirY = -(Math.random() * 130 + 50);
+  const startScale = .75 + Math.random() * .2;
+  const duration = 4200 + Math.random() * 1800;
+
+  birdImg.animate([
+    {transform:`translate(0px,0px) scale(${startScale})`, opacity:0},
+    {transform:`translate(${dirX*.35}px,${dirY*.35}px) scale(1)`, opacity:1},
+    {transform:`translate(${dirX}px,${dirY}px) scale(.9)`, opacity:0}
+  ],{
+    duration:duration,
+    easing:"ease-out",
+    fill:"forwards"
+  });
+
+  let frame = 0;
+
+  const anim = setInterval(()=>{
+    frame = (frame + 1) % birdFrames.length;
+    birdImg.src = birdFrames[frame];
+  },180);
+
+  setTimeout(()=>{
+    clearInterval(anim);
+    birdImg.remove();
+  },duration);
+}
+
+function spawnBirdCelebration(px,py){
+  spawnFaeSongbird(px,py);
+
+  if(Math.random() < .08){
+    setTimeout(()=>{
+      spawnFaeSongbird(px + Math.random()*80 - 40, py + Math.random()*40 - 20);
+    },350);
+  }
+}
+
+function celebrateGrowthWithBird(growth){
+  if(!growth || !growth.spot) return;
+
+  let chance = .08;
+  if(growth.type === "fern") chance = .12;
+  if(growth.type === "tree") chance = .25;
+
+  if(Math.random() < chance){
+    spawnBirdCelebration(growth.spot.x, growth.spot.y - 90);
+  }
+}
+
+function maybeCreateNest(growth){
+  if(!growth || !growth.spot) return;
+  if(growth.type !== "tree") return;
+  if(growth.stage < 2) return;
+  if(nestCount >= nestTarget) return;
+
+  if(Math.random() < .45){
+    setTimeout(()=>createNestAndEgg(growth.spot),900);
+  }
+}
+
+function createNestAndEgg(spot){
+  const nest = document.createElement("img");
+  nest.src = "fae-nest.png";
+  nest.className = "nestSprite";
+  nest.style.left = (spot.x - 60) + "px";
+  nest.style.top = (spot.y - 52) + "px";
+  game.appendChild(nest);
+
+  const egg = document.createElement("img");
+  egg.src = "fae-egg-glow.png";
+  egg.className = "eggSprite";
+  egg.style.left = (spot.x - 35) + "px";
+  egg.style.top = (spot.y - 92) + "px";
+  game.appendChild(egg);
+
+  eggs.push({egg:egg,nest:nest,spot:spot,hatched:false});
+
+  nestCount++;
+  if(currentLevel === 2){
+    levelTwoNestCount++;
+  }
+  updateGoalCounters();
+  checkLevelOneComplete();
+
+  message.innerText = "A fae bird has made a glowing nest...";
+
+  for(let i=0;i<7;i++){
+    setTimeout(()=>sparkleAt(spot.x + Math.random()*40 - 20, spot.y - 40 + Math.random()*35), i*80);
+  }
+
+  setTimeout(()=>{
+    if(egg && egg.parentNode){
+      egg.src = "fae-egg-sparkle.png";
+      message.innerText = "The egg begins to shimmer...";
+    }
+  },1800);
+
+  setTimeout(()=>{
+    hatchEgg(egg,nest,spot);
+  },7500);
+}
+
+function hatchEgg(egg,nest,spot){
+  if(!egg || !egg.parentNode) return;
+
+  egg.remove();
+
+  const glow = document.createElement("img");
+  glow.src = "fae-egg-sparkle.png";
+  glow.className = "eggSprite";
+  glow.style.left = (spot.x - 35) + "px";
+  glow.style.top = (spot.y - 92) + "px";
+  game.appendChild(glow);
+
+  setTimeout(()=>glow.remove(),1200);
+
+  spawnBirdCelebration(spot.x, spot.y - 90);
+
+  score += 15;
+  scoreBox.innerText = score;
+
+  message.innerText = "A new fae bird has hatched and taken flight ✨";
+
+  playSoftBloomSound();
+
+  for(let i=0;i<6;i++){
+    setTimeout(()=>sparkleAt(spot.x + Math.random()*70 - 35, spot.y - 60 + Math.random()*60 - 30), i*55);
+  }
+
+  setTimeout(()=>{
+    if(nest && nest.parentNode){
+      nest.style.transition = "opacity 1.5s ease";
+      nest.style.opacity = "0";
+      setTimeout(()=>nest.remove(),1600);
+    }
+  },6000);
+}
+
+
+
+
+async function createCleanImageElement(file, className){
+  const img = document.createElement("img");
+  img.className = className;
+  const cleaned = await cleanWhiteBackground(file);
+  img.src = cleaned;
+  return img;
+}
+
+function getDistanceToPlayer(px,py){
+  const fx = x + fairy.offsetWidth * .5;
+  const fy = y + fairy.offsetHeight * .55;
+  const dx = fx - px;
+  const dy = fy - py;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+function updateMagicWeakness(){
+  const tooMuchRubbish = rubbishItems.length >= 5;
+
+  if(tooMuchRubbish && !magicWeak){
+    magicWeak = true;
+    fairy.classList.add("weakMagic");
+    message.innerText = "The rubbish is weakening your magic...";
+  }
+
+  if(!tooMuchRubbish && magicWeak){
+    magicWeak = false;
+    fairy.classList.remove("weakMagic");
+    message.innerText = "Your magic feels stronger again...";
+  }
+
+  updateRubbishUI();
+}
+
+async function spawnRubbish(){
+  if(!levelTwoStarted || levelTwoComplete) return;
+  if(rubbishItems.length >= 7) return;
+
+  const data = rubbishTypes[Math.floor(Math.random() * rubbishTypes.length)];
+  const img = await createCleanImageElement(data.file, "rubbishItem");
+
+  const rx = 150 + Math.random() * (window.innerWidth - 300);
+  const ry = window.innerHeight * .62 + Math.random() * 180;
+
+  img.style.left = rx + "px";
+  img.style.top = ry + "px";
+
+  game.appendChild(img);
+
+  rubbishItems.push({
+    el:img,
+    x:rx,
+    y:ry,
+    type:data.type,
+    label:data.label,
+    file:data.file
+  });
+
+  updateMagicWeakness();
+}
+
+async function createRecycleStations(){
+  recycleStations.forEach(s=>{
+    if(s.el && s.el.parentNode) s.el.remove();
+  });
+
+  recycleStations = [];
+
+  for(const data of recycleStationsData){
+    const img = await createCleanImageElement(data.file, "recycleStation");
+    img.style.left = data.x + "px";
+    img.style.top = data.y + "px";
+    game.appendChild(img);
+
+    recycleStations.push({
+      el:img,
+      x:data.x,
+      y:data.y,
+      type:data.type,
+      label:data.label
+    });
+  }
+}
+
+function pickUpNearbyRubbish(){
+  if(heldRubbish){
+    tryRecycleHeldRubbish();
+    return;
+  }
+
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  rubbishItems.forEach(item=>{
+    const d = getDistanceToPlayer(item.x, item.y);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = item;
+    }
+  });
+
+  if(!nearest || nearestDistance > 190){
+    message.innerText = "Move closer to rubbish, then press C to pick it up.";
+    return;
+  }
+
+  heldRubbish = nearest;
+  rubbishItems = rubbishItems.filter(item=>item !== nearest);
+
+  if(nearest.el && nearest.el.parentNode){
+    nearest.el.style.opacity = "0";
+    nearest.el.remove();
+  }
+
+  message.innerText = "You picked up " + nearest.label + ". Take it to the right shrine.";
+  updateMagicWeakness();
+  updateRubbishUI();
+}
+
+function tryRecycleHeldRubbish(){
+  if(!heldRubbish) return;
+
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  recycleStations.forEach(station=>{
+    const d = getDistanceToPlayer(station.x + 75, station.y + 75);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = station;
+    }
+  });
+
+  if(!nearest || nearestDistance > 390){
+    message.innerText = "Carry it to the correct recycling shrine, then press C.";
+    return;
+  }
+
+  recycleStations.forEach(s=>s.el.classList.remove("correctGlow"));
+
+  if(nearest.type === heldRubbish.type){
+    nearest.el.classList.add("correctGlow");
+
+    score += 20;
+    scoreBox.innerText = score;
+
+    levelTwoRecycled++;
+    updateRubbishUI();
+    updateGoalCounters();
+
+    message.innerText = "Correct! The " + nearest.label + " transforms the rubbish into clean magic ✨";
+
+    sparkleAt(nearest.x + 75, nearest.y + 60);
+    sparkleAt(nearest.x + 45, nearest.y + 90);
+    sparkleAt(nearest.x + 105, nearest.y + 90);
+
+    playSoftBloomSound();
+
+    heldRubbish = null;
+    updateMagicWeakness();
+    updateRubbishUI();
+    checkLevelTwoComplete();
+  }else{
+    score = Math.max(0, score - 5);
+    scoreBox.innerText = score;
+    message.innerText = "Wrong shrine. Try matching the rubbish to its correct place.";
+    playSoftMagicSound();
+  }
+}
+
+
+function clearLevelOneObjectsForLevelTwo(){
+  // Stop plant growth timers
+  growthTimers.forEach(t=>clearInterval(t));
+  growthTimers = [];
+
+  // Remove planted plants/ferns/trees
+  plantedGrowth.forEach(g=>{
+    if(g.img && g.img.parentNode) g.img.remove();
+    if(g.timer) clearInterval(g.timer);
+  });
+  plantedGrowth = [];
+
+  // Remove nests and eggs
+  eggs.forEach(e=>{
+    if(e.egg && e.egg.parentNode) e.egg.remove();
+    if(e.nest && e.nest.parentNode) e.nest.remove();
+  });
+  eggs = [];
+
+  // Remove any remaining nest/egg sprites just in case
+  document.querySelectorAll(".nestSprite,.eggSprite").forEach(el=>el.remove());
+
+  // Remove any visible planting guide dots
+  document.querySelectorAll(".plantSpot").forEach(el=>el.remove());
+
+  // Reset level one counters but keep score
+  nestCount = 0;
+  levelOneComplete = true;
+
+  updateGoalCounters();
+}
+
+function clearRubbishObjects(){
+  rubbishItems.forEach(item=>{
+    if(item.el && item.el.parentNode) item.el.remove();
+  });
+  rubbishItems = [];
+
+  recycleStations.forEach(station=>{
+    if(station.el && station.el.parentNode) station.el.remove();
+  });
+  recycleStations = [];
+
+  heldRubbish = null;
+  updateRubbishUI();
+}
+
+
+function startLevelTwo(){
+  if(levelTwoStarted) return;
+
+  currentLevel = 2;
+  levelTwoStarted = true;
+  levelTwoComplete = false;
+  levelThreeStarted = false;
+  levelThreeComplete = false;
+  rescuedFoxCount = 0;
+  activeFox = null;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  magicWeak = false;
+
+  if(currentLevelLabel) currentLevelLabel.innerText = "2";
+
+  // Level 2 is recycling only, so clear plants/nests from the play area.
+  // This does NOT delete your permanent/saved ledge coordinates.
+  clearLevelOneObjectsForLevelTwo();
+  clearRubbishObjects();
+
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
+
+  x = window.innerWidth * 0.42;
+  y = window.innerHeight * 0.62;
+  update();
+
+  message.innerText = "Level 2 begins — recycle the rubbish. No more planting in this level.";
+
+  let mist = document.getElementById("level2Mist");
+  if(!mist){
+    mist = document.createElement("div");
+    mist.className = "level2Mist";
+    mist.id = "level2Mist";
+    game.appendChild(mist);
+  }
+
+  createRecycleStations();
+
+  for(let i=0;i<5;i++){
+    setTimeout(spawnRubbish, i * 650);
+  }
+
+  if(rubbishSpawnTimer){
+    clearInterval(rubbishSpawnTimer);
+  }
+
+  rubbishSpawnTimer = setInterval(spawnRubbish, 7000);
+
+  updateGoalCounters();
+  updateRubbishUI();
+}
+
+
+
+
+function checkLevelTwoComplete(){
+  if(levelTwoComplete) return;
+
+  const goals = levelGoals[2];
+  const recycleDone = levelTwoRecycled >= goals.recycle;
+
+  if(recycleDone){
+    levelTwoComplete = true;
+
+    if(rubbishSpawnTimer){
+      clearInterval(rubbishSpawnTimer);
+      rubbishSpawnTimer = null;
+    }
+
+    rubbishItems.forEach(item=>{
+      if(item.el && item.el.parentNode) item.el.remove();
+    });
+    rubbishItems = [];
+    heldRubbish = null;
+
+    const mist = document.getElementById("level2Mist");
+    if(mist){
+      mist.style.transition = "opacity 2s ease";
+      mist.style.opacity = "0";
+      setTimeout(()=>mist.remove(),2200);
+    }
+
+    magicWeak = false;
+    fairy.classList.remove("weakMagic");
+    updateRubbishUI();
+    updateGoalCounters();
+
+    score += 75;
+    scoreBox.innerText = score;
+
+    if(currentLevelLabel) currentLevelLabel.innerText = "2 Complete";
+
+    message.innerText = "Level 2 complete — life, nests, and balance have returned!";
+
+    for(let i=0;i<40;i++){
+      setTimeout(sparkle, i*45);
+    }
+
+    for(let i=0;i<5;i++){
+      setTimeout(()=>{
+        spawnFaeSongbird(window.innerWidth*.25 + Math.random()*window.innerWidth*.5, window.innerHeight*.65);
+      }, i*450);
+    }
+
+    playSoftBloomSound();
+
+    const overlay = document.getElementById("levelTwoCompleteOverlay");
+    if(overlay){
+      setTimeout(()=>{
+        overlay.style.display = "flex";
+      }, 1000);
+    }
+  }else if(currentLevel === 2){
+    const leftRecycle = Math.max(0, goals.recycle - levelTwoRecycled);
+    message.innerText = "Level 2 goal — Recycle: " + leftRecycle + " more.";
+  }
+}
+
+
+function unlockLevelOneForest(){
+  if(levelOneComplete) return;
+
+  levelOneComplete = true;
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
+  message.innerText = "Level One complete — the full forest has awakened!";
+  playSoftBloomSound();
+
+  for(let i=0;i<30;i++){
+    setTimeout(sparkle, i*55);
+  }
+
+  for(let i=0;i<4;i++){
+    setTimeout(()=>{
+      spawnFaeSongbird(window.innerWidth*.25 + Math.random()*window.innerWidth*.5, window.innerHeight*.65);
+    },i*500);
+  }
+
+  setTimeout(showLevelComplete,1200);
+}
+
+function showLevelComplete(){
+  document.getElementById("levelCompleteOverlay").style.display = "flex";
+}
+
+function sparkle(){
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = (x + fairy.offsetWidth*.5 + Math.random()*70 - 35) + "px";
+  s.style.top = (y + fairy.offsetHeight*.35 + Math.random()*70 - 35) + "px";
+  game.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+function sparkleAt(px,py){
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = px + "px";
+  s.style.top = py + "px";
+  game.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+}
+
+function note(){
+  const n = document.createElement("div");
+  n.className = "note";
+  n.innerHTML = ["♪","♫","♬"][Math.floor(Math.random()*3)];
+  n.style.left = (x + fairy.offsetWidth*.5 + Math.random()*35) + "px";
+  n.style.top = (y + fairy.offsetHeight*.25 + Math.random()*30) + "px";
+  game.appendChild(n);
+  setTimeout(()=>n.remove(),1600);
+}
+
+function magicSurround(){
+  const aura = document.createElement("div");
+  aura.className = "fairyAura";
+  aura.style.left = (x + fairy.offsetWidth/2 - 75) + "px";
+  aura.style.top = (y + fairy.offsetHeight - 20) + "px";
+  game.appendChild(aura);
+  setTimeout(()=>aura.remove(),1200);
+
+  for(let i=0;i<6;i++){
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = (x + fairy.offsetWidth/2 + (Math.random()*80 - 40)) + "px";
+    p.style.top = (y + fairy.offsetHeight/2 + (Math.random()*60 - 30)) + "px";
+    game.appendChild(p);
+    setTimeout(()=>p.remove(),2000);
+  }
+}
+
+async function sing(){
+  if(singing) return;
+
+  singing = true;
+  fairy.classList.add("singing");
+
+  await sprite(getSprite("sing"));
+  update();
+
+  playLimitedSound(sounds.fairy,"magic",1800,.12);
+  magicSurround();
+
+  const singPoints = magicWeak ? 5 : 10;
+  score += singPoints;
+  scoreBox.innerText = score;
+
+  if(magicWeak){
+    message.innerText = "Your magic is weak. Recycle rubbish to restore your strength.";
+  }
+
+  for(let i=0;i<3;i++){
+    setTimeout(sparkle, i*120);
+  }
+
+  for(let i=0;i<3;i++){
+    setTimeout(note, i*180);
+  }
+
+  setTimeout(()=>{
+    if(currentLevel === 2){
+      message.innerText = "Level 2 is recycling only. Press C near rubbish, then C again at the matching shrine.";
+    }else if(currentLevel === 3){
+      message.innerText = "Level 3 is fox spirit rescue. Walk near a fox and press F, then guide it to a den.";
+    }else{
+      growPlant();
+    }
+    playSoftMagicSound();
+  },350);
+
+  setTimeout(async()=>{
+    singing = false;
+    fairy.classList.remove("singing");
+    await sprite(getSprite("idle"));
+    update();
+  },850);
+}
+
+async function moveFairy(dx,dy,moveSprite){
+  if(dx > 0) facing = 1;
+  if(dx < 0) facing = -1;
+
+  x += dx;
+  y += dy;
+
+  if(!singing){
+    await sprite(moveSprite);
+  }
+
+  update();
+}
+
+document.addEventListener("keydown",e=>{
+  keepGameControlsActive();
+  if(startScreen && startScreen.style.display !== "none") return;
+
+  if(e.key === "ArrowRight"){
+    e.preventDefault();
+    moveFairy(16,0,getSprite("run"));
+  }
+
+  if(e.key === "ArrowLeft"){
+    e.preventDefault();
+    moveFairy(-16,0,getSprite("run"));
+  }
+
+  if(e.key === "ArrowUp"){
+    e.preventDefault();
+    moveFairy(0,-16,getSprite("fly"));
+  }
+
+  if(e.key === "ArrowDown"){
+    e.preventDefault();
+    moveFairy(0,16,getSprite("fly"));
+  }
+
+
+  if(e.key.toLowerCase() === "c"){
+    e.preventDefault();
+    pickUpNearbyRubbish();
+    checkLevelTwoComplete();
+  }
+
+  if(e.key.toLowerCase() === "f"){
+    e.preventDefault();
+    handleFoxAction();
+  }
+
+  if(e.key.toLowerCase() === "s"){
+    e.preventDefault();
+    sing();
+  }
+});
+
+document.addEventListener("keyup",()=>{
+  if(startScreen && startScreen.style.display !== "none") return;
+
+  if(!singing){
+    sprite(getSprite("idle"));
+    update();
+  }
+});
+
+singBtn.onclick = (e)=>{
+  if(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  sing();
+  setTimeout(keepGameControlsActive, 50);
+};
+
+soundBtn.onclick = (e)=>{
+  if(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  soundOn = !soundOn;
+  soundBtn.innerText = soundOn ? "Sound: On" : "Sound: Off";
+
+  keepGameControlsActive();
+
+  if(soundOn){
+    try{
+      sounds.music.muted = false;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.10;
+      sounds.music.play().catch(()=>{});
+    }catch(err){}
+
+    try{
+      playLimitedSound(sounds.fairy,"magic",2200,.10);
+    }catch(err){}
+    message.innerText = "Sound is on. The fairy can still move.";
+  }else{
+    try{
+      sounds.music.pause();
+    }catch(err){}
+    message.innerText = "Sound is off.";
+  }
+
+  setTimeout(keepGameControlsActive, 50);
+};
+
+
+document.addEventListener("click", ()=>{
+  if(soundOn){
+    try{
+      sounds.music.muted = false;
+      sounds.music.loop = true;
+      sounds.music.volume = 0.14;
+      sounds.music.play().catch(()=>{});
+    }catch(e){}
+  }
+}, {once:true});
+
+
+function getGameSaveData(){
+  return {
+    currentLevel,
+    score,
+    currentCharacter,
+    x,
+    y,
+    levelOneComplete,
+    levelTwoStarted,
+    levelTwoComplete,
+    levelTwoRecycled,
+    levelTwoGrowthCount,
+    levelTwoNestCount,
+    nestCount,
+    magicWeak,
+    plantingSpots,
+    plantedGrowth: plantedGrowth.map(g=>({
+      spot:g.spot,
+      type:g.type,
+      stage:g.stage
+    })),
+    rubbishItems: rubbishItems.map(item=>({
+      x:item.x,
+      y:item.y,
+      type:item.type,
+      label:item.label,
+      file:item.file
+    }))
+  };
+}
+
+function saveGame(){
+  const data = getGameSaveData();
+  localStorage.setItem("fairyGardenSave", JSON.stringify(data));
+  message.innerText = "Game saved ✨";
+  keepGameControlsActive();
+}
+
+function clearDynamicObjectsForLoad(){
+  plantedGrowth.forEach(g=>{
+    if(g.timer) clearInterval(g.timer);
+    if(g.img && g.img.parentNode) g.img.remove();
+  });
+  plantedGrowth = [];
+
+  eggs.forEach(e=>{
+    if(e.egg && e.egg.parentNode) e.egg.remove();
+    if(e.nest && e.nest.parentNode) e.nest.remove();
+  });
+  eggs = [];
+
+  document.querySelectorAll(".nestSprite,.eggSprite,.rubbishItem,.recycleStation,.foxSpiritSprite,.foxDenSprite,.greatFoxGuardian,.foxWisdomPopup").forEach(el=>el.remove());
+
+  rubbishItems = [];
+  recycleStations = [];
+  heldRubbish = null;
+  foxSpirits = [];
+  foxDens = [];
+  activeFox = null;
+}
+
+async function loadGame(){
+  const raw = localStorage.getItem("fairyGardenSave");
+  if(!raw){
+    message.innerText = "No saved game found.";
+    return;
+  }
+
+  const data = JSON.parse(raw);
+
+  clearDynamicObjectsForLoad();
+
+  currentLevel = data.currentLevel || 1;
+  score = data.score || 0;
+  scoreBox.innerText = score;
+  currentCharacter = data.currentCharacter || "fairy";
+  x = data.x || window.innerWidth * .45;
+  y = data.y || window.innerHeight * .55;
+  levelOneComplete = !!data.levelOneComplete;
+  levelTwoStarted = !!data.levelTwoStarted;
+  levelTwoComplete = !!data.levelTwoComplete;
+  levelTwoRecycled = data.levelTwoRecycled || 0;
+  levelTwoGrowthCount = data.levelTwoGrowthCount || 0;
+  levelTwoNestCount = data.levelTwoNestCount || 0;
+  nestCount = data.nestCount || 0;
+  magicWeak = !!data.magicWeak;
+  plantingSpots = data.plantingSpots || defaultPlantingSpots.slice();
+
+  if(currentLevel === 2 || levelOneComplete){
+    game.style.backgroundImage = 'url("level1-forest-full.png")';
+  }else{
+    game.style.backgroundImage = 'url("level1-whispering-meadow.png") center/cover no-repeat';
+  }
+
+  if(magicWeak){
+    fairy.classList.add("weakMagic");
+  }else{
+    fairy.classList.remove("weakMagic");
+  }
+
+  await sprite(getSprite("idle"));
+
+  for(const saved of (data.plantedGrowth || [])){
+    const img = document.createElement("img");
+    const growth = {
+      spot:saved.spot,
+      type:saved.type,
+      stage:saved.stage,
+      img:img,
+      timer:null
+    };
+    plantedGrowth.push(growth);
+    game.appendChild(img);
+    await updatePlantedImage(growth);
+    if(currentLevel === 1){
+      startGrowthTimer(growth);
+    }
+  }
+
+  for(const item of (data.rubbishItems || [])){
+    const img = await createCleanImageElement(item.file, "rubbishItem");
+    img.style.left = item.x + "px";
+    img.style.top = item.y + "px";
+    game.appendChild(img);
+    rubbishItems.push({...item, el:img});
+  }
+
+  if(currentLevel === 2 && !levelTwoComplete){
+    createRecycleStations();
+    if(rubbishSpawnTimer) clearInterval(rubbishSpawnTimer);
+    rubbishSpawnTimer = setInterval(spawnRubbish, 7500);
+  }
+
+  renderPlantingSpots();
+  update();
+  updateGoalCounters();
+  updateRubbishUI();
+
+  message.innerText = "Game loaded ✨";
+  keepGameControlsActive();
+}
+
+function resetGame(){
+  localStorage.removeItem("fairyGardenSave");
+  // Important: do NOT remove fairyGardenPlantingSpots here.
+  // Your ledge positions stay safe when the game is reset.
+  location.reload();
+}
+
+window.addEventListener("resize",update);
+
+for(let i=0;i<25;i++){
+  const f = document.createElement("div");
+  f.className = "firefly";
+  f.style.left = Math.random()*100 + "vw";
+  f.style.top = (80 + Math.random()*40) + "vh";
+  f.style.animationDuration = (6 + Math.random()*6) + "s";
+  f.style.animationDelay = (Math.random()*6) + "s";
+  startScreen.appendChild(f);
+}
+
+setupStartImages();
+
+if(saveBtn){
+  saveBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    saveGame();
+  };
+}
+
+if(loadBtn){
+  loadBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    loadGame();
+  };
+}
+
+if(resetBtn){
+  resetBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    resetGame();
+  };
+}
+
+function stopLevelTimers(){
+  growthTimers.forEach(t=>clearInterval(t));
+  growthTimers = [];
+
+  if(rubbishSpawnTimer){
+    clearInterval(rubbishSpawnTimer);
+    rubbishSpawnTimer = null;
+  }
+}
+
+function clearPlantsNestsAndRubbish(){
+  stopLevelTimers();
+
+  plantedGrowth.forEach(g=>{
+    if(g.img && g.img.parentNode) g.img.remove();
+    if(g.timer) clearInterval(g.timer);
+  });
+  plantedGrowth = [];
+
+  eggs.forEach(e=>{
+    if(e.egg && e.egg.parentNode) e.egg.remove();
+    if(e.nest && e.nest.parentNode) e.nest.remove();
+  });
+  eggs = [];
+
+  document.querySelectorAll(".nestSprite,.eggSprite,.rubbishItem,.recycleStation,.level2Mist,.foxSpiritSprite,.foxDenSprite,.greatFoxGuardian,.foxWisdomPopup").forEach(el=>el.remove());
+  rubbishItems = [];
+  recycleStations = [];
+  heldRubbish = null;
+}
+
+
+function clearLevelThreeObjects(){
+  document.querySelectorAll(".foxSpiritSprite,.foxDenSprite,.greatFoxGuardian,.foxWisdomPopup").forEach(el=>el.remove());
+  foxSpirits = [];
+  foxDens = [];
+  activeFox = null;
+  rescuedFoxCount = 0;
+  if(foxAnimationTimer){
+    clearInterval(foxAnimationTimer);
+    foxAnimationTimer = null;
+  }
+}
+
+function startLevelThree(){
+  clearPlantsNestsAndRubbish();
+  clearLevelThreeObjects();
+
+  currentLevel = 3;
+  levelThreeStarted = true;
+  levelThreeComplete = false;
+  rescuedFoxCount = 0;
+  activeFox = null;
+  magicWeak = false;
+  fairy.classList.remove("weakMagic");
+
+  startScreen.style.display = "none";
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  game.style.backgroundImage = 'url("level3-fox-spirit-forest.png")';
+
+  x = window.innerWidth * 0.46;
+  y = window.innerHeight * 0.60;
+  update();
+
+  createFoxDens();
+  createLostFoxSpirits();
+  startFoxAnimation();
+
+  if(currentLevelLabel) currentLevelLabel.innerText = "3";
+  updateGoalCounters();
+  updateRubbishUI();
+  message.innerText = "Level 3 — The Lost Fox Spirits. Walk near a fox and press F to befriend it.";
+}
+
+function createFoxDens(){
+  foxDenPositions.forEach((data,i)=>{
+    const den = document.createElement("img");
+    den.className = "foxDenSprite";
+    den.src = "fox-den.png";
+    den.style.left = data.x + "px";
+    den.style.top = data.y + "px";
+    den.dataset.index = i;
+    game.appendChild(den);
+    foxDens.push({el:den,x:data.x,y:data.y,label:data.label});
+  });
+}
+
+function createLostFoxSpirits(){
+  foxSpiritStartPositions.forEach((pos,i)=>{
+    const fox = document.createElement("img");
+    fox.className = "foxSpiritSprite";
+    fox.src = "lost-fox-spirit.png";
+    fox.style.left = pos.x + "px";
+    fox.style.top = pos.y + "px";
+    game.appendChild(fox);
+    foxSpirits.push({
+      el:fox,
+      x:pos.x,
+      y:pos.y,
+      rescued:false,
+      following:false,
+      wisdomIndex:i % foxWisdomMessages.length
+    });
+  });
+}
+
+function startFoxAnimation(){
+  if(foxAnimationTimer) clearInterval(foxAnimationTimer);
+  foxAnimationTimer = setInterval(()=>{
+    foxFrameIndex = (foxFrameIndex + 1) % foxSpiritFrames.length;
+    foxSpirits.forEach(fox=>{
+      if(fox.following && fox.el && fox.el.parentNode){
+        fox.el.src = foxSpiritFrames[foxFrameIndex];
+      }
+    });
+  },260);
+}
+
+function updateFollowingFoxPosition(){
+  if(!activeFox || !activeFox.following || !activeFox.el) return;
+
+  const targetX = x - 95;
+  const targetY = y + fairy.offsetHeight * .42;
+
+  activeFox.x += (targetX - activeFox.x) * .12;
+  activeFox.y += (targetY - activeFox.y) * .12;
+
+  activeFox.el.style.left = activeFox.x + "px";
+  activeFox.el.style.top = activeFox.y + "px";
+  activeFox.el.classList.add("following");
+}
+
+function getNearestUnrescuedFox(){
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  foxSpirits.forEach(fox=>{
+    if(fox.rescued || fox.following) return;
+    const d = getDistanceToPlayer(fox.x + 80, fox.y + 65);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = fox;
+    }
+  });
+
+  return {fox:nearest,distance:nearestDistance};
+}
+
+function getNearestFoxDen(){
+  let nearest = null;
+  let nearestDistance = 999999;
+
+  foxDens.forEach(den=>{
+    const d = getDistanceToPlayer(den.x + 120, den.y + 90);
+    if(d < nearestDistance){
+      nearestDistance = d;
+      nearest = den;
+    }
+  });
+
+  return {den:nearest,distance:nearestDistance};
+}
+
+function handleFoxAction(){
+  if(currentLevel !== 3){
+    message.innerText = "Fox rescue begins in Level 3.";
+    return;
+  }
+
+  if(levelThreeComplete){
+    message.innerText = "The Great Fox Guardian has blessed the forest.";
+    return;
+  }
+
+  if(activeFox && activeFox.following){
+    const nearestDen = getNearestFoxDen();
+    if(!nearestDen.den || nearestDen.distance > 260){
+      message.innerText = "Guide the fox spirit to a glowing den, then press F again.";
+      return;
+    }
+    returnFoxToDen(activeFox, nearestDen.den);
+    return;
+  }
+
+  const nearestFox = getNearestUnrescuedFox();
+  if(!nearestFox.fox || nearestFox.distance > 210){
+    message.innerText = "Move closer to a lost fox spirit, then press F.";
+    return;
+  }
+
+  activeFox = nearestFox.fox;
+  activeFox.following = true;
+  activeFox.el.src = foxSpiritFrames[0];
+  activeFox.el.classList.add("following");
+
+  for(let i=0;i<10;i++){
+    setTimeout(()=>sparkleAt(activeFox.x + 80 + Math.random()*70 - 35, activeFox.y + 55 + Math.random()*60 - 30), i*55);
+  }
+
+  playSoftBloomSound();
+  message.innerText = "A lost fox spirit trusts you. Lead it to one of the glowing dens.";
+}
+
+function returnFoxToDen(fox, den){
+  fox.rescued = true;
+  fox.following = false;
+  rescuedFoxCount++;
+
+  if(fox.el && fox.el.parentNode){
+    fox.el.src = "fox-spirit-happy.png";
+    fox.el.style.left = (den.x + 28) + "px";
+    fox.el.style.top = (den.y + 18) + "px";
+    fox.el.classList.remove("following");
+  }
+
+  activeFox = null;
+  score += 35;
+  scoreBox.innerText = score;
+
+  for(let i=0;i<18;i++){
+    setTimeout(()=>sparkleAt(den.x + 120 + Math.random()*120 - 60, den.y + 70 + Math.random()*80 - 40), i*45);
+  }
+
+  playSoftBloomSound();
+  updateGoalCounters();
+  showFoxWisdom(fox.wisdomIndex);
+
+  if(rescuedFoxCount >= levelThreeFoxGoal){
+    setTimeout(completeLevelThree,900);
+  }else{
+    message.innerText = "Fox spirit returned home. Rescue " + (levelThreeFoxGoal - rescuedFoxCount) + " more.";
+  }
+}
+
+function showFoxWisdom(index){
+  const wisdom = foxWisdomMessages[index % foxWisdomMessages.length];
+  const card = document.createElement("div");
+  card.className = "foxWisdomPopup";
+  card.innerHTML = `
+    <h2>🦊 ${wisdom.title}</h2>
+    <p>${wisdom.text}</p>
+    <button type="button">Continue</button>
+  `;
+  game.appendChild(card);
+  const btn = card.querySelector("button");
+  if(btn){
+    btn.onclick = ()=>card.remove();
+  }
+  setTimeout(()=>{
+    if(card && card.parentNode) card.remove();
+  },4500);
+}
+
+function completeLevelThree(){
+  if(levelThreeComplete) return;
+  levelThreeComplete = true;
+
+  const guardian = document.createElement("img");
+  guardian.className = "greatFoxGuardian";
+  guardian.src = "great-fox-guardian.png";
+  guardian.style.left = (window.innerWidth * .5 - 240) + "px";
+  guardian.style.top = (window.innerHeight * .22) + "px";
+  game.appendChild(guardian);
+
+  score += 150;
+  scoreBox.innerText = score;
+  if(currentLevelLabel) currentLevelLabel.innerText = "3 Complete";
+
+  for(let i=0;i<45;i++){
+    setTimeout(()=>sparkleAt(window.innerWidth*.5 + Math.random()*360 - 180, window.innerHeight*.42 + Math.random()*230 - 115), i*45);
+  }
+
+  playSoftBloomSound();
+  message.innerText = "The Great Fox Guardian appears. You restored wisdom to the forest.";
+
+  const card = document.createElement("div");
+  card.className = "foxWisdomPopup";
+  card.innerHTML = `
+    <h2>✨ Level 3 Complete ✨</h2>
+    <p>You returned the lost fox spirits to their dens.<br>The Great Fox Guardian has opened the path to the Fox Wisdom Oracle.</p>
+    <button type="button">🦊 Fox Cards</button>
+  `;
+  game.appendChild(card);
+  const btn = card.querySelector("button");
+  if(btn){
+    btn.onclick = ()=>{
+      window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
+    };
+  }
+}
+
+function goToLevelThree(){
+  startLevelThree();
+}
+
+function goToLevelOne(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = false;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelThreeStarted = false;
+  levelThreeComplete = false;
+  rescuedFoxCount = 0;
+  activeFox = null;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+  magicWeak = false;
+  fairy.classList.remove("weakMagic");
+
+  game.style.backgroundImage = 'url("level1-whispering-meadow.png")';
+  x = window.innerWidth * 0.45;
+  y = window.innerHeight * 0.55;
+
+  startScreen.style.display = "none";
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  renderPlantingSpots();
+  update();
+  updateGoalCounters();
+  updateRubbishUI();
+  message.innerText = "Level 1 — grow life and help the fae birds make nests.";
+}
+
+function goToLevelTwo(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = true;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelThreeStarted = false;
+  levelThreeComplete = false;
+  rescuedFoxCount = 0;
+  activeFox = null;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+
+  startScreen.style.display = "none";
+  startScreen.style.opacity = "0";
+  startScreen.style.pointerEvents = "none";
+
+  startLevelTwo();
+}
+
+function showHomeScreen(){
+  clearPlantsNestsAndRubbish();
+
+  currentLevel = 1;
+  levelOneComplete = false;
+  levelTwoStarted = false;
+  levelTwoComplete = false;
+  levelThreeStarted = false;
+  levelThreeComplete = false;
+  rescuedFoxCount = 0;
+  activeFox = null;
+  levelTwoRecycled = 0;
+  levelTwoGrowthCount = 0;
+  levelTwoNestCount = 0;
+  nestCount = 0;
+  magicWeak = false;
+  fairy.classList.remove("weakMagic");
+
+  game.style.backgroundImage = 'url("level1-whispering-meadow.png")';
+  x = window.innerWidth * 0.45;
+  y = window.innerHeight * 0.55;
+
+  try{ sounds.music.pause(); }catch(e){}
+  soundOn = false;
+  soundBtn.innerText = "Sound: Off";
+
+  startScreen.style.display = "flex";
+  startScreen.style.opacity = "1";
+  startScreen.style.pointerEvents = "auto";
+
+  renderPlantingSpots();
+  update();
+  updateGoalCounters();
+  updateRubbishUI();
+  message.innerText = "Choose Fairy or Elf to begin...";
+}
+
+const foxCardsBtn = document.getElementById("foxCardsBtn");
+if(foxCardsBtn){
+  foxCardsBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = "https://dolphintouch.github.io/fox-wisdom-oracle/";
+  };
+}
+
+const homeScreenBtn = document.getElementById("homeScreenBtn");
+if(homeScreenBtn){
+  homeScreenBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    showHomeScreen();
+  };
+}
+
+const levelOneBtn = document.getElementById("levelOneBtn");
+if(levelOneBtn){
+  levelOneBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    goToLevelOne();
+  };
+}
+
+const levelTwoBtn = document.getElementById("levelTwoBtn");
+if(levelTwoBtn){
+  levelTwoBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    goToLevelTwo();
+  };
+}
+
+const levelThreeBtn = document.getElementById("levelThreeBtn");
+if(levelThreeBtn){
+  levelThreeBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    goToLevelThree();
+  };
+}
+
+loadPlantingSpots();
+renderPlantingSpots();
+update();
+</script>
+
+</body>
+</html>
