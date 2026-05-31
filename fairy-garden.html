@@ -421,8 +421,8 @@ body{
 
 .recycleStation{
   position:absolute;
-  width:240px;
-  height:240px;
+  width:320px;
+  height:320px;
   object-fit:contain;
   pointer-events:none;
   z-index:11;
@@ -576,26 +576,23 @@ body{
 }
 
 
-#returnDenBtn{
+#homeBtn{
   position:absolute;
   top:15px;
   left:50%;
   transform:translateX(-50%);
-  padding:10px 18px;
+  padding:10px 20px;
   border:none;
-  border-radius:24px;
+  border-radius:25px;
   background:rgba(255,240,170,.96);
   color:#4d3510;
   font-family:Georgia,serif;
   font-weight:bold;
   cursor:pointer;
-  z-index:60;
-  box-shadow:0 0 14px gold,0 0 28px rgba(255,220,120,.75);
+  z-index:9999;
+  box-shadow:0 0 14px gold,0 0 28px rgba(255,220,120,.8);
 }
-
-#returnDenBtn:hover{
-  box-shadow:0 0 20px gold,0 0 38px rgba(255,220,120,.95);
-}
+#homeBtn:hover{ filter:brightness(1.08); }
 
 #saveBtn,#loadBtn,#resetBtn{
   margin-top:6px;
@@ -614,8 +611,8 @@ body{
 <body>
 
 <div id="game">
+  <button id="homeBtn" type="button" tabindex="-1">🦊 Return to the Den</button>
   <div id="fairy"></div>
-  <button id="returnDenBtn" type="button">🦊 Return to the Den</button>
 
   <div id="ui">
     Level: <span id="currentLevelLabel">1</span><br>
@@ -623,7 +620,7 @@ body{
     Garden Spots: <span id="tendedCount">0</span>/<span id="growthGoalLabel">12</span><br>
     Nests: <span id="nestCount">0</span>/<span id="nestGoalLabel">5</span><br>
     Rubbish: <span id="rubbishCount">0</span><br>
-    Recycled: <span id="recycledCount">0</span>/9<br>
+    Recycled: <span id="recycledCount">0</span>/<span id="recycleGoalLabel">9</span><br>
     Magic Strength: <span id="magicStrength">Strong</span><br>
     Move: Arrow Keys<br>
     Clean/Recycle: C<br>
@@ -706,8 +703,6 @@ const saveBtn = document.getElementById("saveBtn");
 const loadBtn = document.getElementById("loadBtn");
 const resetBtn = document.getElementById("resetBtn");
 const rubbishCountBox = document.getElementById("rubbishCount");
-// removed duplicate recycledCountBox declaration
-
 const currentLevelLabel = document.getElementById("currentLevelLabel");
 const magicStrengthBox = document.getElementById("magicStrength");
 const heldItemIcon = document.getElementById("heldItemIcon");
@@ -739,7 +734,7 @@ let growthTimers = [];
 
 const levelGoals = {
   1:{growth:12,nests:5,recycle:0},
-  2:{growth:8,nests:4,recycle:6}
+  2:{growth:0,nests:0,recycle:9}
 };
 
 const levelOneTarget = 12;
@@ -946,12 +941,10 @@ function cleanWhiteBackground(src){
           const g = pixels[i+1];
           const b = pixels[i+2];
 
-          const brightness = (r + g + b) / 3;
-
-          if(brightness > 190 && Math.abs(r-g) < 35 && Math.abs(r-b) < 35 && Math.abs(g-b) < 35){
+          if(r>225 && g>225 && b>225){
             pixels[i+3] = 0;
-          }else if(brightness > 170 && Math.abs(r-g) < 45 && Math.abs(r-b) < 45 && Math.abs(g-b) < 45){
-            pixels[i+3] = Math.min(pixels[i+3],45);
+          }else if(r>210 && g>210 && b>210){
+            pixels[i+3] = Math.min(pixels[i+3],60);
           }
         }
 
@@ -1069,13 +1062,23 @@ function startMusic(){
 }
 
 function loadPlantingSpots(){
-  // Permanent ledges from the first code you uploaded in this conversation.
-  // This does NOT load old browser-saved ledges, so Reset or bad saves cannot overwrite them.
-  plantingSpots = defaultPlantingSpots.slice();
+  try{
+    const saved = localStorage.getItem("fairyGardenPlantingSpots");
+    if(saved){
+      const parsed = JSON.parse(saved);
+      if(Array.isArray(parsed) && parsed.length > 0){
+        plantingSpots = parsed;
+        return;
+      }
+    }
+    plantingSpots = defaultPlantingSpots.slice();
+  }catch(e){
+    plantingSpots = defaultPlantingSpots.slice();
+  }
 }
 
 function savePlantingSpots(){
-  // Ledge editing has been removed so the permanent code ledges cannot be accidentally changed.
+  localStorage.setItem("fairyGardenPlantingSpots", JSON.stringify(plantingSpots));
 }
 
 function renderPlantingSpots(){
@@ -1780,7 +1783,7 @@ function pickUpNearbyRubbish(){
     }
   });
 
-  if(!nearest || nearestDistance > 145){
+  if(!nearest || nearestDistance > 190){
     message.innerText = "Move closer to rubbish, then press C to pick it up.";
     return;
   }
@@ -1812,7 +1815,7 @@ function tryRecycleHeldRubbish(){
     }
   });
 
-  if(!nearest || nearestDistance > 260){
+  if(!nearest || nearestDistance > 390){
     message.innerText = "Carry it to the correct recycling shrine, then press C.";
     return;
   }
@@ -1911,17 +1914,18 @@ function startLevelTwo(){
 
   if(currentLevelLabel) currentLevelLabel.innerText = "2";
 
-  // Keep Level 1 forest alive. Level 2 is a harder continuation, not a blank new game.
-  game.style.backgroundImage = 'url("level1-forest-full.png")';
-
-  // Clear old rubbish only, not plants/birds/nests.
+  // Level 2 is recycling only, so clear plants/nests from the play area.
+  // This does NOT delete your permanent/saved ledge coordinates.
+  clearLevelOneObjectsForLevelTwo();
   clearRubbishObjects();
+
+  game.style.backgroundImage = 'url("level1-forest-full.png")';
 
   x = window.innerWidth * 0.42;
   y = window.innerHeight * 0.62;
   update();
 
-  message.innerText = "Level 2 begins — keep growing the forest, help birds nest, and recycle the rubbish.";
+  message.innerText = "Level 2 begins — recycle the rubbish. No more planting in this level.";
 
   let mist = document.getElementById("level2Mist");
   if(!mist){
@@ -1933,7 +1937,7 @@ function startLevelTwo(){
 
   createRecycleStations();
 
-  for(let i=0;i<4;i++){
+  for(let i=0;i<5;i++){
     setTimeout(spawnRubbish, i * 650);
   }
 
@@ -1941,7 +1945,7 @@ function startLevelTwo(){
     clearInterval(rubbishSpawnTimer);
   }
 
-  rubbishSpawnTimer = setInterval(spawnRubbish, 7500);
+  rubbishSpawnTimer = setInterval(spawnRubbish, 7000);
 
   updateGoalCounters();
   updateRubbishUI();
@@ -1954,11 +1958,9 @@ function checkLevelTwoComplete(){
   if(levelTwoComplete) return;
 
   const goals = levelGoals[2];
-  const growthDone = levelTwoGrowthCount >= goals.growth;
-  const nestsDone = levelTwoNestCount >= goals.nests;
   const recycleDone = levelTwoRecycled >= goals.recycle;
 
-  if(growthDone && nestsDone && recycleDone){
+  if(recycleDone){
     levelTwoComplete = true;
 
     if(rubbishSpawnTimer){
@@ -2010,10 +2012,8 @@ function checkLevelTwoComplete(){
       }, 1000);
     }
   }else if(currentLevel === 2){
-    const leftGrowth = Math.max(0, goals.growth - levelTwoGrowthCount);
-    const leftNests = Math.max(0, goals.nests - levelTwoNestCount);
     const leftRecycle = Math.max(0, goals.recycle - levelTwoRecycled);
-    message.innerText = "Level 2 goals — Grow: " + leftGrowth + ", Nests: " + leftNests + ", Recycle: " + leftRecycle + ".";
+    message.innerText = "Level 2 goal — Recycle: " + leftRecycle + " more.";
   }
 }
 
@@ -2118,7 +2118,11 @@ async function sing(){
   }
 
   setTimeout(()=>{
-    growPlant();
+    if(currentLevel === 2){
+      message.innerText = "Level 2 is recycling only. Press C near rubbish, then C again at the matching shrine.";
+    }else{
+      growPlant();
+    }
     playSoftMagicSound();
   },350);
 
@@ -2386,7 +2390,8 @@ async function loadGame(){
 
 function resetGame(){
   localStorage.removeItem("fairyGardenSave");
-  localStorage.removeItem("fairyGardenPlantingSpots");
+  // Important: do NOT remove fairyGardenPlantingSpots here.
+  // Your ledge positions stay safe when the game is reset.
   location.reload();
 }
 
@@ -2401,17 +2406,6 @@ for(let i=0;i<25;i++){
   f.style.animationDelay = (Math.random()*6) + "s";
   startScreen.appendChild(f);
 }
-
-
-// Extra-safe start button listeners.
-document.querySelectorAll('.startChoiceBtn').forEach(btn=>{
-  btn.addEventListener('click', e=>{
-    e.preventDefault();
-    e.stopPropagation();
-    if(btn.textContent.includes('Fairy')) startGame('fairy');
-    if(btn.textContent.includes('Elf')) startGame('elf');
-  });
-});
 
 setupStartImages();
 
@@ -2431,21 +2425,20 @@ if(loadBtn){
   };
 }
 
-
-const returnDenBtn = document.getElementById("returnDenBtn");
-if(returnDenBtn){
-  returnDenBtn.onclick = (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.href = "fox-den.html";
-  };
-}
-
 if(resetBtn){
   resetBtn.onclick = (e)=>{
     e.preventDefault();
     e.stopPropagation();
     resetGame();
+  };
+}
+
+const homeBtn = document.getElementById("homeBtn");
+if(homeBtn){
+  homeBtn.onclick = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = "fox-den.html";
   };
 }
 
