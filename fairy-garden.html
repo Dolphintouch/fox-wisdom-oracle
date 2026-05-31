@@ -753,28 +753,41 @@ let lastGrowSound = 0;
 let lastBloomSound = 0;
 
 const defaultPlantingSpots = [
-  // Full Level 1 ledges restored — left side
-  {x:130,y:640},
-  {x:220,y:610},
+  // Full Level 1 ledges restored — many planting ledges across the meadow
+  {x:95,y:650},
+  {x:150,y:610},
+  {x:215,y:675},
   {x:280,y:570},
-  {x:340,y:635},
+  {x:330,y:635},
   {x:390,y:585},
-  {x:470,y:660},
-
-  // Middle meadow ledges
-  {x:560,y:610},
+  {x:455,y:690},
+  {x:520,y:610},
+  {x:585,y:675},
   {x:650,y:720},
-  {x:735,y:640},
+  {x:710,y:610},
+  {x:770,y:670},
   {x:830,y:705},
-  {x:930,y:625},
-
-  // Right side ledges
+  {x:890,y:610},
+  {x:950,y:675},
+  {x:1010,y:585},
   {x:1050,y:500},
-  {x:1125,y:635},
+  {x:1110,y:650},
+  {x:1175,y:590},
   {x:1240,y:560},
-  {x:1315,y:670},
+  {x:1305,y:675},
+  {x:1365,y:615},
   {x:1390,y:550},
-  {x:1500,y:625}
+  {x:1460,y:690},
+  {x:1525,y:625},
+  {x:1590,y:675},
+
+  // A few upper magical shelves for smaller plants
+  {x:240,y:455},
+  {x:430,y:470},
+  {x:760,y:455},
+  {x:980,y:445},
+  {x:1210,y:430},
+  {x:1430,y:455}
 ];
 
 const characterSprites = {
@@ -1097,9 +1110,10 @@ function loadPlantingSpots(){
     const saved = localStorage.getItem("fairyGardenPlantingSpots");
     const parsed = saved ? JSON.parse(saved) : null;
 
-    // If your old saved ledges are still in the browser, keep them.
-    // If a previous reset wiped them or only a few remain, restore the full ledge set.
-    if(Array.isArray(parsed) && parsed.length >= 12){
+    // IMPORTANT FIX:
+    // If the browser only has 3 ledges saved, that old bad save is ignored.
+    // Level 1 will always get the full ledge set back.
+    if(Array.isArray(parsed) && parsed.length >= 20){
       plantingSpots = parsed;
     }else{
       plantingSpots = defaultPlantingSpots.slice();
@@ -2386,7 +2400,8 @@ async function loadGame(){
   levelTwoNestCount = data.levelTwoNestCount || 0;
   nestCount = data.nestCount || 0;
   magicWeak = !!data.magicWeak;
-  plantingSpots = data.plantingSpots || defaultPlantingSpots.slice();
+  plantingSpots = (Array.isArray(data.plantingSpots) && data.plantingSpots.length >= 20) ? data.plantingSpots : defaultPlantingSpots.slice();
+  savePlantingSpots();
 
   if(currentLevel === 2 || levelOneComplete){
     game.style.backgroundImage = 'url("level1-forest-full.png")';
@@ -2446,7 +2461,7 @@ function restoreAllLedges(){
   plantingSpots = defaultPlantingSpots.slice();
   savePlantingSpots();
   renderPlantingSpots();
-  message.innerText = "All Level 1 ledges have been restored ✨";
+  message.innerText = "All 32 Level 1 ledges have been restored ✨";
   keepGameControlsActive();
 }
 
