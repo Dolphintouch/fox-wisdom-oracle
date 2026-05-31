@@ -1091,10 +1091,16 @@ function savePlantingSpots(){
 function renderPlantingSpots(){
   document.querySelectorAll(".plantSpot").forEach(s=>s.remove());
 
+  // Level 1 needs visible glowing ledges so you know where to sing/plant.
+  // Level 2 is recycling-only, so ledges stay hidden/removed there.
+  if(currentLevel === 2){
+    return;
+  }
+
   plantingSpots.forEach((p,i)=>{
     const spot = document.createElement("div");
     spot.className = "plantSpot";
-    if(!ledgeEditMode) spot.classList.add("hidden");
+    // Keep ledges visible in Level 1.
     spot.style.left = (p.x - 45) + "px";
     spot.style.top = (p.y - 8) + "px";
     spot.dataset.index = i;
