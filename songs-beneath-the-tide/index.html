@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Free online humpback whale oracle readings from Songs Beneath the Tide by Dolphintouch.">
@@ -30,7 +29,7 @@ const titles = ["The Singer", "The Migration", "The Inherited Song", "The Rising
 const oneBtn=document.getElementById('one'),threeBtn=document.getElementById('three'),againBtn=document.getElementById('again'),area=document.getElementById('reading'),spread=document.getElementById('spread');
 let lastCount=1;
 function pick(count){const deck=Array.from({length:44},(_,i)=>i+1);for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}return deck.slice(0,count)}
-function photoPath(number,kind){return 'cards/'+String(number).padStart(2,'0')+'-'+kind+'.jpg'}
+function photoPath(number,kind){return String(number).padStart(2,'0')+'-'+kind+'.jpg'}
 function reading(count){lastCount=count;const picked=pick(count);const labels=count===3?['The Tide Behind You','The Ocean Around You','The Current Ahead']:['Your Whale Message'];
  spread.replaceChildren();area.hidden=false;document.getElementById('reading-title').textContent=count===1?'Your Whale Message':'Your Three-Card Ocean Journey';
  picked.forEach((num,i)=>{const section=document.createElement('article');section.className='result';section.style.animationDelay=(i*130)+'ms';const title=document.createElement('h3');title.textContent=labels[i]+(titles[num-1]?' · '+titles[num-1]:' · Card '+num);section.append(title);
