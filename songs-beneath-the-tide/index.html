@@ -6,35 +6,81 @@
 <meta name="description" content="Free interactive humpback whale oracle readings from Songs Beneath the Tide by Dolphintouch.">
 <title>Songs Beneath the Tide | Whale Oracle Readings</title>
 <style>
-:root{color-scheme:dark;--ink:#f1f7ff;--sea:#0b304b;--gold:#e8d9b7}
+:root{color-scheme:dark;--ink:#f1f7ff;--gold:#e8d9b7}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,'Times New Roman',serif;background:radial-gradient(ellipse at 50% 0%,#306783 0%,#123b59 42%,#061a32 100%);text-align:center}
-body:before{content:"";position:fixed;inset:0;z-index:-1;opacity:.35;pointer-events:none;background:repeating-linear-gradient(165deg,transparent 0 65px,rgba(208,235,255,.045) 67px 72px,transparent 74px 150px)}
-a{color:#e7f6ff}.shell{max-width:1160px;margin:auto;padding:25px 18px 60px}.home{display:inline-block;margin:4px 0 24px;color:#e6eff7;text-decoration:none;border-bottom:1px solid #86adbf;padding-bottom:5px}
-h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.04;letter-spacing:.035em;color:#f6f3e9;text-shadow:0 3px 15px #021a31}.subtitle{margin:14px 0 10px;color:#e7d7af;font-size:clamp(1rem,2.4vw,1.35rem);letter-spacing:.09em}
-.intro{max-width:700px;margin:20px auto 25px;line-height:1.8;font-size:1.08rem;color:#e2edf5}.cover{display:block;margin:10px auto 24px;width:min(270px,64vw);border-radius:11px;box-shadow:0 15px 40px #00152b,0 0 35px #87b6d050}
-.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}button{font:inherit;color:#f7f4ec;border:1px solid #cbbf9f;border-radius:35px;padding:13px 21px;background:linear-gradient(180deg,#36748b,#15516b);box-shadow:0 6px 18px #031a2c70;cursor:pointer}button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226482);outline:2px solid #a7d4e7;outline-offset:2px}button:disabled{opacity:.65;cursor:wait}
-.prompt{font-style:italic;color:#f0e1c6;line-height:1.7}.reading{margin:27px auto 0;max-width:1120px}.reading[hidden], [hidden]{display:none!important}.reading h2{font-weight:normal;color:#e7d6aa;font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 12px}.reading-help{color:#d4e3ee;line-height:1.6}.spread{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;margin:25px auto}.result{width:min(255px,95%);flex:0 1 255px;padding:13px 13px 18px;background:#fffafa0d;border:1px solid #bfd5dc66;border-radius:18px}.result h3{font-size:1.05rem;font-weight:normal;color:#f2dbb2;margin:5px 0 12px;min-height:2.3em}.result .position{font-size:.89rem;color:#c2dbe8;margin:8px 0 12px;line-height:1.5}
-.flip-card{border:0;background:none;box-shadow:none;padding:0;border-radius:10px;display:block;width:100%;cursor:pointer;perspective:1100px}.flip-card:hover,.flip-card:focus-visible{outline:2px solid #a7d4e7;outline-offset:3px;background:none;box-shadow:none}.flip-inner{position:relative;display:block;width:100%;aspect-ratio:7 / 11;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.2,.7,.2,1);border-radius:10px}.flip-card.is-flipped .flip-inner{transform:rotateY(180deg)}.face{position:absolute;inset:0;display:block;overflow:hidden;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 10px 24px #00182f88}.face.front{transform:rotateY(180deg)}.face img{display:block;width:100%;height:100%;object-fit:fill}.tap-hint{display:block;color:#d5e8f1;margin:10px 0 0;font-size:.9rem}
-.meaning-panel{margin:13px auto 0}.meaning-panel img{display:block;width:100%;height:auto;border-radius:9px;box-shadow:0 9px 22px #00182f90}.meaning-panel a{display:inline-block;margin-top:10px;font-size:.95rem;color:#f4e4c0}.meaning-toggle{font-size:.92rem;padding:9px 13px;margin-top:10px}.reading-tools{margin:18px auto 8px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.note{max-width:750px;margin:35px auto 0;font-size:.89rem;line-height:1.8;color:#c4d7e2}.foot{margin-top:38px;font-size:.87rem;color:#d5e5ee}
-/* The ocean cross is arranged as a real cross, not merely five cards in a row. */
-.spread.cross{display:grid;grid-template-columns:repeat(3,minmax(0,255px));grid-template-areas:'. north .' 'west centre east' '. south .';justify-content:center;align-items:start;gap:16px}.cross .place-north{grid-area:north}.cross .place-west{grid-area:west}.cross .place-centre{grid-area:centre}.cross .place-east{grid-area:east}.cross .place-south{grid-area:south}.cross .result{width:100%;max-width:255px}
-@media(max-width:850px){.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.spread.cross .result{padding:7px}.spread.cross .result h3{font-size:.85rem}.spread.cross .position{font-size:.78rem}.spread.cross .tap-hint{font-size:.77rem}.spread.cross .meaning-toggle{font-size:.78rem;padding:7px}.spread.cross .meaning-panel a{font-size:.76rem}}
-@media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}.flip-inner{transition:none}}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;text-align:center;overflow-x:hidden;
+background:linear-gradient(180deg,#3785a4 0%,#1a5877 25%,#0a3556 62%,#04182e 100%);background-attachment:fixed}
+.ocean-light{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ocean-light::before{content:"";position:absolute;inset:-15% -30% 0;opacity:.55;
+background:repeating-conic-gradient(from 180deg at 50% -18%,transparent 0deg 7deg,rgba(210,243,255,.17) 9deg 12deg,transparent 15deg 25deg);
+-webkit-mask-image:linear-gradient(to bottom,#000,transparent 80%);
+mask-image:linear-gradient(to bottom,#000,transparent 80%);
+transform-origin:50% 0;animation:raysSway 18s ease-in-out infinite alternate}
+.ocean-light::after{content:"";position:absolute;inset:-20%;opacity:.24;
+background:repeating-radial-gradient(ellipse at 50% 0%,transparent 0 37px,rgba(221,248,255,.38) 40px 42px,transparent 45px 83px);
+transform:scale(1.15);animation:caustics 17s ease-in-out infinite alternate}
+.surface-glow{position:absolute;left:0;right:0;top:-100px;height:70vh;
+background:radial-gradient(ellipse at 50% 0%,rgba(255,252,213,.58),rgba(154,223,251,.18) 33%,transparent 73%);
+animation:glow 11s ease-in-out infinite alternate}
+.particles{position:absolute;inset:0;opacity:.5;
+background-image:radial-gradient(circle,rgba(255,255,238,.5) 1px,transparent 2px),radial-gradient(circle,rgba(208,244,255,.4) 1px,transparent 2px);
+background-size:135px 155px,210px 200px;background-position:5px 10px,80px 95px;animation:floatParticles 26s linear infinite}
+@keyframes raysSway{from{transform:rotate(-5deg) scale(1.02);opacity:.4}to{transform:rotate(5deg) scale(1.1);opacity:.7}}
+@keyframes caustics{from{transform:translate(-2%,0) scale(1.08);opacity:.13}to{transform:translate(2%,3%) scale(1.23);opacity:.3}}
+@keyframes glow{from{opacity:.55}to{opacity:.9}}
+@keyframes floatParticles{from{background-position:5px 10px,80px 95px}to{background-position:16px -190px,70px -140px}}
+a{color:#e7f6ff}.shell{position:relative;z-index:1;max-width:1160px;margin:auto;padding:25px 18px 60px}
+.home{display:inline-block;margin:4px 0 24px;color:#e6eff7;text-decoration:none;border-bottom:1px solid #86adbf;padding-bottom:5px}
+h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.04;letter-spacing:.035em;color:#f6f3e9;text-shadow:0 3px 15px #021a31}
+.subtitle{margin:14px 0 10px;color:#f2e6c7;font-size:clamp(1rem,2.4vw,1.35rem);letter-spacing:.09em}
+.intro{max-width:700px;margin:20px auto 25px;line-height:1.8;font-size:1.08rem;color:#e2edf5}
+.cover{display:block;margin:10px auto 24px;width:min(270px,64vw);height:auto;border-radius:11px;box-shadow:0 15px 40px #00152b,0 0 35px #87b6d050}
+.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}
+button{font:inherit;color:#f7f4ec;border:1px solid #cbbf9f;border-radius:35px;padding:13px 21px;background:linear-gradient(180deg,#36748b,#15516b);box-shadow:0 6px 18px #031a2c70;cursor:pointer;touch-action:manipulation}
+button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226482);outline:2px solid #a7d4e7;outline-offset:2px}
+.prompt{font-style:italic;color:#f0e1c6;line-height:1.7}
+[hidden]{display:none!important}
+.reading{margin:27px auto 0;max-width:1120px;scroll-margin-top:16px}
+.reading h2{font-weight:normal;color:#f1dfb7;font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 12px}
+.reading-help{color:#d4e3ee;line-height:1.6}
+.spread{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;margin:25px auto}
+.result{width:min(255px,95%);flex:0 1 255px;padding:13px 13px 18px;background:rgba(8,35,60,.52);border:1px solid #bfd5dc66;border-radius:18px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.result h3{font-size:1.05rem;font-weight:normal;color:#f2dbb2;margin:5px 0 12px;min-height:2.3em}
+.result .position{font-size:.89rem;color:#d4e8f2;margin:8px 0 12px;line-height:1.5}
+.flip-card{border:0;background:none;box-shadow:none;padding:0;border-radius:10px;display:block;width:100%;cursor:pointer;perspective:1100px}
+.flip-card:hover,.flip-card:focus-visible{outline:2px solid #a7d4e7;outline-offset:3px;background:none;box-shadow:none}
+.flip-inner{position:relative;display:block;width:100%;aspect-ratio:7 / 11;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.2,.7,.2,1);border-radius:10px}
+.flip-card.is-flipped .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:block;overflow:hidden;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 10px 24px #00182f88}
+.face.front{transform:rotateY(180deg)}.face img{display:block;width:100%;height:100%;object-fit:fill}
+.tap-hint{display:block;color:#d5e8f1;margin:10px 0 0;font-size:.9rem}
+.meaning-panel{margin:13px auto 0}.meaning-panel img{display:block;width:100%;height:auto;border-radius:9px;box-shadow:0 9px 22px #00182f90}
+.meaning-panel a{display:inline-block;margin-top:10px;font-size:.95rem;color:#f4e4c0}
+.meaning-toggle{font-size:.92rem;padding:9px 13px;margin-top:10px}
+.reading-tools{margin:18px auto 8px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.note{max-width:750px;margin:35px auto 0;font-size:.89rem;line-height:1.8;color:#d5e7f0}
+.foot{margin-top:38px;font-size:.87rem;color:#d5e5ee}
+.spread.cross{display:grid;grid-template-columns:repeat(3,minmax(0,255px));grid-template-areas:". north ." "west centre east" ". south .";justify-content:center;align-items:start;gap:16px}
+.cross .place-north{grid-area:north}.cross .place-west{grid-area:west}.cross .place-centre{grid-area:centre}.cross .place-east{grid-area:east}.cross .place-south{grid-area:south}
+.cross .result{width:100%;max-width:255px}
 .whale-sound{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin:12px auto 25px}.whale-sound button{background:linear-gradient(180deg,#54869d,#26546d)}.whale-sound span{font-size:.9rem;color:#dcecf4}
+@media(max-width:850px){.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.spread.cross .result{padding:7px}.spread.cross .result h3{font-size:.85rem}.spread.cross .position{font-size:.78rem}.spread.cross .tap-hint{font-size:.77rem}.spread.cross .meaning-toggle{font-size:.78rem;padding:7px}}
+@media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}.ocean-light::before{opacity:.38}.particles{opacity:.32}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important}.flip-inner{transition:none}}
 </style>
 </head>
 <body>
+<div class="ocean-light" aria-hidden="true"><div class="surface-glow"></div><div class="particles"></div></div>
 <main class="shell">
 <a class="home" href="../index.html">← Return to Fox Wisdom &amp; Dolphintouch</a>
 <h1>Songs Beneath the Tide</h1><p class="subtitle">A Humpback Whale Oracle</p>
 <p class="intro">Beneath the waves, every song carries a story. Take a quiet moment, imagine the ocean around you, and allow the whales to share a message with your heart.</p>
 <img class="cover" src="cover.jpg" alt="Songs Beneath the Tide, humpback whale oracle cover" width="270" height="340">
 <div class="whale-sound" aria-label="Optional whale song audio">
-  <button type="button" id="whale-sound-toggle" aria-pressed="false">🔊 Listen to the Whales</button>
-  <span id="whale-sound-status" role="status" aria-live="polite">Whale song is off</span>
-  <audio id="whale-sound" src="whale-song.ogg" preload="none" loop></audio>
+<button type="button" id="whale-sound-toggle" aria-pressed="false">🔊 Listen to the Whales</button>
+<span id="whale-sound-status" role="status" aria-live="polite">Whale song is off</span>
+<audio id="whale-sound" src="whale-song.ogg" preload="none" loop></audio>
 </div>
 <p class="prompt">Close your eyes, take a slow breath, and choose the reading that calls to you.</p>
 <div class="actions" aria-label="Choose a whale oracle spread">
@@ -45,8 +91,12 @@ h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.
 <button type="button" data-spread="cross">✨ Five-Card Ocean Cross</button>
 </div>
 <section class="reading" id="reading" aria-live="polite" hidden>
-<h2 id="reading-title"></h2><p class="reading-help" id="reading-help">Tap each card to turn it over. Then open its meaning.</p>
-<div class="reading-tools"><button id="reveal-all" type="button">✨ Turn Over All Cards</button><button id="again" type="button">🔄 Shuffle &amp; Read Again</button></div>
+<h2 id="reading-title"></h2>
+<p class="reading-help">Tap each card to turn it over. Then open its meaning.</p>
+<div class="reading-tools">
+<button id="reveal-all" type="button">✨ Turn Over All Cards</button>
+<button id="again" type="button">🔄 Shuffle &amp; Read Again</button>
+</div>
 <div class="spread" id="spread"></div>
 </section>
 <p class="note">Each reading offers a moment for reflection and personal insight. The meaning pages are from the original <em>Songs Beneath the Tide</em> oracle book. Cards are drawn at random, without repeats within a reading. The spread positions are prompts for personal reflection, not predictions.</p>
@@ -54,59 +104,65 @@ h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.
 </main>
 <script>
 'use strict';
-// All image filenames are in THIS SAME folder as index.html.
-// The 44 card paintings and 44 meaning pages are the original uploaded images.
 const titles=["The Singer","The Migration","The Inherited Song","The Rising Song","The Deep Call","The Joyful Song","Beneath the Surface","The Listening Ocean","The Forgotten Path"];
 const layouts={
- one:{name:'Your Whale Message',positions:[['Your Whale Message','What wisdom is calling to you today?']]},
- two:{name:'Two Tides — Choice Reading',positions:[['First Current','What may unfold if you follow one direction?'],['Second Current','What may unfold if you follow another?']]},
- three:{name:'Three-Card Ocean Journey',positions:[['The Tide Behind You','What has brought you here?'],['The Ocean Around You','What is present in this moment?'],['The Current Ahead','What direction deserves your attention?']]},
- four:{name:'Four Ocean Currents',positions:[['North — Inner Wisdom','What does your intuition know?'],['East — New Beginnings','What is ready to emerge?'],['South — Heart & Connection','What needs kindness or care?'],['West — Release','What can you gently let go of?']]},
- cross:{name:'Five-Card Ocean Cross',positions:[['North — The Guiding Star','What insight can guide you?'],['West — The Past Tide','What is influencing this moment?'],['Centre — The Heart of the Ocean','What is at the heart of your question?'],['East — The Rising Current','What possibilities are opening?'],['South — The Deep Wisdom','What lesson can ground you?']]}
+one:{name:"Your Whale Message",positions:[["Your Whale Message","What wisdom is calling to you today?"]]},
+two:{name:"Two Tides — Choice Reading",positions:[["First Current","What may unfold if you follow one direction?"],["Second Current","What may unfold if you follow another?"]]},
+three:{name:"Three-Card Ocean Journey",positions:[["The Tide Behind You","What has brought you here?"],["The Ocean Around You","What is present in this moment?"],["The Current Ahead","What direction deserves your attention?"]]},
+four:{name:"Four Ocean Currents",positions:[["North — Inner Wisdom","What does your intuition know?"],["East — New Beginnings","What is ready to emerge?"],["South — Heart & Connection","What needs kindness or care?"],["West — Release","What can you gently let go of?"]]},
+cross:{name:"Five-Card Ocean Cross",positions:[["North — The Guiding Star","What insight can guide you?"],["West — The Past Tide","What is influencing this moment?"],["Centre — The Heart of the Ocean","What is at the heart of your question?"],["East — The Rising Current","What possibilities are opening?"],["South — The Deep Wisdom","What lesson can ground you?"]]}
 };
-const readingArea=document.getElementById('reading'),spread=document.getElementById('spread');
-let currentType='one';
-function photoPath(number,kind){return String(number).padStart(2,'0')+'-'+kind+'.jpg'}
-function pick(count){const deck=Array.from({length:44},(_,i)=>i+1);for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}return deck.slice(0,count)}
+const readingArea=document.getElementById("reading"),spread=document.getElementById("spread");
+let currentType="one",currentCards=[];
+function photoPath(number,kind){return String(number).padStart(2,"0")+"-"+kind+".jpg"}
+function pick(count){
+ const deck=Array.from({length:44},(_,i)=>i+1);
+ for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
+ return deck.slice(0,count);
+}
 function makeCard(number,label,question,index,type){
- const section=document.createElement('article');section.className='result';
- if(type==='cross')section.classList.add(['place-north','place-west','place-centre','place-east','place-south'][index]);
- const heading=document.createElement('h3');heading.textContent=label;section.append(heading);
- const flip=document.createElement('button');flip.type='button';flip.className='flip-card';flip.setAttribute('aria-label','Turn over card '+(index+1));flip.setAttribute('aria-pressed','false');
- const inner=document.createElement('span');inner.className='flip-inner';
- const back=document.createElement('span');back.className='face back';const backImg=document.createElement('img');backImg.src='card-back.jpg';backImg.alt='Back of whale oracle card';back.append(backImg);
- const front=document.createElement('span');front.className='face front';const art=document.createElement('img');art.src=photoPath(number,'art');art.alt='Original illustration of whale oracle card '+number;art.loading='eager';front.append(art);
+ const section=document.createElement("article");section.className="result";
+ if(type==="cross")section.classList.add(["place-north","place-west","place-centre","place-east","place-south"][index]);
+ const heading=document.createElement("h3");heading.textContent=label;section.append(heading);
+ const flip=document.createElement("button");flip.type="button";flip.className="flip-card";flip.setAttribute("aria-label","Turn over card "+(index+1));flip.setAttribute("aria-pressed","false");
+ const inner=document.createElement("span");inner.className="flip-inner";
+ const back=document.createElement("span");back.className="face back";
+ const backImg=document.createElement("img");backImg.src="card-back.jpg";backImg.alt="Back of whale oracle card";back.append(backImg);
+ const front=document.createElement("span");front.className="face front";
+ const art=document.createElement("img");art.src=photoPath(number,"art");art.alt="Original illustration of whale oracle card "+number;art.loading="eager";front.append(art);
  inner.append(back,front);flip.append(inner);section.append(flip);
- const hint=document.createElement('span');hint.className='tap-hint';hint.textContent='Tap to turn the card over';section.append(hint);
- const questionEl=document.createElement('p');questionEl.className='position';questionEl.textContent=question;section.append(questionEl);
- const meaningButton=document.createElement('button');meaningButton.className='meaning-toggle';meaningButton.type='button';meaningButton.textContent='📖 Read Card Meaning';meaningButton.hidden=true;section.append(meaningButton);
- const meaningPanel=document.createElement('div');meaningPanel.className='meaning-panel';meaningPanel.hidden=true;const meaning=document.createElement('img');meaning.src=photoPath(number,'meaning');meaning.alt='Original whale oracle message and affirmation for card '+number;meaning.loading='lazy';const link=document.createElement('a');link.href=meaning.src;link.target='_blank';link.rel='noopener';link.textContent='🔎 Open full-size meaning';meaningPanel.append(meaning,link);section.append(meaningPanel);
- function reveal(){flip.classList.add('is-flipped');flip.setAttribute('aria-pressed','true');flip.setAttribute('aria-label','Card '+(index+1)+' is revealed');hint.textContent=titles[number-1]||'Whale Card '+number;meaningButton.hidden=false;}
- flip.addEventListener('click',()=>{if(!flip.classList.contains('is-flipped'))reveal();else {flip.classList.remove('is-flipped');flip.setAttribute('aria-pressed','false');flip.setAttribute('aria-label','Turn over card '+(index+1));hint.textContent='Tap to turn the card over';meaningPanel.hidden=true;meaningButton.hidden=true;meaningButton.textContent='📖 Read Card Meaning';}});
- meaningButton.addEventListener('click',()=>{meaningPanel.hidden=!meaningPanel.hidden;meaningButton.textContent=meaningPanel.hidden?'📖 Read Card Meaning':'📖 Hide Card Meaning';});
+ const hint=document.createElement("span");hint.className="tap-hint";hint.textContent="Tap to turn the card over";section.append(hint);
+ const questionEl=document.createElement("p");questionEl.className="position";questionEl.textContent=question;section.append(questionEl);
+ const meaningButton=document.createElement("button");meaningButton.className="meaning-toggle";meaningButton.type="button";meaningButton.textContent="📖 Read Card Meaning";meaningButton.hidden=true;section.append(meaningButton);
+ const meaningPanel=document.createElement("div");meaningPanel.className="meaning-panel";meaningPanel.hidden=true;
+ const meaning=document.createElement("img");meaning.src=photoPath(number,"meaning");meaning.alt="Original whale oracle message and affirmation for card "+number;meaning.loading="lazy";
+ const link=document.createElement("a");link.href=meaning.src;link.target="_blank";link.rel="noopener";link.textContent="🔎 Open full-size meaning";meaningPanel.append(meaning,link);section.append(meaningPanel);
+ function reveal(){flip.classList.add("is-flipped");flip.setAttribute("aria-pressed","true");flip.setAttribute("aria-label","Card "+(index+1)+" is revealed");hint.textContent=titles[number-1]||"Whale Card "+number;meaningButton.hidden=false}
+ flip.addEventListener("click",()=>{if(!flip.classList.contains("is-flipped"))reveal();else{flip.classList.remove("is-flipped");flip.setAttribute("aria-pressed","false");flip.setAttribute("aria-label","Turn over card "+(index+1));hint.textContent="Tap to turn the card over";meaningPanel.hidden=true;meaningButton.hidden=true;meaningButton.textContent="📖 Read Card Meaning"}});
+ meaningButton.addEventListener("click",()=>{meaningPanel.hidden=!meaningPanel.hidden;meaningButton.textContent=meaningPanel.hidden?"📖 Read Card Meaning":"📖 Hide Card Meaning"});
  return {section,reveal};
 }
-let currentCards=[];
-function reading(type){currentType=type;const chosen=layouts[type];const numbers=pick(chosen.positions.length);spread.replaceChildren();spread.className='spread'+(type==='cross'?' cross':'');currentCards=[];
- document.getElementById('reading-title').textContent=chosen.name;
+function reading(type){
+ currentType=type;const chosen=layouts[type],numbers=pick(chosen.positions.length);
+ spread.replaceChildren();spread.className="spread"+(type==="cross"?" cross":"");currentCards=[];
+ document.getElementById("reading-title").textContent=chosen.name;
  chosen.positions.forEach(([label,question],i)=>{const card=makeCard(numbers[i],label,question,i,type);currentCards.push(card);spread.append(card.section)});
  readingArea.hidden=false;
- readingArea.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ readingArea.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 }
-document.querySelectorAll('[data-spread]').forEach(btn=>btn.addEventListener('click',()=>reading(btn.dataset.spread)));
-document.getElementById('again').addEventListener('click',()=>reading(currentType));
-document.getElementById('reveal-all').addEventListener('click',()=>currentCards.forEach(card=>card.reveal()));
-// Play only after a visitor clicks. Sound is OFF by default.
-const whaleSound=document.getElementById('whale-sound');
-const soundButton=document.getElementById('whale-sound-toggle');
-const soundStatus=document.getElementById('whale-sound-status');
-whaleSound.volume=0.35;
-soundButton.addEventListener('click',async()=>{
- if(!whaleSound.paused){whaleSound.pause();soundButton.textContent='🔊 Listen to the Whales';soundButton.setAttribute('aria-pressed','false');soundStatus.textContent='Whale song is off';return;}
- try{await whaleSound.play();soundButton.textContent='🔇 Stop Whale Song';soundButton.setAttribute('aria-pressed','true');soundStatus.textContent='Whale song is playing softly';}
- catch(err){soundStatus.textContent='Unable to play sound. Check that whale-song.ogg was uploaded beside index.html.';}
+document.querySelectorAll("[data-spread]").forEach(btn=>btn.addEventListener("click",()=>reading(btn.dataset.spread)));
+document.getElementById("again").addEventListener("click",()=>reading(currentType));
+document.getElementById("reveal-all").addEventListener("click",()=>currentCards.forEach(card=>card.reveal()));
+const whaleSound=document.getElementById("whale-sound");
+const soundButton=document.getElementById("whale-sound-toggle");
+const soundStatus=document.getElementById("whale-sound-status");
+whaleSound.volume=.35;
+soundButton.addEventListener("click",async()=>{
+ if(!whaleSound.paused){whaleSound.pause();soundButton.textContent="🔊 Listen to the Whales";soundButton.setAttribute("aria-pressed","false");soundStatus.textContent="Whale song is off";return}
+ try{await whaleSound.play();soundButton.textContent="🔇 Stop Whale Song";soundButton.setAttribute("aria-pressed","true");soundStatus.textContent="Whale song is playing softly"}
+ catch(err){soundStatus.textContent="Unable to play sound. Check that whale-song.ogg was uploaded beside index.html."}
 });
-whaleSound.addEventListener('error',()=>{soundStatus.textContent='Whale sound file not found. Upload whale-song.ogg beside index.html.';});
+whaleSound.addEventListener("error",()=>{soundStatus.textContent="Whale sound file not found. Upload whale-song.ogg beside index.html."});
 </script>
 </body>
 </html>
