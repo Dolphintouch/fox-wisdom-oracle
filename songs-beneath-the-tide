@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Free online humpback whale oracle readings from Songs Beneath the Tide by Dolphintouch.">
+<title>Songs Beneath the Tide | Whale Oracle Readings</title>
+<style>
+:root{color-scheme:dark;--ink:#f1f7ff;--sea:#0b304b;--gold:#e8d9b7}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,'Times New Roman',serif;background:radial-gradient(ellipse at 50% 0%,#306783 0%,#123b59 42%,#061a32 100%);text-align:center}
+body:before{content:"";position:fixed;inset:0;z-index:-1;opacity:.35;background:repeating-linear-gradient(165deg,transparent 0 65px,rgba(208,235,255,.045) 67px 72px,transparent 74px 150px)}
+a{color:#e7f6ff}.shell{max-width:1160px;margin:auto;padding:25px 18px 60px}.home{display:inline-block;margin:4px 0 24px;color:#e6eff7;text-decoration:none;border-bottom:1px solid #86adbf;padding-bottom:5px}
+h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.04;letter-spacing:.035em;color:#f6f3e9;text-shadow:0 3px 15px #021a31}.subtitle{margin:14px 0 10px;color:#e7d7af;font-size:clamp(1rem,2.4vw,1.35rem);letter-spacing:.09em}
+.intro{max-width:700px;margin:20px auto 25px;line-height:1.8;font-size:1.08rem;color:#e2edf5}.cover{display:block;margin:10px auto 24px;width:min(270px,64vw);border-radius:11px;box-shadow:0 15px 40px #00152b,0 0 35px #87b6d050}
+.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0 22px}button,.pill{font:inherit;color:#f7f4ec;border:1px solid #cbbf9f;border-radius:35px;padding:13px 21px;background:linear-gradient(180deg,#36748b,#15516b);box-shadow:0 6px 18px #031a2c70;cursor:pointer}button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226482);outline:2px solid #a7d4e7;outline-offset:2px}button:disabled{opacity:.65;cursor:wait}
+.prompt{font-style:italic;color:#f0e1c6;line-height:1.7}.reading{margin:27px auto 0;max-width:1080px}.reading[hidden]{display:none}.reading h2{font-weight:normal;color:#e7d6aa;font-size:1.6rem;margin:14px 0 20px}.spread{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}.result{width:min(300px,95%);flex:1 1 250px;max-width:340px;padding:13px 13px 20px;background:#fffafa0d;border:1px solid #bfd5dc66;border-radius:18px}.result h3{font-size:1.1rem;font-weight:normal;color:#f2dbb2;margin:5px 0 15px}.card-img{width:100%;border-radius:9px;box-shadow:0 10px 24px #00182f88;display:block}.meaning{width:100%;border-radius:9px;display:block;margin-top:16px;box-shadow:0 9px 22px #00182f90}.meaning-caption{font-size:.87rem;line-height:1.5;color:#bedbe8;margin:9px 0 0}.meaning-link{display:block;margin-top:9px;font-size:.95rem;color:#f4e4c0}.result img{height:auto}.note{max-width:750px;margin:35px auto 0;font-size:.89rem;line-height:1.8;color:#c4d7e2}.foot{margin-top:38px;font-size:.87rem;color:#d5e5ee}.loader{margin:20px auto;font-style:italic}
+@media(max-width:700px){.shell{padding:17px 12px 35px}.result{max-width:430px;flex-basis:95%}.intro{font-size:1rem}.actions button{width:min(100%,360px)}}
+@media(prefers-reduced-motion:no-preference){.result{animation:rise .7s both}@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}}
+</style></head><body><main class="shell">
+<a class="home" href="../index.html">← Return to Fox Wisdom &amp; Dolphintouch</a>
+<h1>Songs Beneath the Tide</h1><p class="subtitle">A Humpback Whale Oracle</p>
+<p class="intro">Beneath the waves, every song carries a story. Take a quiet moment, imagine the ocean around you, and allow the whales to share a message with your heart.</p>
+<img class="cover" src="cover.jpg" alt="Songs Beneath the Tide, humpback whale oracle cover" width="270" height="340">
+<p class="prompt">Close your eyes, take a slow breath, and choose the reading that calls to you.</p>
+<div class="actions"><button type="button" id="one">🐋 One Whale Message</button><button type="button" id="three">🌊 Three-Card Ocean Journey</button><button type="button" id="again" hidden>✨ Shuffle &amp; Read Again</button></div>
+<section class="reading" id="reading" aria-live="polite" hidden><h2 id="reading-title"></h2><div class="spread" id="spread"></div></section>
+<p class="note">Each reading offers a moment for reflection and personal insight. The message pages are taken directly from the original <em>Songs Beneath the Tide</em> oracle book. Tap or click a meaning page to see it larger. The cards are drawn at random; no two cards repeat in the same reading.</p>
+<footer class="foot">Created by Dolphintouch (Michelle Billiau-Morseu) and AI · © Dolphintouch<br><a href="../index.html">Explore more oracle readings</a></footer>
+</main><script>
+'use strict';
+const titles = ["The Singer", "The Migration", "The Inherited Song", "The Rising Song", "The Deep Call", "The Joyful Song", "Beneath the Surface", "The Listening Ocean", "The Forgotten Path"];
+const oneBtn=document.getElementById('one'),threeBtn=document.getElementById('three'),againBtn=document.getElementById('again'),area=document.getElementById('reading'),spread=document.getElementById('spread');
+let lastCount=1;
+function pick(count){const deck=Array.from({length:44},(_,i)=>i+1);for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}return deck.slice(0,count)}
+function photoPath(number,kind){return 'cards/'+String(number).padStart(2,'0')+'-'+kind+'.jpg'}
+function reading(count){lastCount=count;const picked=pick(count);const labels=count===3?['The Tide Behind You','The Ocean Around You','The Current Ahead']:['Your Whale Message'];
+ spread.replaceChildren();area.hidden=false;document.getElementById('reading-title').textContent=count===1?'Your Whale Message':'Your Three-Card Ocean Journey';
+ picked.forEach((num,i)=>{const section=document.createElement('article');section.className='result';section.style.animationDelay=(i*130)+'ms';const title=document.createElement('h3');title.textContent=labels[i]+(titles[num-1]?' · '+titles[num-1]:' · Card '+num);section.append(title);
+ const art=document.createElement('img');art.src=photoPath(num,'art');art.alt='Original artwork for whale oracle card '+num;art.className='card-img';art.loading='eager';section.append(art);
+ const meaning=document.createElement('img');meaning.src=photoPath(num,'meaning');meaning.alt='Original reading and affirmation for whale oracle card '+num;meaning.className='meaning';meaning.loading='lazy';section.append(meaning);
+ const a=document.createElement('a');a.href=meaning.src;a.target='_blank';a.rel='noopener';a.className='meaning-link';a.textContent='🔎 Open full-size meaning';section.append(a);spread.append(section)});
+ againBtn.hidden=false;area.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+}
+oneBtn.addEventListener('click',()=>reading(1));threeBtn.addEventListener('click',()=>reading(3));againBtn.addEventListener('click',()=>reading(lastCount));
+</script></body></html>
