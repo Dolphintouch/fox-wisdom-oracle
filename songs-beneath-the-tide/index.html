@@ -84,6 +84,15 @@ button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226
 @media(max-width:850px){.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.spread.cross .result{padding:7px}.spread.cross .result h3{font-size:.85rem}.spread.cross .position{font-size:.78rem}.spread.cross .tap-hint{font-size:.77rem}.spread.cross .meaning-toggle{font-size:.78rem;padding:7px}}
 @media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}.ocean-light::before{opacity:.38}.particles{opacity:.32}.sparkle:nth-child(n+14),.bubble:nth-child(n+7){display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important}.flip-inner{transition:none}}
+/* Full-screen meaning view: stays on this page, with mobile-friendly scrolling. */
+.meaning-zoom-target{cursor:zoom-in;outline-offset:4px;touch-action:manipulation}
+.meaning-zoom-target:focus-visible{outline:3px solid #c9efff}
+.zoom-hint{font-size:.9rem;color:#e9f2fd;margin:10px 0 0}
+.meaning-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(1,13,31,.97);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;overflow-y:auto;overscroll-behavior:contain;padding:76px 12px 22px}
+.meaning-lightbox img{display:block;width:auto;height:auto;max-width:min(96vw,1000px);max-height:none;object-fit:contain;border-radius:8px;box-shadow:0 0 35px #6dcbed38}
+.lightbox-close{position:fixed;z-index:2;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));background:#164966;color:white;border:1px solid #b6dae9;padding:11px 18px;font-size:1rem;box-shadow:0 4px 18px #0008}
+.lightbox-tip{font-size:.86rem;color:#d4eaf4;margin:3px 0}
+@media (orientation:landscape) and (max-height:520px){.meaning-lightbox{padding-top:60px}}
 </style>
 </head>
 <body>
@@ -118,6 +127,12 @@ button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226
 <p class="note">Each reading offers a moment for reflection and personal insight. The meaning pages are from the original <em>Songs Beneath the Tide</em> oracle book. Cards are drawn at random, without repeats within a reading. The spread positions are prompts for personal reflection, not predictions.</p>
 <footer class="foot">Created by Dolphintouch (Michelle Billiau-Morseu) and AI · © Dolphintouch<br><a href="../index.html">Explore more oracle readings</a></footer>
 </main>
+<div class="meaning-lightbox" id="meaning-lightbox" role="dialog" aria-modal="true" aria-label="Full-screen oracle card meaning" hidden>
+ <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close enlarged meaning">✕ Close</button>
+ <img id="lightbox-image" alt="" src="">
+ <p class="lightbox-tip">Tap outside the image or press Close to return to your reading.</p>
+</div>
+
 <script>
 'use strict';
 const titles=["The Singer","The Migration","The Inherited Song","The Rising Song","The Deep Call","The Joyful Song","Beneath the Surface","The Listening Ocean","The Forgotten Path"];
@@ -152,7 +167,7 @@ function makeCard(number,label,question,index,type){
  const meaningButton=document.createElement("button");meaningButton.className="meaning-toggle";meaningButton.type="button";meaningButton.textContent="📖 Read Card Meaning";meaningButton.hidden=true;section.append(meaningButton);
  const meaningPanel=document.createElement("div");meaningPanel.className="meaning-panel";meaningPanel.hidden=true;
  const meaning=document.createElement("img");meaning.src=photoPath(number,"meaning");meaning.alt="Original whale oracle message and affirmation for card "+number;meaning.loading="lazy";
- const link=document.createElement("a");link.href=meaning.src;link.target="_blank";link.rel="noopener";link.textContent="🔎 Open full-size meaning";meaningPanel.append(meaning,link);section.append(meaningPanel);
+ meaning.classList.add("meaning-zoom-target");meaning.tabIndex=0;meaning.setAttribute("role","button");meaning.setAttribute("aria-label","View this card meaning full screen");meaningPanel.append(meaning);const zoomHelp=document.createElement("p");zoomHelp.className="zoom-hint";zoomHelp.textContent="🔎 Tap the image to view full screen";meaningPanel.append(zoomHelp);section.append(meaningPanel);meaning.addEventListener("click",()=>openMeaningZoom(meaning.src,meaning.alt));meaning.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openMeaningZoom(meaning.src,meaning.alt)}});
  function reveal(){flip.classList.add("is-flipped");flip.setAttribute("aria-pressed","true");flip.setAttribute("aria-label","Card "+(index+1)+" is revealed");hint.textContent=titles[number-1]||"Whale Card "+number;meaningButton.hidden=false}
  flip.addEventListener("click",()=>{if(!flip.classList.contains("is-flipped"))reveal();else{flip.classList.remove("is-flipped");flip.setAttribute("aria-pressed","false");flip.setAttribute("aria-label","Turn over card "+(index+1));hint.textContent="Tap to turn the card over";meaningPanel.hidden=true;meaningButton.hidden=true;meaningButton.textContent="📖 Read Card Meaning"}});
  meaningButton.addEventListener("click",()=>{meaningPanel.hidden=!meaningPanel.hidden;meaningButton.textContent=meaningPanel.hidden?"📖 Read Card Meaning":"📖 Hide Card Meaning"});
@@ -179,6 +194,30 @@ soundButton.addEventListener("click",async()=>{
  catch(err){soundStatus.textContent="Unable to play sound. Check that whale-song.ogg was uploaded beside index.html."}
 });
 whaleSound.addEventListener("error",()=>{soundStatus.textContent="Whale sound file not found. Upload whale-song.ogg beside index.html."});
+// Enlarges the actual original meaning image in-page, not a new browser tab.
+const lightbox=document.getElementById("meaning-lightbox");
+const lightboxImage=document.getElementById("lightbox-image");
+const closeLightboxButton=document.getElementById("lightbox-close");
+let zoomPreviousFocus=null;
+function openMeaningZoom(src,alt){
+ zoomPreviousFocus=document.activeElement;
+ lightboxImage.src=src;lightboxImage.alt=alt;
+ lightbox.hidden=false;
+ document.body.style.overflow="hidden";
+ closeLightboxButton.focus();
+}
+function closeMeaningZoom(){
+ if(lightbox.hidden)return;
+ lightbox.hidden=true;document.body.style.overflow="";
+ if(zoomPreviousFocus&&typeof zoomPreviousFocus.focus==="function")zoomPreviousFocus.focus();
+}
+closeLightboxButton.addEventListener("click",closeMeaningZoom);
+lightbox.addEventListener("click",event=>{if(event.target===lightbox)closeMeaningZoom()});
+document.addEventListener("keydown",event=>{
+ if(lightbox.hidden)return;
+ if(event.key==="Escape")closeMeaningZoom();
+ if(event.key==="Tab"){event.preventDefault();closeLightboxButton.focus()}
+});
 </script>
 </body>
 </html>
