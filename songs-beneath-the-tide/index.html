@@ -26,6 +26,22 @@ animation:glow 11s ease-in-out infinite alternate}
 .particles{position:absolute;inset:0;opacity:.5;
 background-image:radial-gradient(circle,rgba(255,255,238,.5) 1px,transparent 2px),radial-gradient(circle,rgba(208,244,255,.4) 1px,transparent 2px);
 background-size:135px 155px,210px 200px;background-position:5px 10px,80px 95px;animation:floatParticles 26s linear infinite}
+/* Brighter, visibly moving underwater glints and gentle ascending bubbles. */
+.sparkle-field{position:absolute;inset:0;overflow:hidden}
+.sparkle{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;
+ background:rgba(234,252,255,.93);box-shadow:0 0 9px 3px rgba(154,235,255,.55),0 0 24px 8px rgba(183,240,255,.16);
+ opacity:0;transform:scale(.3);animation:twinkle var(--dur) ease-in-out var(--delay) infinite}
+.sparkle::before,.sparkle::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(90deg,transparent,#eafaff,transparent);border-radius:100%}
+.sparkle::before{width:calc(var(--size) * 4);height:1px}.sparkle::after{width:1px;height:calc(var(--size) * 4);background:linear-gradient(180deg,transparent,#eafaff,transparent)}
+.bubble{position:absolute;left:var(--x);bottom:-7%;width:var(--size);height:var(--size);border-radius:50%;border:1px solid rgba(218,248,255,.3);
+ box-shadow:inset 2px 2px 4px rgba(222,249,255,.22),0 0 8px rgba(171,228,250,.15);opacity:0;animation:bubbleRise var(--dur) linear var(--delay) infinite}
+.water-shimmer{position:absolute;top:0;left:-20%;height:58%;width:140%;opacity:.25;transform-origin:50% 0;
+ background:repeating-linear-gradient(100deg,transparent 0 33px,rgba(230,252,255,.20) 35px 38px,transparent 41px 82px);
+ -webkit-mask-image:linear-gradient(to bottom,#000,transparent 95%);mask-image:linear-gradient(to bottom,#000,transparent 95%);
+ animation:surfaceWaves 9s ease-in-out infinite alternate}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.25) rotate(0)}35%{opacity:.7;transform:scale(.85) rotate(35deg)}52%{opacity:1;transform:scale(1.5) rotate(45deg)}70%{opacity:.55;transform:scale(.9) rotate(55deg)}}
+@keyframes bubbleRise{0%{opacity:0;transform:translate3d(0,0,0) scale(.6)}15%{opacity:.45}85%{opacity:.3}100%{opacity:0;transform:translate3d(24px,-105vh,0) scale(1.25)}}
+@keyframes surfaceWaves{from{transform:translateX(-3%) skewX(-5deg);opacity:.18}to{transform:translateX(4%) skewX(5deg);opacity:.40}}
 @keyframes raysSway{from{transform:rotate(-5deg) scale(1.02);opacity:.4}to{transform:rotate(5deg) scale(1.1);opacity:.7}}
 @keyframes caustics{from{transform:translate(-2%,0) scale(1.08);opacity:.13}to{transform:translate(2%,3%) scale(1.23);opacity:.3}}
 @keyframes glow{from{opacity:.55}to{opacity:.9}}
@@ -66,12 +82,12 @@ button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226
 .cross .result{width:100%;max-width:255px}
 .whale-sound{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin:12px auto 25px}.whale-sound button{background:linear-gradient(180deg,#54869d,#26546d)}.whale-sound span{font-size:.9rem;color:#dcecf4}
 @media(max-width:850px){.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.spread.cross .result{padding:7px}.spread.cross .result h3{font-size:.85rem}.spread.cross .position{font-size:.78rem}.spread.cross .tap-hint{font-size:.77rem}.spread.cross .meaning-toggle{font-size:.78rem;padding:7px}}
-@media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}.ocean-light::before{opacity:.38}.particles{opacity:.32}}
+@media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}.ocean-light::before{opacity:.38}.particles{opacity:.32}.sparkle:nth-child(n+14),.bubble:nth-child(n+7){display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important}.flip-inner{transition:none}}
 </style>
 </head>
 <body>
-<div class="ocean-light" aria-hidden="true"><div class="surface-glow"></div><div class="particles"></div></div>
+<div class="ocean-light" aria-hidden="true"><div class="surface-glow"></div><div class="water-shimmer"></div><div class="particles"></div><div class="sparkle-field"><span class="sparkle" style="--x:8%;--y:14%;--size:4px;--dur:4.8s;--delay:-0s"></span><span class="sparkle" style="--x:26%;--y:8%;--size:5px;--dur:6.2s;--delay:-1.6s"></span><span class="sparkle" style="--x:43%;--y:19%;--size:3px;--dur:5.3s;--delay:-2.2s"></span><span class="sparkle" style="--x:67%;--y:9%;--size:5px;--dur:7.1s;--delay:-1.1s"></span><span class="sparkle" style="--x:88%;--y:25%;--size:4px;--dur:5.2s;--delay:-3.7s"></span><span class="sparkle" style="--x:17%;--y:37%;--size:3px;--dur:6.7s;--delay:-2.7s"></span><span class="sparkle" style="--x:76%;--y:42%;--size:5px;--dur:5.9s;--delay:-1.9s"></span><span class="sparkle" style="--x:35%;--y:55%;--size:3px;--dur:5.8s;--delay:-3.1s"></span><span class="sparkle" style="--x:92%;--y:65%;--size:4px;--dur:6.3s;--delay:-0.6s"></span><span class="sparkle" style="--x:10%;--y:75%;--size:3px;--dur:5.4s;--delay:-3.2s"></span><span class="sparkle" style="--x:59%;--y:70%;--size:5px;--dur:7.0s;--delay:-1.4s"></span><span class="sparkle" style="--x:72%;--y:85%;--size:3px;--dur:6.2s;--delay:-3.6s"></span><span class="sparkle" style="--x:24%;--y:89%;--size:4px;--dur:5.5s;--delay:-2.5s"></span><span class="sparkle" style="--x:53%;--y:33%;--size:3px;--dur:6.0s;--delay:-4.8s"></span><span class="sparkle" style="--x:83%;--y:78%;--size:4px;--dur:5.0s;--delay:-2.0s"></span><span class="sparkle" style="--x:46%;--y:94%;--size:3px;--dur:7.5s;--delay:-1.0s"></span><span class="bubble" style="--x:13%;--size:15px;--dur:17s;--delay:-0s"></span><span class="bubble" style="--x:38%;--size:8px;--dur:20s;--delay:-8s"></span><span class="bubble" style="--x:61%;--size:13px;--dur:19s;--delay:-3s"></span><span class="bubble" style="--x:86%;--size:10px;--dur:22s;--delay:-11s"></span><span class="bubble" style="--x:24%;--size:7px;--dur:18s;--delay:-7s"></span><span class="bubble" style="--x:72%;--size:6px;--dur:24s;--delay:-4s"></span></div></div>
 <main class="shell">
 <a class="home" href="../index.html">← Return to Fox Wisdom &amp; Dolphintouch</a>
 <h1>Songs Beneath the Tide</h1><p class="subtitle">A Humpback Whale Oracle</p>
