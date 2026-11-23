@@ -22,6 +22,7 @@ h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.
 @media(max-width:850px){.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.spread.cross .result{padding:7px}.spread.cross .result h3{font-size:.85rem}.spread.cross .position{font-size:.78rem}.spread.cross .tap-hint{font-size:.77rem}.spread.cross .meaning-toggle{font-size:.78rem;padding:7px}.spread.cross .meaning-panel a{font-size:.76rem}}
 @media(max-width:520px){.shell{padding:17px 10px 35px}.intro{font-size:1rem}.actions button{width:min(100%,360px)}.spread.cross{display:flex;flex-direction:column;align-items:center;gap:14px}.spread.cross .result{width:min(290px,96%);max-width:290px;padding:13px}.spread.cross .result h3{font-size:1.05rem}.spread.cross .position,.spread.cross .tap-hint{font-size:.9rem}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}.flip-inner{transition:none}}
+.whale-sound{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin:12px auto 25px}.whale-sound button{background:linear-gradient(180deg,#54869d,#26546d)}.whale-sound span{font-size:.9rem;color:#dcecf4}
 </style>
 </head>
 <body>
@@ -30,6 +31,11 @@ h1{font-weight:normal;font-size:clamp(2.2rem,6vw,4.8rem);margin:0;line-height:1.
 <h1>Songs Beneath the Tide</h1><p class="subtitle">A Humpback Whale Oracle</p>
 <p class="intro">Beneath the waves, every song carries a story. Take a quiet moment, imagine the ocean around you, and allow the whales to share a message with your heart.</p>
 <img class="cover" src="cover.jpg" alt="Songs Beneath the Tide, humpback whale oracle cover" width="270" height="340">
+<div class="whale-sound" aria-label="Optional whale song audio">
+  <button type="button" id="whale-sound-toggle" aria-pressed="false">🔊 Listen to the Whales</button>
+  <span id="whale-sound-status" role="status" aria-live="polite">Whale song is off</span>
+  <audio id="whale-sound" src="whale-song.ogg" preload="none" loop></audio>
+</div>
 <p class="prompt">Close your eyes, take a slow breath, and choose the reading that calls to you.</p>
 <div class="actions" aria-label="Choose a whale oracle spread">
 <button type="button" data-spread="one">🐋 One Whale Message</button>
@@ -90,6 +96,17 @@ function reading(type){currentType=type;const chosen=layouts[type];const numbers
 document.querySelectorAll('[data-spread]').forEach(btn=>btn.addEventListener('click',()=>reading(btn.dataset.spread)));
 document.getElementById('again').addEventListener('click',()=>reading(currentType));
 document.getElementById('reveal-all').addEventListener('click',()=>currentCards.forEach(card=>card.reveal()));
+// Play only after a visitor clicks. Sound is OFF by default.
+const whaleSound=document.getElementById('whale-sound');
+const soundButton=document.getElementById('whale-sound-toggle');
+const soundStatus=document.getElementById('whale-sound-status');
+whaleSound.volume=0.35;
+soundButton.addEventListener('click',async()=>{
+ if(!whaleSound.paused){whaleSound.pause();soundButton.textContent='🔊 Listen to the Whales';soundButton.setAttribute('aria-pressed','false');soundStatus.textContent='Whale song is off';return;}
+ try{await whaleSound.play();soundButton.textContent='🔇 Stop Whale Song';soundButton.setAttribute('aria-pressed','true');soundStatus.textContent='Whale song is playing softly';}
+ catch(err){soundStatus.textContent='Unable to play sound. Check that whale-song.ogg was uploaded beside index.html.';}
+});
+whaleSound.addEventListener('error',()=>{soundStatus.textContent='Whale sound file not found. Upload whale-song.ogg beside index.html.';});
 </script>
 </body>
 </html>
