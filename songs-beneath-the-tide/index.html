@@ -111,6 +111,33 @@ button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226
 .short-message .original-wrapper{margin-top:13px}
 .short-message .original-wrapper img{width:100%;height:auto}
 @media(max-width:520px){.short-message{padding:17px 15px}.short-message .readable-meaning{font-size:1.24rem;line-height:1.75}}
+
+/* Full original meanings first; clear short summary is optional. */
+.short-message .original-wrapper{margin:5px 0 18px}
+.short-message .original-wrapper img{display:block;width:100%;height:auto;cursor:zoom-in}
+.short-message .zoom-hint{margin:10px 0 0;font-size:.96rem;color:#f0e6cf}
+.short-message .original-toggle{display:block;margin:10px auto 0;font-size:.92rem}
+.short-message .readable-meaning{margin:15px 0 2px}
+/* Interactive full-screen enlargement, including on small phone screens. */
+.meaning-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(1,13,31,.98);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:10px;padding:12px;overflow:hidden}
+.lightbox-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto}
+.lightbox-actions button{font-size:.95rem;padding:10px 14px}
+.lightbox-close{position:static;background:#164966}
+.lightbox-scroll{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;border-radius:8px;-webkit-overflow-scrolling:touch}
+.lightbox-scroll img{display:block;width:auto;max-width:100%;height:auto;margin:0 auto;border-radius:6px;filter:contrast(1.06)}
+.lightbox-scroll.is-zoomed img{width:1000px;min-width:1000px;max-width:none;margin:0;filter:contrast(1.08)}
+.lightbox-tip{flex:0 0 auto;margin:0;font-size:.86rem;color:#d4eaf4;text-align:center;line-height:1.4}
+@media(max-width:520px){.meaning-lightbox{padding:8px}.lightbox-actions button{padding:10px 12px;font-size:.88rem}}
+
+/* Links to the published companion book and Dolphintouch's printed card shop. */
+.ocean-shop{max-width:790px;margin:34px auto 24px;padding:23px 18px 25px;border:1px solid rgba(221,241,247,.42);border-radius:21px;background:rgba(4,30,53,.72);box-shadow:0 12px 35px rgba(0,14,31,.24);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.ocean-shop h2{margin:0 0 10px;font-size:clamp(1.5rem,3vw,2.05rem);font-weight:normal;color:#f6e7c4}
+.ocean-shop p{margin:0 auto 16px;max-width:590px;font-size:1.02rem;line-height:1.65;color:#e6f5fb}
+.ocean-shop-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.ocean-shop-links a{display:inline-block;max-width:100%;padding:14px 21px;border:1px solid #d8ddc2;border-radius:32px;background:linear-gradient(180deg,#4589a4,#18536f);color:#fff9e8;font-size:1rem;text-decoration:none;box-shadow:0 5px 15px rgba(1,15,29,.35)}
+.ocean-shop-links a:hover,.ocean-shop-links a:focus-visible{background:linear-gradient(180deg,#67a8be,#246682);outline:2px solid #b5e9f5;outline-offset:3px}
+.ocean-shop .shop-note{margin:14px auto 0;font-size:.86rem;color:#c8dae8}
+@media(max-width:520px){.ocean-shop-links{flex-direction:column;align-items:center}.ocean-shop-links a{width:min(100%,355px)}}
 </style>
 </head>
 <body>
@@ -142,13 +169,25 @@ button:hover,button:focus-visible{background:linear-gradient(180deg,#518ea7,#226
 </div>
 <div class="spread" id="spread"></div>
 </section>
+<section class="ocean-shop" aria-labelledby="ocean-shop-title">
+<h2 id="ocean-shop-title">Take the Ocean's Wisdom Home</h2>
+<p>Enjoyed your reading? Explore the original <em>Songs Beneath the Tide</em> printed oracle cards and companion book.</p>
+<div class="ocean-shop-links">
+<a href="https://www.printerstudio.com/sell/dolphintouchm-shop" target="_blank" rel="noopener noreferrer">🐋 Explore My Printed Oracle Cards</a>
+<a href="https://www.amazon.com/dp/B0H94QLSDF" target="_blank" rel="noopener noreferrer">📖 View My Book &amp; Guidebook</a>
+</div>
+<p class="shop-note">Printed card availability may vary. Links open the Dolphintouch PrinterStudio shop and Amazon.</p>
+</section>
 <p class="note">Each reading offers a moment for reflection and personal insight. The short, easy-to-read meanings are adapted from the original <em>Songs Beneath the Tide</em> oracle pages. Original illustrated meanings remain available for viewing. Cards are drawn at random, without repeats within a reading. The spread positions are prompts for personal reflection, not predictions.</p>
 <footer class="foot">Created by Dolphintouch (Michelle Billiau-Morseu) and AI · © Dolphintouch<br><a href="../index.html">Explore more oracle readings</a></footer>
 </main>
-<div class="meaning-lightbox" id="meaning-lightbox" role="dialog" aria-modal="true" aria-label="Full-screen oracle card meaning" hidden>
- <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close enlarged meaning">✕ Close</button>
- <img id="lightbox-image" alt="" src="">
- <p class="lightbox-tip">Tap outside the image or press Close to return to your reading.</p>
+<div class="meaning-lightbox" id="meaning-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged original whale oracle meaning" hidden>
+ <div class="lightbox-actions">
+  <button type="button" id="lightbox-zoom" aria-pressed="false">🔎 Enlarge writing</button>
+  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close enlarged meaning">✕ Close</button>
+ </div>
+ <div class="lightbox-scroll" id="lightbox-scroll"><img id="lightbox-image" alt="" src=""></div>
+ <p class="lightbox-tip" id="lightbox-tip">Tap “Enlarge writing” to read more closely without leaving this page.</p>
 </div>
 
 <script>
@@ -183,23 +222,24 @@ function makeCard(number,label,question,index,type){
  inner.append(back,front);flip.append(inner);section.append(flip);
  const hint=document.createElement("span");hint.className="tap-hint";hint.textContent="Tap to turn the card over";section.append(hint);
  const questionEl=document.createElement("p");questionEl.className="position";questionEl.textContent=question;section.append(questionEl);
- const meaningButton=document.createElement("button");meaningButton.className="meaning-toggle";meaningButton.type="button";meaningButton.textContent="📖 Read Card Meaning";meaningButton.hidden=true;section.append(meaningButton);
+ const meaningButton=document.createElement("button");meaningButton.className="meaning-toggle";meaningButton.type="button";meaningButton.textContent="📜 View Full Original Meaning";meaningButton.hidden=true;section.append(meaningButton);
  const meaningPanel=document.createElement("div");meaningPanel.className="meaning-panel short-message";meaningPanel.hidden=true;
  const meaningTitle=document.createElement("h4");meaningTitle.textContent=titles[number-1];meaningPanel.append(meaningTitle);
- const message=document.createElement("p");message.className="readable-meaning";message.textContent=shortMeanings[number-1];meaningPanel.append(message);
- const originalBtn=document.createElement("button");originalBtn.type="button";originalBtn.className="original-toggle";originalBtn.textContent="🖼 View original illustrated meaning";meaningPanel.append(originalBtn);
- const originalWrapper=document.createElement("div");originalWrapper.hidden=true;originalWrapper.className="original-wrapper";
- const meaning=document.createElement("img");meaning.src=photoPath(number,"meaning");meaning.alt="Original illustrated oracle meaning for "+titles[number-1];meaning.loading="lazy";
- meaning.classList.add("meaning-zoom-target");meaning.tabIndex=0;meaning.setAttribute("role","button");meaning.setAttribute("aria-label","View this original meaning full screen");
+ const originalWrapper=document.createElement("div");originalWrapper.className="original-wrapper";
+ const meaning=document.createElement("img");meaning.src=photoPath(number,"meaning");meaning.alt="Full original illustrated oracle meaning for "+titles[number-1];meaning.loading="lazy";
+ meaning.classList.add("meaning-zoom-target");meaning.tabIndex=0;meaning.setAttribute("role","button");meaning.setAttribute("aria-label","Enlarge complete original meaning for "+titles[number-1]);
  originalWrapper.append(meaning);
- const zoomHelp=document.createElement("p");zoomHelp.className="zoom-hint";zoomHelp.textContent="🔎 Tap the picture to enlarge it";originalWrapper.append(zoomHelp);
- meaningPanel.append(originalWrapper);section.append(meaningPanel);
- originalBtn.addEventListener("click",()=>{originalWrapper.hidden=!originalWrapper.hidden;originalBtn.textContent=originalWrapper.hidden?"🖼 View original illustrated meaning":"🖼 Hide original illustrated meaning"});
+ const zoomHelp=document.createElement("p");zoomHelp.className="zoom-hint";zoomHelp.textContent="🔎 Tap the original meaning above to enlarge it";originalWrapper.append(zoomHelp);
+ meaningPanel.append(originalWrapper);
+ const summaryBtn=document.createElement("button");summaryBtn.type="button";summaryBtn.className="original-toggle";summaryBtn.textContent="📖 Show easier-to-read short meaning";summaryBtn.setAttribute("aria-expanded","false");meaningPanel.append(summaryBtn);
+ const summary=document.createElement("p");summary.className="readable-meaning";summary.textContent=shortMeanings[number-1];summary.hidden=true;meaningPanel.append(summary);
+ section.append(meaningPanel);
+ summaryBtn.addEventListener("click",()=>{summary.hidden=!summary.hidden;summaryBtn.setAttribute("aria-expanded",String(!summary.hidden));summaryBtn.textContent=summary.hidden?"📖 Show easier-to-read short meaning":"📖 Hide short meaning"});
  meaning.addEventListener("click",()=>openMeaningZoom(meaning.src,meaning.alt));
  meaning.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openMeaningZoom(meaning.src,meaning.alt)}});
  function reveal(){flip.classList.add("is-flipped");flip.setAttribute("aria-pressed","true");flip.setAttribute("aria-label","Card "+(index+1)+" is revealed");hint.textContent=titles[number-1]||"Whale Card "+number;meaningButton.hidden=false}
- flip.addEventListener("click",()=>{if(!flip.classList.contains("is-flipped"))reveal();else{flip.classList.remove("is-flipped");flip.setAttribute("aria-pressed","false");flip.setAttribute("aria-label","Turn over card "+(index+1));hint.textContent="Tap to turn the card over";meaningPanel.hidden=true;meaningButton.hidden=true;meaningButton.textContent="📖 Read Card Meaning";originalWrapper.hidden=true;originalBtn.textContent="🖼 View original illustrated meaning"}});
- meaningButton.addEventListener("click",()=>{meaningPanel.hidden=!meaningPanel.hidden;meaningButton.textContent=meaningPanel.hidden?"📖 Read Card Meaning":"📖 Hide Card Meaning"});
+ flip.addEventListener("click",()=>{if(!flip.classList.contains("is-flipped"))reveal();else{flip.classList.remove("is-flipped");flip.setAttribute("aria-pressed","false");flip.setAttribute("aria-label","Turn over card "+(index+1));hint.textContent="Tap to turn the card over";meaningPanel.hidden=true;meaningButton.hidden=true;meaningButton.textContent="📜 View Full Original Meaning";summary.hidden=true;summaryBtn.setAttribute("aria-expanded","false");summaryBtn.textContent="📖 Show easier-to-read short meaning"}});
+ meaningButton.addEventListener("click",()=>{meaningPanel.hidden=!meaningPanel.hidden;meaningButton.textContent=meaningPanel.hidden?"📜 View Full Original Meaning":"📜 Hide Full Meaning"});
  return {section,reveal};
 }
 function reading(type){
@@ -227,10 +267,22 @@ whaleSound.addEventListener("error",()=>{soundStatus.textContent="Whale sound fi
 const lightbox=document.getElementById("meaning-lightbox");
 const lightboxImage=document.getElementById("lightbox-image");
 const closeLightboxButton=document.getElementById("lightbox-close");
+const zoomButton=document.getElementById("lightbox-zoom");
+const zoomScroll=document.getElementById("lightbox-scroll");
+const zoomTip=document.getElementById("lightbox-tip");
+function setMeaningZoom(large){
+ zoomScroll.classList.toggle("is-zoomed",large);
+ zoomButton.setAttribute("aria-pressed",String(large));
+ zoomButton.textContent=large?"🔎 Fit whole image":"🔎 Enlarge writing";
+ zoomTip.textContent=large?"Swipe sideways and scroll down to read the original writing.":"Tap “Enlarge writing” to read more closely without leaving this page.";
+ zoomScroll.scrollTop=0;zoomScroll.scrollLeft=0;
+}
+zoomButton.addEventListener("click",()=>setMeaningZoom(!zoomScroll.classList.contains("is-zoomed")));
+
 let zoomPreviousFocus=null;
 function openMeaningZoom(src,alt){
  zoomPreviousFocus=document.activeElement;
- lightboxImage.src=src;lightboxImage.alt=alt;
+ lightboxImage.src=src;lightboxImage.alt=alt;setMeaningZoom(false);
  lightbox.hidden=false;
  document.body.style.overflow="hidden";
  closeLightboxButton.focus();
@@ -245,7 +297,7 @@ lightbox.addEventListener("click",event=>{if(event.target===lightbox)closeMeanin
 document.addEventListener("keydown",event=>{
  if(lightbox.hidden)return;
  if(event.key==="Escape")closeMeaningZoom();
- if(event.key==="Tab"){event.preventDefault();closeLightboxButton.focus()}
+ if(event.key==="Tab"){event.preventDefault();(document.activeElement===closeLightboxButton?zoomButton:closeLightboxButton).focus()}
 });
 </script>
 </body>
